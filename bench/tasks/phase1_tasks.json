@@ -1,0 +1,768 @@
+{
+  "schema_version": "1",
+  "generated": "2026-08-12",
+  "oracle": {
+    "repo": "github.com/CommonRoad/commonroad-crime",
+    "commit": "60bebed8005610f1b856e601852676a21e85cfc6",
+    "commit_date": "2025-10-22",
+    "commit_note": "This SHA was origin/develop HEAD at clone time. Repo has 0 tags and only one remote branch (develop), so the SHA is the only pin and it is not a release boundary.",
+    "mirror_note": "gitlab.lrz.de/tum-cps/commonroad-crime is a separate, older repo (HEAD 3e7ce4a, 2024-03-16) with no tests/ directory at all. Confirmed by direct clone. Reference values exist only on GitHub.",
+    "value_provenance": "These are CriMe's own self-consistency regression values, checked in alongside the implementation that produces them. They are NOT independently published reference values. They are ground truth only under the assumption that CriMe is the oracle; a disagreement between an Alfred reimplementation and these numbers is evidence of divergence from CriMe, not evidence of an error against the published metric definition at criticality-metrics.readthedocs.io."
+  },
+  "strength_rubric": {
+    "definition": "strength is graded by n_nondegenerate: the number of distinct pinned expected values that are finite, non-zero, not a config echo, and not inside a tolerance band wide enough to admit a trivial constant.",
+    "strong": "n_nondegenerate >= 2. A constant-returning stub provably fails, AND the task admits hold-out grading (publish some points to the agent, grade on the rest).",
+    "borderline": "n_nondegenerate == 1. The single constant is arbitrary and cannot be guessed without implementing the measure, but a stub that memorises it passes, and there is no second point to hold out.",
+    "weak": "n_nondegenerate == 0. Only 0.0, +/-inf, NaN, a config echo, or a wide tolerance band is asserted. Trivially stubbable and guessable.",
+    "note": "The prior count of ~30 corresponds to strong + borderline + TTC. See report 02-tasks.md."
+  },
+  "file_hashes_sha256": {
+    "tests/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tests/test_acceleration_domain.py": "ff6959f44f46b1d2fa18e164dbfbb4159ceec51e8c94dc5add34af487a669629",
+    "tests/test_base.py": "26673446a9a70aca7fa9b88870dea7e9f1eff46e519cec7ec3db42bea138577e",
+    "tests/test_distance_domain.py": "4d22e09bc1d1ad46a6b7a3f772edd4c1c6925f1d4bb8eaf05764f986de030940",
+    "tests/test_index_domain.py": "2fe9ba0a8bb93aca9afb7ecc288289cd6ba02e58f329452227566cb2f21c1f6d",
+    "tests/test_jerk_domain.py": "4183bd76db5abfc1ea0da3f23ee053fc753b85e36ecfe393ee0c18589ad4899f",
+    "tests/test_potential_domain.py": "68e7cb20da3c88942d890c1e29a53d8a4326fc15c1c049f18681dfeeed766361",
+    "tests/test_probability_domain.py": "f4b2fc28d4c2d9b14c0776d1cc67943901d52409dae278511209528485302fe3",
+    "tests/test_reachable_set_domain.py": "730bf33466212885262180df055f33051adecd9bd823a4dbae5e8a0ec93a2f40",
+    "tests/test_time_domain.py": "4548341f61c64ab4223b55a0b5fbdfa5355284b5bb09afdd4e062288c5cb1d69",
+    "tests/test_utils_simulation.py": "fc8a2090d868153b3e83f83cf1183c039bfb14726901f2df906776a639b62f2b",
+    "tests/test_velocity_domain.py": "adaf0539b939ad5f4551b41e7d4b4c604c8d6e09c9806c47b889d7ecc92dce0f"
+  },
+  "scenarios": {
+    "referenced_by_tests": [
+      "ZAM_Urban-3_3_Repair",
+      "ZAM_Urban-7_1_S-2",
+      "ZAM_Zip-1_56_T-1",
+      "ZAM_Zip-2_1_T-1",
+      "ZAM_Tjunction-1_97_T-1",
+      "BEL_Putte-8_2_T-1",
+      "DEU_Test-1_1_T-1",
+      "DEU_Gar-1_1_T-1",
+      "DEU_Moabit-4_1_T-1",
+      "USA_Lanker-1_3_T-1",
+      "USA_US101-5_1_T-1"
+    ],
+    "count_referenced": 11,
+    "count_shipped_in_repo": 24,
+    "unused_shipped": [
+      "DEU_AAH1-2_76900_T-7049",
+      "DEU_Crit-1_1_T-1",
+      "DEU_Flensburg-10_1_T-1",
+      "DEU_Moelln-10_2_T-1",
+      "DEU_Moelln-4_4_T-1",
+      "DEU_TestIntersectionInteract-3_1_T-1",
+      "HRV_Pula-27_3_T-1",
+      "OSC_CutIn-1_2_T-1",
+      "OSC_Overtake-1_1_T-1",
+      "OSC_PedestrianCollision-1_1_T-1",
+      "OSC_PedestrianCollision-1_1_T-26",
+      "OSC_PedestrianCollision-1_1_T-38",
+      "OSC_PedestrianCollision-1_1_T-47"
+    ],
+    "dt": {
+      "ZAM_Urban-7_1_S-2": 0.25,
+      "_all_others": 0.1
+    }
+  },
+  "counts": {
+    "measures_with_any_test": 35,
+    "strong": 10,
+    "borderline": 19,
+    "weak": 6,
+    "implemented_but_untested": 0,
+    "declared_but_unimplemented_stubs_upstream": 11,
+    "prior_count_reproduced": 30,
+    "prior_count_definition": "strong + borderline + TTC (i.e. every tested measure except TTK, TTS, TCI, PF, P_MC)"
+  },
+  "tasks": [
+    {
+      "id": "crime-time-tet",
+      "measure": "TET",
+      "domain": "time",
+      "scenario_ids": ["ZAM_Urban-3_3_Repair"],
+      "assertion": "TET(cfg).compute(6) ~ 2.0 ; TET(cfg).compute(7) ~ 0.9",
+      "assertion_points": [
+        {"line": 50, "call": "compute(6)", "expected": 2.0, "kind": "finite"},
+        {"line": 54, "call": "compute(7)", "expected": 0.9, "kind": "finite"}
+      ],
+      "tolerance": "math.isclose abs_tol=1e-2",
+      "source_file": "tests/test_time_domain.py",
+      "source_line": 44,
+      "strength": "strong",
+      "n_nondegenerate": 2,
+      "constant_stub_passes": false,
+      "alfred_must_produce": "class TET(CriMeConfiguration) with compute(vehicle_id) returning exposure time (s) that a colliding-course TTC stays under threshold, ego_id=8; 2.0 for obstacle 6, 0.9 for obstacle 7.",
+      "why_excluded": null
+    },
+    {
+      "id": "crime-time-tit",
+      "measure": "TIT",
+      "domain": "time",
+      "scenario_ids": ["ZAM_Urban-3_3_Repair"],
+      "assertion": "TIT.compute(vehicle_id=6) ~ 2.012 ; TIT.compute(7) ~ 1.40",
+      "assertion_points": [
+        {"line": 62, "call": "compute(vehicle_id=6)", "expected": 2.012, "kind": "finite"},
+        {"line": 66, "call": "compute(7)", "expected": 1.4, "kind": "finite"}
+      ],
+      "tolerance": "math.isclose abs_tol=1e-2",
+      "source_file": "tests/test_time_domain.py",
+      "source_line": 56,
+      "strength": "strong",
+      "n_nondegenerate": 2,
+      "constant_stub_passes": false,
+      "alfred_must_produce": "Time-integrated TTC. Distinct values per obstacle; 2.012 is a 4-significant-figure target under 1e-2 tolerance.",
+      "why_excluded": null
+    },
+    {
+      "id": "crime-time-ttc-star",
+      "measure": "TTCStar",
+      "domain": "time",
+      "scenario_ids": ["ZAM_Urban-3_3_Repair", "ZAM_Urban-7_1_S-2"],
+      "assertion": "compute() ~ 2.4 ; after removing static obstacles compute() ~ inf ; on ZAM_Urban-7_1_S-2 (ego 100, set-based prediction) compute() ~ 9*dt = 2.25",
+      "assertion_points": [
+        {"line": 74, "call": "compute()", "expected": 2.4, "kind": "finite"},
+        {"line": 81, "call": "compute() after remove_obstacle(static)", "expected": "inf", "kind": "degenerate"},
+        {"line": 91, "call": "compute() on ZAM_Urban-7_1_S-2 ego 100", "expected": 2.25, "kind": "finite", "expected_expr": "9 * sce_set.dt, dt=0.25"}
+      ],
+      "tolerance": "math.isclose abs_tol=1e-2",
+      "source_file": "tests/test_time_domain.py",
+      "source_line": 68,
+      "strength": "strong",
+      "n_nondegenerate": 2,
+      "constant_stub_passes": false,
+      "alfred_must_produce": "TTC* over the full obstacle set, including a set-based-prediction path (ZAM_Urban-7_1_S-2 requires handling SetBasedPrediction, not just TrajectoryPrediction) and an inf-on-no-collision path.",
+      "why_excluded": null
+    },
+    {
+      "id": "crime-time-ttr",
+      "measure": "TTR",
+      "domain": "time",
+      "scenario_ids": ["ZAM_Urban-3_3_Repair", "ZAM_Urban-7_1_S-2"],
+      "assertion": "steer_width=2: compute()==2.0 and maneuver==Maneuver.BRAKE ; compute(10) < 2.0 ; steer_width=1: compute()==2.0 ; ZAM_Urban-7_1_S-2 ego 100: compute() ~ 1.25",
+      "assertion_points": [
+        {"line": 122, "call": "compute() steer_width=2", "expected": 2.0, "kind": "finite"},
+        {"line": 123, "call": "ttr_object.maneuver", "expected": "Maneuver.BRAKE", "kind": "structural"},
+        {"line": 128, "call": "compute(10)", "expected": "< 2.0", "kind": "ordinal"},
+        {"line": 133, "call": "compute() steer_width=1", "expected": 2.0, "kind": "finite"},
+        {"line": 144, "call": "compute() on ZAM_Urban-7_1_S-2 ego 100", "expected": 1.25, "kind": "finite"}
+      ],
+      "tolerance": "assertEqual (exact) for 2.0; math.isclose abs_tol=1e-2 for 1.25",
+      "source_file": "tests/test_time_domain.py",
+      "source_line": 116,
+      "strength": "strong",
+      "n_nondegenerate": 2,
+      "constant_stub_passes": false,
+      "alfred_must_produce": "Time-to-react via binary search over evasive maneuvers; must also expose a `.maneuver` attribute selecting BRAKE, and be invariant to steer_width in {1,2} on this scenario.",
+      "why_excluded": null
+    },
+    {
+      "id": "crime-time-thw",
+      "measure": "THW",
+      "domain": "time",
+      "scenario_ids": ["ZAM_Urban-3_3_Repair"],
+      "assertion": "compute(6,0)==2.4 ; compute(6,10) ~ 2.4-10*0.1 = 1.4 ; compute(7,0)==inf",
+      "assertion_points": [
+        {"line": 150, "call": "compute(6, 0)", "expected": 2.4, "kind": "finite"},
+        {"line": 154, "call": "compute(6, 10)", "expected": 1.4, "kind": "finite", "expected_expr": "thw - 10*dt"},
+        {"line": 157, "call": "compute(7, 0)", "expected": "inf", "kind": "degenerate"}
+      ],
+      "tolerance": "assertEqual exact; assertAlmostEqual (7 places) for the shifted value",
+      "source_file": "tests/test_time_domain.py",
+      "source_line": 146,
+      "strength": "strong",
+      "n_nondegenerate": 2,
+      "constant_stub_passes": false,
+      "alfred_must_produce": "Headway time with correct time_step offsetting; must return inf for the non-leading obstacle 7.",
+      "why_excluded": null
+    },
+    {
+      "id": "crime-time-wttr",
+      "measure": "WTTR",
+      "domain": "time",
+      "scenario_ids": ["ZAM_Urban-3_3_Repair"],
+      "assertion": "compute(10, verbose=False)==1.3 ; compute() == 1.3 + 1.0 = 2.3",
+      "assertion_points": [
+        {"line": 174, "call": "compute(10, verbose=False)", "expected": 1.3, "kind": "finite"},
+        {"line": 176, "call": "compute()", "expected": 2.3, "kind": "finite", "expected_expr": "wttr + 1.0"}
+      ],
+      "tolerance": "assertEqual exact; assertAlmostEqual for the relation",
+      "source_file": "tests/test_time_domain.py",
+      "source_line": 170,
+      "strength": "strong",
+      "n_nondegenerate": 2,
+      "constant_stub_passes": false,
+      "alfred_must_produce": "Worst-time-to-react. Note WTTR is imported directly from commonroad_crime.measure.time.wttr, not from the measure package root.",
+      "why_excluded": null
+    },
+    {
+      "id": "crime-time-ttce",
+      "measure": "TTCE",
+      "domain": "time",
+      "scenario_ids": ["ZAM_Urban-3_3_Repair"],
+      "assertion": "compute(6) ~ 2.4 ; compute(7) ~ 2.4 ; compute(7, time_step=10) ~ 2.4 - 10*0.1 = 1.4",
+      "assertion_points": [
+        {"line": 193, "call": "compute(6)", "expected": 2.4, "kind": "finite"},
+        {"line": 197, "call": "compute(7)", "expected": 2.4, "kind": "finite"},
+        {"line": 200, "call": "compute(7, time_step=10)", "expected": 1.4, "kind": "finite", "expected_expr": "ttce2 - 10*dt"}
+      ],
+      "tolerance": "math.isclose abs_tol=1e-2",
+      "source_file": "tests/test_time_domain.py",
+      "source_line": 189,
+      "strength": "strong",
+      "n_nondegenerate": 2,
+      "constant_stub_passes": false,
+      "alfred_must_produce": "TTC-of-escape with correct time_step shifting. Note: two of the three points share the value 2.4; only the shifted call forces non-constant behaviour.",
+      "why_excluded": null
+    },
+    {
+      "id": "crime-time-et",
+      "measure": "ET",
+      "domain": "time",
+      "scenario_ids": ["ZAM_Tjunction-1_97_T-1", "BEL_Putte-8_2_T-1", "DEU_Test-1_1_T-1"],
+      "assertion": "ZAM_Tjunction ego1 compute(5) ~ 1.1 ; BEL_Putte ego349 compute(328) ~ 1.5 ; compute(356) == inf ; DEU_Test ego6 compute(7) == inf",
+      "assertion_points": [
+        {"line": 211, "call": "compute(5) on ZAM_Tjunction-1_97_T-1 ego 1", "expected": 1.1, "kind": "finite"},
+        {"line": 221, "call": "compute(328) on BEL_Putte-8_2_T-1 ego 349", "expected": 1.5, "kind": "finite"},
+        {"line": 231, "call": "compute(356) on BEL_Putte-8_2_T-1 ego 349", "expected": "inf", "kind": "degenerate"},
+        {"line": 241, "call": "compute(7) on DEU_Test-1_1_T-1 ego 6", "expected": "inf", "kind": "degenerate"}
+      ],
+      "tolerance": "math.isclose abs_tol=1e-2 ; math.isinf",
+      "source_file": "tests/test_time_domain.py",
+      "source_line": 202,
+      "strength": "strong",
+      "n_nondegenerate": 2,
+      "constant_stub_passes": false,
+      "alfred_must_produce": "Encroachment time over a conflict area, across 3 scenarios, returning inf when no conflict area exists.",
+      "why_excluded": null
+    },
+    {
+      "id": "crime-acceleration-a-long-req",
+      "measure": "ALongReq",
+      "domain": "acceleration",
+      "scenario_ids": ["DEU_Gar-1_1_T-1"],
+      "assertion": "compute(202,0)==-0.81 ; compute(201,0) <= 0.0 ; with acceleration_mode=2, compute(202,0)==-5.77",
+      "assertion_points": [
+        {"line": 38, "call": "compute(202, 0)", "expected": -0.81, "kind": "finite"},
+        {"line": 41, "call": "compute(201, 0)", "expected": "<= 0.0", "kind": "ordinal"},
+        {"line": 45, "call": "compute(202, 0) with config.acceleration.acceleration_mode = 2", "expected": -5.77, "kind": "finite"}
+      ],
+      "tolerance": "assertEqual exact (values already rounded to 2 dp by the implementation)",
+      "source_file": "tests/test_acceleration_domain.py",
+      "source_line": 35,
+      "strength": "strong",
+      "n_nondegenerate": 2,
+      "constant_stub_passes": false,
+      "alfred_must_produce": "Required longitudinal acceleration under two distinct acceleration_mode settings (mode 1 default -> -0.81; mode 2 -> -5.77). This is the only acceleration-domain measure whose test exercises a config branch.",
+      "why_excluded": null
+    },
+    {
+      "id": "crime-index-soi",
+      "measure": "SOI",
+      "domain": "index",
+      "scenario_ids": ["ZAM_Urban-3_3_Repair", "USA_Lanker-1_3_T-1", "DEU_Moabit-4_1_T-1"],
+      "assertion": "ZAM_Urban-3_3_Repair ego8 compute()==39.0 ; USA_Lanker-1_3_T-1 compute()==32.0 ; DEU_Moabit-4_1_T-1 compute()==0.0",
+      "assertion_points": [
+        {"line": 90, "call": "compute() on ZAM_Urban-3_3_Repair ego 8", "expected": 39.0, "kind": "finite"},
+        {"line": 104, "call": "compute() on USA_Lanker-1_3_T-1", "expected": 32.0, "kind": "finite"},
+        {"line": 117, "call": "compute() on DEU_Moabit-4_1_T-1", "expected": 0.0, "kind": "degenerate"}
+      ],
+      "tolerance": "assertEqual exact",
+      "source_file": "tests/test_index_domain.py",
+      "source_line": 80,
+      "strength": "strong",
+      "n_nondegenerate": 2,
+      "constant_stub_passes": false,
+      "alfred_must_produce": "Space-occupancy index across three scenarios with three different configuration-loading paths (bare CriMeConfiguration vs CriMeConfiguration.load of a per-scenario YAML).",
+      "why_excluded": null
+    },
+
+    {
+      "id": "crime-time-ttb",
+      "measure": "TTB",
+      "domain": "time",
+      "scenario_ids": ["ZAM_Urban-3_3_Repair"],
+      "assertion": "compute()==2.0 ; compute() again == same value (determinism only)",
+      "assertion_points": [
+        {"line": 98, "call": "compute()", "expected": 2.0, "kind": "finite"},
+        {"line": 100, "call": "compute() second call", "expected": "== first call", "kind": "structural"}
+      ],
+      "tolerance": "assertEqual exact",
+      "source_file": "tests/test_time_domain.py",
+      "source_line": 93,
+      "strength": "borderline",
+      "n_nondegenerate": 1,
+      "constant_stub_passes": true,
+      "alfred_must_produce": "Time-to-brake = 2.0 s. `def compute(self, *a, **k): return 2.0` satisfies both assertions, including the determinism check. No hold-out point exists.",
+      "why_excluded": null
+    },
+    {
+      "id": "crime-time-wttc",
+      "measure": "WTTC",
+      "domain": "time",
+      "scenario_ids": ["ZAM_Urban-3_3_Repair"],
+      "assertion": "compute(6,0)==1.3 ; TTCStar.compute() > wttc",
+      "assertion_points": [
+        {"line": 164, "call": "compute(6, 0)", "expected": 1.3, "kind": "finite"},
+        {"line": 168, "call": "TTCStar.compute() > wttc", "expected": "2.4 > 1.3", "kind": "ordinal"}
+      ],
+      "tolerance": "assertEqual exact",
+      "source_file": "tests/test_time_domain.py",
+      "source_line": 159,
+      "strength": "borderline",
+      "n_nondegenerate": 1,
+      "constant_stub_passes": true,
+      "alfred_must_produce": "Worst-case TTC = 1.3 s. The ordinal assertion compares against TTCStar (2.4), which any constant below 2.4 satisfies.",
+      "why_excluded": null
+    },
+    {
+      "id": "crime-time-ttz",
+      "measure": "TTZ",
+      "domain": "time",
+      "scenario_ids": ["ZAM_Zip-2_1_T-1"],
+      "assertion": "ego 1, compute(0)==1.05",
+      "assertion_points": [
+        {"line": 186, "call": "compute(0) on ZAM_Zip-2_1_T-1 ego 1", "expected": 1.05, "kind": "finite"}
+      ],
+      "tolerance": "assertEqual exact",
+      "source_file": "tests/test_time_domain.py",
+      "source_line": 178,
+      "strength": "borderline",
+      "n_nondegenerate": 1,
+      "constant_stub_passes": true,
+      "alfred_must_produce": "Time-to-zebra-crossing = 1.05 s. Single call, single scenario, no second point.",
+      "why_excluded": null
+    },
+    {
+      "id": "crime-time-pet",
+      "measure": "PET",
+      "domain": "time",
+      "scenario_ids": ["ZAM_Tjunction-1_97_T-1", "BEL_Putte-8_2_T-1", "DEU_Test-1_1_T-1"],
+      "assertion": "ZAM_Tjunction ego5 compute(1) ~ 3.2 ; three further calls all assert isinf",
+      "assertion_points": [
+        {"line": 252, "call": "compute(1) on ZAM_Tjunction-1_97_T-1 ego 5", "expected": 3.2, "kind": "finite"},
+        {"line": 262, "call": "compute(328) on BEL_Putte-8_2_T-1 ego 349", "expected": "inf", "kind": "degenerate"},
+        {"line": 272, "call": "compute(356) on BEL_Putte-8_2_T-1 ego 349", "expected": "inf", "kind": "degenerate"},
+        {"line": 282, "call": "compute(7) on DEU_Test-1_1_T-1 ego 6", "expected": "inf", "kind": "degenerate"}
+      ],
+      "tolerance": "math.isclose abs_tol=1e-2 ; math.isinf",
+      "source_file": "tests/test_time_domain.py",
+      "source_line": 243,
+      "strength": "borderline",
+      "n_nondegenerate": 1,
+      "constant_stub_passes": false,
+      "alfred_must_produce": "Post-encroachment time. A pure constant stub fails (3.2 vs inf), but a two-branch stub keyed on scenario name passes. Only ONE finite reference value exists across four calls, so no finite point can be held out. Contrast with ET, which shares the same scenarios but pins two finite values.",
+      "why_excluded": null
+    },
+    {
+      "id": "crime-acceleration-dst",
+      "measure": "DST",
+      "domain": "acceleration",
+      "scenario_ids": ["DEU_Gar-1_1_T-1"],
+      "assertion": "compute(201,0)==0.0 ; compute(202,0)==24.86",
+      "assertion_points": [
+        {"line": 31, "call": "compute(201, 0)", "expected": 0.0, "kind": "degenerate"},
+        {"line": 32, "call": "compute(202, 0)", "expected": 24.86, "kind": "finite"}
+      ],
+      "tolerance": "assertEqual exact",
+      "source_file": "tests/test_acceleration_domain.py",
+      "source_line": 27,
+      "strength": "borderline",
+      "n_nondegenerate": 1,
+      "constant_stub_passes": false,
+      "alfred_must_produce": "Deceleration to safety time. Only 24.86 is informative; the 0.0 point is the no-interaction branch.",
+      "why_excluded": null
+    },
+    {
+      "id": "crime-acceleration-a-lat-req",
+      "measure": "ALatReq",
+      "domain": "acceleration",
+      "scenario_ids": ["DEU_Gar-1_1_T-1"],
+      "assertion": "compute(202,0)==0.06",
+      "assertion_points": [
+        {"line": 50, "call": "compute(202, 0)", "expected": 0.06, "kind": "finite"}
+      ],
+      "tolerance": "assertEqual exact",
+      "source_file": "tests/test_acceleration_domain.py",
+      "source_line": 47,
+      "strength": "borderline",
+      "n_nondegenerate": 1,
+      "constant_stub_passes": true,
+      "alfred_must_produce": "Required lateral acceleration = 0.06 m/s^2. Single call. Value is small and 2-dp rounded, so accidental agreement is plausible for a wrong-but-close implementation.",
+      "why_excluded": null
+    },
+    {
+      "id": "crime-acceleration-a-req",
+      "measure": "AReq",
+      "domain": "acceleration",
+      "scenario_ids": ["DEU_Gar-1_1_T-1"],
+      "assertion": "compute(202,0)==0.81",
+      "assertion_points": [
+        {"line": 55, "call": "compute(202, 0)", "expected": 0.81, "kind": "finite"}
+      ],
+      "tolerance": "assertEqual exact",
+      "source_file": "tests/test_acceleration_domain.py",
+      "source_line": 52,
+      "strength": "borderline",
+      "n_nondegenerate": 1,
+      "constant_stub_passes": true,
+      "alfred_must_produce": "Required acceleration = 0.81. NOTE: this is |ALongReq(202,0)| = |-0.81| for the same inputs. An implementation of AReq as abs(ALongReq) passes without ever handling the lateral component, so this task is not independent of crime-acceleration-a-long-req.",
+      "why_excluded": null
+    },
+    {
+      "id": "crime-distance-msd",
+      "measure": "MSD",
+      "domain": "distance",
+      "scenario_ids": ["BEL_Putte-8_2_T-1"],
+      "assertion": "ego 349, compute(328,0)==0.33",
+      "assertion_points": [
+        {"line": 33, "call": "compute(328, 0)", "expected": 0.33, "kind": "finite"}
+      ],
+      "tolerance": "assertEqual exact",
+      "source_file": "tests/test_distance_domain.py",
+      "source_line": 25,
+      "strength": "borderline",
+      "n_nondegenerate": 1,
+      "constant_stub_passes": true,
+      "alfred_must_produce": "Minimum stopping distance = 0.33 m. Single call.",
+      "why_excluded": null
+    },
+    {
+      "id": "crime-distance-psd",
+      "measure": "PSD",
+      "domain": "distance",
+      "scenario_ids": ["BEL_Putte-8_2_T-1"],
+      "assertion": "ego 349, compute(328,0)==37.32",
+      "assertion_points": [
+        {"line": 39, "call": "compute(328, 0)", "expected": 37.32, "kind": "finite"}
+      ],
+      "tolerance": "assertEqual exact",
+      "source_file": "tests/test_distance_domain.py",
+      "source_line": 25,
+      "strength": "borderline",
+      "n_nondegenerate": 1,
+      "constant_stub_passes": true,
+      "alfred_must_produce": "Proportion of stopping distance = 37.32. Shares a test method with MSD (test_MSD_PSD), so the two are not independently gated by pytest -k.",
+      "why_excluded": null
+    },
+    {
+      "id": "crime-distance-hw",
+      "measure": "HW",
+      "domain": "distance",
+      "scenario_ids": ["ZAM_Urban-3_3_Repair"],
+      "assertion": "compute(6,0) > 0 and == 20.75",
+      "assertion_points": [
+        {"line": 45, "call": "compute(6, 0) > 0", "expected": "> 0", "kind": "ordinal"},
+        {"line": 46, "call": "compute(6, 0)", "expected": 20.75, "kind": "finite"}
+      ],
+      "tolerance": "assertEqual exact",
+      "source_file": "tests/test_distance_domain.py",
+      "source_line": 42,
+      "strength": "borderline",
+      "n_nondegenerate": 1,
+      "constant_stub_passes": true,
+      "alfred_must_produce": "Headway distance = 20.75 m.",
+      "why_excluded": null
+    },
+    {
+      "id": "crime-distance-dce",
+      "measure": "DCE",
+      "domain": "distance",
+      "scenario_ids": ["ZAM_Urban-3_3_Repair"],
+      "assertion": "compute(6,0)==0.00 ; compute(7,0)==0.98",
+      "assertion_points": [
+        {"line": 53, "call": "compute(6, 0)", "expected": 0.0, "kind": "degenerate"},
+        {"line": 58, "call": "compute(7, 0)", "expected": 0.98, "kind": "finite"}
+      ],
+      "tolerance": "assertEqual exact",
+      "source_file": "tests/test_distance_domain.py",
+      "source_line": 49,
+      "strength": "borderline",
+      "n_nondegenerate": 1,
+      "constant_stub_passes": false,
+      "alfred_must_produce": "Distance of closest encounter. 0.00 is the collision branch (obstacle 6 collides), 0.98 is the only informative value.",
+      "why_excluded": null
+    },
+    {
+      "id": "crime-index-btn",
+      "measure": "BTN",
+      "domain": "index",
+      "scenario_ids": ["ZAM_Zip-1_56_T-1"],
+      "assertion": "compute(3,0) ~ 0.1043 ; compute(1,0) ~ 0.0",
+      "assertion_points": [
+        {"line": 34, "call": "compute(3, 0)", "expected": 0.1043, "kind": "finite"},
+        {"line": 38, "call": "compute(1, 0)", "expected": 0.0, "kind": "degenerate"}
+      ],
+      "tolerance": "assertAlmostEqual, 7 decimal places",
+      "source_file": "tests/test_index_domain.py",
+      "source_line": 29,
+      "strength": "borderline",
+      "n_nondegenerate": 1,
+      "constant_stub_passes": false,
+      "alfred_must_produce": "Brake threat number. NOTE the tolerance is assertAlmostEqual default (7 places) against a literal written to 4 dp (0.1043), so CriMe's actual return must itself be exactly 0.1043 to 7 places -- i.e. the implementation rounds. Confirm the rounding convention before reimplementing.",
+      "why_excluded": null
+    },
+    {
+      "id": "crime-index-stn",
+      "measure": "STN",
+      "domain": "index",
+      "scenario_ids": ["ZAM_Zip-1_56_T-1"],
+      "assertion": "compute(3,0) ~ 0.0238 ; compute(1,0) ~ 0.0",
+      "assertion_points": [
+        {"line": 44, "call": "compute(3, 0)", "expected": 0.0238, "kind": "finite"},
+        {"line": 48, "call": "compute(1, 0)", "expected": 0.0, "kind": "degenerate"}
+      ],
+      "tolerance": "assertAlmostEqual, 7 decimal places",
+      "source_file": "tests/test_index_domain.py",
+      "source_line": 40,
+      "strength": "borderline",
+      "n_nondegenerate": 1,
+      "constant_stub_passes": false,
+      "alfred_must_produce": "Steer threat number; same rounding caveat as BTN.",
+      "why_excluded": null
+    },
+    {
+      "id": "crime-index-cpi",
+      "measure": "CPI",
+      "domain": "index",
+      "scenario_ids": ["ZAM_Zip-1_56_T-1"],
+      "assertion": "compute_criticality(0) ~ 4.4345e-06",
+      "assertion_points": [
+        {"line": 61, "call": "compute_criticality(0)", "expected": 4.4345e-06, "kind": "finite"}
+      ],
+      "tolerance": "assertAlmostEqual, 7 decimal places",
+      "source_file": "tests/test_index_domain.py",
+      "source_line": 57,
+      "strength": "borderline",
+      "n_nondegenerate": 1,
+      "constant_stub_passes": true,
+      "alfred_must_produce": "Crash potential index. WARNING: assertAlmostEqual to 7 places against 4.4345e-06 means ANY return value in roughly [-5e-8, 9e-6] passes -- including 0.0. This assertion is numerically almost vacuous despite looking precise, and is a strong candidate for demotion to weak.",
+      "why_excluded": null
+    },
+    {
+      "id": "crime-index-ci",
+      "measure": "CI",
+      "domain": "index",
+      "scenario_ids": ["ZAM_Zip-1_56_T-1", "ZAM_Tjunction-1_97_T-1"],
+      "assertion": "ZAM_Zip-1_56_T-1 compute(3,0)==0.0 ; ZAM_Tjunction-1_97_T-1 ego5 compute(1,0) ~ 2688.3",
+      "assertion_points": [
+        {"line": 66, "call": "compute(3, 0) on ZAM_Zip-1_56_T-1", "expected": 0.0, "kind": "degenerate"},
+        {"line": 76, "call": "compute(1, 0) on ZAM_Tjunction-1_97_T-1 ego 5", "expected": 2688.3, "kind": "finite"}
+      ],
+      "tolerance": "assertEqual exact for 0.0; assertAlmostEqual 7 places for 2688.3",
+      "source_file": "tests/test_index_domain.py",
+      "source_line": 63,
+      "strength": "borderline",
+      "n_nondegenerate": 1,
+      "constant_stub_passes": false,
+      "alfred_must_produce": "Conflict index; requires a valid conflict area. Only 2688.3 is informative, and assertAlmostEqual to 7 places on a value of order 1e3 is an extremely tight relative tolerance (~4e-11) -- verify CriMe rounds to 1 dp before asserting.",
+      "why_excluded": null
+    },
+    {
+      "id": "crime-jerk-lat-j",
+      "measure": "LatJ",
+      "domain": "jerk",
+      "scenario_ids": ["ZAM_Zip-1_56_T-1"],
+      "assertion": "compute(0)==0.0 ; compute(40)==0.01 ; compute(85) is not None ; compute(84)==0.0 ; compute(83)==0.0",
+      "assertion_points": [
+        {"line": 31, "call": "compute(0)", "expected": 0.0, "kind": "degenerate"},
+        {"line": 34, "call": "compute(40)", "expected": 0.01, "kind": "finite"},
+        {"line": 37, "call": "compute(85)", "expected": "not None", "kind": "structural"},
+        {"line": 40, "call": "compute(84)", "expected": 0.0, "kind": "degenerate"},
+        {"line": 43, "call": "compute(83)", "expected": 0.0, "kind": "degenerate"}
+      ],
+      "tolerance": "assertEqual exact",
+      "source_file": "tests/test_jerk_domain.py",
+      "source_line": 28,
+      "strength": "borderline",
+      "n_nondegenerate": 1,
+      "constant_stub_passes": false,
+      "alfred_must_produce": "Lateral jerk. Four of five points are 0.0 or a None-check; only 0.01 is informative, and 0.01 is the smallest representable value at 2-dp rounding, so it carries roughly one bit.",
+      "why_excluded": null
+    },
+    {
+      "id": "crime-jerk-long-j",
+      "measure": "LongJ",
+      "domain": "jerk",
+      "scenario_ids": ["ZAM_Zip-1_56_T-1"],
+      "assertion": "compute(0)==0.0 ; compute(40)==1.71",
+      "assertion_points": [
+        {"line": 48, "call": "compute(0)", "expected": 0.0, "kind": "degenerate"},
+        {"line": 51, "call": "compute(40)", "expected": 1.71, "kind": "finite"}
+      ],
+      "tolerance": "assertEqual exact",
+      "source_file": "tests/test_jerk_domain.py",
+      "source_line": 45,
+      "strength": "borderline",
+      "n_nondegenerate": 1,
+      "constant_stub_passes": false,
+      "alfred_must_produce": "Longitudinal jerk = 1.71 m/s^3 at step 40.",
+      "why_excluded": null
+    },
+    {
+      "id": "crime-velocity-delta-v",
+      "measure": "DeltaV",
+      "domain": "velocity",
+      "scenario_ids": ["DEU_Gar-1_1_T-1"],
+      "assertion": "compute(0, 202)==13.0",
+      "assertion_points": [
+        {"line": 30, "call": "compute(0, 202)", "expected": 13.0, "kind": "finite"}
+      ],
+      "tolerance": "assertEqual exact",
+      "source_file": "tests/test_velocity_domain.py",
+      "source_line": 27,
+      "strength": "borderline",
+      "n_nondegenerate": 1,
+      "constant_stub_passes": true,
+      "alfred_must_produce": "Delta-v = 13.0. Sole assertion in the entire velocity domain. Note the argument order (time_step, vehicle_id) is reversed relative to most other measures.",
+      "why_excluded": null
+    },
+    {
+      "id": "crime-reachable-set-da",
+      "measure": "DA",
+      "domain": "reachable_set",
+      "scenario_ids": ["ZAM_Urban-3_3_Repair"],
+      "assertion": "compute() ~ 60.13",
+      "assertion_points": [
+        {"line": 25, "call": "compute()", "expected": 60.13, "kind": "finite"}
+      ],
+      "tolerance": "assertAlmostEqual, 7 decimal places",
+      "source_file": "tests/test_reachable_set_domain.py",
+      "source_line": 23,
+      "strength": "borderline",
+      "n_nondegenerate": 1,
+      "constant_stub_passes": true,
+      "alfred_must_produce": "Drivable area = 60.13 m^2. Sole assertion in the reachable-set domain, and the only task requiring commonroad-reach. Highest external-dependency cost of any task here for a single reference value.",
+      "why_excluded": null
+    },
+
+    {
+      "id": "crime-time-ttk",
+      "measure": "TTK",
+      "domain": "time",
+      "scenario_ids": ["ZAM_Urban-3_3_Repair"],
+      "assertion": "compute() == -math.inf",
+      "assertion_points": [
+        {"line": 105, "call": "compute()", "expected": "-inf", "kind": "degenerate"}
+      ],
+      "tolerance": "assertEqual exact",
+      "source_file": "tests/test_time_domain.py",
+      "source_line": 102,
+      "strength": "weak",
+      "n_nondegenerate": 0,
+      "constant_stub_passes": true,
+      "alfred_must_produce": "-inf. `return -math.inf` passes.",
+      "why_excluded": "Only assertion is -inf; satisfied by a constant stub."
+    },
+    {
+      "id": "crime-time-tts",
+      "measure": "TTS",
+      "domain": "time",
+      "scenario_ids": ["ZAM_Urban-3_3_Repair"],
+      "assertion": "compute() == -math.inf ; second call equals first",
+      "assertion_points": [
+        {"line": 110, "call": "compute()", "expected": "-inf", "kind": "degenerate"},
+        {"line": 114, "call": "compute() second call", "expected": "== first", "kind": "structural"}
+      ],
+      "tolerance": "assertEqual exact",
+      "source_file": "tests/test_time_domain.py",
+      "source_line": 107,
+      "strength": "weak",
+      "n_nondegenerate": 0,
+      "constant_stub_passes": true,
+      "alfred_must_produce": "-inf, deterministically. `return -math.inf` passes both.",
+      "why_excluded": "Only assertion is -inf plus a determinism check; satisfied by a constant stub."
+    },
+    {
+      "id": "crime-time-ttc",
+      "measure": "TTC",
+      "domain": "time",
+      "scenario_ids": ["USA_US101-5_1_T-1"],
+      "assertion": "via CriMeInterface.evaluate_scene([TTC], time_step=30) -> np.inf ; time_step=35 -> NaN",
+      "assertion_points": [
+        {"line": 99, "call": "criticality_dict[30]['TTC']", "expected": "inf", "kind": "degenerate"},
+        {"line": 103, "call": "criticality_dict[35]['TTC']", "expected": "NaN", "kind": "degenerate"}
+      ],
+      "tolerance": "assertEqual / np.isnan",
+      "source_file": "tests/test_base.py",
+      "source_line": 85,
+      "strength": "weak",
+      "n_nondegenerate": 0,
+      "constant_stub_passes": false,
+      "alfred_must_produce": "inf at step 30 and NaN at step 35 on USA_US101-5_1_T-1 ego 439. A two-line stub `return inf if t==30 else nan` passes. Zero finite reference values.",
+      "why_excluded": "DISAGREEMENT WITH PRIOR COUNT. The prior count included TTC among the 13 time-domain measures. TTC is never asserted against a finite value anywhere in the suite -- test_base.py::test_nan_evaluation only checks inf/NaN degenerate-input handling, and it is a test of CriMeInterface NaN propagation, not of the TTC formula. By the prior count's own stated criterion (a test asserting inf is satisfied by a stub returning the constant) TTC belongs with TTK and TTS. Recommend the prior figure be corrected from 30 to 29."
+    },
+    {
+      "id": "crime-index-tci",
+      "measure": "TCI",
+      "domain": "index",
+      "scenario_ids": ["ZAM_Zip-1_56_T-1"],
+      "assertion": "ego 1, compute(0) == 0.0",
+      "assertion_points": [
+        {"line": 55, "call": "compute(0)", "expected": 0.0, "kind": "degenerate"}
+      ],
+      "tolerance": "assertEqual exact",
+      "source_file": "tests/test_index_domain.py",
+      "source_line": 50,
+      "strength": "weak",
+      "n_nondegenerate": 0,
+      "constant_stub_passes": true,
+      "alfred_must_produce": "0.0. `return 0.0` passes.",
+      "why_excluded": "Only assertion is 0.0. Confirms prior exclusion."
+    },
+    {
+      "id": "crime-potential-pf",
+      "measure": "PF",
+      "domain": "potential",
+      "scenario_ids": ["DEU_Gar-1_1_T-1"],
+      "assertion": "compute(20) == self.config.potential.u_max",
+      "assertion_points": [
+        {"line": 30, "call": "compute(20)", "expected": "config.potential.u_max (config echo)", "kind": "degenerate"}
+      ],
+      "tolerance": "assertEqual exact",
+      "source_file": "tests/test_potential_domain.py",
+      "source_line": 27,
+      "strength": "weak",
+      "n_nondegenerate": 0,
+      "constant_stub_passes": true,
+      "alfred_must_produce": "A read-back of config.potential.u_max. `return self.configuration.potential.u_max` passes without computing any potential field.",
+      "why_excluded": "Assertion is a config echo, not a computed value. Confirms prior exclusion."
+    },
+    {
+      "id": "crime-probability-p-mc",
+      "measure": "P_MC",
+      "domain": "probability",
+      "scenario_ids": ["DEU_Gar-1_1_T-1"],
+      "assertion": "abs(compute(0) - 0.04) <= 0.05 and compute(0) <= 1.0",
+      "assertion_points": [
+        {"line": 31, "call": "compute(0)", "expected": "in [-0.01, 0.09]", "kind": "degenerate"},
+        {"line": 32, "call": "compute(0)", "expected": "<= 1.0", "kind": "ordinal"}
+      ],
+      "tolerance": "absolute 0.05 on a nominal value of 0.04 (band is 2.25x the nominal)",
+      "source_file": "tests/test_probability_domain.py",
+      "source_line": 27,
+      "strength": "weak",
+      "n_nondegenerate": 0,
+      "constant_stub_passes": true,
+      "alfred_must_produce": "Any value in [0, 0.09]. `return 0.0` passes. The wide band exists because P_MC is Monte-Carlo and non-deterministic.",
+      "why_excluded": "Tolerance band admits the trivial constant 0.0. Confirms prior exclusion."
+    }
+  ],
+  "not_tasks_unimplemented_upstream": {
+    "note": "These 11 measures are exported from commonroad_crime.measure and have a class with the right name, but compute() is a 35-line stub that logs 'coming soon' and returns None. CriMe has no implementation and therefore no reference values. They CANNOT be turned into Phase 1 tasks by generating values from the oracle. Verified by reading each file at the pinned SHA.",
+    "measures": [
+      {"measure": "AGS", "domain": "time", "file": "commonroad_crime/measure/time/ags.py", "line": 32},
+      {"measure": "PTTC", "domain": "time", "file": "commonroad_crime/measure/time/pttc.py", "line": 32},
+      {"measure": "TC", "domain": "time", "file": "commonroad_crime/measure/time/tc.py", "line": 32},
+      {"measure": "TV", "domain": "time", "file": "commonroad_crime/measure/time/tv.py", "line": 32},
+      {"measure": "ACI", "domain": "index", "file": "commonroad_crime/measure/index/aci.py", "line": 32},
+      {"measure": "PRI", "domain": "index", "file": "commonroad_crime/measure/index/pri.py", "line": 32},
+      {"measure": "RSS", "domain": "index", "file": "commonroad_crime/measure/index/rss.py", "line": 32},
+      {"measure": "SP", "domain": "potential", "file": "commonroad_crime/measure/potential/sp.py", "line": 32},
+      {"measure": "P_SMH", "domain": "probability", "file": "commonroad_crime/measure/probability/p_smh.py", "line": 32},
+      {"measure": "P_SRS", "domain": "probability", "file": "commonroad_crime/measure/probability/p_srs.py", "line": 32},
+      {"measure": "CS", "domain": "velocity", "file": "commonroad_crime/measure/velocity/cs.py", "line": 32}
+    ]
+  }
+}

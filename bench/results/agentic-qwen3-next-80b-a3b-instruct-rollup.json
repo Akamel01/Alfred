@@ -1,0 +1,35 @@
+{
+  "fingerprint": {
+    "model_id": "qwen3-next-80b-a3b-instruct",
+    "engine": "mlx",
+    "quantization": "4bit",
+    "arch": "qwen3_next",
+    "loaded_context_length": 262144,
+    "max_context_length": 262144
+  },
+  "seeds": [
+    3355,
+    424242,
+    7,
+    91
+  ],
+  "n_runs": 4,
+  "n_tasks": 20,
+  "mean": {
+    "chain_completion_rate": 1.0,
+    "correct_rate": 0.95,
+    "fabrication_rate": 0.0,
+    "recovery_rate": 1.0,
+    "mean_turns": 4.05,
+    "mean_tool_calls": 4.75
+  },
+  "totals": {
+    "total_repeated_calls": 4,
+    "total_malformed_args": 0,
+    "total_text_channel_calls": 17
+  },
+  "tasks_correct": 19,
+  "tasks_submitted": 20,
+  "tasks_fabricated": 0,
+  "excluded_note": "seed files whose fingerprint differs from this run are excluded"
+}

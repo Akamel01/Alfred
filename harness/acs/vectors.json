@@ -1,0 +1,5502 @@
+{
+  "acs_version": "ACS-1",
+  "note": "Inputs are given in a neutral tagged form so that no host language's JSON parser or number formatter can influence them. Floats are IEEE-754 bit patterns, big-endian hex. Integers are decimal strings. Strings are UTF-8 hex, or UTF-16 code units in big-endian hex under the str16 tag for the cases UTF-8 cannot carry. Expected output is the canonical UTF-8 bytes as hex, and the SHA-256 of ACS_VERSION 0x00 record_type 0x00 canonical_bytes.",
+  "coverage_note": "Every section here is sized by the mutation control in harness/acs/mutate.py, not by taste: each deliberate defect that script injects must fail at least eight checks. Sections that look repetitive are repetitive on purpose — a rule pinned by one vector is a rule an implementation can get wrong and still pass.",
+  "encode": [
+    {
+      "id": "f-one",
+      "note": "1.0 is 1.0e0, never \"1\"",
+      "record_type": "vector",
+      "input": {
+        "t": "f64",
+        "v": "3ff0000000000000"
+      },
+      "canonical_hex": "22312e30653022",
+      "canonical_utf8": "\"1.0e0\"",
+      "sha256": "c582e6aec286b7fae8765a785e0477b3ed0aed8e38f4f60bde65a402ae4ea0a1"
+    },
+    {
+      "id": "f-neg-one",
+      "note": "sign precedes the mantissa",
+      "record_type": "vector",
+      "input": {
+        "t": "f64",
+        "v": "bff0000000000000"
+      },
+      "canonical_hex": "222d312e30653022",
+      "canonical_utf8": "\"-1.0e0\"",
+      "sha256": "3ba95ba37cf0ab52651bd4a2cf99bac9e6091604a2a845837c9486cf7bcfd90e"
+    },
+    {
+      "id": "f-zero",
+      "note": "positive zero",
+      "record_type": "vector",
+      "input": {
+        "t": "f64",
+        "v": "0000000000000000"
+      },
+      "canonical_hex": "22302e30653022",
+      "canonical_utf8": "\"0.0e0\"",
+      "sha256": "679d6b1040b228455aee4bbb884ac27a8ffeea643f64db2ceb2479b9a5b6f41b"
+    },
+    {
+      "id": "f-neg-zero",
+      "note": "-0.0 normalizes to 0.0e0; hash equals f-zero",
+      "record_type": "vector",
+      "input": {
+        "t": "f64",
+        "v": "8000000000000000"
+      },
+      "canonical_hex": "22302e30653022",
+      "canonical_utf8": "\"0.0e0\"",
+      "sha256": "679d6b1040b228455aee4bbb884ac27a8ffeea643f64db2ceb2479b9a5b6f41b"
+    },
+    {
+      "id": "f-2p4",
+      "note": "the oracle's TTC value",
+      "record_type": "vector",
+      "input": {
+        "t": "f64",
+        "v": "4003333333333333"
+      },
+      "canonical_hex": "22322e34653022",
+      "canonical_utf8": "\"2.4e0\"",
+      "sha256": "c44b547e065d5ff6d514b89865cb936c2f1f7784bc82aabebe0367db4b18251d"
+    },
+    {
+      "id": "f-hundred",
+      "note": "100.0 is 1.0e2, never \"100\"",
+      "record_type": "vector",
+      "input": {
+        "t": "f64",
+        "v": "4059000000000000"
+      },
+      "canonical_hex": "22312e30653222",
+      "canonical_utf8": "\"1.0e2\"",
+      "sha256": "fa01ed517867d354e6e1caf0f25ae0812bbc6d04171798cd6efc123c188a035b"
+    },
+    {
+      "id": "f-1e16",
+      "note": "python renders 1e+16, JS renders 10000000000000000",
+      "record_type": "vector",
+      "input": {
+        "t": "f64",
+        "v": "4341c37937e08000"
+      },
+      "canonical_hex": "22312e3065313622",
+      "canonical_utf8": "\"1.0e16\"",
+      "sha256": "61ca6df09e06c082cdb007d8b6de3e5ed04238149181da57a183b5d31844bb40"
+    },
+    {
+      "id": "f-1e21",
+      "note": "above the JS fixed/exponential threshold",
+      "record_type": "vector",
+      "input": {
+        "t": "f64",
+        "v": "444b1ae4d6e2ef50"
+      },
+      "canonical_hex": "22312e3065323122",
+      "canonical_utf8": "\"1.0e21\"",
+      "sha256": "9d668855c592be05e7fda1e73a93db722c2b75fdf4323a5908ce2d837a7ce992"
+    },
+    {
+      "id": "f-1e-7",
+      "note": "python renders 1e-07, JS renders 1e-7",
+      "record_type": "vector",
+      "input": {
+        "t": "f64",
+        "v": "3e7ad7f29abcaf48"
+      },
+      "canonical_hex": "22312e30652d3722",
+      "canonical_utf8": "\"1.0e-7\"",
+      "sha256": "0845d2b9172ffb0efa53b90d8d757329d3003bd12353c35a115f2e9b55faab8e"
+    },
+    {
+      "id": "f-point3",
+      "note": "0.1+0.2, the 17-digit case",
+      "record_type": "vector",
+      "input": {
+        "t": "f64",
+        "v": "3fd3333333333334"
+      },
+      "canonical_hex": "22332e30303030303030303030303030303034652d3122",
+      "canonical_utf8": "\"3.0000000000000004e-1\"",
+      "sha256": "9989306565407e9b192049d591948920c8d724395bbd484838f16bb04f6cd72a"
+    },
+    {
+      "id": "f-min-subnormal",
+      "note": "smallest positive double",
+      "record_type": "vector",
+      "input": {
+        "t": "f64",
+        "v": "0000000000000001"
+      },
+      "canonical_hex": "22352e30652d33323422",
+      "canonical_utf8": "\"5.0e-324\"",
+      "sha256": "e1ea32626a553f2b56bca7ee5b885d86a46f79c583a4f1b572fd250117254612"
+    },
+    {
+      "id": "f-neg-min-subnormal",
+      "note": "smallest negative double",
+      "record_type": "vector",
+      "input": {
+        "t": "f64",
+        "v": "8000000000000001"
+      },
+      "canonical_hex": "222d352e30652d33323422",
+      "canonical_utf8": "\"-5.0e-324\"",
+      "sha256": "93023c2e7034db18a230c44677c0c4843cac95541f697a5d055b70905e1bd72a"
+    },
+    {
+      "id": "f-max",
+      "note": "largest finite double",
+      "record_type": "vector",
+      "input": {
+        "t": "f64",
+        "v": "7fefffffffffffff"
+      },
+      "canonical_hex": "22312e373937363933313334383632333135376533303822",
+      "canonical_utf8": "\"1.7976931348623157e308\"",
+      "sha256": "61d0ec506823be1a5ca491ed25c89db8af022ac843fc5e3d65565ef8808aa7f2"
+    },
+    {
+      "id": "f-min-normal",
+      "note": "smallest positive normal",
+      "record_type": "vector",
+      "input": {
+        "t": "f64",
+        "v": "0010000000000000"
+      },
+      "canonical_hex": "22322e32323530373338353835303732303134652d33303822",
+      "canonical_utf8": "\"2.2250738585072014e-308\"",
+      "sha256": "c9b55820f58b3771245f7a4fc478b4b0539c171b43157d0adb2573bc7f8ad189"
+    },
+    {
+      "id": "f-10p5",
+      "note": "mantissa longer than one digit",
+      "record_type": "vector",
+      "input": {
+        "t": "f64",
+        "v": "4025000000000000"
+      },
+      "canonical_hex": "22312e3035653122",
+      "canonical_utf8": "\"1.05e1\"",
+      "sha256": "481bf74b68f6c97927a8b0a2ce5d695136292a002a1d9c9b51a0591047b51a7b"
+    },
+    {
+      "id": "f-third",
+      "note": "1/3",
+      "record_type": "vector",
+      "input": {
+        "t": "f64",
+        "v": "3fd5555555555555"
+      },
+      "canonical_hex": "22332e333333333333333333333333333333652d3122",
+      "canonical_utf8": "\"3.333333333333333e-1\"",
+      "sha256": "684c3dcf21244167aed7666a74342433b31e1056afa1a4009c9253a8e8e459a1"
+    },
+    {
+      "id": "i-zero",
+      "note": "",
+      "record_type": "vector",
+      "input": {
+        "t": "i64",
+        "v": "0"
+      },
+      "canonical_hex": "30",
+      "canonical_utf8": "0",
+      "sha256": "9cb7bbdf9bf4803105a7be6ffd56ab3544151acd06acc560cb3bf2d9e9bd885e"
+    },
+    {
+      "id": "i-one",
+      "note": "",
+      "record_type": "vector",
+      "input": {
+        "t": "i64",
+        "v": "1"
+      },
+      "canonical_hex": "31",
+      "canonical_utf8": "1",
+      "sha256": "5788eca18aef6e63a8f60dfe007b4d81c90d3fd7d5ee138264b7f07d78d1fcf2"
+    },
+    {
+      "id": "i-neg-one",
+      "note": "",
+      "record_type": "vector",
+      "input": {
+        "t": "i64",
+        "v": "-1"
+      },
+      "canonical_hex": "2d31",
+      "canonical_utf8": "-1",
+      "sha256": "d6fc8fa5260a43c86c7c3159faea9c504e81a8edb4c499ee4681712eed69f1e4"
+    },
+    {
+      "id": "i-max",
+      "note": "int64 max, emitted as a JSON number",
+      "record_type": "vector",
+      "input": {
+        "t": "i64",
+        "v": "9223372036854775807"
+      },
+      "canonical_hex": "39323233333732303336383534373735383037",
+      "canonical_utf8": "9223372036854775807",
+      "sha256": "2345b161207e5cdaaa299c72fd23af0d30ba3f78bb763913a391d80997dfc38c"
+    },
+    {
+      "id": "i-min",
+      "note": "int64 min",
+      "record_type": "vector",
+      "input": {
+        "t": "i64",
+        "v": "-9223372036854775808"
+      },
+      "canonical_hex": "2d39323233333732303336383534373735383038",
+      "canonical_utf8": "-9223372036854775808",
+      "sha256": "62a1fd137ff91efd414d12d66b391207d5881474572c2c105060a0719c0d1bf7"
+    },
+    {
+      "id": "s-empty",
+      "note": "",
+      "record_type": "vector",
+      "input": {
+        "t": "str",
+        "v": ""
+      },
+      "canonical_hex": "2222",
+      "canonical_utf8": "\"\"",
+      "sha256": "da5ebaff9f29f490cf6c140a8a11c090794e3092606de3b2a99c82d5d1ad0d98"
+    },
+    {
+      "id": "s-ascii",
+      "note": "",
+      "record_type": "vector",
+      "input": {
+        "t": "str",
+        "v": "68656c6c6f"
+      },
+      "canonical_hex": "2268656c6c6f22",
+      "canonical_utf8": "\"hello\"",
+      "sha256": "72f6cfc68f854c14e4e2acdd1bf9116ff4362348cd1f14724c71ffd97b866042"
+    },
+    {
+      "id": "s-nfc",
+      "note": "composed cafe",
+      "record_type": "vector",
+      "input": {
+        "t": "str",
+        "v": "636166c3a9"
+      },
+      "canonical_hex": "22636166c3a922",
+      "canonical_utf8": "\"café\"",
+      "sha256": "e20734d6937f013a3f01587f917689e615632a24b4bfa1a00fe01632596da6b0"
+    },
+    {
+      "id": "s-nfd",
+      "note": "decomposed cafe; canonical output equals s-nfc",
+      "record_type": "vector",
+      "input": {
+        "t": "str",
+        "v": "63616665cc81"
+      },
+      "canonical_hex": "22636166c3a922",
+      "canonical_utf8": "\"café\"",
+      "sha256": "e20734d6937f013a3f01587f917689e615632a24b4bfa1a00fe01632596da6b0"
+    },
+    {
+      "id": "s-astral",
+      "note": "outside the BMP",
+      "record_type": "vector",
+      "input": {
+        "t": "str",
+        "v": "f09f9880"
+      },
+      "canonical_hex": "22f09f988022",
+      "canonical_utf8": "\"😀\"",
+      "sha256": "80383b00eb1116e228d9ba816c44eeeb0179a699ab1bbf37e06189dc09892393"
+    },
+    {
+      "id": "s-controls",
+      "note": "u0000, u0001, u001f as \\u00xx lowercase",
+      "record_type": "vector",
+      "input": {
+        "t": "str",
+        "v": "00011f"
+      },
+      "canonical_hex": "225c75303030305c75303030315c753030316622",
+      "canonical_utf8": "\"\\u0000\\u0001\\u001f\"",
+      "sha256": "37453cbcadfd1d85057be1c1dd74eb725d726bee20ec8a65bc1712067dd64e4c"
+    },
+    {
+      "id": "s-short-escapes",
+      "note": "backspace tab newline formfeed return",
+      "record_type": "vector",
+      "input": {
+        "t": "str",
+        "v": "08090a0c0d"
+      },
+      "canonical_hex": "225c625c745c6e5c665c7222",
+      "canonical_utf8": "\"\\b\\t\\n\\f\\r\"",
+      "sha256": "cccbe8477a5fd524bfde76c4643a15be9b02fe7615c472d1d4763b766fc3f789"
+    },
+    {
+      "id": "s-quote-backslash",
+      "note": "the two mandatory escapes",
+      "record_type": "vector",
+      "input": {
+        "t": "str",
+        "v": "225c"
+      },
+      "canonical_hex": "225c225c5c22",
+      "canonical_utf8": "\"\\\"\\\\\"",
+      "sha256": "6e4990d909d621ef8a733f4b8f105729e61426d4862d0f421742418286c5b75a"
+    },
+    {
+      "id": "s-del",
+      "note": "0x7f is NOT escaped",
+      "record_type": "vector",
+      "input": {
+        "t": "str",
+        "v": "7f"
+      },
+      "canonical_hex": "227f22",
+      "canonical_utf8": "\"\"",
+      "sha256": "191d2c6e396d1a8ea244ef8a52f51cd233333b9ed22f14c3f2e0a2a15065ecfc"
+    },
+    {
+      "id": "s-slash",
+      "note": "forward slash is NOT escaped",
+      "record_type": "vector",
+      "input": {
+        "t": "str",
+        "v": "612f62"
+      },
+      "canonical_hex": "22612f6222",
+      "canonical_utf8": "\"a/b\"",
+      "sha256": "b5c635f724b1c2fa3456983a02a115f3961f59befe6aabad6dec4f69bf320597"
+    },
+    {
+      "id": "s-nonascii-raw",
+      "note": "emitted raw UTF-8, never \\uXXXX",
+      "record_type": "vector",
+      "input": {
+        "t": "str",
+        "v": "c3a9e4b8ad"
+      },
+      "canonical_hex": "22c3a9e4b8ad22",
+      "canonical_utf8": "\"é中\"",
+      "sha256": "af52dd753bd4c95e7f4c08af4cad9fb77fbe58fba41a2eab5b532ab7347a6334"
+    },
+    {
+      "id": "o-empty",
+      "note": "",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": []
+      },
+      "canonical_hex": "7b7d",
+      "canonical_utf8": "{}",
+      "sha256": "924abd85ba26661fa838e28a14b213da1f963858cd30a255e14d7d1fd4f5c06b"
+    },
+    {
+      "id": "a-empty",
+      "note": "",
+      "record_type": "vector",
+      "input": {
+        "t": "arr",
+        "v": []
+      },
+      "canonical_hex": "5b5d",
+      "canonical_utf8": "[]",
+      "sha256": "b71b936a98725b7b3d2998c3bfa4bf4c1d0e0401071518ce2ae99a574bf97890"
+    },
+    {
+      "id": "a-order",
+      "note": "arrays keep input order; they are never sorted",
+      "record_type": "vector",
+      "input": {
+        "t": "arr",
+        "v": [
+          {
+            "t": "i64",
+            "v": "3"
+          },
+          {
+            "t": "i64",
+            "v": "1"
+          },
+          {
+            "t": "i64",
+            "v": "2"
+          }
+        ]
+      },
+      "canonical_hex": "5b332c312c325d",
+      "canonical_utf8": "[3,1,2]",
+      "sha256": "738a8aa1cfd11823099fa66ac3bea1c579671d8f4f0948e2bc264a9459d8e6bf"
+    },
+    {
+      "id": "o-sort-ascii",
+      "note": "keys sort by UTF-8 bytes: digits, uppercase, lowercase",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "62",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "61",
+            {
+              "t": "i64",
+              "v": "2"
+            }
+          ],
+          [
+            "41",
+            {
+              "t": "i64",
+              "v": "3"
+            }
+          ],
+          [
+            "30",
+            {
+              "t": "i64",
+              "v": "4"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b2230223a342c2241223a332c2261223a322c2262223a317d",
+      "canonical_utf8": "{\"0\":4,\"A\":3,\"a\":2,\"b\":1}",
+      "sha256": "50f066822bc66fcdc0415003a7ea247d9e30f84187ef361db9c6be7a18b2082f"
+    },
+    {
+      "id": "o-sort-utf16-divergence",
+      "note": "the case where UTF-8 byte order and UTF-16 code-unit order disagree: RFC 8785 would order the astral character before the fullwidth one",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "7a",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "efbcba",
+            {
+              "t": "i64",
+              "v": "2"
+            }
+          ],
+          [
+            "f09f9880",
+            {
+              "t": "i64",
+              "v": "3"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b227a223a312c22efbcba223a322c22f09f9880223a337d",
+      "canonical_utf8": "{\"z\":1,\"Ｚ\":2,\"😀\":3}",
+      "sha256": "27378810f5c1b14a9901a20312746b96dcd6e18c1da729ca6c15c7b29128fbb0"
+    },
+    {
+      "id": "o-empty-key",
+      "note": "the empty string is a legal key and sorts first",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "61",
+            {
+              "t": "i64",
+              "v": "2"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b22223a312c2261223a327d",
+      "canonical_utf8": "{\"\":1,\"a\":2}",
+      "sha256": "b26f66f6fe0c19d929f381afa69032bed1ca4b3d36d2bcdaac99c0f0bf13613b"
+    },
+    {
+      "id": "o-key-nfd",
+      "note": "a decomposed KEY normalizes and sorts by its composed bytes",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "63616665cc81",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "6361667a",
+            {
+              "t": "i64",
+              "v": "2"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b226361667a223a322c22636166c3a9223a317d",
+      "canonical_utf8": "{\"cafz\":2,\"café\":1}",
+      "sha256": "a0255fcbf6502cf4aab2e0d724c5cbf36f4e05642604ce3a5b0d2187629a2168"
+    },
+    {
+      "id": "o-key-nfd-equals-nfc",
+      "note": "canonical output equals o-key-nfd",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "636166c3a9",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "6361667a",
+            {
+              "t": "i64",
+              "v": "2"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b226361667a223a322c22636166c3a9223a317d",
+      "canonical_utf8": "{\"cafz\":2,\"café\":1}",
+      "sha256": "a0255fcbf6502cf4aab2e0d724c5cbf36f4e05642604ce3a5b0d2187629a2168"
+    },
+    {
+      "id": "s-nfd-nested",
+      "note": "normalization applies at every depth, not only at the top",
+      "record_type": "vector",
+      "input": {
+        "t": "arr",
+        "v": [
+          {
+            "t": "obj",
+            "v": [
+              [
+                "6b",
+                {
+                  "t": "str",
+                  "v": "63616665cc81"
+                }
+              ]
+            ]
+          },
+          {
+            "t": "str",
+            "v": "41cc8a"
+          }
+        ]
+      },
+      "canonical_hex": "5b7b226b223a22636166c3a9227d2c22c385225d",
+      "canonical_utf8": "[{\"k\":\"café\"},\"Å\"]",
+      "sha256": "fd9ebbb84c042bd755705758e0f26fdba0851815ae536f7e2ba66db3ec7f26b0"
+    },
+    {
+      "id": "s-nfd-nested-composed",
+      "note": "canonical output equals s-nfd-nested",
+      "record_type": "vector",
+      "input": {
+        "t": "arr",
+        "v": [
+          {
+            "t": "obj",
+            "v": [
+              [
+                "6b",
+                {
+                  "t": "str",
+                  "v": "636166c3a9"
+                }
+              ]
+            ]
+          },
+          {
+            "t": "str",
+            "v": "c385"
+          }
+        ]
+      },
+      "canonical_hex": "5b7b226b223a22636166c3a9227d2c22c385225d",
+      "canonical_utf8": "[{\"k\":\"café\"},\"Å\"]",
+      "sha256": "fd9ebbb84c042bd755705758e0f26fdba0851815ae536f7e2ba66db3ec7f26b0"
+    },
+    {
+      "id": "o-sort-prefix",
+      "note": "a key that is a prefix of another sorts first",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "6162",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "61",
+            {
+              "t": "i64",
+              "v": "2"
+            }
+          ],
+          [
+            "616263",
+            {
+              "t": "i64",
+              "v": "3"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b2261223a322c226162223a312c22616263223a337d",
+      "canonical_utf8": "{\"a\":2,\"ab\":1,\"abc\":3}",
+      "sha256": "775d423e74d63079d33de8f47c7f1a72b58f8c2c3ef152c19b3e26383821fa0c"
+    },
+    {
+      "id": "o-sort-multibyte",
+      "note": "two-byte and three-byte UTF-8 keys against ASCII",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "c3a9",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "7a",
+            {
+              "t": "i64",
+              "v": "2"
+            }
+          ],
+          [
+            "e4b8ad",
+            {
+              "t": "i64",
+              "v": "3"
+            }
+          ],
+          [
+            "7e",
+            {
+              "t": "i64",
+              "v": "4"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b227a223a322c227e223a342c22c3a9223a312c22e4b8ad223a337d",
+      "canonical_utf8": "{\"z\":2,\"~\":4,\"é\":1,\"中\":3}",
+      "sha256": "f95256e91c3eb2a2a9c774b9d2d63eb2d3e40d4bde40e93b4c7dec54b9c242e5"
+    },
+    {
+      "id": "o-sort-case",
+      "note": "uppercase sorts before lowercase by byte value",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "62",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "42",
+            {
+              "t": "i64",
+              "v": "2"
+            }
+          ],
+          [
+            "61",
+            {
+              "t": "i64",
+              "v": "3"
+            }
+          ],
+          [
+            "41",
+            {
+              "t": "i64",
+              "v": "4"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b2241223a342c2242223a322c2261223a332c2262223a317d",
+      "canonical_utf8": "{\"A\":4,\"B\":2,\"a\":3,\"b\":1}",
+      "sha256": "cb79b66a142627fed39a01bffbed34c9bf0e6ef6cd6dcec403d77dea78c2f295"
+    },
+    {
+      "id": "o-nested",
+      "note": "",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "6f75746572",
+            {
+              "t": "obj",
+              "v": [
+                [
+                  "62",
+                  {
+                    "t": "arr",
+                    "v": [
+                      {
+                        "t": "f64",
+                        "v": "3ff8000000000000"
+                      },
+                      {
+                        "t": "null"
+                      }
+                    ]
+                  }
+                ],
+                [
+                  "61",
+                  {
+                    "t": "bool",
+                    "v": true
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b226f75746572223a7b2261223a747275652c2262223a5b22312e356530222c6e756c6c5d7d7d",
+      "canonical_utf8": "{\"outer\":{\"a\":true,\"b\":[\"1.5e0\",null]}}",
+      "sha256": "3936185370f0f0857f94e6aa40e86ebacf3219c574d455733f0ebf83ffc0f3d2"
+    },
+    {
+      "id": "b-true",
+      "note": "",
+      "record_type": "vector",
+      "input": {
+        "t": "bool",
+        "v": true
+      },
+      "canonical_hex": "74727565",
+      "canonical_utf8": "true",
+      "sha256": "04e6918ed421d4ada940eff93bc6ce758450f401cfd5c2a17273467e8085dc74"
+    },
+    {
+      "id": "b-false",
+      "note": "",
+      "record_type": "vector",
+      "input": {
+        "t": "bool",
+        "v": false
+      },
+      "canonical_hex": "66616c7365",
+      "canonical_utf8": "false",
+      "sha256": "5d0c34e64522d4ad0666c39192d404cc07786975cb28c7fe091a5b329bb9e824"
+    },
+    {
+      "id": "n-null",
+      "note": "",
+      "record_type": "vector",
+      "input": {
+        "t": "null"
+      },
+      "canonical_hex": "6e756c6c",
+      "canonical_utf8": "null",
+      "sha256": "e96977ad6f434a3437b8cc6c49c3fcc92de85eceb9bc8932ecfe7125e327ba47"
+    },
+    {
+      "id": "b-vs-int",
+      "note": "true is not 1; the encoder must test bool before int",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "74",
+            {
+              "t": "bool",
+              "v": true
+            }
+          ],
+          [
+            "69",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b2269223a312c2274223a747275657d",
+      "canonical_utf8": "{\"i\":1,\"t\":true}",
+      "sha256": "e1271a95e7ba6cf02da3f994fbc6df5925eff122a6eaa3ce52d72977065663fd"
+    },
+    {
+      "id": "mv-defined",
+      "note": "MetricValue: defined",
+      "record_type": "result_stamp",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "6b696e64",
+            {
+              "t": "str",
+              "v": "646566696e6564"
+            }
+          ],
+          [
+            "76616c7565",
+            {
+              "t": "f64",
+              "v": "4003333333333333"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b226b696e64223a22646566696e6564222c2276616c7565223a22322e346530227d",
+      "canonical_utf8": "{\"kind\":\"defined\",\"value\":\"2.4e0\"}",
+      "sha256": "6dc7464529d121caf5edbf07c08faff0cc96c288b0b0b671731d0acc26d8ca5a"
+    },
+    {
+      "id": "mv-infinite-pos",
+      "note": "MetricValue: +inf, which cannot be a JSON number",
+      "record_type": "result_stamp",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "6b696e64",
+            {
+              "t": "str",
+              "v": "696e66696e697465"
+            }
+          ],
+          [
+            "7369676e",
+            {
+              "t": "str",
+              "v": "2b"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b226b696e64223a22696e66696e697465222c227369676e223a222b227d",
+      "canonical_utf8": "{\"kind\":\"infinite\",\"sign\":\"+\"}",
+      "sha256": "6d5af05953a86b3e7baedacf6bfbec5689cc1eb299d65f4f2f1ad3a65e32cd48"
+    },
+    {
+      "id": "mv-infinite-neg",
+      "note": "MetricValue: -inf",
+      "record_type": "result_stamp",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "6b696e64",
+            {
+              "t": "str",
+              "v": "696e66696e697465"
+            }
+          ],
+          [
+            "7369676e",
+            {
+              "t": "str",
+              "v": "2d"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b226b696e64223a22696e66696e697465222c227369676e223a222d227d",
+      "canonical_utf8": "{\"kind\":\"infinite\",\"sign\":\"-\"}",
+      "sha256": "929c1973eaec9429b9256c1605a5140d1723f63246363fb7f120f2b834fecdcb"
+    },
+    {
+      "id": "mv-undefined",
+      "note": "MetricValue: undefined carries the reason name, not the integer",
+      "record_type": "result_stamp",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "6b696e64",
+            {
+              "t": "str",
+              "v": "756e646566696e6564"
+            }
+          ],
+          [
+            "726561736f6e",
+            {
+              "t": "str",
+              "v": "4e4f5f434f4e464c4943545f41524541"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b226b696e64223a22756e646566696e6564222c22726561736f6e223a224e4f5f434f4e464c4943545f41524541227d",
+      "canonical_utf8": "{\"kind\":\"undefined\",\"reason\":\"NO_CONFLICT_AREA\"}",
+      "sha256": "ff899189774c7f72e435d0d6a659124cef8cd8fcefdf7dd9058e3b3888155473"
+    },
+    {
+      "id": "sep-evidence",
+      "note": "same content as sep-result; digests must differ",
+      "record_type": "evidence_row",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "76",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b2276223a317d",
+      "canonical_utf8": "{\"v\":1}",
+      "sha256": "65b92fc2c983a77bc1545e5c26b276cae0216ed37d2c3ac14830e08a5e139c11"
+    },
+    {
+      "id": "sep-result",
+      "note": "same content as sep-evidence; digests must differ",
+      "record_type": "result_stamp",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "76",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b2276223a317d",
+      "canonical_utf8": "{\"v\":1}",
+      "sha256": "79f022a8b8b323e4ba481c9a6ec6c11a4e003137f3f7e6f4dca53ee7f8a6fae8"
+    },
+    {
+      "id": "f-neg-zero-in-array",
+      "note": "-0.0 inside an array",
+      "record_type": "vector",
+      "input": {
+        "t": "arr",
+        "v": [
+          {
+            "t": "f64",
+            "v": "8000000000000000"
+          },
+          {
+            "t": "f64",
+            "v": "3ff0000000000000"
+          }
+        ]
+      },
+      "canonical_hex": "5b22302e306530222c22312e306530225d",
+      "canonical_utf8": "[\"0.0e0\",\"1.0e0\"]",
+      "sha256": "6a85e741cd87023b39f37af3bf30e42ef873a72dff878ab0e5056ab43f91a29f"
+    },
+    {
+      "id": "f-neg-zero-in-object",
+      "note": "-0.0 as an object value",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "7a",
+            {
+              "t": "f64",
+              "v": "8000000000000000"
+            }
+          ],
+          [
+            "61",
+            {
+              "t": "f64",
+              "v": "bff0000000000000"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b2261223a222d312e306530222c227a223a22302e306530227d",
+      "canonical_utf8": "{\"a\":\"-1.0e0\",\"z\":\"0.0e0\"}",
+      "sha256": "feb63199daff09df76aba22de3c097b94955c669877e169a4fcc95262c662243"
+    },
+    {
+      "id": "f-neg-zero-deep",
+      "note": "-0.0 three levels down",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "6f",
+            {
+              "t": "arr",
+              "v": [
+                {
+                  "t": "obj",
+                  "v": [
+                    [
+                      "6e",
+                      {
+                        "t": "f64",
+                        "v": "8000000000000000"
+                      }
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b226f223a5b7b226e223a22302e306530227d5d7d",
+      "canonical_utf8": "{\"o\":[{\"n\":\"0.0e0\"}]}",
+      "sha256": "f46ae516efaaef3c3567a79fe50df265a4800dd7cefa569a48de7f7bac1955e8"
+    },
+    {
+      "id": "f-two",
+      "note": "2.0 is 2.0e0",
+      "record_type": "vector",
+      "input": {
+        "t": "f64",
+        "v": "4000000000000000"
+      },
+      "canonical_hex": "22322e30653022",
+      "canonical_utf8": "\"2.0e0\"",
+      "sha256": "43cc2ec8d05024d0fdf0b984844ac8e722c40fa30d9ded5aed9027cabd9eac5e"
+    },
+    {
+      "id": "f-hundredth",
+      "note": "0.01 is 1.0e-2",
+      "record_type": "vector",
+      "input": {
+        "t": "f64",
+        "v": "3f847ae147ae147b"
+      },
+      "canonical_hex": "22312e30652d3222",
+      "canonical_utf8": "\"1.0e-2\"",
+      "sha256": "2ca86bd7f78ea5772903335b24ee651b7f8650ba93c86bf78dd1331f28811d0c"
+    },
+    {
+      "id": "f-1e100",
+      "note": "a three-digit exponent",
+      "record_type": "vector",
+      "input": {
+        "t": "f64",
+        "v": "54b249ad2594c37d"
+      },
+      "canonical_hex": "22312e306531303022",
+      "canonical_utf8": "\"1.0e100\"",
+      "sha256": "1be0a1379286e80de7d84e4fe50f3de9d77341a2329dae1def09bfa1ac69d3f6"
+    },
+    {
+      "id": "f-1e-300",
+      "note": "a three-digit negative exponent",
+      "record_type": "vector",
+      "input": {
+        "t": "f64",
+        "v": "01a56e1fc2f8f359"
+      },
+      "canonical_hex": "22312e30652d33303022",
+      "canonical_utf8": "\"1.0e-300\"",
+      "sha256": "0f9c21f0a96374e9ffc62926601c76d1da07291a4c1bf4b4e762ea35fcd2ac61"
+    },
+    {
+      "id": "f-17-digits",
+      "note": "seventeen significant digits",
+      "record_type": "vector",
+      "input": {
+        "t": "f64",
+        "v": "3ff3c0ca428c59fb"
+      },
+      "canonical_hex": "22312e32333435363738393031323334353637653022",
+      "canonical_utf8": "\"1.2345678901234567e0\"",
+      "sha256": "bb6770b42cd4754cb2954d0172aff8b1f96eb7259eacc25734ed2cf341503339"
+    },
+    {
+      "id": "f-nested-mixed",
+      "note": "floats at three depths in one structure",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "61",
+            {
+              "t": "arr",
+              "v": [
+                {
+                  "t": "f64",
+                  "v": "3ff0000000000000"
+                },
+                {
+                  "t": "f64",
+                  "v": "bff0000000000000"
+                }
+              ]
+            }
+          ],
+          [
+            "62",
+            {
+              "t": "obj",
+              "v": [
+                [
+                  "63",
+                  {
+                    "t": "f64",
+                    "v": "4341c37937e08000"
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b2261223a5b22312e306530222c222d312e306530225d2c2262223a7b2263223a22312e30653136227d7d",
+      "canonical_utf8": "{\"a\":[\"1.0e0\",\"-1.0e0\"],\"b\":{\"c\":\"1.0e16\"}}",
+      "sha256": "1b8f535c68b86186b88f2a691fbdaa5f2b0f714e6d1aee8b8c6c8e88dad1d341"
+    },
+    {
+      "id": "s-esc-backspace",
+      "note": "0x08 is \\b, never \\u0008",
+      "record_type": "vector",
+      "input": {
+        "t": "str",
+        "v": "08"
+      },
+      "canonical_hex": "225c6222",
+      "canonical_utf8": "\"\\b\"",
+      "sha256": "36e6915f2790276abf77b8b5921c5d8f44bfd4569d0e10bd2144ed515d78a794"
+    },
+    {
+      "id": "s-esc-tab",
+      "note": "0x09 is \\t",
+      "record_type": "vector",
+      "input": {
+        "t": "str",
+        "v": "09"
+      },
+      "canonical_hex": "225c7422",
+      "canonical_utf8": "\"\\t\"",
+      "sha256": "5982eb99d58850d52bf0b8c6b5931ff99df4277baebd17b7fc6771504d6ecc05"
+    },
+    {
+      "id": "s-esc-newline",
+      "note": "0x0a is \\n",
+      "record_type": "vector",
+      "input": {
+        "t": "str",
+        "v": "0a"
+      },
+      "canonical_hex": "225c6e22",
+      "canonical_utf8": "\"\\n\"",
+      "sha256": "a48193f9c5e526c266c5ee38e25d07ed31b265661a4bf7cd69a5f268ddfb6184"
+    },
+    {
+      "id": "s-esc-formfeed",
+      "note": "0x0c is \\f",
+      "record_type": "vector",
+      "input": {
+        "t": "str",
+        "v": "0c"
+      },
+      "canonical_hex": "225c6622",
+      "canonical_utf8": "\"\\f\"",
+      "sha256": "a5e6c12bb9e2fbec67f5c094ef3b269311ad75d2e056a3d93b7595999e749fa3"
+    },
+    {
+      "id": "s-esc-return",
+      "note": "0x0d is \\r",
+      "record_type": "vector",
+      "input": {
+        "t": "str",
+        "v": "0d"
+      },
+      "canonical_hex": "225c7222",
+      "canonical_utf8": "\"\\r\"",
+      "sha256": "3ae8f1cd2538c9b3d825e42f1f682d17c052e8c660bc622a9fc25cc43ffdcdf1"
+    },
+    {
+      "id": "s-esc-all",
+      "note": "all seven two-character escapes in one string",
+      "record_type": "vector",
+      "input": {
+        "t": "str",
+        "v": "08090a0c0d225c"
+      },
+      "canonical_hex": "225c625c745c6e5c665c725c225c5c22",
+      "canonical_utf8": "\"\\b\\t\\n\\f\\r\\\"\\\\\"",
+      "sha256": "163ec145842ce92c67e0b8ea2bec0ede1c5623cd8a17e48ee99d97378f8e2dd4"
+    },
+    {
+      "id": "o-esc-in-key",
+      "note": "the escapes apply to keys exactly as to values",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "08090a0c0d225c",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "61",
+            {
+              "t": "i64",
+              "v": "2"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b225c625c745c6e5c665c725c225c5c223a312c2261223a327d",
+      "canonical_utf8": "{\"\\b\\t\\n\\f\\r\\\"\\\\\":1,\"a\":2}",
+      "sha256": "b035347ddd073d804e8a1125cd896ba7fcea79343aa11a5c5fd7e103f370315b"
+    },
+    {
+      "id": "a-esc-nested",
+      "note": "escapes at depth",
+      "record_type": "vector",
+      "input": {
+        "t": "arr",
+        "v": [
+          {
+            "t": "obj",
+            "v": [
+              [
+                "6b",
+                {
+                  "t": "str",
+                  "v": "08090a0c0d225c"
+                }
+              ]
+            ]
+          },
+          {
+            "t": "str",
+            "v": "08090a0c0d225c"
+          }
+        ]
+      },
+      "canonical_hex": "5b7b226b223a225c625c745c6e5c665c725c225c5c227d2c225c625c745c6e5c665c725c225c5c225d",
+      "canonical_utf8": "[{\"k\":\"\\b\\t\\n\\f\\r\\\"\\\\\"},\"\\b\\t\\n\\f\\r\\\"\\\\\"]",
+      "sha256": "ec36fe05c9e8cfa77806aaf02ea4cb01a6dc691cb2497ca086131517ace5eaf1"
+    },
+    {
+      "id": "s-control-vertical-tab",
+      "note": "0x0b has no two-character form",
+      "record_type": "vector",
+      "input": {
+        "t": "str",
+        "v": "0b"
+      },
+      "canonical_hex": "225c753030306222",
+      "canonical_utf8": "\"\\u000b\"",
+      "sha256": "f4243afeb8d5e80132230c2e89def030785c27e2b8f8bfeb0398ebbb3f0e22e4"
+    },
+    {
+      "id": "s-control-1e",
+      "note": "0x1e, a hex digit above 9 in the escape",
+      "record_type": "vector",
+      "input": {
+        "t": "str",
+        "v": "1e"
+      },
+      "canonical_hex": "225c753030316522",
+      "canonical_utf8": "\"\\u001e\"",
+      "sha256": "f1e0c63b8d6c4e360435f73c5983adc67f689a62cc646cb56f62ea50c5c623e5"
+    },
+    {
+      "id": "s-control-all",
+      "note": "every control character that has no short form",
+      "record_type": "vector",
+      "input": {
+        "t": "str",
+        "v": "00010203040506070b0e0f101112131415161718191a1b1c1d1e1f"
+      },
+      "canonical_hex": "225c75303030305c75303030315c75303030325c75303030335c75303030345c75303030355c75303030365c75303030375c75303030625c75303030655c75303030665c75303031305c75303031315c75303031325c75303031335c75303031345c75303031355c75303031365c75303031375c75303031385c75303031395c75303031615c75303031625c75303031635c75303031645c75303031655c753030316622",
+      "canonical_utf8": "\"\\u0000\\u0001\\u0002\\u0003\\u0004\\u0005\\u0006\\u0007\\u000b\\u000e\\u000f\\u0010\\u0011\\u0012\\u0013\\u0014\\u0015\\u0016\\u0017\\u0018\\u0019\\u001a\\u001b\\u001c\\u001d\\u001e\\u001f\"",
+      "sha256": "798d7887c56135c167b50ac3854712b91bf5e304dd287495f38d075442a99784"
+    },
+    {
+      "id": "o-control-in-key",
+      "note": "control escapes in a key",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "011f",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "61",
+            {
+              "t": "i64",
+              "v": "2"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b225c75303030315c7530303166223a312c2261223a327d",
+      "canonical_utf8": "{\"\\u0001\\u001f\":1,\"a\":2}",
+      "sha256": "88051bde8725d7322d7c1ce0da9187320b0b217cd432074976c4f5361c60a3ae"
+    },
+    {
+      "id": "a-control-nested",
+      "note": "control escapes at depth",
+      "record_type": "vector",
+      "input": {
+        "t": "arr",
+        "v": [
+          {
+            "t": "obj",
+            "v": [
+              [
+                "6b",
+                {
+                  "t": "str",
+                  "v": "00"
+                }
+              ]
+            ]
+          },
+          {
+            "t": "str",
+            "v": "1f"
+          }
+        ]
+      },
+      "canonical_hex": "5b7b226b223a225c7530303030227d2c225c7530303166225d",
+      "canonical_utf8": "[{\"k\":\"\\u0000\"},\"\\u001f\"]",
+      "sha256": "f39c69a2b2a449ec5a390b8d1656ae14229df81644eebfad2cb50d954c0e2e29"
+    },
+    {
+      "id": "o-del-in-key",
+      "note": "0x7f is not escaped in a key either",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "7f",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "61",
+            {
+              "t": "i64",
+              "v": "2"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b2261223a322c227f223a317d",
+      "canonical_utf8": "{\"a\":2,\"\":1}",
+      "sha256": "7809b046f4df970aa585ef4bfcc0516f99cdb0dd4a74311f5ad6aac731b6e3b6"
+    },
+    {
+      "id": "a-del-nested",
+      "note": "0x7f at depth",
+      "record_type": "vector",
+      "input": {
+        "t": "arr",
+        "v": [
+          {
+            "t": "obj",
+            "v": [
+              [
+                "6b",
+                {
+                  "t": "str",
+                  "v": "7f"
+                }
+              ]
+            ]
+          },
+          {
+            "t": "str",
+            "v": "617f62"
+          }
+        ]
+      },
+      "canonical_hex": "5b7b226b223a227f227d2c22617f62225d",
+      "canonical_utf8": "[{\"k\":\"\"},\"ab\"]",
+      "sha256": "3fe8fccd1eba04d1cba009406916094eef131052d77c7b5d9b29a7cb3fe50dc5"
+    },
+    {
+      "id": "s-del-mixed",
+      "note": "0x7f between printable characters",
+      "record_type": "vector",
+      "input": {
+        "t": "str",
+        "v": "617f62"
+      },
+      "canonical_hex": "22617f6222",
+      "canonical_utf8": "\"ab\"",
+      "sha256": "197dc6bd0282fc4443e34a7f5ede323c832312f91d941b5d5f272271a27a793b"
+    },
+    {
+      "id": "o-slash-in-key",
+      "note": "forward slash is not escaped in a key",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "612f62",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "61",
+            {
+              "t": "i64",
+              "v": "2"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b2261223a322c22612f62223a317d",
+      "canonical_utf8": "{\"a\":2,\"a/b\":1}",
+      "sha256": "e006909caa0ea91db0e49afdde9902172b21e766b2608c2a70a4ab31ab53ccc4"
+    },
+    {
+      "id": "a-slash-nested",
+      "note": "forward slash at depth",
+      "record_type": "vector",
+      "input": {
+        "t": "arr",
+        "v": [
+          {
+            "t": "obj",
+            "v": [
+              [
+                "702f71",
+                {
+                  "t": "str",
+                  "v": "782f79"
+                }
+              ]
+            ]
+          },
+          {
+            "t": "str",
+            "v": "2f"
+          }
+        ]
+      },
+      "canonical_hex": "5b7b22702f71223a22782f79227d2c222f225d",
+      "canonical_utf8": "[{\"p/q\":\"x/y\"},\"/\"]",
+      "sha256": "506462d02a0056376a7ed6670692f62aa1db15d5cf98ddfe76d96951eb15a719"
+    },
+    {
+      "id": "s-slash-only",
+      "note": "a string that is one solidus",
+      "record_type": "vector",
+      "input": {
+        "t": "str",
+        "v": "2f"
+      },
+      "canonical_hex": "222f22",
+      "canonical_utf8": "\"/\"",
+      "sha256": "a98c0b9c50038d071f1bf10e320416e865cd3a39c73665a7af120eaf519d1df3"
+    },
+    {
+      "id": "s-nfkc-fullwidth",
+      "note": "fullwidth Z is NOT folded to Z; NFC is not NFKC",
+      "record_type": "vector",
+      "input": {
+        "t": "str",
+        "v": "efbcba"
+      },
+      "canonical_hex": "22efbcba22",
+      "canonical_utf8": "\"Ｚ\"",
+      "sha256": "44209cf7750e10060ff6d63bba2bca0314594e5d283c544a0c603053dbda1235"
+    },
+    {
+      "id": "s-nfkc-ligature",
+      "note": "the fi ligature is not decomposed under NFC",
+      "record_type": "vector",
+      "input": {
+        "t": "str",
+        "v": "efac81"
+      },
+      "canonical_hex": "22efac8122",
+      "canonical_utf8": "\"ﬁ\"",
+      "sha256": "4fa79cf18ffe86bbd0f4860dd287a1223514ee6f807aca387fb9a9325d5cfbc3"
+    },
+    {
+      "id": "s-nfkc-superscript",
+      "note": "superscript two is not folded to 2",
+      "record_type": "vector",
+      "input": {
+        "t": "str",
+        "v": "c2b2"
+      },
+      "canonical_hex": "22c2b222",
+      "canonical_utf8": "\"²\"",
+      "sha256": "6c65ffc0ac89d23f6e6176181b3dc2d14a85305f76c44d9d9f1ed0ab7239a678"
+    },
+    {
+      "id": "o-nfkc-key",
+      "note": "a compatibility character as a key",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "efac816c65",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "61",
+            {
+              "t": "i64",
+              "v": "2"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b2261223a322c22efac816c65223a317d",
+      "canonical_utf8": "{\"a\":2,\"ﬁle\":1}",
+      "sha256": "1a972615274ab50baa0b5702daf8bdb09356c5902683f434f0f0f78d67d6eba5"
+    },
+    {
+      "id": "a-nfkc-nested",
+      "note": "compatibility characters at depth",
+      "record_type": "vector",
+      "input": {
+        "t": "arr",
+        "v": [
+          {
+            "t": "obj",
+            "v": [
+              [
+                "6b",
+                {
+                  "t": "str",
+                  "v": "efbcba"
+                }
+              ]
+            ]
+          },
+          {
+            "t": "str",
+            "v": "c2b2"
+          }
+        ]
+      },
+      "canonical_hex": "5b7b226b223a22efbcba227d2c22c2b2225d",
+      "canonical_utf8": "[{\"k\":\"Ｚ\"},\"²\"]",
+      "sha256": "4702c6ee8b3e776af9c384a90dc092257c849c119b9a31091e859ec390307c75"
+    },
+    {
+      "id": "o-sort-long-common-prefix",
+      "note": "keys identical for fifteen bytes; the comparison must not stop early",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "616c7068612f626574612f67616d6d612f79",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "616c7068612f626574612f67616d6d61",
+            {
+              "t": "i64",
+              "v": "2"
+            }
+          ],
+          [
+            "616c7068612f626574612f67616d6d612f78",
+            {
+              "t": "i64",
+              "v": "3"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b22616c7068612f626574612f67616d6d61223a322c22616c7068612f626574612f67616d6d612f78223a332c22616c7068612f626574612f67616d6d612f79223a317d",
+      "canonical_utf8": "{\"alpha/beta/gamma\":2,\"alpha/beta/gamma/x\":3,\"alpha/beta/gamma/y\":1}",
+      "sha256": "f54b779f9a860098dac3160be4affc12354b9b30d451be46dc9fa5a517d1e1dc"
+    },
+    {
+      "id": "o-sort-prefix-multibyte",
+      "note": "a prefix boundary in the middle of a UTF-8 sequence",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "636166c3a9",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "636166",
+            {
+              "t": "i64",
+              "v": "2"
+            }
+          ],
+          [
+            "636166c3a92d78",
+            {
+              "t": "i64",
+              "v": "3"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b22636166223a322c22636166c3a9223a312c22636166c3a92d78223a337d",
+      "canonical_utf8": "{\"caf\":2,\"café\":1,\"café-x\":3}",
+      "sha256": "19622edd334b53d271c646a42a3352d2d0d32b41d33c3d562bd656417f99969f"
+    },
+    {
+      "id": "o-sort-last-byte",
+      "note": "keys differing only in their final byte",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "6161617a",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "61616162",
+            {
+              "t": "i64",
+              "v": "2"
+            }
+          ],
+          [
+            "61616161",
+            {
+              "t": "i64",
+              "v": "3"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b2261616161223a332c2261616162223a322c226161617a223a317d",
+      "canonical_utf8": "{\"aaaa\":3,\"aaab\":2,\"aaaz\":1}",
+      "sha256": "349ca51e77acbde5381c47a61611b5c1464035e33f763c7aa56c869738bb0fcd"
+    },
+    {
+      "id": "o-sort-prefix-nested",
+      "note": "prefix keys at depth",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "6f75746572",
+            {
+              "t": "obj",
+              "v": [
+                [
+                  "6b6b",
+                  {
+                    "t": "i64",
+                    "v": "1"
+                  }
+                ],
+                [
+                  "6b",
+                  {
+                    "t": "i64",
+                    "v": "2"
+                  }
+                ],
+                [
+                  "6b6b6b",
+                  {
+                    "t": "i64",
+                    "v": "3"
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b226f75746572223a7b226b223a322c226b6b223a312c226b6b6b223a337d7d",
+      "canonical_utf8": "{\"outer\":{\"k\":2,\"kk\":1,\"kkk\":3}}",
+      "sha256": "92c691c433d0d1bdddabd84cd7217eb3e327c9ec102f62260f709aa010384e42"
+    },
+    {
+      "id": "a-i64-bounds",
+      "note": "both boundary integers in an array",
+      "record_type": "vector",
+      "input": {
+        "t": "arr",
+        "v": [
+          {
+            "t": "i64",
+            "v": "9223372036854775807"
+          },
+          {
+            "t": "i64",
+            "v": "-9223372036854775808"
+          }
+        ]
+      },
+      "canonical_hex": "5b393232333337323033363835343737353830372c2d393232333337323033363835343737353830385d",
+      "canonical_utf8": "[9223372036854775807,-9223372036854775808]",
+      "sha256": "620c60323b377c621e7dc7be791109af019374ac459c314beb6acf30c0a7b971"
+    },
+    {
+      "id": "o-i64-bounds",
+      "note": "both boundary integers as object values",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "6d6178",
+            {
+              "t": "i64",
+              "v": "9223372036854775807"
+            }
+          ],
+          [
+            "6d696e",
+            {
+              "t": "i64",
+              "v": "-9223372036854775808"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b226d6178223a393232333337323033363835343737353830372c226d696e223a2d393232333337323033363835343737353830387d",
+      "canonical_utf8": "{\"max\":9223372036854775807,\"min\":-9223372036854775808}",
+      "sha256": "9a7145f84bad2bb4048f2f2902cf3195fc1510582403c09d8ceb1fa4322112f6"
+    },
+    {
+      "id": "o-i64-bounds-deep",
+      "note": "boundary integers three levels down",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "61",
+            {
+              "t": "obj",
+              "v": [
+                [
+                  "62",
+                  {
+                    "t": "arr",
+                    "v": [
+                      {
+                        "t": "i64",
+                        "v": "9223372036854775807"
+                      },
+                      {
+                        "t": "i64",
+                        "v": "-9223372036854775808"
+                      }
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b2261223a7b2262223a5b393232333337323033363835343737353830372c2d393232333337323033363835343737353830385d7d7d",
+      "canonical_utf8": "{\"a\":{\"b\":[9223372036854775807,-9223372036854775808]}}",
+      "sha256": "bc94c73d1a385901642edbe75bc535ea89d8159a471049d9b7323210347ba2eb"
+    },
+    {
+      "id": "i-max-minus-one",
+      "note": "one inside the upper boundary",
+      "record_type": "vector",
+      "input": {
+        "t": "i64",
+        "v": "9223372036854775806"
+      },
+      "canonical_hex": "39323233333732303336383534373735383036",
+      "canonical_utf8": "9223372036854775806",
+      "sha256": "a0526b22c85556a66221fe5ee58c62fc266ce733c3e4b210bcb9236f43ab561e"
+    },
+    {
+      "id": "i-min-plus-one",
+      "note": "one inside the lower boundary",
+      "record_type": "vector",
+      "input": {
+        "t": "i64",
+        "v": "-9223372036854775807"
+      },
+      "canonical_hex": "2d39323233333732303336383534373735383037",
+      "canonical_utf8": "-9223372036854775807",
+      "sha256": "ed28d534365a8db3c934fd918f3abbc73639fcbdf4fad7c6555adb5bef19ae1f"
+    },
+    {
+      "id": "a-bools",
+      "note": "booleans in an array are not 1 and 0",
+      "record_type": "vector",
+      "input": {
+        "t": "arr",
+        "v": [
+          {
+            "t": "bool",
+            "v": true
+          },
+          {
+            "t": "bool",
+            "v": false
+          },
+          {
+            "t": "i64",
+            "v": "1"
+          },
+          {
+            "t": "i64",
+            "v": "0"
+          }
+        ]
+      },
+      "canonical_hex": "5b747275652c66616c73652c312c305d",
+      "canonical_utf8": "[true,false,1,0]",
+      "sha256": "c20c6a05fcb3802761260f282fb285397db0f69694d0a27e94aa72bd453d9531"
+    },
+    {
+      "id": "o-bools",
+      "note": "booleans as object values",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "74",
+            {
+              "t": "bool",
+              "v": true
+            }
+          ],
+          [
+            "66",
+            {
+              "t": "bool",
+              "v": false
+            }
+          ],
+          [
+            "6f6e65",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "7a65726f",
+            {
+              "t": "i64",
+              "v": "0"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b2266223a66616c73652c226f6e65223a312c2274223a747275652c227a65726f223a307d",
+      "canonical_utf8": "{\"f\":false,\"one\":1,\"t\":true,\"zero\":0}",
+      "sha256": "9b74854b6aee6f8879872f3eb67cf52efe6e3e3b53f63ee10689a457f94112ce"
+    },
+    {
+      "id": "o-bools-deep",
+      "note": "booleans at depth",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "61",
+            {
+              "t": "arr",
+              "v": [
+                {
+                  "t": "obj",
+                  "v": [
+                    [
+                      "74",
+                      {
+                        "t": "bool",
+                        "v": true
+                      }
+                    ],
+                    [
+                      "69",
+                      {
+                        "t": "i64",
+                        "v": "1"
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "t": "bool",
+                  "v": false
+                }
+              ]
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b2261223a5b7b2269223a312c2274223a747275657d2c66616c73655d7d",
+      "canonical_utf8": "{\"a\":[{\"i\":1,\"t\":true},false]}",
+      "sha256": "c36845a8acaf0c0fcf9d9020fc068347bcf9faecb35f73ac7385b8df20bd2365"
+    },
+    {
+      "id": "o-empty-nested",
+      "note": "an empty object as a value",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "61",
+            {
+              "t": "obj",
+              "v": []
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b2261223a7b7d7d",
+      "canonical_utf8": "{\"a\":{}}",
+      "sha256": "8eb75ac92b716a5b7686ad92350dea3a7f9f446a756fc85a5152a71e3d30047e"
+    },
+    {
+      "id": "a-empty-nested",
+      "note": "an empty array as a value",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "61",
+            {
+              "t": "arr",
+              "v": []
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b2261223a5b5d7d",
+      "canonical_utf8": "{\"a\":[]}",
+      "sha256": "54004db5b81fe99066560bd16208e8d917eb5185eddc5b8f2644d734475d6030"
+    },
+    {
+      "id": "a-of-empties",
+      "note": "empty containers as array members",
+      "record_type": "vector",
+      "input": {
+        "t": "arr",
+        "v": [
+          {
+            "t": "arr",
+            "v": []
+          },
+          {
+            "t": "obj",
+            "v": []
+          }
+        ]
+      },
+      "canonical_hex": "5b5b5d2c7b7d5d",
+      "canonical_utf8": "[[],{}]",
+      "sha256": "cfb7473239bad8ac34292a9608a2b04fe9d56396540583bd90c80370e23e5987"
+    },
+    {
+      "id": "o-empty-key-and-value",
+      "note": "the empty key with an empty-string value",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "",
+            {
+              "t": "str",
+              "v": ""
+            }
+          ],
+          [
+            "61",
+            {
+              "t": "arr",
+              "v": [
+                {
+                  "t": "obj",
+                  "v": []
+                }
+              ]
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b22223a22222c2261223a5b7b7d5d7d",
+      "canonical_utf8": "{\"\":\"\",\"a\":[{}]}",
+      "sha256": "9bc456193e055dcdf5dcc56586c2504fe83af54c1e05682c94877c5d7fb22db2"
+    },
+    {
+      "id": "deep-mixed",
+      "note": "ten levels, each carrying a rule: ordering, escapes, NFC, floats, bounds",
+      "record_type": "evidence_row",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "7a",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "61",
+            {
+              "t": "obj",
+              "v": [
+                [
+                  "6b096b",
+                  {
+                    "t": "arr",
+                    "v": [
+                      {
+                        "t": "f64",
+                        "v": "4003333333333333"
+                      },
+                      {
+                        "t": "obj",
+                        "v": [
+                          [
+                            "c3a9",
+                            {
+                              "t": "obj",
+                              "v": [
+                                [
+                                  "",
+                                  {
+                                    "t": "arr",
+                                    "v": [
+                                      {
+                                        "t": "f64",
+                                        "v": "8000000000000000"
+                                      },
+                                      {
+                                        "t": "obj",
+                                        "v": [
+                                          [
+                                            "63616665cc81",
+                                            {
+                                              "t": "arr",
+                                              "v": [
+                                                {
+                                                  "t": "bool",
+                                                  "v": true
+                                                },
+                                                {
+                                                  "t": "null"
+                                                },
+                                                {
+                                                  "t": "i64",
+                                                  "v": "-9223372036854775808"
+                                                },
+                                                {
+                                                  "t": "obj",
+                                                  "v": [
+                                                    [
+                                                      "64656570657374",
+                                                      {
+                                                        "t": "str",
+                                                        "v": "002f7f"
+                                                      }
+                                                    ]
+                                                  ]
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              ]
+                            }
+                          ]
+                        ]
+                      },
+                      {
+                        "t": "i64",
+                        "v": "9223372036854775807"
+                      }
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b2261223a7b226b5c746b223a5b22322e346530222c7b22c3a9223a7b22223a5b22302e306530222c7b22636166c3a9223a5b747275652c6e756c6c2c2d393232333337323033363835343737353830382c7b2264656570657374223a225c75303030302f7f227d5d7d5d7d7d2c393232333337323033363835343737353830375d7d2c227a223a317d",
+      "canonical_utf8": "{\"a\":{\"k\\tk\":[\"2.4e0\",{\"é\":{\"\":[\"0.0e0\",{\"café\":[true,null,-9223372036854775808,{\"deepest\":\"\\u0000/\"}]}]}},9223372036854775807]},\"z\":1}",
+      "sha256": "2c3ddfb7019ea5b3fd33b146fb022d3bece3fa94fdc9ec4c3f39f89201b62881"
+    },
+    {
+      "id": "o-sort-astral-vs-private-use",
+      "note": "astral against U+E000",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "f09f9880",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "ee8080",
+            {
+              "t": "i64",
+              "v": "2"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b22ee8080223a322c22f09f9880223a317d",
+      "canonical_utf8": "{\"\":2,\"😀\":1}",
+      "sha256": "6708dfb794cab2f09499b36d875ef31be88257385999132ca2eaf369483839e3"
+    },
+    {
+      "id": "o-sort-astral-vs-fullwidth-a",
+      "note": "astral against U+FF21",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "f09d9080",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "efbca1",
+            {
+              "t": "i64",
+              "v": "2"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b22efbca1223a322c22f09d9080223a317d",
+      "canonical_utf8": "{\"Ａ\":2,\"𝐀\":1}",
+      "sha256": "d3a0d93c673cd59b2f88e359d69cf593d51e2371a7ebf2abd5b6181c7935d2c6"
+    },
+    {
+      "id": "o-sort-astral-vs-cjk-compat",
+      "note": "astral against a CJK compatibility ideograph",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "f0a08080",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "efa88e",
+            {
+              "t": "i64",
+              "v": "2"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b22efa88e223a322c22f0a08080223a317d",
+      "canonical_utf8": "{\"﨎\":2,\"𠀀\":1}",
+      "sha256": "6e4513fe54ee57257a49da6124ac58b58a6cc96bdc85741e361b3a717d5a6a14"
+    },
+    {
+      "id": "o-sort-astral-vs-arabic-form",
+      "note": "astral against an Arabic presentation form",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "f09f92a9",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "efad90",
+            {
+              "t": "i64",
+              "v": "2"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b22efad90223a322c22f09f92a9223a317d",
+      "canonical_utf8": "{\"ﭐ\":2,\"💩\":1}",
+      "sha256": "513812aa44ccab7c66db7ba58d8b458cf54e54e270194d20e50f549f1963a8e1"
+    },
+    {
+      "id": "o-sort-two-astrals-one-bmp",
+      "note": "two astral keys around one high BMP key",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "f09f9880",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "efbfa0",
+            {
+              "t": "i64",
+              "v": "2"
+            }
+          ],
+          [
+            "f0908080",
+            {
+              "t": "i64",
+              "v": "3"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b22efbfa0223a322c22f0908080223a332c22f09f9880223a317d",
+      "canonical_utf8": "{\"￠\":2,\"𐀀\":3,\"😀\":1}",
+      "sha256": "ab223a079edb62ca73bf765bd61887948fddf8c8f0bf608c7cac63224610d5be"
+    },
+    {
+      "id": "o-sort-astral-and-ascii",
+      "note": "astral, high BMP and ASCII keys together",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "f09f9880",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "efbcba",
+            {
+              "t": "i64",
+              "v": "2"
+            }
+          ],
+          [
+            "7a",
+            {
+              "t": "i64",
+              "v": "3"
+            }
+          ],
+          [
+            "61",
+            {
+              "t": "i64",
+              "v": "4"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b2261223a342c227a223a332c22efbcba223a322c22f09f9880223a317d",
+      "canonical_utf8": "{\"a\":4,\"z\":3,\"Ｚ\":2,\"😀\":1}",
+      "sha256": "642d4c593cbbfc92c1044e425ff7ccdc564fe7c756c913085464ab763519c946"
+    },
+    {
+      "id": "o-sort-astral-shared-suffix",
+      "note": "the divergent keys share a trailing character",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "f09f988061",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "efbcba61",
+            {
+              "t": "i64",
+              "v": "2"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b22efbcba61223a322c22f09f988061223a317d",
+      "canonical_utf8": "{\"Ｚa\":2,\"😀a\":1}",
+      "sha256": "3a322a08c6fa3f9690865e683fe06e17892ff5fefbceaca2adc9895abac2ba2a"
+    },
+    {
+      "id": "o-sort-astral-deep",
+      "note": "the divergence three levels down",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "6f75746572",
+            {
+              "t": "arr",
+              "v": [
+                {
+                  "t": "obj",
+                  "v": [
+                    [
+                      "f09f9880",
+                      {
+                        "t": "i64",
+                        "v": "1"
+                      }
+                    ],
+                    [
+                      "ee8081",
+                      {
+                        "t": "i64",
+                        "v": "2"
+                      }
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b226f75746572223a5b7b22ee8081223a322c22f09f9880223a317d5d7d",
+      "canonical_utf8": "{\"outer\":[{\"\":2,\"😀\":1}]}",
+      "sha256": "94691eb48792c5797e16370a741a2e88acc1cf78a3e0419886c0e9d311b0e3a8"
+    },
+    {
+      "id": "o-sort-same-first-byte",
+      "note": "three keys beginning 'a', all the same length",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "617a7a",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "616179",
+            {
+              "t": "i64",
+              "v": "2"
+            }
+          ],
+          [
+            "616278",
+            {
+              "t": "i64",
+              "v": "3"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b22616179223a322c22616278223a332c22617a7a223a317d",
+      "canonical_utf8": "{\"aay\":2,\"abx\":3,\"azz\":1}",
+      "sha256": "4b4652ef1738f41c8315faa63a24b59a9a66d552fd90e40fa9688d388af9b1dc"
+    },
+    {
+      "id": "o-sort-same-first-byte-b",
+      "note": "three keys beginning 'b', all the same length",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "627a7a",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "627979",
+            {
+              "t": "i64",
+              "v": "2"
+            }
+          ],
+          [
+            "627878",
+            {
+              "t": "i64",
+              "v": "3"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b22627878223a332c22627979223a322c22627a7a223a317d",
+      "canonical_utf8": "{\"bxx\":3,\"byy\":2,\"bzz\":1}",
+      "sha256": "013bcfb632241f9997df8b4d9512955a5bf636b0c540d49c60a8eedca5668a25"
+    },
+    {
+      "id": "o-sort-same-first-byte-multibyte",
+      "note": "three keys sharing a two-byte first character",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "c3a97a",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "c3a961",
+            {
+              "t": "i64",
+              "v": "2"
+            }
+          ],
+          [
+            "c3a962",
+            {
+              "t": "i64",
+              "v": "3"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b22c3a961223a322c22c3a962223a332c22c3a97a223a317d",
+      "canonical_utf8": "{\"éa\":2,\"éb\":3,\"éz\":1}",
+      "sha256": "784c8591a5158e58fcbe0b07d7f3d53780cc01f2485a0001faed7be31d5ff45e"
+    },
+    {
+      "id": "o-sort-same-first-byte-long",
+      "note": "twenty-byte keys differing only in the last",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "7878787878787878787878787878787878787863",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "7878787878787878787878787878787878787861",
+            {
+              "t": "i64",
+              "v": "2"
+            }
+          ],
+          [
+            "7878787878787878787878787878787878787862",
+            {
+              "t": "i64",
+              "v": "3"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b227878787878787878787878787878787878787861223a322c227878787878787878787878787878787878787862223a332c227878787878787878787878787878787878787863223a317d",
+      "canonical_utf8": "{\"xxxxxxxxxxxxxxxxxxxa\":2,\"xxxxxxxxxxxxxxxxxxxb\":3,\"xxxxxxxxxxxxxxxxxxxc\":1}",
+      "sha256": "c66a8f899754b1317246f01bf50eda42d87aed8a946364b68cd3126dc2f77e18"
+    },
+    {
+      "id": "o-sort-same-first-byte-astral",
+      "note": "two astral keys sharing three of their four bytes",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "f09f9881",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "f09f9880",
+            {
+              "t": "i64",
+              "v": "2"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b22f09f9880223a322c22f09f9881223a317d",
+      "canonical_utf8": "{\"😀\":2,\"😁\":1}",
+      "sha256": "0fd37f0a982971bac77e5c231f30c2d7c96a3f5e825dbd6b6b315eee86873bf4"
+    },
+    {
+      "id": "o-sort-same-first-byte-deep",
+      "note": "the same, three levels down",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "6f75746572",
+            {
+              "t": "arr",
+              "v": [
+                {
+                  "t": "obj",
+                  "v": [
+                    [
+                      "617a7a",
+                      {
+                        "t": "i64",
+                        "v": "1"
+                      }
+                    ],
+                    [
+                      "616179",
+                      {
+                        "t": "i64",
+                        "v": "2"
+                      }
+                    ],
+                    [
+                      "616178",
+                      {
+                        "t": "i64",
+                        "v": "3"
+                      }
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b226f75746572223a5b7b22616178223a332c22616179223a322c22617a7a223a317d5d7d",
+      "canonical_utf8": "{\"outer\":[{\"aax\":3,\"aay\":2,\"azz\":1}]}",
+      "sha256": "2a6493364785aaab4ad90e2704613774121f3a45b558706ca8f27f4bf1922007"
+    },
+    {
+      "id": "f-neg-zero-among-floats",
+      "note": "-0.0 between two other floats",
+      "record_type": "vector",
+      "input": {
+        "t": "arr",
+        "v": [
+          {
+            "t": "f64",
+            "v": "3ff0000000000000"
+          },
+          {
+            "t": "f64",
+            "v": "8000000000000000"
+          },
+          {
+            "t": "f64",
+            "v": "4000000000000000"
+          }
+        ]
+      },
+      "canonical_hex": "5b22312e306530222c22302e306530222c22322e306530225d",
+      "canonical_utf8": "[\"1.0e0\",\"0.0e0\",\"2.0e0\"]",
+      "sha256": "32d5902cba71b2c606beb411c5ea701245d0878a94f7a150186242c5ad1fdb27"
+    },
+    {
+      "id": "f-neg-zero-both-zeros",
+      "note": "both zeros in one array; they must become one form",
+      "record_type": "vector",
+      "input": {
+        "t": "arr",
+        "v": [
+          {
+            "t": "f64",
+            "v": "0000000000000000"
+          },
+          {
+            "t": "f64",
+            "v": "8000000000000000"
+          }
+        ]
+      },
+      "canonical_hex": "5b22302e306530222c22302e306530225d",
+      "canonical_utf8": "[\"0.0e0\",\"0.0e0\"]",
+      "sha256": "a33b921be4fae36b6ba1a673be908c53c242a029299551ae445b1de39b05de25"
+    },
+    {
+      "id": "f-neg-zero-nested-array",
+      "note": "-0.0 inside an array inside an array",
+      "record_type": "vector",
+      "input": {
+        "t": "arr",
+        "v": [
+          {
+            "t": "arr",
+            "v": [
+              {
+                "t": "f64",
+                "v": "8000000000000000"
+              }
+            ]
+          }
+        ]
+      },
+      "canonical_hex": "5b5b22302e306530225d5d",
+      "canonical_utf8": "[[\"0.0e0\"]]",
+      "sha256": "8f2bbdc5c4d2fb133c670c1a37e166cb5d211a454157e28b42dfd673b9ee866d"
+    },
+    {
+      "id": "f-neg-zero-object-of-floats",
+      "note": "-0.0 among other float values",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "61",
+            {
+              "t": "f64",
+              "v": "3ff8000000000000"
+            }
+          ],
+          [
+            "62",
+            {
+              "t": "f64",
+              "v": "8000000000000000"
+            }
+          ],
+          [
+            "63",
+            {
+              "t": "f64",
+              "v": "bff8000000000000"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b2261223a22312e356530222c2262223a22302e306530222c2263223a222d312e356530227d",
+      "canonical_utf8": "{\"a\":\"1.5e0\",\"b\":\"0.0e0\",\"c\":\"-1.5e0\"}",
+      "sha256": "0b2b0207f778e6f083776674f8fc245c515c10102a745280e215ebabe3080092"
+    },
+    {
+      "id": "f-neg-zero-key-and-value",
+      "note": "-0.0 under a key that sorts last",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "61",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "7a7a",
+            {
+              "t": "f64",
+              "v": "8000000000000000"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b2261223a312c227a7a223a22302e306530227d",
+      "canonical_utf8": "{\"a\":1,\"zz\":\"0.0e0\"}",
+      "sha256": "8c0c6a576bd9a056337cc5fe68844fe18823be05c4d3d7cea5886ee148c1d7d2"
+    },
+    {
+      "id": "o-i64-max-only",
+      "note": "int64 max as the only value",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "76",
+            {
+              "t": "i64",
+              "v": "9223372036854775807"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b2276223a393232333337323033363835343737353830377d",
+      "canonical_utf8": "{\"v\":9223372036854775807}",
+      "sha256": "14cf5863a7ce9121a3a5887dfe8d1f5fa97a60f70189f8f1c140c3c34d3fca3c"
+    },
+    {
+      "id": "o-i64-min-only",
+      "note": "int64 min as the only value",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "76",
+            {
+              "t": "i64",
+              "v": "-9223372036854775808"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b2276223a2d393232333337323033363835343737353830387d",
+      "canonical_utf8": "{\"v\":-9223372036854775808}",
+      "sha256": "9ecd0f447ff2306bea68dd41abba70590735dc0fc20d1f7679917e38f34baadd"
+    },
+    {
+      "id": "a-i64-max-among-many",
+      "note": "int64 max among ordinary integers",
+      "record_type": "vector",
+      "input": {
+        "t": "arr",
+        "v": [
+          {
+            "t": "i64",
+            "v": "0"
+          },
+          {
+            "t": "i64",
+            "v": "1"
+          },
+          {
+            "t": "i64",
+            "v": "9223372036854775807"
+          },
+          {
+            "t": "i64",
+            "v": "-1"
+          }
+        ]
+      },
+      "canonical_hex": "5b302c312c393232333337323033363835343737353830372c2d315d",
+      "canonical_utf8": "[0,1,9223372036854775807,-1]",
+      "sha256": "e7c6e755df84654061062daa4ed6052c76b362052b3143db46a7b8272f37e8c1"
+    },
+    {
+      "id": "a-i64-min-among-many",
+      "note": "int64 min among ordinary integers",
+      "record_type": "vector",
+      "input": {
+        "t": "arr",
+        "v": [
+          {
+            "t": "i64",
+            "v": "0"
+          },
+          {
+            "t": "i64",
+            "v": "1"
+          },
+          {
+            "t": "i64",
+            "v": "-9223372036854775808"
+          },
+          {
+            "t": "i64",
+            "v": "-1"
+          }
+        ]
+      },
+      "canonical_hex": "5b302c312c2d393232333337323033363835343737353830382c2d315d",
+      "canonical_utf8": "[0,1,-9223372036854775808,-1]",
+      "sha256": "9fd99531f687567c8942966303fbf2601150096e298e590b18744253975f9512"
+    },
+    {
+      "id": "o-i64-bounds-mixed",
+      "note": "boundary integers beside floats and strings",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "66",
+            {
+              "t": "f64",
+              "v": "3ff0000000000000"
+            }
+          ],
+          [
+            "69",
+            {
+              "t": "i64",
+              "v": "9223372036854775807"
+            }
+          ],
+          [
+            "6a",
+            {
+              "t": "i64",
+              "v": "-9223372036854775808"
+            }
+          ],
+          [
+            "73",
+            {
+              "t": "str",
+              "v": "78"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b2266223a22312e306530222c2269223a393232333337323033363835343737353830372c226a223a2d393232333337323033363835343737353830382c2273223a2278227d",
+      "canonical_utf8": "{\"f\":\"1.0e0\",\"i\":9223372036854775807,\"j\":-9223372036854775808,\"s\":\"x\"}",
+      "sha256": "bf069a9eff0d3029ae350926eb81ee528acf38ac5439646076a0880332b2c92c"
+    },
+    {
+      "id": "s-del-repeated",
+      "note": "several DEL characters",
+      "record_type": "vector",
+      "input": {
+        "t": "str",
+        "v": "7f7f7f"
+      },
+      "canonical_hex": "227f7f7f22",
+      "canonical_utf8": "\"\"",
+      "sha256": "bd7fb01dcb6a08674d36dd9f29830abab0ffe576356fa1c93cabd95be0e8106c"
+    },
+    {
+      "id": "o-del-only-key",
+      "note": "a key that is one DEL",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "7f",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b227f223a317d",
+      "canonical_utf8": "{\"\":1}",
+      "sha256": "c0db7139a7fc8e0de483d904fc574de8a70ec460f3972b00af15f6fb2a269ff5"
+    },
+    {
+      "id": "a-del-among-strings",
+      "note": "DEL beside ordinary strings",
+      "record_type": "vector",
+      "input": {
+        "t": "arr",
+        "v": [
+          {
+            "t": "str",
+            "v": "61"
+          },
+          {
+            "t": "str",
+            "v": "7f"
+          },
+          {
+            "t": "str",
+            "v": "62"
+          }
+        ]
+      },
+      "canonical_hex": "5b2261222c227f222c2262225d",
+      "canonical_utf8": "[\"a\",\"\",\"b\"]",
+      "sha256": "3e26d3c083fea029b8b97155ad64c71f65b04fbd69421c09daaa4af49529de2b"
+    },
+    {
+      "id": "s-nfkc-roman-numeral",
+      "note": "U+216B is not folded to XII",
+      "record_type": "vector",
+      "input": {
+        "t": "str",
+        "v": "e285ab"
+      },
+      "canonical_hex": "22e285ab22",
+      "canonical_utf8": "\"Ⅻ\"",
+      "sha256": "64354c7d3b4f96f02624b2c3523d349ee2d913c73895990f1ba5043c56ee9d2c"
+    },
+    {
+      "id": "s-nfkc-circled-digit",
+      "note": "U+2460 is not folded to 1",
+      "record_type": "vector",
+      "input": {
+        "t": "str",
+        "v": "e291a0"
+      },
+      "canonical_hex": "22e291a022",
+      "canonical_utf8": "\"①\"",
+      "sha256": "8c714bd7cd28c32eea37ab5dd2ece3010702270840f0cf2081027d015d31895e"
+    },
+    {
+      "id": "s-nfkc-nbsp",
+      "note": "a no-break space is not folded to a space",
+      "record_type": "vector",
+      "input": {
+        "t": "str",
+        "v": "c2a0"
+      },
+      "canonical_hex": "22c2a022",
+      "canonical_utf8": "\" \"",
+      "sha256": "c951b93bd35e5ec76ceb0c3b9d1a270ca7deec419561216dd0b3aab922a5ce75"
+    },
+    {
+      "id": "s-nfkc-fraction",
+      "note": "U+00BD is not folded to 1/2",
+      "record_type": "vector",
+      "input": {
+        "t": "str",
+        "v": "c2bd"
+      },
+      "canonical_hex": "22c2bd22",
+      "canonical_utf8": "\"½\"",
+      "sha256": "e46d1ae939d10f94ec9d14ca3f0c0b9bc53fcda5d55863d804330633de9b0416"
+    },
+    {
+      "id": "o-nfkc-key-superscript",
+      "note": "a compatibility character as a key",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "c2b2",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "61",
+            {
+              "t": "i64",
+              "v": "2"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b2261223a322c22c2b2223a317d",
+      "canonical_utf8": "{\"a\":2,\"²\":1}",
+      "sha256": "5e9e85980f3886d8ede3670de1257997c7351c5a6aa7bf96fc611b65322500da"
+    },
+    {
+      "id": "a-nfkc-deep",
+      "note": "compatibility characters three levels down",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "6f",
+            {
+              "t": "arr",
+              "v": [
+                {
+                  "t": "obj",
+                  "v": [
+                    [
+                      "6b",
+                      {
+                        "t": "str",
+                        "v": "e285abe291a0"
+                      }
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b226f223a5b7b226b223a22e285abe291a0227d5d7d",
+      "canonical_utf8": "{\"o\":[{\"k\":\"Ⅻ①\"}]}",
+      "sha256": "69b050f3904ebbb27a0a4e91d8169a12fd622486393043a14c9c2ad71031461f"
+    },
+    {
+      "id": "s-esc-tab-between-text",
+      "note": "tabs between printable characters",
+      "record_type": "vector",
+      "input": {
+        "t": "str",
+        "v": "6109620963"
+      },
+      "canonical_hex": "22615c74625c746322",
+      "canonical_utf8": "\"a\\tb\\tc\"",
+      "sha256": "c653ee78e5fcd92a2f774a93780b15e3c619f54407db4fd1d77239a3e9339749"
+    },
+    {
+      "id": "o-esc-tab-key",
+      "note": "a tab inside a key",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "6b096b",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "61",
+            {
+              "t": "i64",
+              "v": "2"
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b2261223a322c226b5c746b223a317d",
+      "canonical_utf8": "{\"a\":2,\"k\\tk\":1}",
+      "sha256": "363d20bf257cfbe3e6b16c6801dfcdef84cafcbe8e64a7487bf1ed43b0a946b0"
+    },
+    {
+      "id": "a-esc-newline-deep",
+      "note": "a newline three levels down",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "6f",
+            {
+              "t": "arr",
+              "v": [
+                {
+                  "t": "obj",
+                  "v": [
+                    [
+                      "6b",
+                      {
+                        "t": "str",
+                        "v": "6c696e650a6c696e65"
+                      }
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b226f223a5b7b226b223a226c696e655c6e6c696e65227d5d7d",
+      "canonical_utf8": "{\"o\":[{\"k\":\"line\\nline\"}]}",
+      "sha256": "afd936f3ddc7e2aa6fccda62910fdb4d0526643b5a7bb0b6d1b79822a37c2fbe"
+    },
+    {
+      "id": "s-control-with-text",
+      "note": "control characters between printable ones",
+      "record_type": "vector",
+      "input": {
+        "t": "str",
+        "v": "6101621f63"
+      },
+      "canonical_hex": "22615c7530303031625c75303031666322",
+      "canonical_utf8": "\"a\\u0001b\\u001fc\"",
+      "sha256": "3e77805d2be0f7aa8225c9593ba0f18663d72ce50dad02ecb6c8c0a591608ba1"
+    },
+    {
+      "id": "o-control-deep",
+      "note": "a control character in a key three levels down",
+      "record_type": "vector",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "6f",
+            {
+              "t": "arr",
+              "v": [
+                {
+                  "t": "obj",
+                  "v": [
+                    [
+                      "02",
+                      {
+                        "t": "i64",
+                        "v": "1"
+                      }
+                    ],
+                    [
+                      "61",
+                      {
+                        "t": "i64",
+                        "v": "2"
+                      }
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        ]
+      },
+      "canonical_hex": "7b226f223a5b7b225c7530303032223a312c2261223a327d5d7d",
+      "canonical_utf8": "{\"o\":[{\"\\u0002\":1,\"a\":2}]}",
+      "sha256": "bb4244e884e7d1a2f1d862f2eec17d87745f57c957bb39806c32269714283906"
+    }
+  ],
+  "encode_errors": [
+    {
+      "id": "e-nan",
+      "note": "NaN is forbidden as an output anywhere",
+      "input": {
+        "t": "f64",
+        "v": "7ff8000000000000"
+      },
+      "error": "NOT_FINITE"
+    },
+    {
+      "id": "e-inf",
+      "note": "infinity must use the tagged form, never a raw float",
+      "input": {
+        "t": "f64",
+        "v": "7ff0000000000000"
+      },
+      "error": "NOT_FINITE"
+    },
+    {
+      "id": "e-neg-inf",
+      "note": "",
+      "input": {
+        "t": "f64",
+        "v": "fff0000000000000"
+      },
+      "error": "NOT_FINITE"
+    },
+    {
+      "id": "e-int-too-big",
+      "note": "int64 max + 1",
+      "input": {
+        "t": "i64",
+        "v": "9223372036854775808"
+      },
+      "error": "INT_OUT_OF_RANGE"
+    },
+    {
+      "id": "e-int-too-small",
+      "note": "int64 min - 1",
+      "input": {
+        "t": "i64",
+        "v": "-9223372036854775809"
+      },
+      "error": "INT_OUT_OF_RANGE"
+    },
+    {
+      "id": "e-dup-key-nfc",
+      "note": "two keys identical after NFC are one key; both must not survive",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "636166c3a9",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "63616665cc81",
+            {
+              "t": "i64",
+              "v": "2"
+            }
+          ]
+        ]
+      },
+      "error": "DUPLICATE_KEY"
+    },
+    {
+      "id": "e-dup-key-nfd-nested",
+      "note": "duplicate detection applies at every depth, not only at the top",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "6f75746572",
+            {
+              "t": "obj",
+              "v": [
+                [
+                  "c385",
+                  {
+                    "t": "i64",
+                    "v": "1"
+                  }
+                ],
+                [
+                  "41cc8a",
+                  {
+                    "t": "i64",
+                    "v": "2"
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "error": "DUPLICATE_KEY"
+    },
+    {
+      "id": "e-dup-key-astral",
+      "note": "an astral key duplicated by composition-insensitive comparison",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "f09f9880c385",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "f09f988041cc8a",
+            {
+              "t": "i64",
+              "v": "2"
+            }
+          ]
+        ]
+      },
+      "error": "DUPLICATE_KEY"
+    },
+    {
+      "id": "e-dup-key-nfd-first",
+      "note": "the decomposed form first; order must not matter",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "63616665cc81",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "636166c3a9",
+            {
+              "t": "i64",
+              "v": "2"
+            }
+          ]
+        ]
+      },
+      "error": "DUPLICATE_KEY"
+    },
+    {
+      "id": "e-dup-key-angstrom-sign",
+      "note": "U+212B ANGSTROM SIGN and U+00C5 are one key after NFC",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "e284ab",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "c385",
+            {
+              "t": "i64",
+              "v": "2"
+            }
+          ]
+        ]
+      },
+      "error": "DUPLICATE_KEY"
+    },
+    {
+      "id": "e-dup-key-long-prefix",
+      "note": "the collision is sixteen bytes into two otherwise identical keys",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "616c7068612f626574612f67616d6d612f636166c3a9",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "616c7068612f626574612f67616d6d612f63616665cc81",
+            {
+              "t": "i64",
+              "v": "2"
+            }
+          ]
+        ]
+      },
+      "error": "DUPLICATE_KEY"
+    },
+    {
+      "id": "e-dup-key-among-others",
+      "note": "a colliding pair surrounded by distinct keys",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "61",
+            {
+              "t": "i64",
+              "v": "0"
+            }
+          ],
+          [
+            "c3b4",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "6d",
+            {
+              "t": "i64",
+              "v": "2"
+            }
+          ],
+          [
+            "6fcc82",
+            {
+              "t": "i64",
+              "v": "3"
+            }
+          ],
+          [
+            "7a",
+            {
+              "t": "i64",
+              "v": "4"
+            }
+          ]
+        ]
+      },
+      "error": "DUPLICATE_KEY"
+    },
+    {
+      "id": "e-dup-key-in-array",
+      "note": "a duplicate inside an object inside an array",
+      "input": {
+        "t": "arr",
+        "v": [
+          {
+            "t": "i64",
+            "v": "1"
+          },
+          {
+            "t": "obj",
+            "v": [
+              [
+                "c3b1",
+                {
+                  "t": "i64",
+                  "v": "1"
+                }
+              ],
+              [
+                "6ecc83",
+                {
+                  "t": "i64",
+                  "v": "2"
+                }
+              ]
+            ]
+          }
+        ]
+      },
+      "error": "DUPLICATE_KEY"
+    },
+    {
+      "id": "e-dup-key-deep",
+      "note": "a duplicate four levels down; detection is not a top-level pass",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "61",
+            {
+              "t": "arr",
+              "v": [
+                {
+                  "t": "obj",
+                  "v": [
+                    [
+                      "62",
+                      {
+                        "t": "obj",
+                        "v": [
+                          [
+                            "c3bc",
+                            {
+                              "t": "i64",
+                              "v": "1"
+                            }
+                          ],
+                          [
+                            "75cc88",
+                            {
+                              "t": "i64",
+                              "v": "2"
+                            }
+                          ]
+                        ]
+                      }
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        ]
+      },
+      "error": "DUPLICATE_KEY"
+    },
+    {
+      "id": "e-dup-key-astral-prefix",
+      "note": "an astral character before the colliding portion",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "f09f92a9636166c3a9",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "f09f92a963616665cc81",
+            {
+              "t": "i64",
+              "v": "2"
+            }
+          ]
+        ]
+      },
+      "error": "DUPLICATE_KEY"
+    },
+    {
+      "id": "e-dup-key-two-collisions",
+      "note": "two independent colliding pairs in one object",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "c3a9",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "c3b4",
+            {
+              "t": "i64",
+              "v": "2"
+            }
+          ],
+          [
+            "65cc81",
+            {
+              "t": "i64",
+              "v": "3"
+            }
+          ],
+          [
+            "6fcc82",
+            {
+              "t": "i64",
+              "v": "4"
+            }
+          ]
+        ]
+      },
+      "error": "DUPLICATE_KEY"
+    },
+    {
+      "id": "e-surrogate-high-alone",
+      "note": "an unpaired high surrogate",
+      "input": {
+        "t": "str16",
+        "v": "d800"
+      },
+      "error": "LONE_SURROGATE"
+    },
+    {
+      "id": "e-surrogate-low-alone",
+      "note": "an unpaired low surrogate",
+      "input": {
+        "t": "str16",
+        "v": "dc00"
+      },
+      "error": "LONE_SURROGATE"
+    },
+    {
+      "id": "e-surrogate-high-max",
+      "note": "the last high surrogate, unpaired",
+      "input": {
+        "t": "str16",
+        "v": "dbff"
+      },
+      "error": "LONE_SURROGATE"
+    },
+    {
+      "id": "e-surrogate-low-max",
+      "note": "the last low surrogate, unpaired",
+      "input": {
+        "t": "str16",
+        "v": "dfff"
+      },
+      "error": "LONE_SURROGATE"
+    },
+    {
+      "id": "e-surrogate-reversed-pair",
+      "note": "low then high: a pair in the wrong order is two lone surrogates",
+      "input": {
+        "t": "str16",
+        "v": "dc00d800"
+      },
+      "error": "LONE_SURROGATE"
+    },
+    {
+      "id": "e-surrogate-high-then-ascii",
+      "note": "a high surrogate followed by a non-surrogate",
+      "input": {
+        "t": "str16",
+        "v": "d83d0041"
+      },
+      "error": "LONE_SURROGATE"
+    },
+    {
+      "id": "e-surrogate-trailing-high",
+      "note": "a high surrogate at the end of a string",
+      "input": {
+        "t": "str16",
+        "v": "00410042d83d"
+      },
+      "error": "LONE_SURROGATE"
+    },
+    {
+      "id": "e-surrogate-two-highs",
+      "note": "two high surrogates in a row",
+      "input": {
+        "t": "str16",
+        "v": "d800d800"
+      },
+      "error": "LONE_SURROGATE"
+    },
+    {
+      "id": "e-surrogate-in-array",
+      "note": "a lone surrogate inside an array",
+      "input": {
+        "t": "arr",
+        "v": [
+          {
+            "t": "str",
+            "v": "6f6b"
+          },
+          {
+            "t": "str16",
+            "v": "d800"
+          }
+        ]
+      },
+      "error": "LONE_SURROGATE"
+    },
+    {
+      "id": "e-surrogate-deep",
+      "note": "a lone surrogate three levels down",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "61",
+            {
+              "t": "arr",
+              "v": [
+                {
+                  "t": "obj",
+                  "v": [
+                    [
+                      "62",
+                      {
+                        "t": "str16",
+                        "v": "dc00"
+                      }
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        ]
+      },
+      "error": "LONE_SURROGATE"
+    },
+    {
+      "id": "e-surrogate-after-valid-pair",
+      "note": "a well-formed pair then an unpaired one; the check must scan the whole string",
+      "input": {
+        "t": "str16",
+        "v": "d83dde00d83d"
+      },
+      "error": "LONE_SURROGATE"
+    },
+    {
+      "id": "e-int-too-big-in-array",
+      "note": "int64 max + 1 in an array",
+      "input": {
+        "t": "arr",
+        "v": [
+          {
+            "t": "i64",
+            "v": "1"
+          },
+          {
+            "t": "i64",
+            "v": "9223372036854775808"
+          }
+        ]
+      },
+      "error": "INT_OUT_OF_RANGE"
+    },
+    {
+      "id": "e-int-too-small-in-array",
+      "note": "int64 min - 1 in an array",
+      "input": {
+        "t": "arr",
+        "v": [
+          {
+            "t": "i64",
+            "v": "1"
+          },
+          {
+            "t": "i64",
+            "v": "-9223372036854775809"
+          }
+        ]
+      },
+      "error": "INT_OUT_OF_RANGE"
+    },
+    {
+      "id": "e-int-too-big-in-object",
+      "note": "int64 max + 1 as an object value",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "61",
+            {
+              "t": "i64",
+              "v": "9223372036854775808"
+            }
+          ]
+        ]
+      },
+      "error": "INT_OUT_OF_RANGE"
+    },
+    {
+      "id": "e-int-too-small-in-object",
+      "note": "int64 min - 1 as an object value",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "61",
+            {
+              "t": "i64",
+              "v": "-9223372036854775809"
+            }
+          ]
+        ]
+      },
+      "error": "INT_OUT_OF_RANGE"
+    },
+    {
+      "id": "e-int-too-big-deep",
+      "note": "int64 max + 1 four levels down",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "61",
+            {
+              "t": "arr",
+              "v": [
+                {
+                  "t": "obj",
+                  "v": [
+                    [
+                      "62",
+                      {
+                        "t": "arr",
+                        "v": [
+                          {
+                            "t": "i64",
+                            "v": "9223372036854775808"
+                          }
+                        ]
+                      }
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        ]
+      },
+      "error": "INT_OUT_OF_RANGE"
+    },
+    {
+      "id": "e-int-too-small-deep",
+      "note": "int64 min - 1 four levels down",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "61",
+            {
+              "t": "arr",
+              "v": [
+                {
+                  "t": "obj",
+                  "v": [
+                    [
+                      "62",
+                      {
+                        "t": "arr",
+                        "v": [
+                          {
+                            "t": "i64",
+                            "v": "-9223372036854775809"
+                          }
+                        ]
+                      }
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        ]
+      },
+      "error": "INT_OUT_OF_RANGE"
+    },
+    {
+      "id": "e-int-uint64-max",
+      "note": "2^64 - 1, the unsigned boundary a wider host might allow",
+      "input": {
+        "t": "i64",
+        "v": "18446744073709551615"
+      },
+      "error": "INT_OUT_OF_RANGE"
+    },
+    {
+      "id": "e-int-huge",
+      "note": "far outside any machine word",
+      "input": {
+        "t": "i64",
+        "v": "1000000000000000000000000000000"
+      },
+      "error": "INT_OUT_OF_RANGE"
+    },
+    {
+      "id": "e-int-too-big-among-values",
+      "note": "int64 max + 1 beside legal values",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "61",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "62",
+            {
+              "t": "i64",
+              "v": "9223372036854775808"
+            }
+          ],
+          [
+            "63",
+            {
+              "t": "str",
+              "v": "78"
+            }
+          ]
+        ]
+      },
+      "error": "INT_OUT_OF_RANGE"
+    },
+    {
+      "id": "e-int-too-small-among-values",
+      "note": "int64 min - 1 beside legal values",
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "61",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ],
+          [
+            "62",
+            {
+              "t": "i64",
+              "v": "-9223372036854775809"
+            }
+          ],
+          [
+            "63",
+            {
+              "t": "str",
+              "v": "78"
+            }
+          ]
+        ]
+      },
+      "error": "INT_OUT_OF_RANGE"
+    }
+  ],
+  "hash": [
+    {
+      "id": "h-plain",
+      "note": "the ordinary case, for comparison",
+      "record_type": {
+        "t": "str",
+        "v": "65766964656e63655f726f77"
+      },
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "76",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "sha256": "65b92fc2c983a77bc1545e5c26b276cae0216ed37d2c3ac14830e08a5e139c11",
+      "equals": null
+    },
+    {
+      "id": "h-empty-type",
+      "note": "an empty record_type is legal",
+      "record_type": {
+        "t": "str",
+        "v": ""
+      },
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "76",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "sha256": "ab795b39956b470de86948c17bae804ad544820016972deea9107b9f42616706",
+      "equals": null
+    },
+    {
+      "id": "h-empty-type-empty-value",
+      "note": "empty on both sides of the second separator",
+      "record_type": {
+        "t": "str",
+        "v": ""
+      },
+      "input": {
+        "t": "obj",
+        "v": []
+      },
+      "sha256": "272b12cefa5d9af16f3fee281d8d073248e315d0b2332e22789420b32a63f48a",
+      "equals": null
+    },
+    {
+      "id": "h-nonascii-type",
+      "note": "a record_type outside ASCII",
+      "record_type": {
+        "t": "str",
+        "v": "72c3a973756c746174"
+      },
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "76",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "sha256": "2a1c8bb43c0f93cdf90a73314e1d16009000c9d49ff8a65cd584fd1c13163baf",
+      "equals": null
+    },
+    {
+      "id": "h-astral-type",
+      "note": "a record_type outside the BMP",
+      "record_type": {
+        "t": "str",
+        "v": "f09f9880726f77"
+      },
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "76",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "sha256": "ae7f7daa200ea7af06db7aecb85694513505d4fdb9499206dcfa677b4e1cfba8",
+      "equals": null
+    },
+    {
+      "id": "h-long-type",
+      "note": "a record_type longer than a SHA-256 block",
+      "record_type": {
+        "t": "str",
+        "v": "78787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878"
+      },
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "76",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "sha256": "85e95adc2791b756a777df6cdfad43fce357d49da5ce612a030b7168f8954b03",
+      "equals": null
+    },
+    {
+      "id": "h-type-with-quote",
+      "note": "record_type is not JSON-escaped; it is raw UTF-8 in the preimage",
+      "record_type": {
+        "t": "str",
+        "v": "6122625c63"
+      },
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "76",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "sha256": "865764b27bffe7894bd2a7b92fa513344dac7b79dab9855a6551b29fbfea0f50",
+      "equals": null
+    },
+    {
+      "id": "h-nfc-cafe",
+      "note": "composed",
+      "record_type": {
+        "t": "str",
+        "v": "636166c3a9"
+      },
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "76",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "sha256": "45d79aebf9ef18d1fff979397541407d9882abed1750ce519d3498f713ccb8ea",
+      "equals": null
+    },
+    {
+      "id": "h-nfd-cafe",
+      "note": "decomposed; digest equals h-nfc-cafe",
+      "record_type": {
+        "t": "str",
+        "v": "63616665cc81"
+      },
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "76",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "sha256": "45d79aebf9ef18d1fff979397541407d9882abed1750ce519d3498f713ccb8ea",
+      "equals": "h-nfc-cafe"
+    },
+    {
+      "id": "h-nfc-angstrom",
+      "note": "composed",
+      "record_type": {
+        "t": "str",
+        "v": "c385"
+      },
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "76",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "sha256": "891442f55f4332701c5bbbb912e5795cc75e98c89a13a67d6162cfcac1c1bf37",
+      "equals": null
+    },
+    {
+      "id": "h-nfd-angstrom",
+      "note": "decomposed; digest equals h-nfc-angstrom",
+      "record_type": {
+        "t": "str",
+        "v": "41cc8a"
+      },
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "76",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "sha256": "891442f55f4332701c5bbbb912e5795cc75e98c89a13a67d6162cfcac1c1bf37",
+      "equals": "h-nfc-angstrom"
+    },
+    {
+      "id": "h-nfc-ntilde",
+      "note": "composed",
+      "record_type": {
+        "t": "str",
+        "v": "c3b1"
+      },
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "76",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "sha256": "56f61ca2c0b0119a302a5ae22ae0977483d04dc65aa162366da5ecf49f049321",
+      "equals": null
+    },
+    {
+      "id": "h-nfd-ntilde",
+      "note": "decomposed; digest equals h-nfc-ntilde",
+      "record_type": {
+        "t": "str",
+        "v": "6ecc83"
+      },
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "76",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "sha256": "56f61ca2c0b0119a302a5ae22ae0977483d04dc65aa162366da5ecf49f049321",
+      "equals": "h-nfc-ntilde"
+    },
+    {
+      "id": "h-nfc-udiaeresis",
+      "note": "composed",
+      "record_type": {
+        "t": "str",
+        "v": "c3bc"
+      },
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "76",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "sha256": "b7af53dfaefaace77b3ef771014aa971bd9bdcaf44e15be5d729cf01ecb2767f",
+      "equals": null
+    },
+    {
+      "id": "h-nfd-udiaeresis",
+      "note": "decomposed; digest equals h-nfc-udiaeresis",
+      "record_type": {
+        "t": "str",
+        "v": "75cc88"
+      },
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "76",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "sha256": "b7af53dfaefaace77b3ef771014aa971bd9bdcaf44e15be5d729cf01ecb2767f",
+      "equals": "h-nfc-udiaeresis"
+    },
+    {
+      "id": "h-nfc-ocircumflex",
+      "note": "composed",
+      "record_type": {
+        "t": "str",
+        "v": "c3b4"
+      },
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "76",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "sha256": "a72ebd1cfc00e45855e0396ca8f9686fac410a1bd066221b77349c32ab4ea1d3",
+      "equals": null
+    },
+    {
+      "id": "h-nfd-ocircumflex",
+      "note": "decomposed; digest equals h-nfc-ocircumflex",
+      "record_type": {
+        "t": "str",
+        "v": "6fcc82"
+      },
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "76",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "sha256": "a72ebd1cfc00e45855e0396ca8f9686fac410a1bd066221b77349c32ab4ea1d3",
+      "equals": "h-nfc-ocircumflex"
+    },
+    {
+      "id": "h-nfc-two-marks",
+      "note": "composed, two marks",
+      "record_type": {
+        "t": "str",
+        "v": "c3a976c3a96e656d656e74"
+      },
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "76",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "sha256": "79b25b1a3993b8bf2ab999926538e51e6ff15716445c0af2a97c52bcc8b075cf",
+      "equals": null
+    },
+    {
+      "id": "h-nfd-two-marks",
+      "note": "decomposed, two marks; digest equals h-nfc-two-marks",
+      "record_type": {
+        "t": "str",
+        "v": "65cc817665cc816e656d656e74"
+      },
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "76",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "sha256": "79b25b1a3993b8bf2ab999926538e51e6ff15716445c0af2a97c52bcc8b075cf",
+      "equals": "h-nfc-two-marks"
+    },
+    {
+      "id": "h-nfc-angstrom-sign",
+      "note": "U+212B normalizes to U+00C5; digest equals h-nfc-angstrom",
+      "record_type": {
+        "t": "str",
+        "v": "e284ab"
+      },
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "76",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "sha256": "891442f55f4332701c5bbbb912e5795cc75e98c89a13a67d6162cfcac1c1bf37",
+      "equals": "h-nfc-angstrom"
+    },
+    {
+      "id": "h-nfc-astral-mark",
+      "note": "an astral character before a decomposable one",
+      "record_type": {
+        "t": "str",
+        "v": "f09f9880636166c3a9"
+      },
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "76",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "sha256": "cb0d3b6e22f338381544a13981322603b91f3b65939c15311c91f645b8dbccc9",
+      "equals": null
+    },
+    {
+      "id": "h-nfd-astral-mark",
+      "note": "digest equals h-nfc-astral-mark",
+      "record_type": {
+        "t": "str",
+        "v": "f09f988063616665cc81"
+      },
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "76",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "sha256": "cb0d3b6e22f338381544a13981322603b91f3b65939c15311c91f645b8dbccc9",
+      "equals": "h-nfc-astral-mark"
+    },
+    {
+      "id": "h-boundary-a",
+      "note": "record_type 'ab', value {'':1}",
+      "record_type": {
+        "t": "str",
+        "v": "6162"
+      },
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "sha256": "36d64e5406187f69038bf5ea1939f76ff81ffb562becb886e52b1117a8570a07",
+      "equals": null
+    },
+    {
+      "id": "h-boundary-b",
+      "note": "record_type 'a', value {'b':1}; must NOT equal h-boundary-a",
+      "record_type": {
+        "t": "str",
+        "v": "61"
+      },
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "62",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "sha256": "cd5366ecee0ae520ee679dcff43b0e36647ddd861a1e126852a00dbbdbf583a8",
+      "equals": null
+    }
+  ],
+  "hash_errors": [
+    {
+      "id": "h-e-nul-only",
+      "note": "a record_type that is one NUL",
+      "record_type": {
+        "t": "str16",
+        "v": "0000"
+      },
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "76",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "error": "ACS_ERROR"
+    },
+    {
+      "id": "h-e-nul-leading",
+      "note": "NUL at the start",
+      "record_type": {
+        "t": "str16",
+        "v": "00000061"
+      },
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "76",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "error": "ACS_ERROR"
+    },
+    {
+      "id": "h-e-nul-trailing",
+      "note": "NUL at the end",
+      "record_type": {
+        "t": "str16",
+        "v": "00610000"
+      },
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "76",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "error": "ACS_ERROR"
+    },
+    {
+      "id": "h-e-nul-middle",
+      "note": "NUL between two ordinary characters",
+      "record_type": {
+        "t": "str16",
+        "v": "006100000062"
+      },
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "76",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "error": "ACS_ERROR"
+    },
+    {
+      "id": "h-e-nul-twice",
+      "note": "two NULs",
+      "record_type": {
+        "t": "str16",
+        "v": "0061000000000062"
+      },
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "76",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "error": "ACS_ERROR"
+    },
+    {
+      "id": "h-e-nul-forged-boundary",
+      "note": "'evidence_row\\0result_stamp' would otherwise produce the preimage of a different (record_type, value) split",
+      "record_type": {
+        "t": "str16",
+        "v": "00650076006900640065006e00630065005f0072006f007700000072006500730075006c0074005f007300740061006d0070"
+      },
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "76",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "error": "ACS_ERROR"
+    },
+    {
+      "id": "h-e-nul-with-nonascii",
+      "note": "NUL beside a multi-byte character",
+      "record_type": {
+        "t": "str16",
+        "v": "00e90000"
+      },
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "76",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "error": "ACS_ERROR"
+    },
+    {
+      "id": "h-e-nul-with-astral",
+      "note": "NUL beside a surrogate pair",
+      "record_type": {
+        "t": "str16",
+        "v": "d83dde000000"
+      },
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "76",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "error": "ACS_ERROR"
+    },
+    {
+      "id": "h-e-nul-both-ends",
+      "note": "NUL at each end",
+      "record_type": {
+        "t": "str16",
+        "v": "000000610000"
+      },
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "76",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "error": "ACS_ERROR"
+    },
+    {
+      "id": "h-e-nul-in-long-type",
+      "note": "NUL late in a long record_type",
+      "record_type": {
+        "t": "str16",
+        "v": "0078007800780078007800780078007800780078007800780078007800780078007800780078007800780078007800780078007800780078007800780078007800780078007800780078007800780078007800780078007800780078007800780078007800780078007800780078007800780078007800780078007800780078000000790079007900790079007900790079"
+      },
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "76",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "error": "ACS_ERROR"
+    },
+    {
+      "id": "h-e-surrogate-type",
+      "note": "a lone surrogate in the record_type",
+      "record_type": {
+        "t": "str16",
+        "v": "d800"
+      },
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "76",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "error": "LONE_SURROGATE"
+    },
+    {
+      "id": "h-e-surrogate-type-trailing",
+      "note": "a lone surrogate at the end of the record_type",
+      "record_type": {
+        "t": "str16",
+        "v": "0061dc00"
+      },
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "76",
+            {
+              "t": "i64",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "error": "LONE_SURROGATE"
+    },
+    {
+      "id": "h-e-value-not-finite",
+      "note": "a NaN in the value",
+      "record_type": {
+        "t": "str",
+        "v": "65766964656e63655f726f77"
+      },
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "76",
+            {
+              "t": "f64",
+              "v": "7ff8000000000000"
+            }
+          ]
+        ]
+      },
+      "error": "NOT_FINITE"
+    },
+    {
+      "id": "h-e-value-int-range",
+      "note": "an out-of-range integer in the value",
+      "record_type": {
+        "t": "str",
+        "v": "65766964656e63655f726f77"
+      },
+      "input": {
+        "t": "obj",
+        "v": [
+          [
+            "76",
+            {
+              "t": "i64",
+              "v": "9223372036854775808"
+            }
+          ]
+        ]
+      },
+      "error": "INT_OUT_OF_RANGE"
+    }
+  ],
+  "parse_note": "Parse cases are normative in WHETHER they reject, not in the code they reject with. A host that rejects a non-standard JSON constant in its own tokenizer legitimately reports a syntax error where this implementation reports NOT_FINITE. Encode-error codes ARE normative: those are ACS-1's own semantics rather than a host parser's. The error field distinguishes the two: PARSE_ERROR means the input is malformed JSON and any refusal counts, while DUPLICATE_KEY, INT_OUT_OF_RANGE and NOT_FINITE mark inputs that are well-formed JSON and can only be refused by an ACS-1 rule.",
+  "parse": [
+    {
+      "id": "p-dup-key",
+      "note": "stock parsers keep the last silently",
+      "input_hex": "7b2261223a312c2261223a327d",
+      "error": "DUPLICATE_KEY"
+    },
+    {
+      "id": "p-nan-literal",
+      "note": "non-standard JSON constant",
+      "input_hex": "7b2261223a4e614e7d",
+      "error": "NOT_FINITE"
+    },
+    {
+      "id": "p-infinity-literal",
+      "note": "non-standard JSON constant",
+      "input_hex": "7b2261223a496e66696e6974797d",
+      "error": "NOT_FINITE"
+    },
+    {
+      "id": "p-dup-key-nested",
+      "note": "duplicate at depth",
+      "input_hex": "7b226f223a7b2261223a312c2261223a327d7d",
+      "error": "DUPLICATE_KEY"
+    },
+    {
+      "id": "p-dup-key-identical-bytes",
+      "note": "byte-identical duplicate keys, which no host container can hold and only a parser sees",
+      "input_hex": "7b22c3a9223a312c22c3a9223a327d",
+      "error": "DUPLICATE_KEY"
+    },
+    {
+      "id": "p-float-as-number",
+      "note": "ACS-1 numbers are integers; floats are carried as strings",
+      "input_hex": "7b2261223a312e357d",
+      "error": "PARSE_ERROR"
+    },
+    {
+      "id": "p-int-too-big",
+      "note": "int64 max + 1",
+      "input_hex": "7b2261223a393232333337323033363835343737353830387d",
+      "error": "INT_OUT_OF_RANGE"
+    },
+    {
+      "id": "p-canonical",
+      "note": "already canonical",
+      "input_hex": "7b2261223a317d",
+      "error": null
+    },
+    {
+      "id": "p-dup-key-three",
+      "note": "three copies of one key",
+      "input_hex": "7b2261223a312c2261223a322c2261223a337d",
+      "error": "DUPLICATE_KEY"
+    },
+    {
+      "id": "p-dup-key-separated",
+      "note": "the duplicate is not adjacent to its twin",
+      "input_hex": "7b2261223a312c2262223a322c2261223a337d",
+      "error": "DUPLICATE_KEY"
+    },
+    {
+      "id": "p-dup-key-deep",
+      "note": "a duplicate four levels down",
+      "input_hex": "7b2261223a7b2262223a7b2263223a7b2264223a312c2264223a327d7d7d7d",
+      "error": "DUPLICATE_KEY"
+    },
+    {
+      "id": "p-dup-key-in-array",
+      "note": "a duplicate inside an object inside an array",
+      "input_hex": "5b7b2261223a312c2261223a327d5d",
+      "error": "DUPLICATE_KEY"
+    },
+    {
+      "id": "p-dup-key-empty",
+      "note": "two empty-string keys",
+      "input_hex": "7b22223a312c22223a327d",
+      "error": "DUPLICATE_KEY"
+    },
+    {
+      "id": "p-dup-key-astral",
+      "note": "two astral keys, identical byte for byte",
+      "input_hex": "7b22f09f9880223a312c22f09f9880223a327d",
+      "error": "DUPLICATE_KEY"
+    },
+    {
+      "id": "p-dup-key-long-prefix",
+      "note": "keys identical for sixteen bytes and then to the end",
+      "input_hex": "7b22616c7068612f626574612f67616d6d612f78223a312c22616c7068612f626574612f67616d6d612f78223a327d",
+      "error": "DUPLICATE_KEY"
+    },
+    {
+      "id": "p-dup-key-nfc-collision",
+      "note": "composed and decomposed keys are one key on the parse side too",
+      "input_hex": "7b22636166c3a9223a312c2263616665cc81223a327d",
+      "error": "DUPLICATE_KEY"
+    },
+    {
+      "id": "p-dup-key-nfc-angstrom",
+      "note": "U+00C5 and A + U+030A",
+      "input_hex": "7b22c385223a312c2241cc8a223a327d",
+      "error": "DUPLICATE_KEY"
+    },
+    {
+      "id": "p-dup-key-nfc-angstrom-sign",
+      "note": "U+212B and U+00C5",
+      "input_hex": "7b22e284ab223a312c22c385223a327d",
+      "error": "DUPLICATE_KEY"
+    },
+    {
+      "id": "p-dup-key-nfc-ntilde",
+      "note": "U+00F1 and n + U+0303",
+      "input_hex": "7b22c3b1223a312c226ecc83223a327d",
+      "error": "DUPLICATE_KEY"
+    },
+    {
+      "id": "p-dup-key-nfc-decomposed-first",
+      "note": "the decomposed form first",
+      "input_hex": "7b2263616665cc81223a312c22636166c3a9223a327d",
+      "error": "DUPLICATE_KEY"
+    },
+    {
+      "id": "p-dup-key-nfc-deep",
+      "note": "an NFC collision four levels down",
+      "input_hex": "7b2261223a7b2262223a7b2263223a7b22c3a9223a312c2265cc81223a327d7d7d7d",
+      "error": "DUPLICATE_KEY"
+    },
+    {
+      "id": "p-dup-key-nfc-in-array",
+      "note": "an NFC collision inside an array",
+      "input_hex": "5b7b22c3b4223a312c226fcc82223a327d5d",
+      "error": "DUPLICATE_KEY"
+    },
+    {
+      "id": "p-dup-key-nfc-separated",
+      "note": "the colliding pair is not adjacent",
+      "input_hex": "7b22c3bc223a312c226d223a322c2275cc88223a337d",
+      "error": "DUPLICATE_KEY"
+    },
+    {
+      "id": "p-dup-key-nfc-long-prefix",
+      "note": "the collision is sixteen bytes in",
+      "input_hex": "7b22616c7068612f626574612f67616d6d612f636166c3a9223a312c22616c7068612f626574612f67616d6d612f63616665cc81223a327d",
+      "error": "DUPLICATE_KEY"
+    },
+    {
+      "id": "p-dup-key-nfc-astral",
+      "note": "an astral character before the colliding portion",
+      "input_hex": "7b22f09f92a9636166c3a9223a312c22f09f92a963616665cc81223a327d",
+      "error": "DUPLICATE_KEY"
+    },
+    {
+      "id": "p-dup-key-nfc-three",
+      "note": "three spellings of one key",
+      "input_hex": "7b22c385223a312c2241cc8a223a322c22e284ab223a337d",
+      "error": "DUPLICATE_KEY"
+    },
+    {
+      "id": "p-int-too-small",
+      "note": "int64 min - 1",
+      "input_hex": "7b2261223a2d393232333337323033363835343737353830397d",
+      "error": "INT_OUT_OF_RANGE"
+    },
+    {
+      "id": "p-int-too-big-nested",
+      "note": "int64 max + 1 at depth",
+      "input_hex": "7b2261223a7b2262223a393232333337323033363835343737353830387d7d",
+      "error": "INT_OUT_OF_RANGE"
+    },
+    {
+      "id": "p-int-too-small-nested",
+      "note": "int64 min - 1 at depth",
+      "input_hex": "7b2261223a7b2262223a2d393232333337323033363835343737353830397d7d",
+      "error": "INT_OUT_OF_RANGE"
+    },
+    {
+      "id": "p-int-too-big-in-array",
+      "note": "int64 max + 1 in an array",
+      "input_hex": "5b312c393232333337323033363835343737353830385d",
+      "error": "INT_OUT_OF_RANGE"
+    },
+    {
+      "id": "p-int-too-small-in-array",
+      "note": "int64 min - 1 in an array",
+      "input_hex": "5b312c2d393232333337323033363835343737353830395d",
+      "error": "INT_OUT_OF_RANGE"
+    },
+    {
+      "id": "p-int-too-big-second-value",
+      "note": "int64 max + 1 after a legal value",
+      "input_hex": "7b2261223a312c2262223a393232333337323033363835343737353830387d",
+      "error": "INT_OUT_OF_RANGE"
+    },
+    {
+      "id": "p-int-too-small-second-value",
+      "note": "int64 min - 1 after a legal value",
+      "input_hex": "7b2261223a312c2262223a2d393232333337323033363835343737353830397d",
+      "error": "INT_OUT_OF_RANGE"
+    },
+    {
+      "id": "p-int-too-big-deep",
+      "note": "int64 max + 1 four levels down",
+      "input_hex": "7b2261223a7b2262223a7b2263223a393232333337323033363835343737353830387d7d7d",
+      "error": "INT_OUT_OF_RANGE"
+    },
+    {
+      "id": "p-int-too-small-deep",
+      "note": "int64 min - 1 four levels down",
+      "input_hex": "7b2261223a7b2262223a7b2263223a2d393232333337323033363835343737353830397d7d7d",
+      "error": "INT_OUT_OF_RANGE"
+    },
+    {
+      "id": "p-int-uint64-max",
+      "note": "2^64 - 1",
+      "input_hex": "7b2261223a31383434363734343037333730393535313631357d",
+      "error": "INT_OUT_OF_RANGE"
+    },
+    {
+      "id": "p-int-huge",
+      "note": "far outside any machine word",
+      "input_hex": "7b2261223a393939393939393939393939393939393939393939393939393939393939393939393939393939397d",
+      "error": "INT_OUT_OF_RANGE"
+    },
+    {
+      "id": "p-int-max-ok",
+      "note": "int64 max is inside the range",
+      "input_hex": "7b2261223a393232333337323033363835343737353830377d",
+      "error": null
+    },
+    {
+      "id": "p-int-min-ok",
+      "note": "int64 min is inside the range",
+      "input_hex": "7b2261223a2d393232333337323033363835343737353830387d",
+      "error": null
+    },
+    {
+      "id": "p-int-bounds-array",
+      "note": "both boundaries in an array",
+      "input_hex": "5b393232333337323033363835343737353830372c2d393232333337323033363835343737353830385d",
+      "error": null
+    },
+    {
+      "id": "p-int-bounds-nested",
+      "note": "both boundaries at depth",
+      "input_hex": "7b2261223a7b2262223a393232333337323033363835343737353830372c2263223a2d393232333337323033363835343737353830387d7d",
+      "error": null
+    },
+    {
+      "id": "p-int-max-minus-one-ok",
+      "note": "one inside the upper boundary",
+      "input_hex": "7b2261223a393232333337323033363835343737353830367d",
+      "error": null
+    },
+    {
+      "id": "p-int-min-plus-one-ok",
+      "note": "one inside the lower boundary",
+      "input_hex": "7b2261223a2d393232333337323033363835343737353830377d",
+      "error": null
+    },
+    {
+      "id": "p-int-max-deep",
+      "note": "int64 max four levels down",
+      "input_hex": "7b2261223a7b2262223a7b2263223a393232333337323033363835343737353830377d7d7d",
+      "error": null
+    },
+    {
+      "id": "p-int-min-deep",
+      "note": "int64 min four levels down",
+      "input_hex": "7b2261223a7b2262223a7b2263223a2d393232333337323033363835343737353830387d7d7d",
+      "error": null
+    },
+    {
+      "id": "p-int-max-among-others",
+      "note": "int64 max beside ordinary integers",
+      "input_hex": "5b302c312c393232333337323033363835343737353830372c2d315d",
+      "error": null
+    },
+    {
+      "id": "p-int-min-among-others",
+      "note": "int64 min beside ordinary integers",
+      "input_hex": "5b302c312c2d393232333337323033363835343737353830382c2d315d",
+      "error": null
+    },
+    {
+      "id": "p-int-bounds-and-strings",
+      "note": "boundaries beside string values",
+      "input_hex": "7b2261223a393232333337323033363835343737353830372c2262223a2278222c2263223a2d393232333337323033363835343737353830387d",
+      "error": null
+    },
+    {
+      "id": "p-empty-containers",
+      "note": "empty object and array",
+      "input_hex": "7b2261223a7b7d2c2262223a5b5d7d",
+      "error": null
+    },
+    {
+      "id": "p-escapes",
+      "note": "every escape ACS-1 emits",
+      "input_hex": "7b225c625c745c6e5c665c725c225c5c223a225c75303030305c7530303166227d",
+      "error": null
+    },
+    {
+      "id": "p-raw-utf8",
+      "note": "non-ASCII is raw in canonical form and must parse as such",
+      "input_hex": "7b22636166c3a9223a22e4b8adf09f9880227d",
+      "error": null
+    },
+    {
+      "id": "p-float-as-string",
+      "note": "floats are strings; the parser must not object to the value",
+      "input_hex": "7b2261223a22322e346530227d",
+      "error": null
+    },
+    {
+      "id": "p-float-exponent",
+      "note": "an exponent-form JSON number is still a JSON number",
+      "input_hex": "7b2261223a3165307d",
+      "error": "PARSE_ERROR"
+    },
+    {
+      "id": "p-float-whole",
+      "note": "a float that looks like an integer with a point",
+      "input_hex": "7b2261223a312e307d",
+      "error": "PARSE_ERROR"
+    },
+    {
+      "id": "p-float-negative",
+      "note": "a negative float",
+      "input_hex": "7b2261223a2d312e357d",
+      "error": "PARSE_ERROR"
+    },
+    {
+      "id": "p-float-zero",
+      "note": "0.0 is still a float literal",
+      "input_hex": "7b2261223a302e307d",
+      "error": "PARSE_ERROR"
+    },
+    {
+      "id": "p-float-in-array",
+      "note": "a float literal in an array",
+      "input_hex": "5b312c312e355d",
+      "error": "PARSE_ERROR"
+    },
+    {
+      "id": "p-float-deep",
+      "note": "a float literal four levels down",
+      "input_hex": "7b2261223a7b2262223a7b2263223a312e357d7d7d",
+      "error": "PARSE_ERROR"
+    },
+    {
+      "id": "p-float-capital-exponent",
+      "note": "capital E is legal JSON and still a float",
+      "input_hex": "7b2261223a3145357d",
+      "error": "PARSE_ERROR"
+    },
+    {
+      "id": "p-float-both",
+      "note": "digits, point and exponent",
+      "input_hex": "7b2261223a312e35652d337d",
+      "error": "PARSE_ERROR"
+    },
+    {
+      "id": "p-float-fraction-only",
+      "note": "a fraction below one",
+      "input_hex": "7b2261223a302e357d",
+      "error": "PARSE_ERROR"
+    },
+    {
+      "id": "p-float-many-digits",
+      "note": "a float with a long fractional part",
+      "input_hex": "7b2261223a313233342e353637387d",
+      "error": "PARSE_ERROR"
+    },
+    {
+      "id": "p-neg-infinity-literal",
+      "note": "non-standard JSON constant",
+      "input_hex": "7b2261223a2d496e66696e6974797d",
+      "error": "NOT_FINITE"
+    },
+    {
+      "id": "p-nan-in-array",
+      "note": "non-standard JSON constant at depth",
+      "input_hex": "5b312c4e614e5d",
+      "error": "NOT_FINITE"
+    },
+    {
+      "id": "p-trailing-content",
+      "note": "a second value after the first",
+      "input_hex": "7b2261223a317d7b2262223a327d",
+      "error": "PARSE_ERROR"
+    },
+    {
+      "id": "p-unterminated-string",
+      "note": "truncated input",
+      "input_hex": "7b2261223a2278",
+      "error": "PARSE_ERROR"
+    },
+    {
+      "id": "p-empty-input",
+      "note": "no value at all",
+      "input_hex": "",
+      "error": "PARSE_ERROR"
+    }
+  ],
+  "canonical": [
+    {
+      "id": "c-scalar-int",
+      "note": "",
+      "input_hex": "31",
+      "input_utf8": "1"
+    },
+    {
+      "id": "c-scalar-string",
+      "note": "",
+      "input_hex": "2268656c6c6f22",
+      "input_utf8": "\"hello\""
+    },
+    {
+      "id": "c-float-string",
+      "note": "a float is a string in canonical form",
+      "input_hex": "22322e34653022",
+      "input_utf8": "\"2.4e0\""
+    },
+    {
+      "id": "c-empty-object",
+      "note": "",
+      "input_hex": "7b7d",
+      "input_utf8": "{}"
+    },
+    {
+      "id": "c-empty-array",
+      "note": "",
+      "input_hex": "5b5d",
+      "input_utf8": "[]"
+    },
+    {
+      "id": "c-nested-empties",
+      "note": "",
+      "input_hex": "7b2261223a7b7d2c2262223a5b5d7d",
+      "input_utf8": "{\"a\":{},\"b\":[]}"
+    },
+    {
+      "id": "c-sorted-keys",
+      "note": "already in byte order",
+      "input_hex": "7b2261223a312c2262223a327d",
+      "input_utf8": "{\"a\":1,\"b\":2}"
+    },
+    {
+      "id": "c-prefix-keys",
+      "note": "keys that differ only past a common prefix",
+      "input_hex": "7b2261223a312c226162223a322c22616263223a337d",
+      "input_utf8": "{\"a\":1,\"ab\":2,\"abc\":3}"
+    },
+    {
+      "id": "c-utf16-divergent-keys",
+      "note": "keys where UTF-8 and UTF-16 order disagree",
+      "input_hex": "7b227a223a312c22efbcba223a322c22f09f9880223a337d",
+      "input_utf8": "{\"z\":1,\"Ｚ\":2,\"😀\":3}"
+    },
+    {
+      "id": "c-escapes",
+      "note": "every escape ACS-1 emits, in a key and in a value",
+      "input_hex": "7b225c625c745c6e5c665c725c225c5c223a225c75303030305c75303030315c7530303166222c2261223a225c75303030627f2f227d",
+      "input_utf8": "{\"\\b\\t\\n\\f\\r\\\"\\\\\":\"\\u0000\\u0001\\u001f\",\"a\":\"\\u000b/\"}"
+    },
+    {
+      "id": "c-raw-non-ascii",
+      "note": "non-ASCII stays raw",
+      "input_hex": "22636166c3a9e4b8adf09f988022",
+      "input_utf8": "\"café中😀\""
+    },
+    {
+      "id": "c-int-bounds",
+      "note": "both int64 boundaries",
+      "input_hex": "7b226d6178223a393232333337323033363835343737353830372c226d696e223a2d393232333337323033363835343737353830387d",
+      "input_utf8": "{\"max\":9223372036854775807,\"min\":-9223372036854775808}"
+    },
+    {
+      "id": "c-bools-and-null",
+      "note": "",
+      "input_hex": "5b747275652c66616c73652c6e756c6c2c312c305d",
+      "input_utf8": "[true,false,null,1,0]"
+    },
+    {
+      "id": "c-deep",
+      "note": "ten levels",
+      "input_hex": "7b2261223a5b7b2262223a5b7b2263223a5b7b2264223a5b312c2278225d7d5d7d5d7d5d7d",
+      "input_utf8": "{\"a\":[{\"b\":[{\"c\":[{\"d\":[1,\"x\"]}]}]}]}"
+    },
+    {
+      "id": "c-metric-value",
+      "note": "the ADR-0001 tagged form, which is what actually gets hashed",
+      "input_hex": "7b226b696e64223a22646566696e6564222c2276616c7565223a22322e346530227d",
+      "input_utf8": "{\"kind\":\"defined\",\"value\":\"2.4e0\"}"
+    },
+    {
+      "id": "c-int-max-deep",
+      "note": "int64 max at depth",
+      "input_hex": "7b2261223a7b2262223a393232333337323033363835343737353830377d7d",
+      "input_utf8": "{\"a\":{\"b\":9223372036854775807}}"
+    },
+    {
+      "id": "c-int-min-deep",
+      "note": "int64 min at depth",
+      "input_hex": "7b2261223a7b2262223a2d393232333337323033363835343737353830387d7d",
+      "input_utf8": "{\"a\":{\"b\":-9223372036854775808}}"
+    },
+    {
+      "id": "c-int-bounds-array",
+      "note": "both boundaries in an array",
+      "input_hex": "5b393232333337323033363835343737353830372c2d393232333337323033363835343737353830385d",
+      "input_utf8": "[9223372036854775807,-9223372036854775808]"
+    },
+    {
+      "id": "c-astral-keys",
+      "note": "keys where UTF-8 and UTF-16 order disagree, at depth",
+      "input_hex": "7b226f223a7b22ee8080223a322c22f09f9880223a317d7d",
+      "input_utf8": "{\"o\":{\"\":2,\"😀\":1}}"
+    }
+  ],
+  "non_canonical": [
+    {
+      "id": "nc-whitespace",
+      "note": "whitespace is never present in canonical form",
+      "input_hex": "7b2261223a20317d"
+    },
+    {
+      "id": "nc-key-order",
+      "note": "keys out of byte order",
+      "input_hex": "7b2262223a312c2261223a327d"
+    },
+    {
+      "id": "nc-escaped-nonascii",
+      "note": "non-ASCII must be raw, not escaped",
+      "input_hex": "225c753030653922"
+    },
+    {
+      "id": "nc-uppercase-escape",
+      "note": "control escapes use lowercase hex",
+      "input_hex": "225c753030314622"
+    },
+    {
+      "id": "nc-whitespace-newline",
+      "note": "a newline between tokens",
+      "input_hex": "7b0a2261223a310a7d"
+    },
+    {
+      "id": "nc-whitespace-tab",
+      "note": "a tab after a colon",
+      "input_hex": "7b2261223a09317d"
+    },
+    {
+      "id": "nc-whitespace-in-array",
+      "note": "spaces between array members",
+      "input_hex": "5b312c20325d"
+    },
+    {
+      "id": "nc-key-order-multibyte",
+      "note": "a two-byte key before an ASCII one",
+      "input_hex": "7b22c3a9223a312c2261223a327d"
+    },
+    {
+      "id": "nc-key-order-utf16",
+      "note": "keys in UTF-16 code-unit order: the astral key's leading unit is 0xd83d, below the fullwidth character's 0xff3a, so UTF-16 puts it first while its UTF-8 bytes (f0 ...) put it last. This is the ordering RFC 8785 specifies and the reason ADR-0003 does not adopt it",
+      "input_hex": "7b227a223a312c22f09f9880223a332c22efbcba223a327d"
+    },
+    {
+      "id": "nc-key-order-utf16-two-astrals",
+      "note": "the same divergence with two astral keys",
+      "input_hex": "7b22f0908080223a312c22f09f9880223a322c22efbfa0223a337d"
+    },
+    {
+      "id": "nc-key-order-prefix",
+      "note": "a longer key before the one that prefixes it",
+      "input_hex": "7b226162223a312c2261223a327d"
+    },
+    {
+      "id": "nc-key-order-last-byte",
+      "note": "keys differing only in their final byte, reversed",
+      "input_hex": "7b2261616162223a312c2261616161223a327d"
+    },
+    {
+      "id": "nc-escaped-slash",
+      "note": "the solidus is not escaped",
+      "input_hex": "22615c2f6222"
+    },
+    {
+      "id": "nc-escaped-del",
+      "note": "0x7f is not escaped",
+      "input_hex": "225c753030376622"
+    },
+    {
+      "id": "nc-escaped-ascii",
+      "note": "a printable ASCII character escaped",
+      "input_hex": "225c753030343122"
+    },
+    {
+      "id": "nc-long-escape-for-short-form",
+      "note": "0x09 has a two-character form and must use it",
+      "input_hex": "225c753030303922"
+    },
+    {
+      "id": "nc-long-escape-newline",
+      "note": "0x0a has a two-character form and must use it",
+      "input_hex": "225c753030306122"
+    },
+    {
+      "id": "nc-uppercase-escape-in-key",
+      "note": "lowercase hex applies to keys too",
+      "input_hex": "7b225c7530303146223a317d"
+    },
+    {
+      "id": "nc-nfd-string",
+      "note": "a decomposed string value",
+      "input_hex": "2263616665cc8122"
+    },
+    {
+      "id": "nc-nfd-key",
+      "note": "a decomposed key",
+      "input_hex": "7b2263616665cc81223a317d"
+    },
+    {
+      "id": "nc-nfkc-neighbours",
+      "note": "a fullwidth key beside its NFKC folding: out of byte order, and a duplicate as well for any implementation that normalizes with NFKC instead of NFC",
+      "input_hex": "7b22efbcba223a312c225a223a327d"
+    },
+    {
+      "id": "nc-dup-key",
+      "note": "a duplicate key is not a canonical row",
+      "input_hex": "7b2261223a312c2261223a327d"
+    },
+    {
+      "id": "nc-dup-key-nfc",
+      "note": "keys colliding after NFC",
+      "input_hex": "7b22636166c3a9223a312c2263616665cc81223a327d"
+    },
+    {
+      "id": "nc-dup-key-deep",
+      "note": "a duplicate at depth",
+      "input_hex": "7b226f223a7b2261223a312c2261223a327d7d"
+    },
+    {
+      "id": "nc-int-too-big",
+      "note": "an out-of-range integer",
+      "input_hex": "7b2261223a393232333337323033363835343737353830387d"
+    },
+    {
+      "id": "nc-int-too-small",
+      "note": "an out-of-range integer",
+      "input_hex": "7b2261223a2d393232333337323033363835343737353830397d"
+    },
+    {
+      "id": "nc-int-leading-zero",
+      "note": "leading zeros are not canonical",
+      "input_hex": "7b2261223a30317d"
+    },
+    {
+      "id": "nc-int-plus-sign",
+      "note": "a leading plus is not JSON",
+      "input_hex": "7b2261223a2b317d"
+    },
+    {
+      "id": "nc-int-negative-zero",
+      "note": "-0 is not a canonical integer",
+      "input_hex": "7b2261223a2d307d"
+    },
+    {
+      "id": "nc-float-literal",
+      "note": "a float as a JSON number",
+      "input_hex": "7b2261223a312e357d"
+    },
+    {
+      "id": "nc-float-exponent-literal",
+      "note": "a float in exponent form",
+      "input_hex": "7b2261223a3165307d"
+    },
+    {
+      "id": "nc-nan-literal",
+      "note": "a non-standard constant",
+      "input_hex": "7b2261223a4e614e7d"
+    },
+    {
+      "id": "nc-lone-surrogate-escape",
+      "note": "a lone surrogate written as a \\u escape",
+      "input_hex": "225c756438303022"
+    },
+    {
+      "id": "nc-lone-surrogate-in-key",
+      "note": "a lone surrogate in a key",
+      "input_hex": "7b225c7564383030223a317d"
+    },
+    {
+      "id": "nc-trailing-comma",
+      "note": "not JSON at all",
+      "input_hex": "7b2261223a312c7d"
+    },
+    {
+      "id": "nc-trailing-content",
+      "note": "a second value after the first",
+      "input_hex": "7b2261223a317d7b7d"
+    },
+    {
+      "id": "nc-empty-input",
+      "note": "no value at all",
+      "input_hex": ""
+    },
+    {
+      "id": "nc-invalid-utf8",
+      "note": "bytes that are not UTF-8",
+      "input_hex": "22c32822"
+    }
+  ]
+}

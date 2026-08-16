@@ -1,0 +1,72 @@
+{
+  "fingerprint": {
+    "model_id": "qwen3-next-80b-a3b-instruct",
+    "engine": "mlx",
+    "quantization": "4bit",
+    "arch": "qwen3_next",
+    "loaded_context_length": 262144,
+    "max_context_length": 262144
+  },
+  "tokens_requested": 16000,
+  "repeats": 6,
+  "parallel_hint": 4,
+  "sequence": [
+    {
+      "wall_s": 13.611,
+      "prompt_tokens": 15568,
+      "step": "A1"
+    },
+    {
+      "wall_s": 13.073,
+      "prompt_tokens": 15568,
+      "step": "A2"
+    },
+    {
+      "wall_s": 13.091,
+      "prompt_tokens": 15568,
+      "step": "A3"
+    },
+    {
+      "wall_s": 13.06,
+      "prompt_tokens": 15568,
+      "step": "A4"
+    },
+    {
+      "wall_s": 13.051,
+      "prompt_tokens": 15568,
+      "step": "A5"
+    },
+    {
+      "wall_s": 13.073,
+      "prompt_tokens": 15568,
+      "step": "A6"
+    },
+    {
+      "wall_s": 12.984,
+      "prompt_tokens": 15569,
+      "step": "B-control"
+    },
+    {
+      "wall_s": 12.876,
+      "prompt_tokens": 15568,
+      "step": "A-after-B"
+    }
+  ],
+  "verdict": {
+    "cold_reference_s": 13.611,
+    "warm_threshold_s": 3.403,
+    "warm_flags": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "leading_cold_run": 6,
+    "any_reuse": false,
+    "parallel_hint": 4,
+    "negative_control_cold": true,
+    "a_survives_b": false
+  }
+}

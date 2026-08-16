@@ -1,0 +1,33 @@
+{
+  "fingerprint": {
+    "model_id": "qwen3-next-80b-a3b-instruct",
+    "server": "lmstudio",
+    "server_version": "CLI commit: efce996",
+    "engine": "mlx",
+    "quantization": "4bit",
+    "arch": "qwen3_next",
+    "context_length": 262144,
+    "max_context_length": 262144,
+    "selected_runtimes": [
+      "llama.cpp-mac-arm64-apple-metal-advsimd@2.25.2",
+      "mlx-llm-mac-arm64-apple-metal-advsimd@1.10.1"
+    ],
+    "captured_at": "2026-08-12T23:32:21-0700"
+  },
+  "warmup_s": 0.459,
+  "prefix_reuse": {
+    "prompt_tokens": 15568,
+    "cold_s": 12.879,
+    "warm_s": 12.885,
+    "speedup": 1.0,
+    "reuse_detected": false
+  },
+  "tool_calling": {
+    "attempts": 10,
+    "well_formed_json": 10,
+    "schema_valid": 10,
+    "well_formed_rate": 1.0,
+    "schema_valid_rate": 1.0,
+    "failures": []
+  }
+}

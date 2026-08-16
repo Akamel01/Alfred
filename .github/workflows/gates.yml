@@ -1,0 +1,188 @@
+# Alfred — the gates the register declares.
+#
+# Every document carrying `enforcement: ci-gate` points here. If a check a document
+# names is not in this file, that document's enforcement value is a wish and the
+# document is falsified by its own frontmatter.
+#
+# Ordering is load-bearing. Integrity checks run FIRST, before any suite reports a
+# number: a tampered vectors.json or a stale register makes every subsequent green
+# tick meaningless, and a suite that passes against corrupted fixtures is exactly the
+# failure the ACS-1 mutation control was built to catch.
+#
+# This workflow runs no product code and touches no credential. It is inspector
+# machinery (D20): agents may not edit it.
+
+name: gates
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gates-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Pinned. A gate whose toolchain floats is not a gate — the same argument D40 makes
+  # about the inference lane, applied to the thing that checks it.
+  PYTHON_VERSION: "3.12"
+  NODE_VERSION: "26"
+
+jobs:
+  # ---------------------------------------------------------------- integrity first
+  integrity:
+    name: integrity (fixtures and register)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install ${{ env.PYTHON_VERSION }}
+
+      - name: Sync dependencies from the lockfile
+        # --frozen: the lockfile is a fingerprint field (A6). A gate that silently
+        # resolves a different closure is measuring a different system.
+        run: uv sync --frozen --all-extras --dev
+
+      # The register's completeness checks. These caught real drift on 2026-08-13 —
+      # a document added without an index entry — which is the only evidence in this
+      # project that the completeness check works.
+      - name: Document header contract
+        run: python3 scripts/lint_docs.py --check
+
+      - name: Reading map current
+        run: python3 scripts/gen_reading_map.py --check
+
+      # ACS-1 test vectors are the published specification (ADR-0004), so a
+      # hand-edited vectors.json would silently redefine the standard the evidence
+      # chain is audited against.
+      #
+      # `gen_vectors.py` takes no flags and rewrites in place, so the check must
+      # snapshot, regenerate, and compare. Running the generator and then running the
+      # suite would pass on a tampered committed file — the suite would be checking
+      # the freshly written bytes, not the committed ones.
+      - name: ACS-1 vectors regenerate byte-identically
+        run: |
+          set -euo pipefail
+          before="$(shasum -a 256 harness/acs/vectors.json | cut -d' ' -f1)"
+          python3 harness/acs/gen_vectors.py > /dev/null
+          after="$(shasum -a 256 harness/acs/vectors.json | cut -d' ' -f1)"
+          if [ "$before" != "$after" ]; then
+            echo "vectors.json is not what gen_vectors.py produces."
+            echo "  committed:   $before"
+            echo "  regenerated: $after"
+            echo "Either the generator changed without regenerating, or the file was hand-edited."
+            git --no-pager diff --stat -- harness/acs/vectors.json || true
+            exit 1
+          fi
+          echo "byte-identical: $after"
+
+  # ---------------------------------------------------------------- product gates
+  product:
+    name: product (lint, types, tests)
+    needs: integrity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install ${{ env.PYTHON_VERSION }}
+
+      - name: Sync dependencies from the lockfile
+        run: uv sync --frozen --all-extras --dev
+
+      # coding-standards.md: ruff and pyright are hard gates, not advisory.
+      # PGH is in the select list for codeless ignores; the control that actually
+      # rejects a blanket `# type: ignore[code]` is pyright's
+      # enableTypeIgnoreComments = false, verified by mutation 2026-08-15.
+      - name: ruff
+        run: uv run ruff check
+
+      - name: pyright --strict
+        run: uv run pyright
+
+      - name: pytest — product
+        run: uv run pytest tests
+
+  # ---------------------------------------------------------------- inspector gates
+  inspector:
+    name: inspector (ACS-1, lane, bench)
+    needs: integrity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install ${{ env.PYTHON_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Sync dependencies from the lockfile
+        run: uv sync --frozen --all-extras --dev
+
+      - name: ACS-1 — Python conformance
+        run: uv run pytest harness/acs
+
+      # The second implementation is the claim: a third party recomputes Alfred's
+      # digests without running Alfred's code (ADR-0003). It runs on stock Node with
+      # no dependencies, deliberately — the encoder guarding the audit chain must not
+      # depend on the supply chain the chain records.
+      - name: ACS-1 — JavaScript conformance
+        run: node harness/acs/verify_js.mjs
+
+      - name: bench harness self-tests
+        run: uv run pytest bench
+
+  # ---------------------------------------------------------------- mutation control
+  mutation:
+    name: mutation control (the suite's own negative control)
+    needs: inspector
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install ${{ env.PYTHON_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Sync dependencies from the lockfile
+        run: uv sync --frozen --all-extras --dev
+
+      # 47 mutants, threshold 8 checks, with its own negative control: a no-op mutant
+      # reports UNDETECTED rather than "ok", and an absent mutation aborts rather than
+      # reading as a suite hole. A passing suite is also what a vacuous suite reports —
+      # this is the step that tells them apart.
+      #
+      # It mutates a copy in a temp directory. An in-place mutation harness plus a
+      # stale __pycache__ already produced one false corruption signal in this project.
+      - name: ACS-1 mutation control
+        run: python3 harness/acs/mutate.py

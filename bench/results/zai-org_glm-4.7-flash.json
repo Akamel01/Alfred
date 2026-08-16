@@ -1,0 +1,56 @@
+{
+  "fingerprint": {
+    "model_id": "zai-org/glm-4.7-flash",
+    "server": "lmstudio",
+    "server_version": "CLI commit: efce996",
+    "engine": "llm",
+    "quantization": {
+      "name": "6bit",
+      "bits": 6
+    },
+    "context_length": 28672,
+    "selected_runtimes": [
+      "llama.cpp-mac-arm64-apple-metal-advsimd@2.25.2",
+      "mlx-llm-mac-arm64-apple-metal-advsimd@1.10.1"
+    ],
+    "captured_at": "2026-08-11T14:18:47-0700"
+  },
+  "warmup_s": 2.561,
+  "prefill": [
+    {
+      "target_tokens": 8000,
+      "prompt_tokens": 7753,
+      "wall_clock_s": 9.085,
+      "prefill_tok_per_s": 853.3
+    },
+    {
+      "target_tokens": 16000,
+      "prompt_tokens": 15558,
+      "wall_clock_s": 24.849,
+      "prefill_tok_per_s": 626.1
+    },
+    {
+      "target_tokens": 24000,
+      "prompt_tokens": 23361,
+      "wall_clock_s": 50.007,
+      "prefill_tok_per_s": 467.2
+    }
+  ],
+  "prefix_reuse": {
+    "prompt_tokens": 15562,
+    "cold_s": 24.918,
+    "warm_s": 0.769,
+    "speedup": 32.38,
+    "reuse_detected": true
+  },
+  "tool_calling": {
+    "attempts": 10,
+    "well_formed_json": 9,
+    "schema_valid": 9,
+    "well_formed_rate": 0.9,
+    "schema_valid_rate": 0.9,
+    "failures": [
+      "no tool_call: Record a THW of 2.4 seconds for scenario"
+    ]
+  }
+}

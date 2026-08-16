@@ -1,0 +1,18 @@
+
+=== thw
+  gen 1.5s  visible 2/2  held-out 4/4
+
+=== ttc_constant_velocity
+  gen 1.22s  visible 2/2  held-out 4/4
+
+=== drac
+  gen 2.47s  visible 2/2  held-out 4/4
+
+=== pet
+  gen 2.05s  visible 2/2  held-out 4/4
+
+=== msd
+  gen 2.31s  visible 2/2  held-out 4/4
+
+VISIBLE 10/10   HELD-OUT 20/20
+wrote /Users/akamel/Alfred/bench/results/toy_openai_gpt-oss-120b.json

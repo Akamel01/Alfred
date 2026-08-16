@@ -1,0 +1,35 @@
+{
+  "fingerprint": {
+    "model_id": "openai/gpt-oss-120b",
+    "engine": "gguf",
+    "quantization": "MXFP4",
+    "arch": "gpt-oss",
+    "loaded_context_length": 28672,
+    "max_context_length": 131072
+  },
+  "seeds": [
+    3355,
+    424242,
+    7,
+    91
+  ],
+  "n_runs": 4,
+  "n_tasks": 20,
+  "mean": {
+    "chain_completion_rate": 1.0,
+    "correct_rate": 0.75,
+    "fabrication_rate": 0.2,
+    "recovery_rate": 1.0,
+    "mean_turns": 5.9,
+    "mean_tool_calls": 4.45
+  },
+  "totals": {
+    "total_repeated_calls": 3,
+    "total_malformed_args": 0,
+    "total_text_channel_calls": 0
+  },
+  "tasks_correct": 15,
+  "tasks_submitted": 20,
+  "tasks_fabricated": 4,
+  "excluded_note": "seed files whose fingerprint differs from this run are excluded"
+}

@@ -1,0 +1,60 @@
+{
+  "fingerprint": {
+    "model_id": "qwen3-next-80b-a3b-instruct",
+    "engine": "mlx",
+    "quantization": "4bit",
+    "arch": "qwen3_next",
+    "loaded_context_length": 262144,
+    "max_context_length": 262144
+  },
+  "tokens_requested": 16000,
+  "repeats": 4,
+  "parallel_hint": 2,
+  "sequence": [
+    {
+      "wall_s": 16.067,
+      "prompt_tokens": 15571,
+      "step": "A1"
+    },
+    {
+      "wall_s": 13.222,
+      "prompt_tokens": 15571,
+      "step": "A2"
+    },
+    {
+      "wall_s": 13.213,
+      "prompt_tokens": 15571,
+      "step": "A3"
+    },
+    {
+      "wall_s": 13.218,
+      "prompt_tokens": 15571,
+      "step": "A4"
+    },
+    {
+      "wall_s": 13.345,
+      "prompt_tokens": 15569,
+      "step": "B-control"
+    },
+    {
+      "wall_s": 13.219,
+      "prompt_tokens": 15571,
+      "step": "A-after-B"
+    }
+  ],
+  "verdict": {
+    "cold_reference_s": 16.067,
+    "warm_threshold_s": 4.017,
+    "warm_flags": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "leading_cold_run": 4,
+    "any_reuse": false,
+    "parallel_hint": 2,
+    "negative_control_cold": true,
+    "a_survives_b": false
+  }
+}

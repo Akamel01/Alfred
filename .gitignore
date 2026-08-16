@@ -1,0 +1,34 @@
+# Environments and caches — reproducibility comes from uv.lock, not from a committed venv.
+.venv/
+__pycache__/
+*.py[cod]
+.ruff_cache/
+.pytest_cache/
+.hypothesis/
+.mypy_cache/
+.pyright/
+
+# Tooling state that is machine-local, not project state.
+.claude-flow/
+.DS_Store
+
+# Secrets never enter the repository (docs/tier4/secrets-management-policy.md).
+# Listed defensively: the policy is the control, this is the backstop.
+.env
+.env.*
+*.pem
+*.key
+secrets.yaml
+secrets.yml
+
+# bench/results/ is deliberately NOT ignored. Those per-seed files are the immutable
+# record behind every Phase −1 number the plan quotes, including the retained
+# *.INVALID-no-salt.json kept as the evidence for the unsalted-prefill correction.
+# A plan citing measurements that exist in no repository is a plan citing nothing.
+# They are append-only by convention: re-take a measurement, never edit a number.
+
+# Model weights and datasets are large, licensed, and pinned by hash elsewhere.
+*.gguf
+*.safetensors
+models/
+data/

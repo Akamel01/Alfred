@@ -1,0 +1,352 @@
+{
+  "model": "qwen3-next-80b-a3b-instruct",
+  "tasks": [
+    {
+      "task": "thw",
+      "generation_s": 1.26,
+      "code": "import math\n\ndef thw(gap_m: float, ego_speed_mps: float) -> float:\n    if ego_speed_mps == 0.0:\n        return math.inf\n    return gap_m / ego_speed_mps",
+      "visible": {
+        "results": [
+          {
+            "args": [
+              24.0,
+              10.0
+            ],
+            "expected": 2.4,
+            "got": 2.4,
+            "pass": true
+          },
+          {
+            "args": [
+              0.0,
+              10.0
+            ],
+            "expected": 0.0,
+            "got": 0.0,
+            "pass": true
+          }
+        ]
+      },
+      "held_out": {
+        "results": [
+          {
+            "args": [
+              50.0,
+              20.0
+            ],
+            "expected": 2.5,
+            "got": 2.5,
+            "pass": true
+          },
+          {
+            "args": [
+              7.5,
+              3.0
+            ],
+            "expected": 2.5,
+            "got": 2.5,
+            "pass": true
+          },
+          {
+            "args": [
+              13.0,
+              0.0
+            ],
+            "expected": Infinity,
+            "got": Infinity,
+            "pass": true
+          },
+          {
+            "args": [
+              100.0,
+              8.0
+            ],
+            "expected": 12.5,
+            "got": 12.5,
+            "pass": true
+          }
+        ]
+      }
+    },
+    {
+      "task": "ttc_constant_velocity",
+      "generation_s": 0.96,
+      "code": "import math\n\ndef ttc(gap_m: float, closing_speed_mps: float) -> float:\n    if closing_speed_mps <= 0:\n        return math.inf\n    return gap_m / closing_speed_mps",
+      "visible": {
+        "results": [
+          {
+            "args": [
+              24.0,
+              10.0
+            ],
+            "expected": 2.4,
+            "got": 2.4,
+            "pass": true
+          },
+          {
+            "args": [
+              10.0,
+              -2.0
+            ],
+            "expected": Infinity,
+            "got": Infinity,
+            "pass": true
+          }
+        ]
+      },
+      "held_out": {
+        "results": [
+          {
+            "args": [
+              25.0,
+              20.0
+            ],
+            "expected": 1.25,
+            "got": 1.25,
+            "pass": true
+          },
+          {
+            "args": [
+              0.0,
+              5.0
+            ],
+            "expected": 0.0,
+            "got": 0.0,
+            "pass": true
+          },
+          {
+            "args": [
+              12.0,
+              0.0
+            ],
+            "expected": Infinity,
+            "got": Infinity,
+            "pass": true
+          },
+          {
+            "args": [
+              64.0,
+              8.0
+            ],
+            "expected": 8.0,
+            "got": 8.0,
+            "pass": true
+          }
+        ]
+      }
+    },
+    {
+      "task": "drac",
+      "generation_s": 0.99,
+      "code": "import math\n\ndef drac(gap_m: float, closing_speed_mps: float) -> float:\n    if closing_speed_mps <= 0:\n        return 0.0\n    if gap_m <= 0:\n        return math.inf\n    return (closing_speed_mps ** 2) / (2 * gap_m)",
+      "visible": {
+        "results": [
+          {
+            "args": [
+              25.0,
+              10.0
+            ],
+            "expected": 2.0,
+            "got": 2.0,
+            "pass": true
+          },
+          {
+            "args": [
+              10.0,
+              -3.0
+            ],
+            "expected": 0.0,
+            "got": 0.0,
+            "pass": true
+          }
+        ]
+      },
+      "held_out": {
+        "results": [
+          {
+            "args": [
+              20.0,
+              20.0
+            ],
+            "expected": 10.0,
+            "got": 10.0,
+            "pass": true
+          },
+          {
+            "args": [
+              50.0,
+              10.0
+            ],
+            "expected": 1.0,
+            "got": 1.0,
+            "pass": true
+          },
+          {
+            "args": [
+              8.0,
+              4.0
+            ],
+            "expected": 1.0,
+            "got": 1.0,
+            "pass": true
+          },
+          {
+            "args": [
+              0.0,
+              6.0
+            ],
+            "expected": Infinity,
+            "got": Infinity,
+            "pass": true
+          }
+        ]
+      }
+    },
+    {
+      "task": "pet",
+      "generation_s": 0.75,
+      "code": "import math\n\ndef pet(first_exit_s: float, second_entry_s: float) -> float:\n    if second_entry_s <= first_exit_s:\n        return 0.0\n    else:\n        return second_entry_s - first_exit_s",
+      "visible": {
+        "results": [
+          {
+            "args": [
+              2.0,
+              5.2
+            ],
+            "expected": 3.2,
+            "got": 3.2,
+            "pass": true
+          },
+          {
+            "args": [
+              4.0,
+              3.0
+            ],
+            "expected": 0.0,
+            "got": 0.0,
+            "pass": true
+          }
+        ]
+      },
+      "held_out": {
+        "results": [
+          {
+            "args": [
+              1.5,
+              4.7
+            ],
+            "expected": 3.2,
+            "got": 3.2,
+            "pass": true
+          },
+          {
+            "args": [
+              10.0,
+              10.0
+            ],
+            "expected": 0.0,
+            "got": 0.0,
+            "pass": true
+          },
+          {
+            "args": [
+              0.0,
+              7.25
+            ],
+            "expected": 7.25,
+            "got": 7.25,
+            "pass": true
+          },
+          {
+            "args": [
+              6.0,
+              5.0
+            ],
+            "expected": 0.0,
+            "got": 0.0,
+            "pass": true
+          }
+        ]
+      }
+    },
+    {
+      "task": "msd",
+      "generation_s": 1.45,
+      "code": "import math\n\ndef msd(speed_mps: float, reaction_s: float, decel_mps2: float) -> float:\n    if speed_mps == 0.0:\n        return 0.0\n    if decel_mps2 <= 0:\n        return math.inf\n    reaction_distance = speed_mps * reaction_s\n    braking_distance = (speed_mps ** 2) / (2 * decel_mps2)\n    return reaction_distance + braking_distance",
+      "visible": {
+        "results": [
+          {
+            "args": [
+              10.0,
+              1.0,
+              5.0
+            ],
+            "expected": 20.0,
+            "got": 20.0,
+            "pass": true
+          },
+          {
+            "args": [
+              0.0,
+              1.0,
+              5.0
+            ],
+            "expected": 0.0,
+            "got": 0.0,
+            "pass": true
+          }
+        ]
+      },
+      "held_out": {
+        "results": [
+          {
+            "args": [
+              20.0,
+              1.0,
+              5.0
+            ],
+            "expected": 60.0,
+            "got": 60.0,
+            "pass": true
+          },
+          {
+            "args": [
+              15.0,
+              0.5,
+              7.5
+            ],
+            "expected": 22.5,
+            "got": 22.5,
+            "pass": true
+          },
+          {
+            "args": [
+              30.0,
+              2.0,
+              10.0
+            ],
+            "expected": 105.0,
+            "got": 105.0,
+            "pass": true
+          },
+          {
+            "args": [
+              5.0,
+              0.0,
+              2.5
+            ],
+            "expected": 5.0,
+            "got": 5.0,
+            "pass": true
+          }
+        ]
+      }
+    }
+  ],
+  "summary": {
+    "visible_passed": 10,
+    "visible_total": 10,
+    "held_out_passed": 20,
+    "held_out_total": 20
+  }
+}
