@@ -11,9 +11,32 @@
 # Privilege letters, matching the document:
 #   U = USAGE on schema · S = SELECT · I = INSERT · Up = UPDATE · D = DELETE
 
-version: 1
+version: 2
 
 schemas: [product, control, evidence, heldout, migration_meta]
+
+# Database-level CONNECT. Added in version 2 after the first real apply (2026-08-16)
+# produced a cluster no role could reach: N7 revokes CONNECT from PUBLIC, correctly, and
+# nothing granted it back. Every role holds it, `alfred_agent` included — the negative
+# tests must connect as it and be refused at the *schema*, and a role that cannot
+# connect proves nothing about grants.
+database_connect: [
+  alfred_harness, alfred_criterion, alfred_product, alfred_operator,
+  alfred_readmodel, alfred_agent, alfred_migrator_product,
+  alfred_migrator_control, alfred_migrator_evidence, alfred_migrator_heldout,
+  alfred_bootstrap,
+]
+
+# Schema-level CREATE, held by the four migrators on migration_meta only. Also added in
+# version 2: Alembic creates its version table on first upgrade, and CREATE on a schema
+# is a privilege distinct from USAGE. The schema is owned by alfred_bootstrap rather
+# than by any migrator, so none of them gets it implicitly — that is the ownership
+# separation working, not a reason to move ownership.
+schema_create:
+  migration_meta: [
+    alfred_migrator_product, alfred_migrator_control,
+    alfred_migrator_evidence, alfred_migrator_heldout,
+  ]
 
 # `control` splits for grant purposes: policy and threshold tables are read-only to
 # everything that is not their migrator, because they are the configuration the

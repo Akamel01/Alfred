@@ -115,4 +115,10 @@ reportUnnecessaryTypeIgnoreComment = "error"
 testpaths = ["tests"]
 pythonpath = [".", "src"]
 addopts = "-q --strict-markers --strict-config"
+markers = [
+    # Needs Docker and a throwaway Postgres (harness/db/cluster.py). Skipped when
+    # Docker is unavailable, unless ALFRED_REQUIRE_DB=1 — which CI sets, so a runner
+    # whose Docker failed to start reports red rather than green.
+    "db: requires a throwaway Postgres cluster",
+]
 filterwarnings = ["error"]

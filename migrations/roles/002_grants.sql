@@ -43,6 +43,34 @@ BEGIN
 END
 $$;
 
+-- --------------------------------------------------------------------- CONNECT
+-- Found by running this file against a real cluster on 2026-08-16: the grant matrix in
+-- docs/tier1/data-architecture.md never granted CONNECT on the database. N7 revokes it
+-- from PUBLIC, correctly, and nothing granted it back — so the matrix applied literally
+-- produced a cluster no role could reach. `FATAL: permission denied for database`.
+--
+-- Every role gets CONNECT, `alfred_agent` included and deliberately: the negative tests
+-- must connect as it and be refused at the *schema*. A role that cannot connect proves
+-- nothing about grants, and a test that reads "connection refused" as "access denied"
+-- is the shape in which a security test most commonly lies — which is also why those
+-- tests assert SQLSTATE 42501 specifically.
+--
+-- current_database() rather than a name: this file is applied to the throwaway test
+-- cluster and to the live one, and hardcoding either would silently no-op on the other.
+
+DO $$
+BEGIN
+    EXECUTE format(
+        'GRANT CONNECT ON DATABASE %I TO %s',
+        current_database(),
+        'alfred_harness, alfred_criterion, alfred_product, alfred_operator, '
+        'alfred_readmodel, alfred_agent, alfred_migrator_product, '
+        'alfred_migrator_control, alfred_migrator_evidence, alfred_migrator_heldout, '
+        'alfred_bootstrap'
+    );
+END
+$$;
+
 -- --------------------------------------------------------------------- USAGE
 -- Without schema USAGE every table grant beneath is unreachable. Its absence is the
 -- cheapest denial available, which is why the matrix lists it explicitly and why `—`
@@ -55,7 +83,14 @@ GRANT USAGE ON SCHEMA evidence TO alfred_harness, alfred_criterion, alfred_opera
 -- alfred_criterion is the ONLY role with any privilege on heldout, anywhere.
 GRANT USAGE ON SCHEMA heldout  TO alfred_criterion;
 
-GRANT USAGE ON SCHEMA migration_meta TO
+-- CREATE as well as USAGE, and this was the second omission the first real apply
+-- exposed (2026-08-16): the matrix grants USAGE, SELECT, INSERT and UPDATE on
+-- migration_meta, but Alembic *creates* its version table on the first upgrade, and
+-- CREATE on the schema is a separate privilege. `permission denied for schema
+-- migration_meta`. The schema is owned by alfred_bootstrap rather than by any migrator,
+-- so no migrator gets it implicitly — which is the ownership separation working as
+-- designed, not a reason to move ownership.
+GRANT USAGE, CREATE ON SCHEMA migration_meta TO
     alfred_migrator_product, alfred_migrator_control,
     alfred_migrator_evidence, alfred_migrator_heldout;
 

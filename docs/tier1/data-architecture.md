@@ -188,11 +188,34 @@ and it fails the build rather than reporting. It is a second layer over N5: the 
 the write impossible for every role that runs, and the lint catches the migration that
 would grant itself the ability by owning the table.
 
-**Status, honestly.** As of 2026-08-15 `migrations/` contains five empty directories and no
-Alembic configuration, and the repository has no CI. Everything in these three sections is
-specification. It is written now because none of it is retrofittable: a grant matrix
-applied after the first evidence row exists cannot prove what could have been read before
-it, and the additive-only property has no meaning once a row has been updated.
+**Status, updated 2026-08-16.** The layout, the four Alembic environments, the role
+script and the grant script exist and have been applied to a real cluster; the
+additive-only lint (`scripts/lint_migrations.py`) runs in CI and is mutation-checked.
+What does not yet exist is `harness/db/assert_grants.py` — the set-equality assertion —
+so the matrix below is **applied and partially verified, not yet asserted.**
+
+**Two omissions in the matrix above, found by applying it rather than by reading it.**
+Both are now corrected in `002_grants.sql` and recorded in `grants.yaml` (version 2), and
+both are worth keeping visible because they are the same class of defect:
+
+- **No role held `CONNECT` on the database.** N7 revokes it from `PUBLIC`, correctly, and
+  nothing granted it back. Applied literally, the matrix produced a cluster no role could
+  reach — `FATAL: permission denied for database`.
+- **The migrators held `USAGE` but not `CREATE` on `migration_meta`.** Alembic creates
+  its version table on the first upgrade, and `CREATE` on a schema is a privilege
+  distinct from `USAGE`. The schema is owned by `alfred_bootstrap` rather than by any
+  migrator, so none of them inherits it — the ownership separation working as designed.
+
+Neither is a privilege that was granted too widely; both are privileges the table simply
+never mentioned, in a document whose central claim is that a grant matrix is checked by
+what it forbids. **A matrix reviewed only for what it grants too much cannot catch a
+matrix that grants too little**, and the failure mode is the reverse of the dangerous one
+— loud rather than silent, which is the only reason it surfaced in minutes.
+
+Everything not yet asserted remains specification. It is written ahead of the code because
+none of it is retrofittable: a grant matrix applied after the first evidence row exists
+cannot prove what could have been read before it, and the additive-only property has no
+meaning once a row has been updated.
 
 ## Held-out values are a table, not a visibility setting
 

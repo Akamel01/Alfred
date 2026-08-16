@@ -1,0 +1,108 @@
+# Alfred's datastores, for development and for the Phase 0 exit criteria.
+#
+# What is here: Postgres. What is deliberately NOT here:
+#
+#   - **The harness.** It is the inspector (D20). Major-fix #4 puts `harness/`, the
+#     policy configuration and the Postgres data under a dedicated non-admin OS user
+#     that the operator's interactive account cannot write. That is a host-level
+#     control, and wrapping the harness in a container puts a root-running Docker
+#     daemon — whose socket is a privilege-escalation path — between the operator and
+#     the boundary. Containerizing it would buy reproducibility already supplied by
+#     `uv.lock` and `pyright --strict`, at the cost of the control that actually holds.
+#
+#   - **The inference lane.** MLX needs direct Metal access and Docker on macOS is a
+#     Linux VM. It is not a preference; it is not possible.
+#
+#   - **The agent execution plane.** Also containers, but Alfred-owned, disposable,
+#     one per task, created by the `Worker` adaptor with an asserted mount set and a
+#     deny-by-default network. Putting it here would make it long-lived and shared,
+#     which is the opposite of every property it needs (D10, D53).
+#
+#   - **The product API.** `src/api/` does not exist yet. A service stanza for it now
+#     would be a contract written before the thing it describes — the failure the
+#     fidelity ladder names. It arrives with the API, alongside the Phase 0 exit
+#     criterion "`docker compose up` serves the API; deploy and rollback verified".
+#
+# Development only. This file never runs in CI: the grant suite uses a throwaway
+# cluster created per run by `harness/db/cluster.py`, on a random loopback port with
+# tmpfs storage, because a shared long-lived cluster cannot prove that a grant matrix
+# holds from empty.
+
+name: alfred
+
+services:
+  postgres:
+    # Pinned by digest, never by tag (docs/tier4/supply-chain-policy.md § Container
+    # images). Tag `postgres:17.6-alpine`, kept in the comment for readability; the
+    # digest is what resolves. Must match PINNED_POSTGRES_IMAGE in harness/db/cluster.py.
+    image: postgres@sha256:ef257d85f76e48da1c64832459b59fcaba1a4dac97bf5d7450c77753542eee94
+
+    # Loopback only. The default `5432:5432` binds every interface, which on a laptop
+    # that joins untrusted networks exposes the control plane and the evidence store
+    # to the local segment. The port is also non-default so a stray client configured
+    # for a normal Postgres does not reach this one by accident.
+    ports:
+      - "127.0.0.1:${ALFRED_PG_PORT:-55432}:5432"
+
+    environment:
+      POSTGRES_USER: ${ALFRED_PG_SUPERUSER:-alfred_super}
+      POSTGRES_DB: ${ALFRED_PG_DBNAME:-alfred}
+      # No default, deliberately: compose fails to start when it is unset rather than
+      # coming up with a known password. Supply it from the secret store
+      # (docs/tier4/secrets-management-policy.md § macOS Keychain), never from a
+      # committed .env — which is why .env is in .gitignore and not in this repository.
+      POSTGRES_PASSWORD: ${ALFRED_PG_PASSWORD:?set ALFRED_PG_PASSWORD from the secret store}
+      # Deterministic collation. Left to the host locale, index ordering and text
+      # comparison vary by machine — which would make "byte-identical replay across
+      # environments" (D30's falsification condition (a)) fail for a reason that has
+      # nothing to do with the metrics.
+      POSTGRES_INITDB_ARGS: "--locale=C --encoding=UTF8"
+      LANG: C
+      LC_ALL: C
+
+    # A named volume, not a bind mount into the repository: Postgres data inside the
+    # working tree would be swept into a patch, a backup, or a `git add -A`, and it is
+    # the one directory in this system that must be owned by the non-admin OS user
+    # rather than by the interactive account.
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+    # `pg_isready` alone returns true while the server is still finishing initdb, so
+    # dependent services can connect before the database exists. A real query is the
+    # honest check.
+    healthcheck:
+      test: ["CMD-SHELL", "psql -U $${POSTGRES_USER} -d $${POSTGRES_DB} -c 'SELECT 1' || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
+    restart: unless-stopped
+
+    command:
+      - postgres
+      # WAL archiving and base backups are D43's evidence durability, and "restore
+      # verified" is a Phase 0 exit criterion. `wal_level=replica` is the floor that
+      # makes continuous archiving possible; the archive command itself is set when
+      # the off-machine target exists, because an archive_command pointing nowhere
+      # fails every checkpoint and fills the disk.
+      - "-c"
+      - "wal_level=replica"
+      - "-c"
+      - "archive_mode=on"
+      # Deliberately a no-op that succeeds. Replaced by the real off-machine command
+      # when the target is configured; `archive_mode` cannot be changed without a
+      # restart, so it is enabled now to avoid a restart later.
+      - "-c"
+      - "archive_command=/bin/true"
+      - "-c"
+      - "max_wal_senders=3"
+      # Log every DDL statement. The grant matrix and the schema are the two things
+      # whose unexplained change would be hardest to reconstruct afterwards.
+      - "-c"
+      - "log_statement=ddl"
+      - "-c"
+      - "log_connections=on"
+
+volumes:
+  pgdata:

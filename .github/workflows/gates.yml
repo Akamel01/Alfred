@@ -162,6 +162,39 @@ jobs:
       - name: bench harness self-tests
         run: uv run pytest bench
 
+  # ---------------------------------------------------------------- database
+  database:
+    name: database (throwaway cluster, roles and grants)
+    needs: integrity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install ${{ env.PYTHON_VERSION }}
+
+      # --extra db: psycopg is an optional extra so the type and test gates do not
+      # depend on a wheel that lags the interpreter.
+      - name: Sync dependencies from the lockfile
+        run: uv sync --frozen --all-extras --dev
+
+      # Creates a throwaway Postgres per run — random loopback port, tmpfs storage,
+      # generated passwords, removed on teardown — applies migrations/roles/ and all
+      # four Alembic environments, then verifies the cluster is what it claims to be.
+      #
+      # ALFRED_REQUIRE_DB=1 turns the local skip into a failure. Without it, a runner
+      # whose Docker service failed to start would skip these tests and the run would
+      # be green for the one reason that must never produce green.
+      - name: Throwaway cluster, roles, grants and migrations
+        env:
+          ALFRED_REQUIRE_DB: "1"
+        run: uv run pytest harness/db
+
   # ---------------------------------------------------------------- mutation control
   mutation:
     name: mutation control (the suite's own negative control)
