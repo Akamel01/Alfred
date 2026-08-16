@@ -62,6 +62,14 @@ jobs:
       - name: Reading map current
         run: python3 scripts/gen_reading_map.py --check
 
+      # Additive-only over migrations/harness/{evidence,heldout}/versions/. Second
+      # layer over the grant matrix: the grant makes the destructive write impossible
+      # for every role that runs; this catches the migration that would grant itself
+      # the ability by owning the table. Reports "0 migrations" distinctly from a
+      # pass — an empty guard must not read as a green one.
+      - name: Migrations are additive-only
+        run: python3 scripts/lint_migrations.py
+
       # ACS-1 test vectors are the published specification (ADR-0004), so a
       # hand-edited vectors.json would silently redefine the standard the evidence
       # chain is audited against.
@@ -184,5 +192,10 @@ jobs:
       #
       # It mutates a copy in a temp directory. An in-place mutation harness plus a
       # stale __pycache__ already produced one false corruption signal in this project.
+      # `uv run`, not bare python3: mutate.py shells out to pytest, so the interpreter
+      # it runs under must be the one with the project's dependencies. Bare python3
+      # fails with "No module named pytest" — and it fails *after* printing the
+      # baseline line, which is the shape in which this defect reads as a suite result
+      # rather than a harness fault.
       - name: ACS-1 mutation control
-        run: python3 harness/acs/mutate.py
+        run: uv run python harness/acs/mutate.py

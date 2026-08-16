@@ -27,6 +27,13 @@ secrets.yml
 # A plan citing measurements that exist in no repository is a plan citing nothing.
 # They are append-only by convention: re-take a measurement, never edit a number.
 
+# Every product Alfred builds is its own git repository under projects/ (see
+# projects/README.md). Ignoring them is not tidiness: without this, `git add -A` here
+# either swallows a nested repository's working tree or leaves a broken gitlink, and
+# both fail quietly. The README itself is tracked.
+projects/*
+!projects/README.md
+
 # Model weights and datasets are large, licensed, and pinned by hash elsewhere.
 *.gguf
 *.safetensors

@@ -1,0 +1,163 @@
+# The declared grant matrix (docs/tier1/data-architecture.md § Grant matrix).
+#
+# This file is the DECLARED state. `002_grants.sql` applies it; the assertion in
+# harness/db/assert_grants.py reads the cluster and requires the observed set to
+# EQUAL what is declared here — set equality, never subset. A subset check passes
+# on every extra grant, and an extra grant is the only kind of grant defect that
+# matters: it fails silently in the safe-looking direction, because everything works.
+#
+# Protected set (docs/tier4/protected-paths-policy.md). Agents may not write this file.
+#
+# Privilege letters, matching the document:
+#   U = USAGE on schema · S = SELECT · I = INSERT · Up = UPDATE · D = DELETE
+
+version: 1
+
+schemas: [product, control, evidence, heldout, migration_meta]
+
+# `control` splits for grant purposes: policy and threshold tables are read-only to
+# everything that is not their migrator, because they are the configuration the
+# PolicyEngine enforces. A role that can UPDATE a protected-path row can unprotect
+# a path without touching any protected file.
+object_groups:
+  product_all:        {schema: product,        tables: "*"}
+  control_work:       {schema: control,        tables: "*", except: ["policy_*", "threshold_*"]}
+  control_config:     {schema: control,        tables: ["policy_*", "threshold_*"]}
+  evidence_general:   {schema: evidence,       tables: "*", except: ["verdict", "operator_action"]}
+  evidence_verdict:   {schema: evidence,       tables: ["verdict"]}
+  evidence_operator:  {schema: evidence,       tables: ["operator_action"]}
+  heldout_all:        {schema: heldout,        tables: "*"}
+  migration_meta_all: {schema: migration_meta, tables: "*"}
+
+roles:
+
+  # Exists to be denied. Its credential lives in the negative-test fixture and in no
+  # configuration file. Every cell is empty, including schema USAGE — the cheapest
+  # denial available, and the one that makes `SELECT` fail at the schema rather than
+  # at the table (which is why the negative tests must assert SQLSTATE 42501 and not
+  # merely "an exception was raised": 42P01 undefined_table would pass a lax check).
+  alfred_agent:
+    login: true
+    owns: []
+    grants: {}
+
+  alfred_harness:
+    login: true
+    owns: []
+    grants:
+      product_all:       [U, S]
+      control_work:      [U, S, I, Up]
+      control_config:    [U, S]
+      evidence_general:  [U, S, I]
+      evidence_verdict:  [U, S]
+      evidence_operator: [U, S]
+      # heldout: absent. N2 — the harness assembles agent context, so a SELECT here
+      # puts held-out values one bug away from the prompt.
+
+  # Held by CriterionRunner, which runs OUTSIDE the criterion environment (A1).
+  # The criterion environment itself holds no credential at all: agent-authored code
+  # executes there, and a heldout credential inside it would let the code under test
+  # select its own answers.
+  alfred_criterion:
+    login: true
+    owns: []
+    grants:
+      control_work:      [U, S]
+      control_config:    [U, S]
+      evidence_general:  [U, S, I]
+      evidence_verdict:  [U, S, I]   # sole author of verdicts (D5, D39)
+      heldout_all:       [U, S]      # SELECT only: cannot write the answers it reads
+
+  alfred_product:
+    login: true
+    owns: []
+    grants:
+      product_all: [U, S, I, Up, D]
+
+  # Mission control command surface (D51). Its ONLY INSERT anywhere in the cluster is
+  # evidence.operator_action. That is a global claim and N4 asserts it globally.
+  alfred_operator:
+    login: true
+    owns: []
+    grants:
+      control_work:      [U, S]
+      control_config:    [U, S]
+      evidence_general:  [U, S]
+      evidence_verdict:  [U, S]
+      evidence_operator: [U, S, I]
+
+  # Mission control read model (D51) — agents may build it. SELECT and nothing else,
+  # anywhere, and nothing at all on heldout. Its inability to become a source of truth
+  # is a database fact rather than a review outcome.
+  alfred_readmodel:
+    login: true
+    owns: []
+    grants:
+      product_all:       [U, S]
+      control_work:      [U, S]
+      control_config:    [U, S]
+      evidence_general:  [U, S]
+      evidence_verdict:  [U, S]
+      evidence_operator: [U, S]
+
+  # Migrators. Ownership is separated from use throughout: a role that owns a table can
+  # ALTER, UPDATE and DROP it regardless of grants, so the append-only property of
+  # `evidence` survives only because no running service owns it (N6).
+  # No migrator credential is held by a long-running service.
+  alfred_migrator_product:
+    login: true
+    owns: [product]
+    grants: {migration_meta_all: [U, S, I, Up]}
+
+  alfred_migrator_control:
+    login: true
+    owns: [control]
+    grants: {migration_meta_all: [U, S, I, Up]}
+
+  alfred_migrator_evidence:
+    login: true
+    owns: [evidence]
+    grants: {migration_meta_all: [U, S, I, Up]}
+
+  alfred_migrator_heldout:
+    login: true
+    owns: [heldout]
+    grants: {migration_meta_all: [U, S, I, Up]}
+
+  # Administers roles; is not a way to reach rows. Holds no data privilege by design.
+  alfred_bootstrap:
+    login: true
+    owns: [migration_meta]
+    grants: {}
+
+# No role membership is declared. N10: membership is a privilege path that no
+# table-grant query will show, so the assertion reads pg_auth_members and requires
+# it to be empty of any pair not listed here.
+role_memberships: []
+
+# Asserted absent, not merely undeclared. Each maps to a numbered row in
+# docs/tier1/data-architecture.md § Grants that must not exist.
+must_not_exist:
+  - id: N1
+    rule: alfred_agent holds no privilege of any kind, including schema USAGE, anywhere
+  - id: N2
+    rule: alfred_harness holds no privilege on schema heldout
+  - id: N3
+    rule: alfred_readmodel holds no privilege on heldout, and no INSERT/UPDATE/DELETE/TRUNCATE anywhere
+  - id: N4
+    rule: alfred_operator holds INSERT on no object other than evidence.operator_action, and no write on evidence.verdict
+  - id: N5
+    rule: no role holds UPDATE, DELETE or TRUNCATE on any object in evidence or heldout
+  - id: N6
+    rule: no evidence or heldout object is owned by a role whose credential a running service holds
+  - id: N7
+    rule: PUBLIC holds nothing — no CONNECT on the database, no USAGE on any schema, no EXECUTE on any function
+  - id: N8
+    rule: no default privileges (pg_default_acl) grant anything to PUBLIC or to a role not named above
+  - id: N9
+    rule: no role above has SUPERUSER, CREATEROLE, CREATEDB, BYPASSRLS or REPLICATION
+  - id: N10
+    rule: pg_auth_members contains no pair outside role_memberships
+  # N11 (no database credential inside the agent container or the criterion environment)
+  # is asserted at sandbox boot (C8), not here. The grant matrix is irrelevant if the
+  # credential is on the wrong side of the boundary.
