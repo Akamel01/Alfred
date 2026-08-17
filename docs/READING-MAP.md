@@ -42,27 +42,28 @@ Product skeleton. The largest reading set, because Phase 0 builds what cannot be
 
 | # | Document | Kind | Status | Why now |
 |---|---|---|---|---|
-| 1 | [Cross-Stage Invariants](tier1/cross-stage-invariants.md) | binding | frozen | what every table, ID and API must carry from the first commit |
-| 2 | [Data Architecture](tier1/data-architecture.md) | binding | frozen | schemas, DB roles, the hash chain, held-out isolation by SQL grant |
-| 3 | [ADR Log](tier1/adr-log.md) | binding | frozen | ADR-0001 to 0004 constrain every metric signature and every hashed record |
-| 4 | [Edge Case and Degeneracy Specification](tier5/edge-case-and-degeneracy-specification.md) | binding | frozen | what each metric returns for degenerate input; defines the property tests |
-| 5 | [Domain Specification](tier5/domain-specification.md) | binding | stub | the formulas, citations and units being implemented |
-| 6 | [Failure Semantics and Error Handling](tier1/failure-semantics.md) | binding | frozen | three-valued verdicts, fail-closed table, error taxonomy, retry rules |
-| 7 | [Coding Standards](tier2/coding-standards.md) | binding | frozen | toolchain, strict typing as a hard gate, source layout |
-| 8 | [Testing Strategy](tier2/testing-strategy.md) | binding | frozen | composed property tests are load-bearing; what has no gating role |
-| 9 | [Definition of Done](tier2/definition-of-done.md) | binding | frozen | the twelve executable merge conditions |
-| 10 | [Protected Paths Policy](tier4/protected-paths-policy.md) | binding | frozen | what an agent may never write, and what enforces it |
-| 11 | [Sandbox Specification](tier4/sandbox-specification.md) | binding | frozen | container contract, network posture, egress canary |
-| 12 | [Secrets Management Policy](tier4/secrets-management-policy.md) | binding | frozen | no secret in the execution plane; startup assertions |
-| 13 | [Permission and Identity Model](tier4/permission-and-identity-model.md) | binding | frozen | identities, held-out isolation, verdict ownership |
-| 14 | [Audit and Retention Policy](tier4/audit-and-retention-policy.md) | binding | frozen | append-only, hash chaining, restore drill, recall protocol |
-| 15 | [Threat Model](tier4/threat-model.md) | context | frozen | the ten threats the controls answer, and what is out of scope |
-| 16 | [Task Specification Standard](tier2/task-specification-standard.md) | binding | frozen | what makes a task schedulable; criterion structure |
-| 17 | [Model and Algorithm Cards](tier5/model-and-algorithm-cards.md) | binding | stub | validity envelopes ship with the product |
-| 18 | [Stage Gate Definitions](tier2/stage-gate-definitions.md) | binding | stub | the executable exits, and the waiver discipline for overriding one |
-| 19 | [Branch, Release and Deploy Protocol](tier2/branch-release-deploy-protocol.md) | binding | stub | deploy and rollback are Phase 0 exit criteria |
-| 20 | [Risk Register](tier0/risk-register.md) | context | provisional | open risks with revisit triggers; check before assuming something is handled |
-| 21 | [Criterion Authoring Guide](tier2/criterion-authoring-guide.md) | context | stub | stub — promote once real criteria have been authored |
+| 1 | [Execution Order](tier2/execution-order.md) | binding | provisional | what gets built in what order, what each stage blocks, and what is operator-owned |
+| 2 | [Cross-Stage Invariants](tier1/cross-stage-invariants.md) | binding | frozen | what every table, ID and API must carry from the first commit |
+| 3 | [Data Architecture](tier1/data-architecture.md) | binding | frozen | schemas, DB roles, the hash chain, held-out isolation by SQL grant |
+| 4 | [ADR Log](tier1/adr-log.md) | binding | frozen | ADR-0001 to 0004 constrain every metric signature and every hashed record |
+| 5 | [Edge Case and Degeneracy Specification](tier5/edge-case-and-degeneracy-specification.md) | binding | frozen | what each metric returns for degenerate input; defines the property tests |
+| 6 | [Domain Specification](tier5/domain-specification.md) | binding | stub | the formulas, citations and units being implemented |
+| 7 | [Failure Semantics and Error Handling](tier1/failure-semantics.md) | binding | frozen | three-valued verdicts, fail-closed table, error taxonomy, retry rules |
+| 8 | [Coding Standards](tier2/coding-standards.md) | binding | frozen | toolchain, strict typing as a hard gate, source layout |
+| 9 | [Testing Strategy](tier2/testing-strategy.md) | binding | frozen | composed property tests are load-bearing; what has no gating role |
+| 10 | [Definition of Done](tier2/definition-of-done.md) | binding | frozen | the twelve executable merge conditions |
+| 11 | [Protected Paths Policy](tier4/protected-paths-policy.md) | binding | frozen | what an agent may never write, and what enforces it |
+| 12 | [Sandbox Specification](tier4/sandbox-specification.md) | binding | frozen | container contract, network posture, egress canary |
+| 13 | [Secrets Management Policy](tier4/secrets-management-policy.md) | binding | frozen | no secret in the execution plane; startup assertions |
+| 14 | [Permission and Identity Model](tier4/permission-and-identity-model.md) | binding | frozen | identities, held-out isolation, verdict ownership |
+| 15 | [Audit and Retention Policy](tier4/audit-and-retention-policy.md) | binding | frozen | append-only, hash chaining, restore drill, recall protocol |
+| 16 | [Threat Model](tier4/threat-model.md) | context | frozen | the ten threats the controls answer, and what is out of scope |
+| 17 | [Task Specification Standard](tier2/task-specification-standard.md) | binding | frozen | what makes a task schedulable; criterion structure |
+| 18 | [Model and Algorithm Cards](tier5/model-and-algorithm-cards.md) | binding | stub | validity envelopes ship with the product |
+| 19 | [Stage Gate Definitions](tier2/stage-gate-definitions.md) | binding | stub | the executable exits, and the waiver discipline for overriding one |
+| 20 | [Branch, Release and Deploy Protocol](tier2/branch-release-deploy-protocol.md) | binding | stub | deploy and rollback are Phase 0 exit criteria |
+| 21 | [Risk Register](tier0/risk-register.md) | context | provisional | open risks with revisit triggers; check before assuming something is handled |
+| 22 | [Criterion Authoring Guide](tier2/criterion-authoring-guide.md) | context | stub | stub — promote once real criteria have been authored |
 
 ## Phase 0.5
 
@@ -162,4 +163,4 @@ Binding on implementation and easy to miss, since they live inside one document.
 
 ---
 
-**61 documents mapped** · 41 binding · 13 context · 7 record · 5 architecture decisions
+**62 documents mapped** · 42 binding · 13 context · 7 record · 5 architecture decisions

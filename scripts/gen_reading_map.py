@@ -42,6 +42,7 @@ PHASES: list[tuple[str, str, list[tuple[str, str, str]]]] = [
         ("supply-chain-policy", BINDING, "model provenance, quantization artifact hashes, fingerprint fields"),
     ]),
     ("phase 0", "Product skeleton. The largest reading set, because Phase 0 builds what cannot be retrofitted.", [
+        ("execution-order", BINDING, "what gets built in what order, what each stage blocks, and what is operator-owned"),
         ("cross-stage-invariants", BINDING, "what every table, ID and API must carry from the first commit"),
         ("data-architecture", BINDING, "schemas, DB roles, the hash chain, held-out isolation by SQL grant"),
         ("adr-log", BINDING, "ADR-0001 to 0004 constrain every metric signature and every hashed record"),
