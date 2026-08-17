@@ -42,38 +42,52 @@ in the evidence chain.
 Anything that cannot demonstrate its control executed **aborts the run**. It does not
 proceed with the control disabled, and it does not log a warning and continue.
 
-| Condition | Disposition |
-|---|---|
-| Sandbox will not provision | run does not start |
-| Egress canary does not fire (non-allowlisted connection succeeded) | run does not start |
-| Egress canary itself errors | run does not start — an unproven control is a failed control |
-| Held-out schema unreachable at verdict time | `indeterminate`; never a `pass` on visible criteria alone |
-| `CriterionRunner` crashes mid-execution | `indeterminate` |
-| Evidence store unwritable | run halts; no work proceeds unrecorded |
-| Hash-chain head cannot be read | run halts; the chain must not fork |
-| Artifact store write fails | the referencing evidence row is not written |
-| Model server unreachable or times out | run marked `indeterminate`, requeued once |
-| Loaded context length differs from the fingerprint | run does not start — the lane silently reconfigured |
-| Lane parallel slot count differs from the fingerprint | run does not start — slots above 1 disable KV reuse entirely |
-| Patch validator cannot parse the diff | patch rejected — an unparseable diff is not a safe diff |
-| Protected-path check errors | patch rejected |
-| Policy configuration fails to load | nothing dispatches |
-| Oracle-absence probe does not run, errors, or cannot enumerate the interpreter set | run does not start — an unproven control is a failed control |
-| Oracle-absence probe finds a denied module importable, in the agent container or the criterion environment | run does not start; environment rebuilt; **never retried** as-is |
-| Oracle denylist fails to load, or its version differs from the fingerprint | run does not start |
-| End-of-run oracle-absence re-assertion finds what boot did not | claim rejected, `indeterminate`; the patch is not offered for merge |
-| Executor's durable event count below the count the adaptor observed | `indeterminate` — the read log is a subset of unknown size |
-| A condensation or summarization event present in the executor's stream | `indeterminate` — a summary sat upstream of the verdict (I16) |
-| Executor's own frontend reachable, or an approval-class event present in its stream | run does not start; a stream-side hit rejects the claim |
-| Loaded executor configuration hash differs from the harness-supplied configuration | run does not start |
-| Mount set inside the container differs from the dispatch spec | run does not start |
-| Runtime image digest differs from the fingerprint | run does not start |
-| Any containment assertion recorded as `not_executed` | run does not start; `not_executed` is never read as passed |
-| `Worker` returns a claim carrying a verdict-vocabulary field | contract violation; `indeterminate`; CI lint failure |
-| Off-machine backup target unreachable | alarm; dispatch continues, escalation raised |
+| id | Condition | Disposition |
+|---|---|---|
+| F1 | Sandbox will not provision | run does not start |
+| F2 | Egress canary does not fire (non-allowlisted connection succeeded) | run does not start |
+| F3 | Egress canary itself errors | run does not start — an unproven control is a failed control |
+| F4 | Held-out schema unreachable at verdict time | `indeterminate`; never a `pass` on visible criteria alone |
+| F5 | `CriterionRunner` crashes mid-execution | `indeterminate` |
+| F6 | Evidence store unwritable | run halts; no work proceeds unrecorded |
+| F7 | Hash-chain head cannot be read | run halts; the chain must not fork |
+| F8 | Artifact store write fails | the referencing evidence row is not written |
+| F9 | Model server unreachable or times out | run marked `indeterminate`, requeued once |
+| F10 | Loaded context length differs from the fingerprint | run does not start — the lane silently reconfigured |
+| F11 | Lane parallel slot count differs from the fingerprint | run does not start — slots above 1 disable KV reuse entirely |
+| F12 | Patch validator cannot parse the diff | patch rejected — an unparseable diff is not a safe diff |
+| F13 | Protected-path check errors | patch rejected |
+| F14 | Policy configuration fails to load | nothing dispatches |
+| F15 | Oracle-absence probe does not run, errors, or cannot enumerate the interpreter set | run does not start — an unproven control is a failed control |
+| F16 | Oracle-absence probe finds a denied module importable, in the agent container or the criterion environment | run does not start; environment rebuilt; **never retried** as-is |
+| F17 | Oracle denylist fails to load, or its version differs from the fingerprint | run does not start |
+| F18 | End-of-run oracle-absence re-assertion finds what boot did not | claim rejected, `indeterminate`; the patch is not offered for merge |
+| F19 | Executor's durable event count below the count the adaptor observed | `indeterminate` — the read log is a subset of unknown size |
+| F20 | A condensation or summarization event present in the executor's stream | `indeterminate` — a summary sat upstream of the verdict (I16) |
+| F21 | Executor's own frontend reachable, or an approval-class event present in its stream | run does not start; a stream-side hit rejects the claim |
+| F22 | Loaded executor configuration hash differs from the harness-supplied configuration | run does not start |
+| F23 | Mount set inside the container differs from the dispatch spec | run does not start |
+| F24 | Runtime image digest differs from the fingerprint | run does not start |
+| F25 | Any containment assertion recorded as `not_executed` | run does not start; `not_executed` is never read as passed |
+| F26 | `Worker` returns a claim carrying a verdict-vocabulary field | contract violation; `indeterminate`; CI lint failure |
+| F27 | Off-machine backup target unreachable | alarm; dispatch continues, escalation raised |
 
-The single fail-open entry is backup unreachability, and it is deliberate: refusing to
-work because an off-machine target is down trades a durability risk for a total outage.
+**Row ids are stable and never reused.** `F1`…`F27` are permanent handles: a new condition
+takes the next free number, and a withdrawn one leaves a gap rather than letting a
+successor inherit its identity. Without stable ids the coverage lint below cannot be
+written at all — it would have to match on condition prose, which changes.
+
+**Three dispositions, not one, and the distinction is the point.** Classified mechanically
+from the disposition text: **14** rows mean *the run does not start*, **7** mean
+`indeterminate`, **5** mean *halt or reject the next side effect*, and **1** is the
+deliberate fail-open. Each demands a different assertion. *Run does not start* is a
+stronger claim than `indeterminate` — the test asserts **no verdict row exists at all**,
+not that one exists carrying `indeterminate`. *Halt/reject* asserts **the next side effect
+did not occur**. Compressing the table into "must produce `indeterminate`" would lose the
+property on more than half of it.
+
+The single fail-open entry is backup unreachability (`F27`), and it is deliberate: refusing
+to work because an off-machine target is down trades a durability risk for a total outage.
 It is the exception, it is named, and it escalates.
 
 ## Error taxonomy
@@ -218,9 +232,11 @@ evidence migrations are additive-only; no verdict field is assigned outside the 
 module.
 
 **Every row of the fail-closed table above is an injected fault with a test.** CI asserts
-a one-to-one mapping between the rows and the injection ids; a row with no injection
-fails the build, because a table that grows faster than the suite that exercises it
-describes a system nobody has checked.
+a one-to-one mapping between the row ids `F1`…`F27` and the injection ids; a row with no
+injection fails the build, because a table that grows faster than the suite that exercises
+it describes a system nobody has checked. The assertion each injection makes is set by the
+row's **disposition class**, not by a single shared expectation — see the three-disposition
+note beneath the table.
 
 Three rules make those injections mean something.
 
