@@ -19,7 +19,7 @@ Numbering is sequential and never reused.
 
 ## ADR-0001 — Representation of undefined and infinite metric values
 
-**Date:** 2026-08-12 · **Status:** Accepted · **Supersedes:** none · **Amended by:** ADR-0002 (encoding clause)
+**Date:** 2026-08-12 · **Status:** Accepted · **Supersedes:** none · **Amended by:** ADR-0002 (encoding clause) · **See also:** ADR-0006 (the tagged-union pattern gains a third use, for upstream toolchain provenance)
 
 ### Context
 
@@ -218,7 +218,7 @@ with a live code rather than fail.
 
 ## ADR-0003 — Canonical serialization for hashed structures (ACS-1)
 
-**Date:** 2026-08-12 · **Status:** Accepted · **Supersedes:** none · **Amended by:** ADR-0004 (float grammar)
+**Date:** 2026-08-12 · **Status:** Accepted · **Supersedes:** none · **Amended by:** ADR-0004 (float grammar) · **See also:** ADR-0006 (the `alfred.result_stamp` field set becomes versioned; record type `alfred.upstream_config` allocated; SSP-LS-Traceability evaluated against §"the split that decides the shape" and declined)
 
 ### Context
 
@@ -455,3 +455,344 @@ be agent-edited. This ADR is itself the first entry that gate requires. The anch
 document and deliberately not mitigated.
 
 **Forward pointer:** none supersedes this yet.
+
+## ADR-0006 — The result stamp field set, its own version, and upstream toolchain provenance
+
+**Date:** 2026-08-16 · **Status:** Accepted · **Supersedes:** none · **Forward pointers:** ADR-0001 (the tagged-union pattern gains a third use), ADR-0003 (the record type `alfred.result_stamp` gains a versioned field set; a second record type `alfred.upstream_config` is allocated)
+
+### Context
+
+`ResultStamp.to_acs()` emitted exactly eight keys — `acs_version`, `assumption_set`,
+`code_commit`, `input_hash`, `metric_id`, `metric_version`, `reason_codebook_version`,
+`tolerance`. It carried a version for ACS-1 and a version for the reason codebook, and
+**no version for its own field set**. It also carried no upstream toolchain provenance:
+the stamp names *Alfred's* `metric_version` and `code_commit`, while D48's buyer's
+mandated duty under EU 2022/1426 Annex III Part 4 is storage of the **upstream**
+toolchain version and traceability from M&S output back to setup. An artifact digest of a
+trajectory file is neither.
+
+Adding a field later changes the digest of every re-derived stamp with **no marker
+distinguishing old-shape records from new**, so a legitimate schema change becomes
+indistinguishable from tampering — in the product whose thesis is tamper-evident
+re-derivability. This is the exact class D27 exists to prevent, occurring inside D27's own
+implementation.
+
+**The window is open and about to close. Verified rather than assumed:** all four
+`migrations/*/versions/` directories contain only `.gitkeep`, no Alembic revision exists
+anywhere in the tree, no table holds a stamp, and the only `ResultStamp` constructions in
+the repository are two test fixtures. **Zero stamps have ever been persisted, so the
+migration cost of this change is zero. It is zero exactly once.**
+
+### The prior decision: SSP Layered Standard Traceability 1.0.0
+
+The field set could not be settled before deciding whether to emit records in an existing
+standard's shape. Modelica/prostep ivip **SSP Layered Standard Traceability 1.0.0**
+(`https://ssp-standard.org/ssp-ls-traceability/1.0.0/`, 253,204 bytes, re-fetched and
+re-read 2026-08-16) specifies much of what a result stamp specifies.
+
+| | Option | Outcome |
+|---|---|---|
+| A | Adopt SSP wholesale as the stamp record format | **Rejected.** |
+| B | Adopt selectively — map Alfred's fields onto SSP names where they correspond | **Rejected.** |
+| C | Emit both — ACS-1 for the chain, SRMD at the boundary | **Rejected now; specified as a deferred, trigger-gated export adapter.** |
+| D | Decline; stay ACS-1-native; take SSP's mandatory-format-version idea | **Accepted.** |
+
+**The decisive fact: SSP defines no canonical form for its own record.** Its SHA3-256 is
+specified over *"the raw data of the data item"* — an opaque blob behind the `data` URI —
+and the three occurrences of "canonical" in the entire 253 KB document all refer to a
+*"canonical master source"* URI for a resource, never to serialization. Two conforming
+implementations serializing the same SRMD produce different bytes: attribute order,
+namespace prefix choice, whitespace, empty-element form. That is the exact divergence class
+ADR-0003 exists to eliminate, and the XML remedy — Canonical XML 1.1 or Exclusive C14N — is
+an order of magnitude larger than ACS-1's twenty lines and carries its own namespace-
+inheritance traps.
+
+ADR-0003 split two hashes: **artifact bytes** (hash as stored) and **structured records a
+third party must recompute** (needs a canonical form). SSP's checksum is wholly the first;
+Alfred's stamp digest is wholly the second. Adopting SSP as the record format would not add
+a hash function to the chain — **it would remove the thing the chain is computed over.**
+
+**The second fact, and it decides option B independently: SSP has no field for a tool
+version or a tool configuration.** `generatingTool` is defined as *"the name of the tool
+that generated this file"*. A name. `fileversion` versions the file's content, not the
+tool. So on the one duty this ADR's second half exists to discharge, the standard specifies
+nothing — adopting it would supply a tool name and leave the version and the configuration
+with nowhere to live but a vendor annotation.
+
+**Why option C is worse than either pure option.** Exactly one Alfred field has a true
+correspondence: `stamp_schema_version` → SSP's Mandatory `version`. `input_hash` →
+`checksum` is a **semantic mismatch** — SSP's checksum is over a data item's raw bytes,
+`input_hash` is an ACS-1 digest of a *structured description* of the declared inputs, and
+`checksumType` has no value expressing that. The remaining eight fields — `code_commit`,
+`metric_id`, `metric_version`, `assumption_set`, `tolerance`, `reason_codebook_version`,
+`acs_version`, `upstream` — have no slot at all and would land in
+`Annotation type="org.alfred.stamp"` with `##any` content. **A consumer that does not
+implement that annotation sees a name, a format version, a mis-typed checksum and a tool
+name: the SSP-shaped part of the export transmits none of the information the product
+exists to carry.** Interoperability that transmits nothing is a cost with a marketing
+benefit, and the reviewer who asks "what is `org.alfred.stamp`?" is in exactly the
+conversation the wrapper was bought to avoid, one indirection later.
+
+**The tension that did not decide it, recorded because it was expected to.** ACS-1 fixes
+SHA-256 and ADR-0003 argues at length for it; SSP fixes SHA3-256, FIPS 202. Two hash
+functions in one system is a real cost — but under any selective adoption the two never
+compete, because they hash different things: SHA3-256 over artifact bytes at an export
+boundary, SHA-256/ACS-1 over structured records inside the chain. The residual cost is not
+cryptographic; it is that every future reviewer and every third-party implementer acquires
+a permanent "which digest is this?" question whose answer lives in prose. Genuine, modest,
+and **not decisive in either direction.** The canonical-form argument decides; the hash-
+function argument merely fails to rescue.
+
+**What adopting would have bought, weighed honestly.** It blunts "you invented your own
+format" in an assessment conversation — a real objection, made more live by the pivot,
+which cost the ACS-1 vector suite most of its positioning value. But an XML envelope whose
+payload is an opaque vendor annotation does not blunt it either, and ADR-0003 already chose
+this trade deliberately with a named mitigation. ADR-0004 proved the mitigation works: an
+independent JavaScript implementation reproduced every canonical byte string and every
+digest (136 checks, 0 failures) and then found a real defect in the Python one. **A third
+party who can recompute your digests from a published vector file is in a stronger position
+than one who can parse your XML and learn nothing from it.**
+
+**What is adopted: the idea, not the wire.** SSP makes its record's own format `version`
+**Mandatory** while every provenance field — `checksum`, `checksumType`, `generatingTool`,
+`generationDateAndTime` — is **Optional**. That is independent confirmation, from a
+standards body, that a provenance record must version its own field set. Alfred takes the
+version and inverts the optionality: its provenance fields are mandatory by design, which
+is the whole difference between the two documents.
+
+**What would reopen this.** If ≥2 of 3 Phase 0.75 demand-gate conversations name a tool in
+the buyer's own toolchain that reads or writes SRMD, the option-C export adapter is
+scheduled. Today that is a **could-not-check, not a verified absence**: dSPACE SIMPHERA's
+Result Containers chapter is login-gated, Ansys AVxcelerate returned 403, and Applied
+Intuition has no reachable documentation subdomain. Also relevant to the risk direction:
+SRMD's own format version reads *"0.x for this pre-release"* inside a document published as
+Layered Standard 1.0.0.
+
+### Decision — the ten-key stamp
+
+Two fields are added. `ResultStamp.to_acs()` freezes at ten keys, sorted by UTF-8 byte
+sequence per ACS-1 rule 2:
+
+```
+acs_version · assumption_set · code_commit · input_hash · metric_id · metric_version
+reason_codebook_version · stamp_schema_version · tolerance · upstream
+```
+
+**1. `stamp_schema_version: int`, starting at 1.**
+
+An integer, not a semver: a stamp shape has no minor or patch axis, because any change to
+the key set, to a key's type, or to how a value canonicalizes changes the digest input and
+is major by construction. Consistent with `reason_codebook_version`, already an integer.
+
+Distinct from `acs_version`, which versions the **encoder** while this versions the
+**document**. Bumping one must not imply the other; ADR-0003 §10 put `acs_version` in the
+hashed bytes for exactly that separation, and this is its sibling.
+
+**It is inside `to_acs()` and therefore inside the preimage.** A schema version outside the
+digest is a claim anyone can rewrite.
+
+**Version 1 is the new ten-key shape.** The eight-key shape receives no number and is
+declared never-emitted, because it never was.
+
+> **Hard invariant, CI-asserted.** `stamp_schema_version` is a top-level integer key with
+> exactly that name in every stamp schema version that will ever exist. Never renamed,
+> never nested, never retyped, never optional. Every future version's readability depends
+> on this one field being unconditionally locatable.
+
+**Corollary: reading a stamp is two-stage.** Parse as ACS-1, read
+`stamp_schema_version`, *then* dispatch to that version's validator. **A single model
+validating every version is forbidden** — it would have to make version-specific fields
+optional, reintroducing precisely the optionality this ADR rejects SSP for. Each schema
+version gets its own frozen model, and old models are never edited: the same discipline as
+this log.
+
+**2. `upstream: UpstreamToolchain` — a tagged discriminated union with no null arm.**
+
+```json
+{"kind": "simulated", "tool_name": "...", "tool_version": "...", "config_digest": "...",
+                      "tool_build": "...", "config_ref": "..."}
+{"kind": "corpus",    "corpus_name": "...", "corpus_version": "...", "scenario_id": "...",
+                      "corpus_digest": "..."}
+{"kind": "unknown",   "reason": "UPSTREAM_NOT_RECORDED"}
+```
+
+The third use of this pattern, after three-valued verdicts and `MetricValue`. Three claims
+that read informally as "no simulator" are held apart:
+
+- **Absent / `null` is forbidden.** No default, no `| None`. Absence is the ambiguity the
+  design removes, and an optional provenance field is the specific weakness this ADR
+  rejects SSP for inheriting.
+- **`unknown` is an arm with a mandatory reason.** It means there *was* an upstream
+  toolchain and Alfred could not determine it. That is a defect-grade state — the stamp
+  does not discharge the buyer's storage duty — and it must be visible, never silent.
+- **"Not applicable" is expressed as the *positive* `corpus` arm, never as a negative tag.**
+  A bare `{"kind":"not_applicable"}` is indistinguishable from laziness: a reviewer asking
+  "not applicable because what?" gets nothing back. The arm names what *is* there — corpus,
+  release, scenario id — so the claim is checkable. This is ADR-0001's reason for rejecting
+  a bare mask: the reason travels with the state.
+
+| `simulated` field | Use | Why |
+|---|---|---|
+| `tool_name` | Required | The simulator's identity. |
+| `tool_version` | Required | Free-form string, **deliberately not** validated as `MAJOR.MINOR.PATCH`. `metric_version` is semverish because Alfred controls it; a vendor ships `2024 R2` or `7.3.0-hotfix4`, and forcing a grammar here would force a lie into the one field the regulation names. **The asymmetry is deliberate — do not unify them.** |
+| `config_digest` | Required | ACS-1 digest under the new record type `alfred.upstream_config`, over the canonicalized configuration document. |
+| `tool_build` | Optional | Commit or build id where the vendor publishes one; most do not. |
+| `config_ref` | Optional in schema, required by policy where re-derivation is claimed | Locator for the stored configuration. **The digest commits; the ref retrieves.** A digest with no retrievable preimage proves nothing was altered and lets nobody reproduce anything. |
+
+**Why a digest and not the configuration inline.** A real run's configuration is large and
+vendor-shaped — scenario, weather, sensor models, solver settings, seeds. Inlining it puts
+an unbounded, un-normalizable vendor document inside every stamp's preimage. Digest-and-
+store is the split ADR-0003 already makes.
+
+**Why this is the right unit, and a trajectory digest is not.** A trajectory digest
+identifies the **output**. `tool_name` + `tool_version` + `config_digest` + a retrievable
+`config_ref` identifies the **producer and its setup**, which is what Annex III Part 4
+names: storage of every toolchain version used, and traceability from M&S output back to
+setup. The trajectory digest keeps its existing place inside `input_hash`'s payload. It is
+the other half, not a substitute.
+
+**The `unknown` reason codebook** is a small closed set of names —
+`UPSTREAM_NOT_RECORDED`, `UPSTREAM_TOOL_UNDECLARED`, `UPSTREAM_CONFIG_UNAVAILABLE` — under
+ADR-0002's discipline: **names on the wire, never integers, never reused, never
+repurposed.** It needs no version field of its own and no schema bump to grow, because
+adding an allowed value changes no existing stamp's digest. Only removing or repurposing a
+name would, and both are forbidden. A verifier meeting a name it does not know applies
+ADR-0002's `255 UNKNOWN_CODE` rule: the digest still verifies, because it is over the name
+string — but the verifier **must not** report "upstream known".
+
+**No fourth arm.** Recorded real-world sensor data gets none, because Phase 0/1 is
+CommonRoad plus the CriMe oracle, and inventing an arm for a case with no implementation is
+the error of writing a document before its evidence exists. Adding a fourth arm later is a
+`stamp_schema_version` bump — cheap, and the entire point of settling this now.
+
+### The honest limit, stated so it is not overclaimed
+
+**Alfred's container never observes the simulator.** `tool_name`, `tool_version` and the
+configuration are **declared by whoever ran the run**. The stamp commits to a declaration,
+not to a fact — the same shape as the defect this project already identified in Ansys
+Minerva, where *"solver version is a user-declared job field rather than an attested
+fact"*.
+
+What Alfred adds is real and worth exactly its actual size: the declaration is inside the
+digest, so it cannot be changed afterwards without breaking the chain, and it is bound to
+**a specific number** rather than to a file. Minerva's unit of provenance is a file;
+Alfred's is a metric value.
+
+**Alfred makes the declaration tamper-evident. It does not make it true.** No customer
+document, demand-gate conversation or assessment conversation may say otherwise. D30's
+phrase "upstream toolchain identity" is amended to read "as declared".
+
+### Versioning mechanics
+
+**A version bump does not preserve a digest, and is not meant to.** A v1 stamp's digest is
+computed over v1's key set including `"stamp_schema_version":1`; a v2 stamp has a different
+key set and a different digest. They are different documents, possibly about the same
+computation.
+
+**What is preserved is the ability to recompute a v1 digest, forever. That is this
+mechanism's real and permanent cost:**
+
+> Every superseded stamp schema version's encoder remains implemented and test-vectored for
+> as long as any stamp under it exists. `harness/acs/` gains per-schema-version stamp
+> vectors; when v2 lands, v1's vectors are frozen and never regenerated, and CI asserts they
+> still pass. This is ADR-0004's "the vectors are the specification", applied to the stamp
+> shape rather than to the float grammar.
+>
+> **No stamp schema version is ever retired while any stamp under it exists.**
+
+**The property obtained — the reason this ADR exists.** Given a stored stamp and its
+digest, a verifier reads `stamp_schema_version`, selects **that version's** encoder, and
+recomputes. Match → authentic, old shape. Mismatch → tampering. **The encoder is chosen by
+the document, not by the verifier's build, so a legitimate schema change can no longer
+present as tampering.**
+
+**Cross-version collision is structurally impossible, and the record type therefore stays
+constant at `alfred.result_stamp`.** The preimage is
+`ACS_VERSION 0x00 record_type 0x00 canonical_bytes`. Any v1 document carries
+`"stamp_schema_version":1` and any v2 carries `"stamp_schema_version":2` at the same key;
+ACS-1 canonical form is injective on documents; the canonical bytes differ, so the
+preimages differ. Versioning the record type to `alfred.result_stamp.v2` would duplicate a
+guarantee already complete from the content and create a second place to bump — which is a
+second place to drift. Recorded here so it is not added later as a courtesy.
+
+### What a verifier does with a schema version it does not recognise
+
+**Not "ignore the unknown fields."** Two reasons, the second sharper than the first.
+
+**It does not fail cleanly.** The unknown fields are *inside the digest*. A verifier that
+strips them and re-encodes cannot reproduce the preimage, computes a mismatch, and a naive
+implementation reports that mismatch as **tampering** — the exact incident this ADR exists
+to prevent, relocated from the writer into the reader.
+
+**Where it can verify, it verifies without reading.** A verifier hashing the raw stored
+bytes will report VERIFIED while silently discarding every field it did not understand.
+Suppose a future v3 adds `upstream_attested: false`: an ignore-unknowns verifier returns
+"verified" for a stamp whose single most important qualifier it never read. **That is
+ADR-0001's plausible-wrong failure relocated into the verifier**, and it is worse than
+ADR-0001's case because it wears the word "verified".
+
+| Condition | Verdict | Maps to (Failure Semantics) |
+|---|---|---|
+| Version known and implemented, digest matches | `VERIFIED` | `pass` |
+| Version known and implemented, digest differs | `MISMATCH` | `fail` |
+| `stamp_schema_version` above the verifier's highest known | `UNVERIFIABLE(SCHEMA_TOO_NEW)` | `indeterminate` |
+| At or below the highest known but not implemented | `UNVERIFIABLE(SCHEMA_RETIRED)` | `indeterminate` |
+| `stamp_schema_version` missing, non-integer, or below 1 | `INVALID` | `fail` |
+
+- **`UNVERIFIABLE` is never `MISMATCH`.** "I cannot check this" and "this failed the check"
+  are different findings, and here the difference is between *upgrade your verifier* and
+  *you have been tampered with* — an incident-grade misreport, and the default behaviour of
+  every naive hash comparison.
+- **`UNVERIFIABLE` is never `VERIFIED`, and is fail-closed at the product boundary.** A
+  result whose stamp cannot be verified does not ship as verified.
+- **`SCHEMA_RETIRED` should be unreachable**, since retirement is forbidden while stamps
+  exist. It is specified so that reaching it is loud.
+- **A missing `stamp_schema_version` is `INVALID`, not `UNVERIFIABLE`.** A document without
+  the pinned field is not a stamp; treating it as an old one would resurrect the
+  unversioned eight-key shape as a permanent implicit version zero — which zero persisted
+  stamps lets us refuse outright.
+- **Every `UNVERIFIABLE` carries the verifier's own highest known version**, or the
+  operator cannot act on it.
+
+### Migration
+
+**None.** Verified, not assumed: four `migrations/*/versions/` directories containing only
+`.gitkeep`, no Alembic revision in the tree, no stamp table, two test fixtures. **Zero
+stamps have ever been persisted**, so no record exists under the eight-key shape and none
+ever will. This is the entire reason the decision had to land before any Phase 0 code.
+
+### Consequences and enforcement
+
+- `ResultStamp` freezes at ten keys; the published ACS-1 vector suite is extended to cover
+  the v1 shape, all three `upstream` arms, and the two-stage read.
+- A new domain-separation record type, `alfred.upstream_config`, is allocated.
+- CI asserts: `stamp_schema_version` is present, top-level and integer in every emitted
+  stamp; no stamp model makes an `upstream` arm's required field optional; every superseded
+  schema version's vectors still pass; the record type is not versioned.
+- `failure-semantics` gains the `UNVERIFIABLE` rows; `audit-and-retention-policy` gains the
+  obligation that a `config_ref` remains retrievable for as long as the stamp it belongs to
+  is live, and the restore drill gains a case for it.
+- **Cost accepted:** one encoder per schema version, kept forever, with frozen vectors. That
+  is the price of making a schema change distinguishable from tampering, and it is paid in
+  maintenance rather than in trust.
+```
+
+## ADR-0007 — Executor-premise assertions may pass vacuously, and that is a third outcome
+
+**Date:** TBD · **Status:** Accepted · **Supersedes:** none
+
+C1–C3, C5 and C10 of the Sandbox Specification are written to pass harmlessly if the feature
+they disable does not exist. That argument holds for an absent feature and fails for a misnamed
+one. C2's two conjuncts (configuration disabled; zero condensation-class events) and C3's three
+are not independent: each rests on the executor's own vocabulary for keys and event classes,
+which is unverified first-hand. A single wrong name defeats every conjunct at once and the
+assertion reports `passed` while the hazard occurs.
+
+Failure Semantics distinguishes a check that failed from a check that did not run. This is a
+third state: **executed, passed, possibly vacuous.** Until the executor source is read at the
+pinned SHA, C2 and C3 are recorded as `passed (unverified vocabulary)` rather than `passed`, and
+a run under that state is admissible for build work and **not** admissible as a measurement
+under I16 or T10.
+
+**Discharged by:** reading the executor at the pinned commit SHA and recording the exact
+configuration keys and event class names, after which this ADR is superseded.

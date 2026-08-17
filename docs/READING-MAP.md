@@ -160,7 +160,9 @@ Binding on implementation and easy to miss, since they live inside one document.
 | [ADR-0003](tier1/adr-log.md) | Canonical serialization for hashed structures (ACS-1) | Accepted |
 | [ADR-0004](tier1/adr-log.md) | The ACS-1 float presentation grammar | Accepted |
 | [ADR-0005](tier1/adr-log.md) | The Tier 0 authorship boundary is split by population, and enforced by an append-only log | accepted |
+| [ADR-0006](tier1/adr-log.md) | The result stamp field set, its own version, and upstream toolchain provenance | Accepted |
+| [ADR-0007](tier1/adr-log.md) | Executor-premise assertions may pass vacuously, and that is a third outcome | Accepted |
 
 ---
 
-**62 documents mapped** · 42 binding · 13 context · 7 record · 5 architecture decisions
+**62 documents mapped** · 42 binding · 13 context · 7 record · 7 architecture decisions
