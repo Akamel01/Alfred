@@ -162,7 +162,8 @@ Binding on implementation and easy to miss, since they live inside one document.
 | [ADR-0005](tier1/adr-log.md) | The Tier 0 authorship boundary is split by population, and enforced by an append-only log | accepted |
 | [ADR-0006](tier1/adr-log.md) | The result stamp field set, its own version, and upstream toolchain provenance | Accepted |
 | [ADR-0007](tier1/adr-log.md) | Executor-premise assertions may pass vacuously, and that is a third outcome | Accepted |
+| [ADR-0008](tier1/adr-log.md) | The operator's browser talks to one origin, and read-model output is untrusted | Accepted |
 
 ---
 
-**62 documents mapped** · 42 binding · 13 context · 7 record · 7 architecture decisions
+**62 documents mapped** · 42 binding · 13 context · 7 record · 8 architecture decisions

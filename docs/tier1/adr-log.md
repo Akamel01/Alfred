@@ -796,3 +796,57 @@ under I16 or T10.
 
 **Discharged by:** reading the executor at the pinned commit SHA and recording the exact
 configuration keys and event class names, after which this ADR is superseded.
+
+## ADR-0008 — The operator's browser talks to one origin, and read-model output is untrusted
+
+**Date:** 2026-08-15 · **Status:** Accepted · **Supersedes:** none
+
+### Context
+
+Mission control is split (D51): the command surface is inspector, the read model is
+factory and agents may build it. The split's operative rule is that the read model may
+not be the source of any fact an action depends on. That rule is usually read as being
+about which query supplies which field. It is not sufficient at that reading, because the
+two halves must compose into one page that a human decides on.
+
+Three compositions were available. Two separate origins the operator navigates between
+puts the decision on whichever page they are looking at — the exact failure the split
+exists to prevent. A client-side fetch or iframe requires JavaScript, which D51 refuses,
+and gives an agent-built page a frame inside the approval screen.
+
+### Decision
+
+**The browser loads pages from the command surface only.** The command surface
+server-side fetches HTML fragments from the read model over loopback and splices them
+into a page whose decision-critical zones it rendered itself. The read model is a
+subordinate service, never a peer the browser trusts.
+
+**Read-model output is untrusted content, on the same footing as a commit message or
+agent prose.** It passes the A10 scan and is re-serialized through an element and
+attribute allowlist admitting no `style` attribute, no `<script>`, `<style>` or
+`<foreignObject>`, no event-handler attribute, and no `id`/`class` outside a reserved
+prefix. Decision-critical zones render first in DOM order and contain no read-model
+content. A strict CSP applies.
+
+**The named attack is an overlay:** an agent-authored fragment that positions itself over
+the verdict and renders a `fail` as a `pass`, defeating every control beneath it while
+leaving all of them intact.
+
+### Consequence, and what makes this checkable
+
+**The dark-read-model test.** With the read model stopped, every review page must still
+render its decision-critical zones and permit `approve` on a `pass`. Zones 4 and 5 render
+as unavailable; the decision remains possible. If it does not, a fact an action depends
+on came from the read model and the split has been violated.
+
+This is the only executable assertion that the boundary is real rather than declared, and
+it doubles as a test of D22's own claim — that the criterion and evidence bundle, not the
+diff, are what a decision rests on. If a review cannot be completed with the diff summary
+unavailable, D22 is wrong, and that is worth discovering.
+
+### Rejected
+
+An iframe with `sandbox=""` on a distinct loopback origin closes the overlay attack too,
+but needs JavaScript for layout and adds a cross-origin surface for no gain over
+sanitization. Rendering the whole page from the read model and having the command surface
+supply only the forms was rejected outright: the verdict would then be agent-rendered.
