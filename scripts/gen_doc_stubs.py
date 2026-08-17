@@ -102,6 +102,14 @@ REGISTER: list[Doc] = [
         "Property tests over composed operations as the load-bearing correctness control, with the visible "
         "and held-out criterion classes and their separation. Mutation score has no gating role.",
         "A composed property test is found that the agent could satisfy by special-casing.", "Phase 2"),
+    Doc(2, "harness-self-test-specification", "Harness Self-Test Specification", "executable", "ci-gate", "provisional",
+        "The suites that test the harness itself: two-sided seeded-defect ladder, null-agent floor, "
+        "fault injection by disposition, boot-control negative tests, and the restore drill.",
+        "A suite here passes while the control it guards is disabled.", "Phase 1"),
+    Doc(2, "execution-order", "Execution Order", "human", "review-cadence", "provisional",
+        "What gets built in what order, what each stage blocks, and which items are operator-owned. "
+        "Distinct from READING-MAP.md, which orders documents rather than work.",
+        "A stage is completed out of order without a waiver and the stage it blocked is unaffected.", "Phase 0 exit"),
     Doc(2, "review-protocol", "Review Protocol", "human", "review-cadence", "provisional",
         "Criterion-first review: intent, then criterion, then evidence bundle, then diff summary, with the "
         "full diff read only on signal. Review time is recorded as a task-size signal.",
