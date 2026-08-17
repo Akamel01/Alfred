@@ -234,6 +234,53 @@ Stated plainly, because an assertion oversold is worse than one honestly bounded
 **Consequence if the assertion cannot be made to execute:** every merge-rate figure
 measured up to that point is void, not suspect. It is not a number with a caveat.
 
+## Negative tests for the two boot controls
+
+A control that has never been observed failing is an unproven control. The egress canary
+and the oracle-absence probe are both fail-closed boot gates, so each is admitted only
+once it has been *made to fire*.
+
+**The negative tests run against a real difference, never a patched call.** A canary test
+that stubs the connect path proves the reporting path and not the enforcement path — and
+both documented failures in this class reported fine while enforcing nothing. Where a
+real difference cannot be constructed on the runtime, the control is recorded as
+**unproven** rather than substituted with a mock and recorded as proven.
+
+**Egress canary.** A variant image identical to the runtime except that the default-drop
+rule is absent, plus a listener on a deliberately non-allowlisted address.
+
+| # | Injected | Required |
+|---|---|---|
+| E-a | The non-allowlisted connection **succeeds** | run does not start (C6) |
+| E-b | The canary process itself errors before reaching a verdict | run does not start — the row that fails open in practice |
+| E-c | Postgres is reachable from inside the container | run does not start |
+| E-p | An **allowlisted** connection succeeds | run starts — without this, E-a passes on a container with no network stack |
+
+**Oracle-absence probe.** Every case below runs **twice — once in the agent container and
+once in the criterion environment** — and CI fails if either parameterization produced no
+results. An environment that reported nothing is a failure, not an absence; the criterion
+environment is the one D54 exists for and the one a suite silently drops.
+
+| # | Injected | Required |
+|---|---|---|
+| O-a | A stub distribution provides a denied top-level module | run does not start; environment rebuilt; the **retry path refuses** the environment as-is |
+| O-b | The probe errors | run does not start |
+| O-c | The interpreter set enumerates empty | run does not start — an empty set is never read as clean |
+| O-d | The denylist fails to load, or its version differs from the fingerprint | run does not start |
+| O-e | A denied module appears **after** boot | claim rejected, `indeterminate`, patch not offered for merge |
+| O-f | A `*.dist-info` naming a denied distribution with no importable module | run does not start — isolates the distribution-enumeration layer from `find_spec` |
+| O-g | A `.pth` or `sitecustomize` puts a denied module on the path | run does not start — isolates the path-scan layer |
+| O-p | A permitted-substrate package remains importable | probe passes — without this, every case above passes on an environment with no interpreter |
+
+**Expected-miss cases, and they are asserted as misses.** Each hole named above gets a
+constructed case whose required outcome is that the probe **passes**: a renamed and
+reflowed vendored copy; a shared object reached through `ctypes` and a data file carrying
+the constants; a relocated interpreter outside the enumerated set; and a meta-path finder
+installed from somewhere the path scan does not name. A hole with no test is a hole
+nobody remembers, and an expected-miss case that ever starts catching must fail the suite
+on the *unexpected pass* — so that the control improving and the documentation of its
+limits drifting cannot be the same silent event.
+
 ## Host
 
 A dedicated non-admin OS user owns `harness/`, the policy configuration and the Postgres

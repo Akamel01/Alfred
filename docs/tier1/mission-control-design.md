@@ -59,9 +59,9 @@ and the number this design most wants supplied):
 
 Criterion authorship for a Phase 1 task — assertion, interface signature, threshold
 provenance, two grading points with one held out and its provenance tier recorded — is
-not plausibly under 20 minutes, and escalation handling amortized at a 20% escalation
-rate over 40 minutes adds ~8. Subtracting a conservative 33 minutes of non-review work
-leaves the review budget `r`:
+not plausibly under 25 minutes, and escalation handling amortized at a 20% escalation
+rate over 40 minutes adds ~8. Subtracting those 33 minutes of non-review work leaves the
+review budget `r`:
 
 | `n` | `r` budget |
 |---|---|

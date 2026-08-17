@@ -215,6 +215,29 @@ context. It is treated as untrusted data on the same footing as issue text.
 CI asserts: every port method declares its timeout; no bare `except:` or
 `except Exception: pass` in `harness/`; every raised error type maps to a taxonomy class;
 evidence migrations are additive-only; no verdict field is assigned outside the verdict
-module. The seeded-defect suite includes fault injection — killed criterion runner,
-unreachable held-out schema, unwritable evidence store — and asserts each produces
-`indeterminate` rather than `pass`.
+module.
+
+**Every row of the fail-closed table above is an injected fault with a test.** CI asserts
+a one-to-one mapping between the rows and the injection ids; a row with no injection
+fails the build, because a table that grows faster than the suite that exercises it
+describes a system nobody has checked.
+
+Three rules make those injections mean something.
+
+- **The assertion differs by disposition, and collapsing them loses the property.** Rows
+  disposed `indeterminate` assert `verdict == indeterminate`. Rows disposed *run does not
+  start* assert that **no verdict row exists at all** and that the run appears on neither
+  side of the merge rate — a stronger and differently-shaped claim than "the verdict was
+  indeterminate". Rows disposed *halt* or *reject* assert that the **next** side effect
+  did not occur, not merely that an exception was raised.
+- **Every injection carries a witness.** The injecting double records that it was
+  invoked, and a test whose witness is unset fails rather than passes. An injector that
+  silently failed to apply produces a green test that reads as a working control, which
+  is the same defect class as a mutation that fails to apply reading as a hole in a
+  suite.
+- **The single fail-open row is tested as a fail-open.** Backup unreachability asserts
+  that dispatch continued **and** that an escalation was raised. A test asserting only
+  that work continued passes on a system that ignores the condition entirely.
+
+The suite's own vacuity control is to disable every injector at once: each row must then
+go red. A row that still passes with its injector disabled asserts nothing.
