@@ -43,6 +43,34 @@ BEGIN
 END
 $$;
 
+-- ------------------------------------------------------- owner schema privileges
+-- Found on 2026-08-17 by running a migration for the first time, and it is the THIRD
+-- omission of the same class as the two the first real apply exposed. The converge
+-- block above revokes ALL on every schema from every named role, migrators included.
+-- A schema owner holds USAGE and CREATE implicitly only while its ACL is null; the
+-- revoke makes the ACL explicit and the implicit privileges go with it. So the owner of
+-- `product` could not create a table in `product`:
+--
+--     permission denied for schema product
+--     LINE 2: CREATE TABLE product.scenario (
+--
+-- `migration_meta` was already granted explicitly, on 2026-08-16, for exactly this
+-- reason — and the fix was written as a special case about Alembic's version table
+-- rather than as the general fact it is. The general fact is stated here instead:
+-- **converging by REVOKE removes ownership's implicit grants, so every owner's schema
+-- privileges must be re-issued explicitly.** Being explicit is also the better end
+-- state: an implicit privilege is one no assertion can read.
+--
+-- Same shape as the other two: a privilege the matrix never mentioned, failing loud
+-- rather than silent. A matrix reviewed only for what it grants too much cannot catch
+-- a matrix that grants too little.
+
+GRANT USAGE, CREATE ON SCHEMA product        TO alfred_migrator_product;
+GRANT USAGE, CREATE ON SCHEMA control        TO alfred_migrator_control;
+GRANT USAGE, CREATE ON SCHEMA evidence       TO alfred_migrator_evidence;
+GRANT USAGE, CREATE ON SCHEMA heldout        TO alfred_migrator_heldout;
+GRANT USAGE, CREATE ON SCHEMA migration_meta TO alfred_bootstrap;
+
 -- --------------------------------------------------------------------- CONNECT
 -- Found by running this file against a real cluster on 2026-08-16: the grant matrix in
 -- docs/tier1/data-architecture.md never granted CONNECT on the database. N7 revokes it

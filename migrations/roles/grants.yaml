@@ -11,7 +11,7 @@
 # Privilege letters, matching the document:
 #   U = USAGE on schema · S = SELECT · I = INSERT · Up = UPDATE · D = DELETE
 
-version: 2
+version: 3
 
 schemas: [product, control, evidence, heldout, migration_meta]
 
@@ -152,6 +152,30 @@ roles:
     login: true
     owns: [migration_meta]
     grants: {}
+
+# Default privileges (N8). Without these the NEXT table created is granted correctly by
+# accident or wrongly by accident, and nobody looks again — so they are declared and
+# compared by set equality like every other grant, rather than being checked only for
+# the two things N8 names.
+#
+# `objtype` is pg_default_acl's own single-character code: r = tables, S = sequences,
+# f = functions, T = types, n = schemas. The catalogue's spelling is used rather than a
+# friendlier one so that a reader can go straight from a diff line to the catalogue row.
+#
+# Only `product` has defaults. `control`, `evidence` and `heldout` deliberately have
+# none: their grants differ by table name (policy_* against work tables; verdict against
+# operator_action against the rest), so a blanket default would grant the wrong thing to
+# the next table. Re-running 002_grants.sql after a migration is the mechanism there,
+# and the assertion is what catches a migration whose author forgot.
+#
+# A grantor's own entry in its own default ACL — what ALTER DEFAULT PRIVILEGES ... REVOKE
+# ALL ON FUNCTIONS FROM PUBLIC leaves behind — is not a grant and is not declared here.
+# The assertion excludes self-grants for the same reason it excludes an owner's own ACL
+# entry on a table it owns.
+default_privileges:
+  product_tables_harness:   {grantor: alfred_migrator_product, schema: product, objtype: r, grantee: alfred_harness,   privileges: [S]}
+  product_tables_readmodel: {grantor: alfred_migrator_product, schema: product, objtype: r, grantee: alfred_readmodel, privileges: [S]}
+  product_tables_product:   {grantor: alfred_migrator_product, schema: product, objtype: r, grantee: alfred_product,   privileges: [S, I, Up, D]}
 
 # No role membership is declared. N10: membership is a privilege path that no
 # table-grant query will show, so the assertion reads pg_auth_members and requires

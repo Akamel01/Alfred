@@ -188,15 +188,19 @@ and it fails the build rather than reporting. It is a second layer over N5: the 
 the write impossible for every role that runs, and the lint catches the migration that
 would grant itself the ability by owning the table.
 
-**Status, updated 2026-08-16.** The layout, the four Alembic environments, the role
-script and the grant script exist and have been applied to a real cluster; the
-additive-only lint (`scripts/lint_migrations.py`) runs in CI and is mutation-checked.
-What does not yet exist is `harness/db/assert_grants.py` — the set-equality assertion —
-so the matrix below is **applied and partially verified, not yet asserted.**
+**Status, updated 2026-08-17.** The matrix is **asserted**. `harness/db/assert_grants.py`
+compares the cluster against `grants.yaml` by set equality in both directions, reporting
+`EXTRA` first; `harness/db/test_grants.py` carries the negative tests, each asserting
+`SQLSTATE 42501` specifically and each paired with the identical statement by the role
+that should hold the privilege. Two mutation controls are committed beside them, so a
+suite that stopped biting would say so. The first migration in each of the four schemas
+exists, so the per-table half of the matrix is now populated rather than vacuous — until
+2026-08-17 there were no tables, and a table-driven grant script over zero tables grants
+nothing. ADR-0009.
 
-**Two omissions in the matrix above, found by applying it rather than by reading it.**
-Both are now corrected in `002_grants.sql` and recorded in `grants.yaml` (version 2), and
-both are worth keeping visible because they are the same class of defect:
+**Three omissions in the matrix above, every one found by applying it rather than by
+reading it.** All are corrected in `002_grants.sql` and recorded in `grants.yaml`, and
+all are worth keeping visible because they are the same class of defect:
 
 - **No role held `CONNECT` on the database.** N7 revokes it from `PUBLIC`, correctly, and
   nothing granted it back. Applied literally, the matrix produced a cluster no role could
@@ -205,12 +209,21 @@ both are worth keeping visible because they are the same class of defect:
   its version table on the first upgrade, and `CREATE` on a schema is a privilege
   distinct from `USAGE`. The schema is owned by `alfred_bootstrap` rather than by any
   migrator, so none of them inherits it — the ownership separation working as designed.
+- **No schema owner held `CREATE` on the schema it owns** (2026-08-17, found the first
+  time a migration ran). `002_grants.sql` converges by revoking everything from every
+  named role, and a schema owner holds `USAGE` and `CREATE` implicitly *only while the
+  schema's ACL is null* — the revoke makes it explicit and the implicit privileges go
+  with it. The `migration_meta` fix above was this same fact, written as a special case
+  about Alembic's version table. All five owners are now granted explicitly, which is
+  also the better end state: an implicit privilege is one no assertion can read.
 
-Neither is a privilege that was granted too widely; both are privileges the table simply
+None is a privilege that was granted too widely; all three are privileges the table simply
 never mentioned, in a document whose central claim is that a grant matrix is checked by
 what it forbids. **A matrix reviewed only for what it grants too much cannot catch a
 matrix that grants too little**, and the failure mode is the reverse of the dangerous one
-— loud rather than silent, which is the only reason it surfaced in minutes.
+— loud rather than silent, which is the only reason all three surfaced in minutes. Three
+instances in two days is no longer an anecdote about this matrix; it is the standing cost
+of a deny-by-default design, and it is the right cost to pay.
 
 Everything not yet asserted remains specification. It is written ahead of the code because
 none of it is retrofittable: a grant matrix applied after the first evidence row exists

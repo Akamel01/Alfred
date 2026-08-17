@@ -850,3 +850,102 @@ An iframe with `sandbox=""` on a distinct loopback origin closes the overlay att
 but needs JavaScript for layout and adds a cross-origin surface for no gain over
 sanitization. Rendering the whole page from the read model and having the command surface
 supply only the forms was rejected outright: the verdict would then be agent-rendered.
+
+---
+
+## ADR-0009 — The grant matrix is asserted by set equality, and converging by REVOKE strips ownership
+
+**Date:** 2026-08-17 · **Status:** Accepted · **Supersedes:** none
+
+Recorded under major-fix #8: `harness/db/assert_grants.py`, `harness/db/grants_declared.py`
+and the two `migrations/roles/` files are inspector, agent-drafted, and therefore
+admitted only under line-by-line human review with a mandatory ADR. This is that ADR.
+
+### Context
+
+`data-architecture.md` specifies the matrix and required the assertion to compare by
+**set equality, never subset**, because a subset check passes on every extra grant and an
+extra grant is the only kind of grant defect that fails in the safe-looking direction.
+The document has said so since it was written; nothing enforced it, because the first
+migration did not exist and a table-driven grant script over zero tables grants nothing.
+
+Two implementation questions had no answer in the document, and one defect was found by
+running the thing rather than reading it.
+
+### Decision
+
+**Equality, not predicates.** N1, N2, N3, N4, N5, N7 and N8 are not checked individually.
+A grant that must not exist is a grant that is not declared, and an undeclared grant is
+reported as `EXTRA`. Ten predicates catch the ten things somebody thought of; an equality
+catches the eleventh. N6, N9 and N10 are not grants and are checked by name.
+
+**Owner self-grants are excluded, on both sides.** Postgres materialises an owner's own
+privileges into an object's ACL as soon as anything is granted, so an owner is its own
+grantee everywhere it owns. That is ownership, and ownership is compared separately.
+Excluding it on the observed side alone produced twelve `MISSING` tuples that were not
+missing — the four migrators' declared grants on the version tables they own — so the
+rule is applied to the declaration too. **What this gives up is stated rather than
+implied:** the assertion no longer checks that a migrator can write the version table it
+owns. Alembic's first upgrade checks that, loudly.
+
+**No YAML library.** `grants.yaml` is read by a parser for exactly the constructs it
+uses, which raises on any line and any top-level key it does not recognise. Same reason
+`lint_docs.py` parses frontmatter by hand: the parser guarding the grant matrix should
+not depend on the supply chain the grant matrix exists to bound. The cost is real — that
+parser is now a thing that can be wrong — and it is paid down by the parser failing
+closed rather than skipping.
+
+**`grants.yaml` goes to version 3** with a `default_privileges` section. `002_grants.sql`
+has issued `ALTER DEFAULT PRIVILEGES` since 2026-08-16 and the declaration named none, so
+under equality every one of them read as `EXTRA`. N8's rule — no default privilege to
+`PUBLIC` or to an unnamed role — is weaker than declaring them and comparing.
+
+### The third omission, and it is the same one twice more
+
+`002_grants.sql` converges by revoking everything from every named role before granting
+anything, which is correct and is what makes re-application idempotent. **A schema owner
+holds `USAGE` and `CREATE` implicitly only while the schema's ACL is null.** The revoke
+makes it explicit and the implicit privileges go with it. So the owner of `product` could
+not create a table in `product`:
+
+```
+permission denied for schema product
+LINE 2: CREATE TABLE product.scenario (
+```
+
+`migration_meta` was already granted explicitly, on 2026-08-16, for precisely this
+reason — and that fix was written as a special case about Alembic's version table rather
+than as the general fact. The general fact is that converging by `REVOKE` removes
+ownership's implicit grants, so every owner's schema privileges must be re-issued
+explicitly. All five are now issued explicitly, which is also the better end state: an
+implicit privilege is one no assertion can read.
+
+This is the third omission of the same class in two days, all three of the same shape —
+a privilege the matrix never mentioned, failing **loud** rather than silent. The document
+already draws the moral and it is now carried by three instances: *a matrix reviewed only
+for what it grants too much cannot catch a matrix that grants too little.*
+
+### Consequence
+
+Excluding owner self-grants means the assertion cannot see the defect above, so it is
+asked directly: `has_schema_privilege(owner, schema, 'CREATE')` for every named schema,
+reported as an `OWNER` violation. `has_schema_privilege` is version-independent, which
+spelling out an owner's materialised ACL bitmask is not — `MAINTAIN` exists from
+Postgres 17, and hardcoding `arwdDxtm` would pin the assertion to a major version.
+
+The suite carries two mutation controls, committed beside it: an extra grant to
+`alfred_agent` must be reported `EXTRA`, and a withdrawn grant to `alfred_harness` must
+be reported `MISSING`, each issued and reversed inside `try/finally` with the cluster
+re-checked afterwards. Every denial asserts `SQLSTATE 42501` and is paired with the
+identical statement by the role that should hold the privilege — a denial with no
+matching permission is a denial that proves the object exists nowhere.
+
+### Rejected
+
+**Declaring owner self-grants and comparing them.** It would have made the `OWNER` check
+unnecessary, at the cost of encoding Postgres's per-version owner privilege set into the
+expansion. A control that has to be updated on a server upgrade is a control that reports
+a false failure on the day nobody has time for it.
+
+**Adding PyYAML.** One dependency, in the closure of the module whose job is to bound
+what the cluster trusts, to read a 200-line file with eight top-level keys.
