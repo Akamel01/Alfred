@@ -166,7 +166,8 @@ Binding on implementation and easy to miss, since they live inside one document.
 | [ADR-0008](tier1/adr-log.md) | The operator's browser talks to one origin, and read-model output is untrusted | Accepted |
 | [ADR-0009](tier1/adr-log.md) | The grant matrix is asserted by set equality, and converging by REVOKE strips ownership | Accepted |
 | [ADR-0010](tier1/adr-log.md) | The evidence chain, and the fork the constraint did not close | Accepted |
+| [ADR-0011](tier1/adr-log.md) | The criterion subprocess computes; the runner compares | Accepted |
 
 ---
 
-**63 documents mapped** · 43 binding · 13 context · 7 record · 10 architecture decisions
+**63 documents mapped** · 43 binding · 13 context · 7 record · 11 architecture decisions

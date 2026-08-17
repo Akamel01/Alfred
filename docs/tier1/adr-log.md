@@ -1041,3 +1041,105 @@ the day of the upgrade. The key is the chain id's SHA-256, truncated to a signed
 **Re-declaring the verdict vocabulary in Python.** It is a check constraint on the table.
 A value this code rejected but the database accepted would mean the two disagreed, and
 the database is the one still true after a code change.
+
+---
+
+## ADR-0011 — The criterion subprocess computes; the runner compares
+
+**Date:** 2026-08-17 · **Status:** Accepted · **Supersedes:** none
+
+### Context
+
+A8 requires ground truth the agent did not author **and cannot retrieve**. The register
+says held-out reference values are "injected by `CriterionRunner` at verdict time", and
+the obvious implementation is to write them into the criterion environment so the
+criterion can assert against them.
+
+That implementation is wrong, and it is wrong in the way the architecture exists to
+prevent. **Agent-authored code executes in the criterion environment.** A held-out value
+placed there is a value the code under test can read and return, and a stub doing exactly
+that passes every held-out point — every P3 resample, every P4 invariance, every P5
+degeneracy — with a clean transcript and no dishonesty anywhere in the loop. It is D50's
+delegation failure moved one layer in, past the oracle-absence probe, which asserts a
+module is unimportable and says nothing about a JSON file sitting in the working
+directory.
+
+### Decision
+
+**The subprocess computes; the runner compares.** The held-out command is a *harvest*: it
+produces the candidate's outputs and asserts nothing. The comparison against reference
+values happens in the runner process, which holds `alfred_criterion` and sits outside the
+environment (A1). Nothing that knows an expected value ever runs beside the code being
+measured.
+
+The visible criterion is the opposite and may assert inside the subprocess. Visible values
+are legitimately in agent context — that is the entire distinction D49 and D33 rest on.
+
+**Four supporting decisions, each closing a way the composition lies:**
+
+**The exit code is corroboration, never the verdict.** An exit code cannot distinguish
+"every check passed" from "no check ran", and the second is what a vacuous criterion looks
+like from outside. The command writes a mandatory report; zero checks run is
+`did_not_run`. An exit code disagreeing with its own report is also `did_not_run` — two
+readings of one run that contradict each other, where picking the convenient one is how a
+harness reports on its own health.
+
+**F4 is `indeterminate` and never a pass on visible criteria alone.** Reachability is
+passed in explicitly rather than inferred from an empty point list: "no points were
+configured" and "the points could not be read" are different facts and only one is a
+harness fault.
+
+**Both grading arms are tagged.** A `0.0` against an `Undefined` reference is a mismatch,
+not a near miss — the E1/E7 collapse a float-coercing comparison would score as a small
+error.
+
+**The provenance tier recorded is the weakest present, not the strongest.** *Taken here,
+not read from D49, which says "the held-out point's tier" in the singular.* A task graded
+by one P1 and one P4 point is recorded P4: an invariance point fixes a result's shape and
+never its level, so quoting the stronger tier would overstate what the verdict rests on to
+a gate that stratifies by it.
+
+**There is no `patch is None` branch.** A do-nothing run takes the same path as every
+other run and fails on the merits at score zero. Short-circuiting would make the
+null-agent floor a code path rather than a measurement, and F3 — the floor run plus a
+collection-forcing `conftest.py` — must traverse identical code to test A1's claim at all.
+
+### Materialization
+
+A1 is implemented as **allowlist-then-copy**, never copy-then-delete. The direction is the
+property: copy-then-delete materializes the attack and then tries to remove it, which
+depends on the remover's list being complete and leaves a window. Symlinks are refused
+rather than resolved, on every path component and not only the leaf; escapes, absences and
+double-declared paths are refused; the manifest of what crossed is path-to-digest and is
+recomputable from the destination tree.
+
+One layer **is** enumeration and is labelled as such in the code: import-hook filenames are
+refused from the candidate side even where a declaration would admit them. It is not the
+boundary. It exists because the allowlist's strength is its granularity — a task declaring
+one file admits no `conftest.py`, one declaring a directory might — and it is defence in
+depth over a structural control, which is the only position enumeration is safe in.
+
+### Consequence
+
+The suites assert absence rather than blocking. `test_undeclared_sibling_does_not_cross`
+uses an ordinary filename deliberately: a suite testing only the `conftest.py` case would
+be satisfied by a filename ban and would go green on the day the enumeration stopped being
+complete.
+
+`test_held_out_values_never_enter_the_environment` runs a probe that reads every file in
+the materialized tree and reports whether the reference value appears. **Its first version
+scanned everything, found the sentinel in the comparison literal it was itself compiled
+from, and reported a leak.** The probe now skips its own source. Recorded because it is the
+same failure as the unsalted prefill measurement and the double-encoded report helper found
+in this same session: the instrument measured itself.
+
+### Rejected
+
+**Injecting held-out values as environment variables or a data file.** The whole subject of
+this ADR.
+
+**Special-casing `patch is None`.** Above.
+
+**Trusted-wins on a materialization collision.** It would let a candidate name a criterion
+file and have the overwrite read as success. Candidate-wins is the attack. Refusing is the
+only answer that reports what happened.
