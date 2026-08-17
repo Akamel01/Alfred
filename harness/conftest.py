@@ -1,15 +1,15 @@
-"""Pytest fixtures for the throwaway cluster.
+"""Pytest fixtures for the throwaway cluster, shared across every `harness/` suite.
 
-Session-scoped: creating a cluster costs a few seconds, and the properties under test
-are about a cluster built from `migrations/roles/` and the four Alembic environments,
-which is the same cluster for every test in a run.
+Session-scoped, and **defined here rather than in `harness/db/`** so that one run
+builds one cluster. A session-scoped fixture is cached per *definition*, not per name,
+so the same fixture declared in two package-level conftests produces two clusters and
+doubles the runtime of every database gate — silently, since both suites pass.
 
 **Skips, not failures, when Docker is unavailable** — and the skip message says which
 of the two reasons applied. A developer without Docker running should not see a red
-suite; CI must never skip silently, which is why the CI job sets
-`ALFRED_REQUIRE_DB=1` and the fixture then fails instead of skipping. A gate that
-skips when its dependency is missing is a gate that reports green on the day it stops
-running.
+suite; CI must never skip silently, which is why the CI job sets `ALFRED_REQUIRE_DB=1`
+and the fixture then fails instead of skipping. A gate that skips when its dependency
+is missing is a gate that reports green on the day it stops running.
 """
 
 from __future__ import annotations

@@ -37,12 +37,21 @@ Create Date: 2026-08-17
 # --------------------------------------------------------- the two unique constraints
 #
 # NOT from the document, and flagged as a design decision taken here. Each chain gets
-# `UNIQUE (chain_id, prev_sha256)` and `UNIQUE (chain_id, sha256)`. The first is the
-# one that matters: two rows cannot share a predecessor, so the chain physically cannot
-# fork. S7's restore drill has to assert the walk is total — one head, no forks —
-# because a check that verifies each link but never checks they form a single path
-# passes on a forked audit log. This makes the fork impossible at insert time rather
+# `UNIQUE (chain_id, sha256)` and `UNIQUE NULLS NOT DISTINCT (chain_id, prev_sha256)`.
+# The second is the one that matters: two rows cannot share a predecessor, so the chain
+# physically cannot fork. S7's restore drill has to assert the walk is total — one head,
+# no forks — because a check that verifies each link but never checks they form a single
+# path passes on a forked audit log. This makes the fork impossible at insert time rather
 # than detectable at audit time, and it costs one index.
+#
+# `NULLS NOT DISTINCT` is load-bearing and was added on 2026-08-17 after the store's own
+# suite demonstrated the hole. A plain UNIQUE treats every NULL as distinct, so it refuses
+# a second row on an existing predecessor and cheerfully accepts a **second genesis row** —
+# `prev_sha256 IS NULL` twice — which is a fork at the one position where each individual
+# link still recomputes perfectly. The walk's totality check catches it, but catching is
+# not preventing, and the whole point of putting the constraint in the cluster was that a
+# writer which never runs the Python check cannot produce one. Same class as the three
+# grant omissions: a rule stated for the general case with the boundary case unexamined.
 
 from __future__ import annotations
 
@@ -86,8 +95,15 @@ def _chain() -> list[sa.Column[object]]:
 def _chain_constraints(table: str) -> list[sa.SchemaItem]:
     return [
         sa.UniqueConstraint("chain_id", "sha256", name=f"uq_{table}_chain_sha"),
-        # No forks, enforced by the cluster rather than by the auditor.
-        sa.UniqueConstraint("chain_id", "prev_sha256", name=f"uq_{table}_chain_prev"),
+        # No forks, enforced by the cluster rather than by the auditor. NULLS NOT
+        # DISTINCT so that the genesis position is covered too: without it a second row
+        # with a NULL predecessor is accepted and the chain forks at row one.
+        sa.UniqueConstraint(
+            "chain_id",
+            "prev_sha256",
+            name=f"uq_{table}_chain_prev",
+            postgresql_nulls_not_distinct=True,
+        ),
     ]
 
 

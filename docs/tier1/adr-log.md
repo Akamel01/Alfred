@@ -949,3 +949,95 @@ a false failure on the day nobody has time for it.
 
 **Adding PyYAML.** One dependency, in the closure of the module whose job is to bound
 what the cluster trusts, to read a 200-line file with eight top-level keys.
+
+---
+
+## ADR-0010 — The evidence chain, and the fork the constraint did not close
+
+**Date:** 2026-08-17 · **Status:** Accepted · **Supersedes:** none
+
+### Context
+
+`EvidenceStore` is the first inspector port to exist. D43 requires evidence rows
+hash-chained with each row carrying its predecessor's digest; D5 requires the store be
+written by the harness and never by the agent; S7's restore drill requires the walk be
+asserted **total** — one head, no forks — because a check that verifies each link but
+never checks they form a single path passes on a forked audit log.
+
+Three things the specification left to implementation, and one it got wrong.
+
+### Decision
+
+**The link digest is a module-level function, not a method.** `link_digest(chain_id,
+record_type, prev_sha256, body_sha256)` over ACS-1 with its own domain separator
+`alfred.evidence.chain_link.v1`, distinct from every body separator. An external auditor
+recomputes the chain from the stored columns without instantiating anything, which is the
+only reason the chain is worth having. A separator distinct from the body's is what stops
+a link and a body of coincidentally identical content colliding.
+
+**The head is derived from the links, never from a timestamp.** The head is the row whose
+digest no other row in the chain points back to. Ordering by `created_at` would pick
+arbitrarily between two rows written in the same microsecond and fork the chain; and the
+query returning more than one row *is* the fork, raised on every append rather than
+discovered at audit time.
+
+**`verify_chain` asserts three separate things**, and the third is the one usually
+skipped: every link recomputes, there is exactly one genesis, and the walk visited every
+row that exists. The third is reachability rather than link integrity — an island whose
+predecessor was deleted has perfect links.
+
+**Autocommit is refused at construction.** The chain is serialized by a
+transaction-scoped advisory lock, which under autocommit is released the instant it is
+taken. Every append would look correct and two writers would race for the same
+predecessor; the unique constraint would still refuse the fork, but as an integrity error
+at some unrelated call site.
+
+**Who may write what is not re-checked here.** The store takes whatever connection it is
+handed and the grant decides. A second copy of a control the database already enforces is
+the copy that drifts.
+
+### The fork the constraint did not close
+
+`0001_evidence_base` declared `UNIQUE (chain_id, prev_sha256)` and the migration's own
+comment claimed the chain "physically cannot fork". It cannot, except at row one.
+**Postgres treats NULLs as distinct in a unique index**, so the constraint refuses a
+second row on an existing predecessor and accepts a **second genesis** — two rows with
+`prev_sha256 IS NULL`, a fork at the one position where both individual links still
+recompute perfectly. Found by writing the test that expected the constraint to refuse it
+and watching the insert succeed.
+
+Corrected to `UNIQUE NULLS NOT DISTINCT`, which Postgres has since 15 and the pinned
+image is 17.6. The walk's totality check already caught this case, but **catching is not
+preventing**, and the reason the constraint is in the cluster at all is that a writer
+which never runs the Python check cannot produce one.
+
+This is the same class as the three grant omissions in ADR-0009: a rule stated for the
+general case with the boundary case unexamined, and in each instance the boundary case is
+where the NULL, the owner, or the empty set lives. Worth naming as a pattern rather than
+as a fourth coincidence — **the constraint reviewer's habit of reading the general row
+and not the degenerate one is now four for four.**
+
+### Consequence
+
+The mutation control is committed beside the test: remove `postgresql_nulls_not_distinct`
+from the migration and `test_second_genesis_is_refused_by_the_cluster` is the only thing
+in the repository that fails. Verified by applying and reverting the mutation.
+
+**What the Python re-walk does not prove, stated so no drill quotes it as more than it
+is.** `verify_chain` recomputes every link with the same encoder that wrote the rows, so
+it is checked against itself. It detects a row mutated after the fact and it detects a
+fork. It does not validate the encoder. The independent check remains the JavaScript
+re-walk in the restore drill (S7), and this method is not a substitute for it.
+
+### Rejected
+
+**A Python-side fork check in place of the constraint.** A check in the writer is a check
+a second writer does not run, and the second writer is the case the property exists for.
+
+**`hashtext()` for the advisory-lock key.** An undocumented internal whose output has
+changed across major versions — a lock key that changes on upgrade serializes nothing on
+the day of the upgrade. The key is the chain id's SHA-256, truncated to a signed int64.
+
+**Re-declaring the verdict vocabulary in Python.** It is a check constraint on the table.
+A value this code rejected but the database accepted would mean the two disagreed, and
+the database is the one still true after a code change.
