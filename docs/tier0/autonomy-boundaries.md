@@ -28,8 +28,51 @@ No measurement moves these. They are not "not yet"; they are structural.
 | Evidence, verdict and policy migrations | Same boundary, expressed in schema. Evidence tables are additive-only; never `ALTER` or `UPDATE` of existing rows. |
 | Threshold selection | Contested judgment with no standard. Only threshold *application* is checkable. |
 | The proprietary risk formulation and its calibration | No external check exists. A wrong number here does not crash, spike latency, or fail a healthcheck — it looks fine. |
-| Tier 0 documentation | Prose with no ground truth. Unvalidatable output of exactly the kind this architecture exists to prevent. |
+| Tier 0 authorship — **factory agents** | Structural rather than a rule: `docs/tier0/` is not in the dispatch mount set, so a factory agent cannot read or write the constitution. Recorded here anyway, because a boundary enforced only by configuration must be visible in the document it protects — otherwise the day the mount set changes, nothing says what was lost. |
+| Tier 0 authorship — **development-time assistants** | Prose with no ground truth. Unvalidatable output of exactly the kind this architecture exists to prevent. These assistants hold shell access on the operator's account and can write every file in this repository, so **no git-layer control separates them from the operator**: commit signing is off, the identity is shared, and enabling signing would not help because the key is reachable from the same shell. Drafting into a scratchpad artifact outside `docs/` is permitted; editing `docs/tier0/` is not. See *Drafting versus authorship*. |
 | Production credentials, deploy authority, VCS credentials | Blast-radius containment. The worst case from a fully compromised agent must remain a pull request that gets declined. |
+
+### Drafting versus authorship
+
+The original rule forbade something this project had already done twice. Either the rule was
+wrong or the practice was. Settled 2026-08-17: **the rule was aimed at the wrong population.**
+
+Factory agents run inside a container whose read paths are fixed by the harness at dispatch,
+and `docs/tier0/` is not among them. For that population the boundary was never a rule — it
+was a mount set, and it holds whether or not anything is written here.
+
+The population that has actually drafted Tier 0 text is different: development-time
+assistants running on the operator's own account, with shell access and write access to every
+file in the repository. For them the old rule was the only control, and it was honour-system.
+Making it a *broader* honour-system rule — "you may draft if you promise the operator decided
+first" — would not have changed that, because nothing records whether the decision preceded
+the draft.
+
+So the split:
+
+- **Authorship** — deciding what the constitution says. Permanently outside the boundary for
+  every population. No measurement moves it.
+- **Drafting** — proposing text for a decision the operator has already made. Permitted for
+  development-time assistants, into a scratchpad artifact **outside `docs/`**. Never by
+  editing a Tier 0 file.
+
+**The control is mechanical, and it is the only one available.** Any commit touching
+`docs/tier0/` must append an entry to `docs/tier1/adr-log.md` in the same commit, enforced by
+`scripts/lint_tier0_adr.py`. It does not prevent an assistant from writing the constitution —
+nothing on this machine can — but it makes every constitutional change land in an append-only
+log designed to be read, and converts a silent edit into one that must forge a second
+artifact of a kind the operator reviews. Recorded as a **detection** control, never a
+prevention control.
+
+**Stated rather than mitigated: the anchoring hazard.** A drafted amendment anchors its
+reviewer; accepting well-formed text is easier than writing different text. Nothing above
+removes this. What bounds it is scope — Tier 0 is five short documents and changes are rare —
+and that the operator reads the whole diff rather than a summary.
+
+**Not covered, and still permanently outside for every population:** anything in the
+inspector row above. A drafting permission for the constitution does not extend to the judge.
+Where the two touch — a Tier 0 document naming an inspector component — the inspector rule
+wins.
 
 ## Inside the boundary today (Phase 1 class)
 

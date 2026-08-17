@@ -411,3 +411,47 @@ removed — fail 32, 9, 12, 3 and 1 checks respectively. The thin margins are th
 part: duplicate detection and the surrogate check rest on very few vectors, and the
 suite should be widened there before it is relied on as a conformance gate.
 
+
+## ADR-0005 — The Tier 0 authorship boundary is split by population, and enforced by an append-only log
+
+**Date:** 2026-08-17 · **Status:** accepted
+
+**Context.** `autonomy-boundaries.md` placed "Tier 0 documentation" permanently outside the
+agent boundary. The project had nonetheless produced agent-drafted Tier 0 text twice, so
+either the rule or the practice was wrong. A proposed amendment (2026-08-15) would have
+permitted drafting under three conditions, the first being that the operator commits the
+change — *"a signature an agent can forge is not one."*
+
+**That condition was verified self-refuting.** `git log --format='%G?'` over `docs/tier0/`
+returns `N` on every commit: signing is off. Every commit carries the identity
+`Akamel01 <taahmedbayoumi@gmail.com>`. Enabling signing does not repair it, because an
+assistant with shell access on this account can sign with the operator's key. Of the three
+proposed conditions, one was forgeable and one ("the decision precedes the draft") was
+unrecorded and therefore unverifiable, leaving one honour-system rule guarding the
+constitution.
+
+**The deeper defect is that the rule addressed one population while the exposure lived in
+another.** Factory agents run in a container whose read paths the harness fixes at dispatch,
+and `docs/tier0/` is not in the mount set — for them the boundary is structural and the rule
+redundant. Development-time assistants run on the operator's account with write access to
+every file, and for them no control existed at all. The rule was enforced where it was
+unnecessary and silent where it mattered.
+
+**Decision.** The boundary row splits into two, one per population, each stating its actual
+enforcement. Authorship stays permanently outside for both. Drafting is permitted for
+development-time assistants into scratchpad artifacts outside `docs/`, never by editing a
+Tier 0 file. The honour-system conditions are replaced by one mechanical check: **a commit
+touching `docs/tier0/` must append an entry to this log in the same commit**, enforced by
+`scripts/lint_tier0_adr.py`.
+
+**What this does not do.** It does not prevent an assistant from writing the constitution;
+nothing on a single-user machine with shell access can. It raises the cost from a silent edit
+to two forged artifacts, one of which is append-only and designed to be read. Recorded as a
+detection control, not a prevention control, so that no future reader mistakes it for one.
+
+**Consequences.** `scripts/lint_tier0_adr.py` joins the inspector set under D20 and may not
+be agent-edited. This ADR is itself the first entry that gate requires. The anchoring hazard
+— that a drafted amendment is easier to accept than to rewrite — is stated in the boundary
+document and deliberately not mitigated.
+
+**Forward pointer:** none supersedes this yet.

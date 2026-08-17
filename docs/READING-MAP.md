@@ -158,7 +158,8 @@ Binding on implementation and easy to miss, since they live inside one document.
 | [ADR-0002](tier1/adr-log.md) | Reason-code width, and what the integer is allowed to be | Accepted |
 | [ADR-0003](tier1/adr-log.md) | Canonical serialization for hashed structures (ACS-1) | Accepted |
 | [ADR-0004](tier1/adr-log.md) | The ACS-1 float presentation grammar | Accepted |
+| [ADR-0005](tier1/adr-log.md) | The Tier 0 authorship boundary is split by population, and enforced by an append-only log | accepted |
 
 ---
 
-**61 documents mapped** · 41 binding · 13 context · 7 record · 4 architecture decisions
+**61 documents mapped** · 41 binding · 13 context · 7 record · 5 architecture decisions

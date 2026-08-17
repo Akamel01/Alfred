@@ -3,7 +3,7 @@ status:        provisional
 owner:         human
 enforcement:   review-cadence
 evidence:      none — written pre-Phase-0. The engineering thesis rests on four adversarial research runs; the commercial thesis rests on nothing yet and is the subject of the Phase 0.75 demand gate.
-falsifies_if:  No named buyer role at three AV organizations will describe, in their own words, an artifact they would pay for — or no design-partner engagement exists by the end of Phase 1. Either observation falsifies the wedge and forces D30 to be re-argued.
+falsifies_if:  No named buyer role at three AV organizations will describe, in their own words, an artifact they would pay for — or no design-partner engagement exists by the end of Phase 1. Either observation falsifies the AV wedge, which is parked under K1 while the factory continues; demand is retested at K6.
 review_after:  Phase 0.75
 ---
 
@@ -82,11 +82,12 @@ condition that would reverse it.
 
 | # | Criterion | Consequence if hit |
 |---|---|---|
-| K1 | No design-partner engagement by **2026-10-07** (Phase 1 exit) | The wedge is falsified. D30 is re-argued before any Phase 2 investment. |
-| K2 | No signed LOI **and** no documented refusal reasons from three named buyer roles by **2026-10-07** | Phase 2 investment does not begin. |
-| K3 | Per-task merge rate below ~50% at Phase 1 exit (**2026-10-07**), after the bounded retry budget | Narrow the task class. Never lower the bar, never add orchestration. |
+| K1 | No design-partner engagement by **2026-10-07** (Phase 1 exit) | **The AV wedge is parked; the factory continues.** Not a third re-argument — K1 and K5 both previously read "D30 is re-argued", D30 *was* re-argued on 2026-08-14, and a kill criterion whose consequence is to re-argue the decision just re-argued is a rescheduling, not a kill. **Parking means:** no further AV-specific investment (K2), the business-development ring-fence is lifted and those hours go to the factory, and the existing CriMe task class is retained as the factory's substrate. **A domain re-run is deliberately not triggered.** The arithmetic forbids it: a re-run decided 2026-10-21 has 71 days to the anchor, against the 57 days the AV track needed to get from a *verified oracle* to K1's own answer — with four research runs and ~1,450 fetched sources already behind it, and a contact list a new domain would not have. A pivot therefore arrives at the anchor holding exactly the evidence that K1 firing represents. Demand returns at **K6**, not before. |
+| K2 | No signed LOI **and** no documented refusal reasons from three named buyer roles by **2026-10-07** | **AV-specific investment does not begin** — metric implementation beyond the Phase 1 class, the customer-run container, pilot work, and anything whose value depends on the AV wedge being real. **Factory phases 2–4 proceed regardless.** Phase 2 is the evidence store, the golden set and the failure taxonomy; none of it is product work, and all of it is what the 2026-12-31 anchor tests. Halting the factory on a demand signal would make the anchor unpassable by construction, which is what this row did before 2026-08-17. |
+| K3 | Per-task merge rate below ~50% at Phase 1 exit (**2026-10-07**) after the bounded retry budget, **read as a Wilson 95% interval rather than a point estimate — the criterion fires when the interval's lower bound sits below 0.50** (at n=20 that means fewer than 15/20; at n=10, fewer than 9/10) | Narrow the task class. Never lower the bar, never add orchestration. |
 | K4 | Factory wall-clock per merged task exceeds the measured human baseline by a stated factor, at Phase 2 exit (**2026-11-04**) | D35 (pure-local) is re-argued, with the frontier-API lane as the named alternative. |
-| K5 | **FIRED 2026-08-13.** No instrument requires the attester to be independent of the simulation vendor: EU AI Act Art. 2(2) excludes ADS from substantive duties; EU 2022/1426 makes validation discretionary and document-based; NHTSA withdrew AV STEP (91 FR 38619); UK AV Act 2024 does not contain the word "independent". | The wedge has no forcing function. **D30 is re-argued before any Phase 2 investment.** What survives is a compliance-tooling product bought by OEMs, not attestation compelled by regulators. |
+| K5 | **FIRED 2026-08-13.** No instrument requires the attester to be independent of the simulation vendor: EU AI Act Art. 2(2) excludes ADS from substantive duties; EU 2022/1426 makes validation discretionary and document-based; NHTSA withdrew AV STEP (91 FR 38619); UK AV Act 2024 does not contain the word "independent". | The wedge has no forcing function. **D30 is re-argued before any Phase 2 investment.** What survives is a compliance-tooling product bought by OEMs, not attestation compelled by regulators. **DISCHARGED 2026-08-14** by the D30/D48 split: D30 retains the artifact shape, D48 carries the market position. A fired criterion whose consequence has been executed is not executed again. |
+| K6 | No dated demand answer on the **live domain** when the **2026-12-31** anchor is reached — a named buyer role at three organisations, the artifact they would pay for in their own words, or documented refusal reasons | **Build halts until that answer exists.** Passing the anchor is a *factory* verdict and authorizes nothing beyond a decision. The business-development ring-fence returns at the anchor. Recorded because a factory-shaped anchor leaves demand untested at every date — precisely the R10 exposure the calendar was installed to prevent, which must be reassigned rather than allowed to lapse. |
 
 **The largest unaddressed risk is K1/K2.** Nothing in four research runs and ~1,450
 fetched sources established that a metric-reproduction correctness harness can be sold to
@@ -96,6 +97,10 @@ investment that would make the answer expensive.
 ## Company-level constraints
 
 Ring-fenced weekly hours for business development from Phase 0, so it cannot lose every
-prioritization contest to engineering. Entity formation, a liability-capped pilot
+prioritization contest to engineering. **The ring-fence is lifted if K1 fires**, because
+parking the wedge closes the demand question until K6: those hours go to the factory, which
+is what makes the anchor arithmetically reachable — `F` is the binding term in the capacity
+ledger `5·n·m + F ≤ C` and it is the one term with no instrument. The ring-fence returns at
+the anchor. Entity formation, a liability-capped pilot
 agreement template, and an insurance quote all precede the first prospect-facing
 conversation.

@@ -21,7 +21,7 @@ The plan asserts it; no evidence supports it.
 - **Exposure:** the entire commercial thesis.
 - **Control:** Phase 0.75 demand gate. Requires zero code and zero data licence, so it can
   run in parallel with everything.
-- **Trigger:** no design-partner engagement by end of Phase 1 → D30 re-argued (K1).
+- **Trigger:** no design-partner engagement by **2026-10-07** → the AV wedge is parked and the factory continues (K1). Demand is retested at the post-anchor gate (K6), not by a domain re-run.
 
 ## R2 — Single machine is a single point of total loss
 
@@ -140,13 +140,48 @@ Anchor: **2026-12-31**, roughly 20 weeks from Step 0.
 | Phase 0.75 demand gate exit | **2026-10-07** | Phase 2 investment |
 | Phase 1 exit | **2026-10-07** | K1 and K3 resolve here |
 | Phase 2 exit | **2026-11-04** | K4 resolves here |
-| Anchor | **2026-12-31** | the project has shown something or it has not |
+| Anchor | **2026-12-31** | the **factory** verdict: one task class is granted unattended operation, or defensibly refused it, from measurement |
 
-- **Control:** dated milestones above; K1–K5 carry dates rather than phase names; a
+**What the anchor tests, settled 2026-08-17.** It tests the factory, not demand. The AV
+domain is substitutable and the factory is not, and under a demand reading the anchor carried
+no information: K1 resolves on 2026-10-07, no pivot can produce a K1-equivalent demand answer
+in the 71 days that remain, so the anchor's verdict would already be fixed twelve weeks
+earlier. An anchor whose answer is determined by an earlier gate is a restatement, not a
+forcing function.
+
+**Pass condition.** The `AutonomyGate` reaches a decision on at least one task class, from
+measurement rather than category, on a recorded fingerprint — reading per-task merge rate as
+a Wilson interval, held-out pass rate stratified by provenance tier, and defect-escape rate
+against a denominator of merged tasks under observation for a stated window. **A refusal
+passes.** The thesis is *shrinking* human gates; a mechanism producing a defensible "no
+grant, and here is the evidence" has demonstrated the thing nobody else has. Silence fails.
+
+**Stated degradation, in D49's form.** If `n` at the anchor gives a Wilson interval too wide
+to decide, the anchor is met by reporting `n`, the interval, the strata, and the `n` that
+would settle it — never by widening the interval or lowering the bar. Written now because the
+arithmetic already says a fully powered grant is out of reach: 8 weeks from Phase 2 exit at
+2–3 dispatched tasks/day is 80–120 dispatched and roughly 40–60 merged, against D29's 150–400
+for fine-grained comparison. An anchor implying a powered grant would be unpassable as
+written — the same defect as the superseded Phase 1 exit criterion, one phase later.
+
+**Open input, and the anchor is not evaluable without it:** the defect-escape *observation
+window*. `data-architecture.md` correctly requires the gate to read a denominator of "merged
+tasks under observation for a stated window", and states that an empty escape table is not a
+zero rate — but no document states the window. Owed by the operator before Phase 2 exit.
+
+- **Control:** dated milestones above; K1–K6 carry dates rather than phase names; a
   missed milestone requires a waiver ADR under D28, and the waiver count is the health
   metric that makes drift visible.
 - **Trigger:** any milestone missed by more than two weeks without a waiver ADR, or the
   anchor arriving with K1 unresolved.
+
+**Amended 2026-08-17.** The anchor was carrying two jobs — testing the factory and testing
+demand — and now carries one. Making it factory-shaped is correct, because the factory is
+what cannot be substituted, but it leaves demand with no dated test once K1 parks the wedge.
+That is this risk's exact failure mode: a project that cannot run out of money running
+indefinitely without learning whether anyone wants what it builds. The job is reassigned to
+**K6** rather than deleted. If K6 is ever waived, this risk is live again and the waiver ADR
+must say so.
 
 ## R12 — The data licence is unaffordable, so the wedge must not require one
 
