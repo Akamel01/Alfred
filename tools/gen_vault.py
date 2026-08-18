@@ -29,6 +29,7 @@ from tools.vaultgraph.serialize import (                       # noqa: E402
 from tools.vaultgraph.textio import ROOT                      # noqa: E402
 
 GRAPH = ROOT / "graph.json"
+ARTIFACT = ROOT / "docs-graph.html"
 
 
 def _report(result, *, verbose: bool) -> None:
@@ -96,6 +97,10 @@ def main(argv: list[str] | None = None) -> int:
         {} if args.graph_only
         else render_vault.build(result.nodes, result.edges, result.anomalies, result.unparsed)
     )
+    if not args.graph_only:
+        tree["docs-graph.html"] = render_vault.artifact(
+            result.nodes, result.edges, result.anomalies, result.unparsed
+        )
 
     if args.check:
         problems: list[str] = []

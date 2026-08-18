@@ -15,7 +15,7 @@ one extraction rather than growing their own.
 from __future__ import annotations
 
 from ..model import Edge, Node, NodeKind
-from . import canvas, dataview, note
+from . import canvas, dataview, html, note
 
 VAULT = "vault"
 
@@ -61,6 +61,13 @@ def build(nodes: list[Node], edges: list[Edge], anomalies: list, unparsed: list)
     tree.update(canvas.boards(nodes, edges))
     tree[f"{VAULT}/_anomalies.md"] = _anomalies(anomalies, unparsed)
     return tree
+
+
+def artifact(nodes: list[Node], edges: list[Edge], anomalies: list, unparsed: list) -> str:
+    """The published page, from the same nodes and edges the vault is built from. One
+    extraction, several renderers -- the artifact cannot drift from the vault because there is
+    nothing for it to drift from."""
+    return html.render(nodes, edges, anomalies, unparsed)
 
 
 def _anomalies(anomalies: list, unparsed: list) -> str:

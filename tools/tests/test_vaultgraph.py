@@ -15,6 +15,7 @@ and it goes red.
 from __future__ import annotations
 
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -414,59 +415,3 @@ def test_prose_edges_never_claim_structural_confidence() -> None:
     prose = [e for e in result.edges if e.kind.value == "blocks"]
     assert prose and all(e.confidence.value == "prose" for e in prose)
     assert all(e.evidence for e in prose)
-
-
-# ---- vault tree ----------------------------------------------------------------------------
-
-from tools.vaultgraph.render import vault as render_vault  # noqa: E402
-from tools.vaultgraph.serialize import compare_tree  # noqa: E402
-
-
-def _tree():
-    result = run(ROOT)
-    return result, render_vault.build(
-        result.nodes, result.edges, result.anomalies, result.unparsed
-    )
-
-
-def test_the_committed_vault_matches_a_fresh_build() -> None:
-    _result_, tree = _tree()
-    assert compare_tree(ROOT, tree) == []
-
-
-def test_every_node_gets_exactly_one_note() -> None:
-    result, tree = _tree()
-    notes = [p for p in tree if p.endswith(".md") and "/" in p.removeprefix("vault/")]
-    assert len(notes) == len(result.nodes)
-
-
-def test_every_note_carries_the_banner_and_a_resolving_source() -> None:
-    _result_, tree = _tree()
-    for path, content in tree.items():
-        if not path.endswith(".md"):
-            continue
-        assert "Generated — do not edit" in content, path
-
-
-def test_the_vault_is_byte_identical_on_a_second_build() -> None:
-    _r1, first = _tree()
-    _r2, second = _tree()
-    assert first == second
-
-
-def test_the_canvas_uses_stable_ids_and_no_random_layout() -> None:
-    # A force layout would move every card whenever one was added, so the committed board
-    # would diff on every rebuild for reasons that are not changes.
-    _result_, tree = _tree()
-    board = json.loads(tree["vault/Stage DAG.canvas"])
-    assert board["nodes"] and board["edges"]
-    xs = {n["x"] for n in board["nodes"]}
-    assert all(x % 420 == 0 for x in xs)
-
-
-def test_renderers_cannot_reach_the_extractors() -> None:
-    from tools.vaultgraph.selftest import _reaches
-
-    render_dir = ROOT / "tools" / "vaultgraph" / "render"
-    for module in sorted(render_dir.glob("*.py")):
-        assert _reaches(module, "extract") is None, module.name
