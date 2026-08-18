@@ -1,0 +1,85 @@
+#!/usr/bin/env python3
+"""Build Alfred's knowledge graph and the Obsidian vault derived from it.
+
+    python3 tools/gen_vault.py                # build graph.json (and, from stage 4, vault/)
+    python3 tools/gen_vault.py --check        # fail if the committed output is stale or edited
+    python3 tools/gen_vault.py --self-test    # prove the vacuity guards fire
+
+Lives in `tools/` and not `scripts/` deliberately. `scripts/`, `.github/workflows/`, `policy/`,
+`migrations/roles/` and `harness/` are inspector machinery under D20 — agents may improve the
+factory and never the inspector. A generator landed in `scripts/` would trigger major-fix #8:
+line-by-line human review plus a mandatory ADR, for a documentation tool that needs neither.
+"""
+
+from __future__ import annotations
+
+import argparse
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+from tools.vaultgraph.runner import run                      # noqa: E402
+from tools.vaultgraph.selftest import self_test               # noqa: E402
+from tools.vaultgraph.serialize import build_payload, dumps   # noqa: E402
+from tools.vaultgraph.textio import ROOT                      # noqa: E402
+
+GRAPH = ROOT / "graph.json"
+
+
+def _report(result, *, verbose: bool) -> None:
+    for report in sorted(result.reports, key=lambda r: r.name):
+        ceiling = "" if report.max_nodes is None else f"/{report.max_nodes}"
+        print(
+            f"  {report.name:<16} scanned {report.scanned:>4}  "
+            f"nodes {report.nodes:>4}{ceiling} (floor {report.min_nodes})  "
+            f"edges {report.edges:>4} (floor {report.min_edges})  "
+            f"unparsed {report.unparsed}/{report.max_unparsed}"
+        )
+    for anomaly in result.anomalies:
+        print(f"  ANOMALY {anomaly.kind}: {anomaly.detail}")
+    if verbose:
+        for item in result.unparsed:
+            print(f"  UNPARSED {item.source}: {item.text[:80]} — {item.reason}")
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--check", action="store_true",
+                        help="compare against the committed output; write nothing")
+    parser.add_argument("--self-test", action="store_true", dest="selftest",
+                        help="run the planted fixtures that prove the guards fire")
+    parser.add_argument("--verbose", action="store_true", help="list every unparsed item")
+    args = parser.parse_args(argv)
+
+    if args.selftest:
+        return self_test()
+
+    result = run(ROOT)
+    _report(result, verbose=args.verbose)
+
+    if not result.ok:
+        for failure in result.failures:
+            print(f"FAIL {failure}")
+        print(f"\n{len(result.failures)} extraction failure(s) — no output written")
+        return 1
+
+    content = dumps(build_payload(result, {}))
+
+    if args.check:
+        if not GRAPH.exists():
+            print("ERROR graph.json is missing — run python3 tools/gen_vault.py")
+            return 1
+        if GRAPH.read_text(encoding="utf-8") != content:
+            print("ERROR graph.json is stale — run python3 tools/gen_vault.py")
+            return 1
+        print(f"OK graph current ({len(result.nodes)} nodes, {len(result.edges)} edges)")
+        return 0
+
+    GRAPH.write_text(content, encoding="utf-8", newline="\n")
+    print(f"OK wrote graph.json ({len(result.nodes)} nodes, {len(result.edges)} edges)")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

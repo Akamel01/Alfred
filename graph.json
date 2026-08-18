@@ -1,0 +1,2958 @@
+{
+  "anomalies": [],
+  "counts": {
+    "document": 63,
+    "tier": 8
+  },
+  "edge_counts": {
+    "contains": 63
+  },
+  "edges": [
+    {
+      "confidence": "structural",
+      "dst": "document:tier0/autonomy-boundaries",
+      "evidence": "docs/tier0/autonomy-boundaries.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier0/autonomy-boundaries.md"
+      },
+      "src": "tier:tier0"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier0/charter-and-non-goals",
+      "evidence": "docs/tier0/charter-and-non-goals.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier0/charter-and-non-goals.md"
+      },
+      "src": "tier:tier0"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier0/glossary",
+      "evidence": "docs/tier0/glossary.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier0/glossary.md"
+      },
+      "src": "tier:tier0"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier0/operating-principles",
+      "evidence": "docs/tier0/operating-principles.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier0/operating-principles.md"
+      },
+      "src": "tier:tier0"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier0/risk-register",
+      "evidence": "docs/tier0/risk-register.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier0/risk-register.md"
+      },
+      "src": "tier:tier0"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier1/adr-log",
+      "evidence": "docs/tier1/adr-log.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "tier:tier1"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier1/cross-stage-invariants",
+      "evidence": "docs/tier1/cross-stage-invariants.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier1/cross-stage-invariants.md"
+      },
+      "src": "tier:tier1"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier1/data-architecture",
+      "evidence": "docs/tier1/data-architecture.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier1/data-architecture.md"
+      },
+      "src": "tier:tier1"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier1/domain-model",
+      "evidence": "docs/tier1/domain-model.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier1/domain-model.md"
+      },
+      "src": "tier:tier1"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier1/failure-semantics",
+      "evidence": "docs/tier1/failure-semantics.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier1/failure-semantics.md"
+      },
+      "src": "tier:tier1"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier1/mission-control-design",
+      "evidence": "docs/tier1/mission-control-design.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier1/mission-control-design.md"
+      },
+      "src": "tier:tier1"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier1/mission-control-specification",
+      "evidence": "docs/tier1/mission-control-specification.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier1/mission-control-specification.md"
+      },
+      "src": "tier:tier1"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier1/port-catalog",
+      "evidence": "docs/tier1/port-catalog.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier1/port-catalog.md"
+      },
+      "src": "tier:tier1"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier1/state-and-graph-specification",
+      "evidence": "docs/tier1/state-and-graph-specification.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier1/state-and-graph-specification.md"
+      },
+      "src": "tier:tier1"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier1/system-blueprint",
+      "evidence": "docs/tier1/system-blueprint.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier1/system-blueprint.md"
+      },
+      "src": "tier:tier1"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier1/technology-selection-records",
+      "evidence": "docs/tier1/technology-selection-records.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier1/technology-selection-records.md"
+      },
+      "src": "tier:tier1"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier1/worker-port-contract",
+      "evidence": "docs/tier1/worker-port-contract.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier1/worker-port-contract.md"
+      },
+      "src": "tier:tier1"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier2/branch-release-deploy-protocol",
+      "evidence": "docs/tier2/branch-release-deploy-protocol.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier2/branch-release-deploy-protocol.md"
+      },
+      "src": "tier:tier2"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier2/build-protocol",
+      "evidence": "docs/tier2/build-protocol.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier2/build-protocol.md"
+      },
+      "src": "tier:tier2"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier2/coding-standards",
+      "evidence": "docs/tier2/coding-standards.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier2/coding-standards.md"
+      },
+      "src": "tier:tier2"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier2/criterion-authoring-guide",
+      "evidence": "docs/tier2/criterion-authoring-guide.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier2/criterion-authoring-guide.md"
+      },
+      "src": "tier:tier2"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier2/definition-of-done",
+      "evidence": "docs/tier2/definition-of-done.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier2/definition-of-done.md"
+      },
+      "src": "tier:tier2"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier2/execution-order",
+      "evidence": "docs/tier2/execution-order.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "src": "tier:tier2"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier2/harness-self-test-specification",
+      "evidence": "docs/tier2/harness-self-test-specification.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier2/harness-self-test-specification.md"
+      },
+      "src": "tier:tier2"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier2/review-protocol",
+      "evidence": "docs/tier2/review-protocol.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier2/review-protocol.md"
+      },
+      "src": "tier:tier2"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier2/stage-gate-definitions",
+      "evidence": "docs/tier2/stage-gate-definitions.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier2/stage-gate-definitions.md"
+      },
+      "src": "tier:tier2"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier2/task-specification-standard",
+      "evidence": "docs/tier2/task-specification-standard.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier2/task-specification-standard.md"
+      },
+      "src": "tier:tier2"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier2/testing-strategy",
+      "evidence": "docs/tier2/testing-strategy.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier2/testing-strategy.md"
+      },
+      "src": "tier:tier2"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier3/agent-catalog",
+      "evidence": "docs/tier3/agent-catalog.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier3/agent-catalog.md"
+      },
+      "src": "tier:tier3"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier3/agent-definition-standard",
+      "evidence": "docs/tier3/agent-definition-standard.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier3/agent-definition-standard.md"
+      },
+      "src": "tier:tier3"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier3/agent-evaluation-protocol",
+      "evidence": "docs/tier3/agent-evaluation-protocol.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier3/agent-evaluation-protocol.md"
+      },
+      "src": "tier:tier3"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier3/autonomy-graduation-policy",
+      "evidence": "docs/tier3/autonomy-graduation-policy.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier3/autonomy-graduation-policy.md"
+      },
+      "src": "tier:tier3"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier3/context-engineering-guide",
+      "evidence": "docs/tier3/context-engineering-guide.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier3/context-engineering-guide.md"
+      },
+      "src": "tier:tier3"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier3/escalation-protocol",
+      "evidence": "docs/tier3/escalation-protocol.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier3/escalation-protocol.md"
+      },
+      "src": "tier:tier3"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier3/handoff-contract-standard",
+      "evidence": "docs/tier3/handoff-contract-standard.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier3/handoff-contract-standard.md"
+      },
+      "src": "tier:tier3"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier3/instruction-and-prompt-standard",
+      "evidence": "docs/tier3/instruction-and-prompt-standard.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier3/instruction-and-prompt-standard.md"
+      },
+      "src": "tier:tier3"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier3/run-instrumentation-specification",
+      "evidence": "docs/tier3/run-instrumentation-specification.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier3/run-instrumentation-specification.md"
+      },
+      "src": "tier:tier3"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier3/tool-specification-standard",
+      "evidence": "docs/tier3/tool-specification-standard.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier3/tool-specification-standard.md"
+      },
+      "src": "tier:tier3"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier4/audit-and-retention-policy",
+      "evidence": "docs/tier4/audit-and-retention-policy.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier4/audit-and-retention-policy.md"
+      },
+      "src": "tier:tier4"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier4/data-classification-and-handling",
+      "evidence": "docs/tier4/data-classification-and-handling.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier4/data-classification-and-handling.md"
+      },
+      "src": "tier:tier4"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier4/human-in-the-loop-policy",
+      "evidence": "docs/tier4/human-in-the-loop-policy.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier4/human-in-the-loop-policy.md"
+      },
+      "src": "tier:tier4"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier4/permission-and-identity-model",
+      "evidence": "docs/tier4/permission-and-identity-model.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier4/permission-and-identity-model.md"
+      },
+      "src": "tier:tier4"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier4/protected-paths-policy",
+      "evidence": "docs/tier4/protected-paths-policy.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier4/protected-paths-policy.md"
+      },
+      "src": "tier:tier4"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier4/sandbox-specification",
+      "evidence": "docs/tier4/sandbox-specification.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier4/sandbox-specification.md"
+      },
+      "src": "tier:tier4"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier4/secrets-management-policy",
+      "evidence": "docs/tier4/secrets-management-policy.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier4/secrets-management-policy.md"
+      },
+      "src": "tier:tier4"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier4/supply-chain-policy",
+      "evidence": "docs/tier4/supply-chain-policy.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier4/supply-chain-policy.md"
+      },
+      "src": "tier:tier4"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier4/threat-model",
+      "evidence": "docs/tier4/threat-model.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier4/threat-model.md"
+      },
+      "src": "tier:tier4"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier5/api-reference",
+      "evidence": "docs/tier5/api-reference.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier5/api-reference.md"
+      },
+      "src": "tier:tier5"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier5/customer-documentation",
+      "evidence": "docs/tier5/customer-documentation.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier5/customer-documentation.md"
+      },
+      "src": "tier:tier5"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier5/domain-specification",
+      "evidence": "docs/tier5/domain-specification.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier5/domain-specification.md"
+      },
+      "src": "tier:tier5"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier5/edge-case-and-degeneracy-specification",
+      "evidence": "docs/tier5/edge-case-and-degeneracy-specification.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier5/edge-case-and-degeneracy-specification.md"
+      },
+      "src": "tier:tier5"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier5/metric-catalog",
+      "evidence": "docs/tier5/metric-catalog.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier5/metric-catalog.md"
+      },
+      "src": "tier:tier5"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier5/model-and-algorithm-cards",
+      "evidence": "docs/tier5/model-and-algorithm-cards.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier5/model-and-algorithm-cards.md"
+      },
+      "src": "tier:tier5"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier5/product-requirements",
+      "evidence": "docs/tier5/product-requirements.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier5/product-requirements.md"
+      },
+      "src": "tier:tier5"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier5/validation-and-benchmark-protocol",
+      "evidence": "docs/tier5/validation-and-benchmark-protocol.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier5/validation-and-benchmark-protocol.md"
+      },
+      "src": "tier:tier5"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier6/cost-management-policy",
+      "evidence": "docs/tier6/cost-management-policy.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier6/cost-management-policy.md"
+      },
+      "src": "tier:tier6"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier6/observability-standard",
+      "evidence": "docs/tier6/observability-standard.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier6/observability-standard.md"
+      },
+      "src": "tier:tier6"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier6/postmortem-archive",
+      "evidence": "docs/tier6/postmortem-archive.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier6/postmortem-archive.md"
+      },
+      "src": "tier:tier6"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier6/runbooks",
+      "evidence": "docs/tier6/runbooks.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier6/runbooks.md"
+      },
+      "src": "tier:tier6"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier6/slo-sli-definitions",
+      "evidence": "docs/tier6/slo-sli-definitions.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier6/slo-sli-definitions.md"
+      },
+      "src": "tier:tier6"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier7/decision-index",
+      "evidence": "docs/tier7/decision-index.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/decision-index.md"
+      },
+      "src": "tier:tier7"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier7/documentation-standard",
+      "evidence": "docs/tier7/documentation-standard.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/documentation-standard.md"
+      },
+      "src": "tier:tier7"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier7/onboarding-guide",
+      "evidence": "docs/tier7/onboarding-guide.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/onboarding-guide.md"
+      },
+      "src": "tier:tier7"
+    }
+  ],
+  "extractors": [
+    {
+      "edges": 63,
+      "expect_rejected": null,
+      "max_nodes": null,
+      "max_unparsed": 0,
+      "min_edges": 63,
+      "min_nodes": 71,
+      "name": "documents",
+      "nodes": 71,
+      "rejected": 0,
+      "scanned": 63,
+      "unparsed": 0
+    }
+  ],
+  "generator": "tools/vaultgraph",
+  "inputs": {},
+  "nodes": [
+    {
+      "attrs": {
+        "enforcement": "ci-gate",
+        "evidence": "Boundary placement derives from the organizing principle and from measured task-class stratification. The specific thresholds are unset — they require Phase 1-2 data that does not exist.",
+        "falsifies_if": "A task class inside the boundary shows a defect-escape rate materially above a class outside it, meaning the boundary is drawn on the wrong property.",
+        "owner": "human",
+        "path": "docs/tier0/autonomy-boundaries.md",
+        "review_after": "Phase 4",
+        "tier": "0",
+        "tier_name": "Constitution",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier0/autonomy-boundaries",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier0/autonomy-boundaries.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier0",
+        "human",
+        "ci-gate"
+      ],
+      "title": "Autonomy Boundaries"
+    },
+    {
+      "attrs": {
+        "enforcement": "review-cadence",
+        "evidence": "none — written pre-Phase-0. The engineering thesis rests on four adversarial research runs; the commercial thesis rests on nothing yet and is the subject of the Phase 0.75 demand gate.",
+        "falsifies_if": "No named buyer role at three AV organizations will describe, in their own words, an artifact they would pay for — or no design-partner engagement exists by the end of Phase 1. Either observation falsifies the AV wedge, which is parked under K1 while the factory continues; demand is retested at K6.",
+        "owner": "human",
+        "path": "docs/tier0/charter-and-non-goals.md",
+        "review_after": "Phase 0.75",
+        "tier": "0",
+        "tier_name": "Constitution",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier0/charter-and-non-goals",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier0/charter-and-non-goals.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier0",
+        "human",
+        "review-cadence"
+      ],
+      "title": "Charter and Non-Goals"
+    },
+    {
+      "attrs": {
+        "enforcement": "review-cadence",
+        "evidence": "Terms are drawn from the architecture decisions and from the domain literature. Domain metric definitions follow Westhofen et al. (arXiv 2108.02403).",
+        "falsifies_if": "Two documents in the register use the same term for different things, or different terms for the same thing — the condition this glossary exists to prevent.",
+        "owner": "human",
+        "path": "docs/tier0/glossary.md",
+        "review_after": "Phase 2",
+        "tier": "0",
+        "tier_name": "Constitution",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier0/glossary",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier0/glossary.md"
+      },
+      "status": "frozen",
+      "tags": [
+        "tier0",
+        "human",
+        "review-cadence"
+      ],
+      "title": "Glossary"
+    },
+    {
+      "attrs": {
+        "enforcement": "review-cadence",
+        "evidence": "Derived from four adversarial research runs (~63 agents, ~1,450 fetched sources) and from the documented failure of a prior attempt at this system. Each principle names the evidence or the failure it answers.",
+        "falsifies_if": "A principle is repeatedly waived under D28's ADR discipline — three waivers against the same principle means the principle is wrong, not the situations.",
+        "owner": "human",
+        "path": "docs/tier0/operating-principles.md",
+        "review_after": "Phase 2",
+        "tier": "0",
+        "tier_name": "Constitution",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier0/operating-principles",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier0/operating-principles.md"
+      },
+      "status": "frozen",
+      "tags": [
+        "tier0",
+        "human",
+        "review-cadence"
+      ],
+      "title": "Operating Principles"
+    },
+    {
+      "attrs": {
+        "enforcement": "review-cadence",
+        "evidence": "Risks R1-R4 and R7-R9 are drawn from measured external results or from this project's own prior failure. R5, R6, R10 and R11 are structural exposures accepted deliberately, each with a named revisit trigger.",
+        "falsifies_if": "A material incident occurs whose cause appears nowhere in this register — meaning the register is enumerating the wrong hazards.",
+        "owner": "human",
+        "path": "docs/tier0/risk-register.md",
+        "review_after": "Phase 1",
+        "tier": "0",
+        "tier_name": "Constitution",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier0/risk-register",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier0/risk-register.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier0",
+        "human",
+        "review-cadence"
+      ],
+      "title": "Risk Register"
+    },
+    {
+      "attrs": {
+        "enforcement": "none",
+        "evidence": "One published ADR, whose decisive inputs were measured on this machine rather than argued: Pydantic v2's default serialization of infinity, and the cost of per-timestep objects against vectorized evaluation.",
+        "falsifies_if": "An ADR is edited after publication rather than superseded.",
+        "owner": "human",
+        "path": "docs/tier1/adr-log.md",
+        "review_after": "Phase 4",
+        "tier": "1",
+        "tier_name": "Architecture",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier1/adr-log",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "frozen",
+      "tags": [
+        "tier1",
+        "human",
+        "none"
+      ],
+      "title": "ADR Log"
+    },
+    {
+      "attrs": {
+        "enforcement": "ci-gate",
+        "evidence": "Each invariant is included because its retrofit cost is a migration or a rewrite, and several are the specific omissions that made a prior attempt expensive to correct.",
+        "falsifies_if": "An invariant is found violated in merged code, meaning the CI lint does not actually enforce what this document claims.",
+        "owner": "executable",
+        "path": "docs/tier1/cross-stage-invariants.md",
+        "review_after": "Phase 2",
+        "tier": "1",
+        "tier_name": "Architecture",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier1/cross-stage-invariants",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier1/cross-stage-invariants.md"
+      },
+      "status": "frozen",
+      "tags": [
+        "tier1",
+        "executable",
+        "ci-gate"
+      ],
+      "title": "Cross-Stage Invariants"
+    },
+    {
+      "attrs": {
+        "enforcement": "schema",
+        "evidence": "The role split and the separate held-out table are required because graph-level visibility controls were found not to constitute a boundary; the hash chain is required because append-only alone does not survive a single login compromise. The Phase 2 tables section rests on no observation at all — it is written against D25/D29/D35/D40/D49 and Phase 1 is its first test; it is included only where the alternative is a measurement that cannot be taken retroactively.",
+        "falsifies_if": "An agent-role connection succeeds against a held-out, verdict or policy table; or an evidence row is found mutated after write; or the observed grant set differs from the declared matrix in any direction, an extra grant included; or Phase 2 asks a question of the golden set, the taxonomy or the cost attribution that the tables specified here cannot answer without re-running Phase 1.",
+        "owner": "executable",
+        "path": "docs/tier1/data-architecture.md",
+        "review_after": "Phase 2",
+        "tier": "1",
+        "tier_name": "Architecture",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier1/data-architecture",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier1/data-architecture.md"
+      },
+      "status": "frozen",
+      "tags": [
+        "tier1",
+        "executable",
+        "schema"
+      ],
+      "title": "Data Architecture"
+    },
+    {
+      "attrs": {
+        "enforcement": "generated",
+        "evidence": "none — written pre-Phase-0 as a register stub (D32)",
+        "falsifies_if": "The generated model diverges from what the ingest adapters actually produce.",
+        "owner": "generated",
+        "path": "docs/tier1/domain-model.md",
+        "review_after": "Phase 1",
+        "tier": "1",
+        "tier_name": "Architecture",
+        "written": "stub"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier1/domain-model",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier1/domain-model.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier1",
+        "generated",
+        "generated"
+      ],
+      "title": "Domain Model"
+    },
+    {
+      "attrs": {
+        "enforcement": "ci-gate",
+        "evidence": "Two documented cases of controls failing open silently: an eval sandbox left with live internet access under a deny-by-default configuration, and an SDK that treated an empty settings-source list as omitted and loaded user configuration anyway. Both failed without signalling.",
+        "falsifies_if": "A run reaches a verdict while any control that gates it could not be shown to have executed, or a harness fault is recorded as an agent failure.",
+        "owner": "executable",
+        "path": "docs/tier1/failure-semantics.md",
+        "review_after": "Phase 1",
+        "tier": "1",
+        "tier_name": "Architecture",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier1/failure-semantics",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier1/failure-semantics.md"
+      },
+      "status": "frozen",
+      "tags": [
+        "tier1",
+        "executable",
+        "ci-gate"
+      ],
+      "title": "Failure Semantics and Error Handling"
+    },
+    {
+      "attrs": {
+        "enforcement": "ci-gate",
+        "evidence": "No review has happened, so nothing here rests on an observed one. What it does rest on is arithmetic over the plan's own stated numbers (20+ hrs/week capacity, ~20 tasks over ~3 weeks in Phase 1) and on the mechanical properties of the stack the surface is already committed to: server-rendered HTML has no client state to corrupt, a full-page navigation is observable server-side where a CSS toggle is not, and a monotonic clock read at request receipt cannot be moved by the client. Each friction decision below is stated as a claim with the observation that would refute it.",
+        "falsifies_if": "The full diff is opened on a majority of Phase 1 tasks carrying no anomaly flag; or the approve form is reachable on a page whose verdict is not `pass`; or a review page cannot be decided on with the read model dark; or a Phase 1 review produces an `attended_ms` corrupted by a failure mode this document did not name.",
+        "owner": "executable",
+        "path": "docs/tier1/mission-control-design.md",
+        "review_after": "Phase 1",
+        "tier": "1",
+        "tier_name": "Architecture",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier1/mission-control-design",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier1/mission-control-design.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier1",
+        "executable",
+        "ci-gate"
+      ],
+      "title": "Mission Control Design"
+    },
+    {
+      "attrs": {
+        "enforcement": "schema",
+        "evidence": "The surface's obligations are derived from controls that already exist — three-valued verdicts (Failure Semantics), the run record stream's `task_end.human_review_ms` field, which is specified as \"recorded from the review interaction, not estimated\" and today has no instrument, and the capacity ledger's requirement for human minutes per task. Nothing here rests on an observed review: no review has happened.",
+        "falsifies_if": "A Phase 1 merge is authorized without a corresponding operator-action row in the evidence chain; or the capacity ledger cannot be computed from recorded review time because the recorded number is dominated by tab-open wall clock rather than attended time; or criterion-first ordering is observed not to hold — reviewers open the full diff on a majority of tasks with no anomaly flag set.",
+        "owner": "executable",
+        "path": "docs/tier1/mission-control-specification.md",
+        "review_after": "Phase 1",
+        "tier": "1",
+        "tier_name": "Architecture",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier1/mission-control-specification",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier1/mission-control-specification.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier1",
+        "executable",
+        "schema"
+      ],
+      "title": "Mission Control Specification"
+    },
+    {
+      "attrs": {
+        "enforcement": "generated",
+        "evidence": "none — written pre-Phase-0 as a register stub (D32)",
+        "falsifies_if": "An external system is reached without passing through a catalogued port.",
+        "owner": "generated",
+        "path": "docs/tier1/port-catalog.md",
+        "review_after": "Phase 2",
+        "tier": "1",
+        "tier_name": "Architecture",
+        "written": "stub"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier1/port-catalog",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier1/port-catalog.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier1",
+        "generated",
+        "generated"
+      ],
+      "title": "Port Catalog"
+    },
+    {
+      "attrs": {
+        "enforcement": "schema",
+        "evidence": "none — written pre-Phase-0 as a register stub (D32)",
+        "falsifies_if": "A state field is written by more than one node without a declared reducer.",
+        "owner": "executable",
+        "path": "docs/tier1/state-and-graph-specification.md",
+        "review_after": "Phase 3",
+        "tier": "1",
+        "tier_name": "Architecture",
+        "written": "stub"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier1/state-and-graph-specification",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier1/state-and-graph-specification.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier1",
+        "executable",
+        "schema"
+      ],
+      "title": "State and Graph Specification"
+    },
+    {
+      "attrs": {
+        "enforcement": "review-cadence",
+        "evidence": "none — written pre-Phase-0 as a register stub (D32)",
+        "falsifies_if": "A phase ships a component that has no seam in this blueprint.",
+        "owner": "human",
+        "path": "docs/tier1/system-blueprint.md",
+        "review_after": "Phase 2",
+        "tier": "1",
+        "tier_name": "Architecture",
+        "written": "stub"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier1/system-blueprint",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier1/system-blueprint.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier1",
+        "human",
+        "review-cadence"
+      ],
+      "title": "System Blueprint"
+    },
+    {
+      "attrs": {
+        "enforcement": "none",
+        "evidence": "none — written pre-Phase-0 as a register stub (D32)",
+        "falsifies_if": "A technology is adopted with no corresponding record.",
+        "owner": "human",
+        "path": "docs/tier1/technology-selection-records.md",
+        "review_after": "Phase 3",
+        "tier": "1",
+        "tier_name": "Architecture",
+        "written": "stub"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier1/technology-selection-records",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier1/technology-selection-records.md"
+      },
+      "status": "frozen",
+      "tags": [
+        "tier1",
+        "human",
+        "none"
+      ],
+      "title": "Technology Selection Records"
+    },
+    {
+      "attrs": {
+        "enforcement": "schema",
+        "evidence": "The record shape, the claim/fault split and the read-recording obligation rest on measured behaviour of the selected lane — the content-channel defect (15–20% of calls), the silent reload to defaultContextLength, and the parallel-slot effect on prefix reuse — and on the Run Instrumentation Specification, which this port must be able to fill. Everything specific to the selected executor (OpenHands) rests on the plan's research notes and is **unverified first-hand**: the executor is not present in this repository and was not fetched. Those obligations are marked in place.",
+        "falsifies_if": "A conforming adaptor is written and Phase 1 finds a required instrumentation field that cannot be derived from what this port returns; or a second executor cannot be made to satisfy this contract without changing it; or a claim reaches the harness carrying a field the harness treats as a verdict.",
+        "owner": "executable",
+        "path": "docs/tier1/worker-port-contract.md",
+        "review_after": "Phase 1",
+        "tier": "1",
+        "tier_name": "Architecture",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier1/worker-port-contract",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier1/worker-port-contract.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier1",
+        "executable",
+        "schema"
+      ],
+      "title": "Worker Port Contract"
+    },
+    {
+      "attrs": {
+        "enforcement": "ci-gate",
+        "evidence": "none — written pre-Phase-0 as a register stub (D32)",
+        "falsifies_if": "A deploy occurs by any path other than CI on merge.",
+        "owner": "executable",
+        "path": "docs/tier2/branch-release-deploy-protocol.md",
+        "review_after": "Phase 2",
+        "tier": "2",
+        "tier_name": "Build protocol",
+        "written": "stub"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier2/branch-release-deploy-protocol",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier2/branch-release-deploy-protocol.md"
+      },
+      "status": "frozen",
+      "tags": [
+        "tier2",
+        "executable",
+        "ci-gate"
+      ],
+      "title": "Branch, Release and Deploy Protocol"
+    },
+    {
+      "attrs": {
+        "enforcement": "review-cadence",
+        "evidence": "none — written pre-Phase-0 as a register stub (D32)",
+        "falsifies_if": "The described flow no longer matches what the dispatcher actually does.",
+        "owner": "human",
+        "path": "docs/tier2/build-protocol.md",
+        "review_after": "Phase 3",
+        "tier": "2",
+        "tier_name": "Build protocol",
+        "written": "stub"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier2/build-protocol",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier2/build-protocol.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier2",
+        "human",
+        "review-cadence"
+      ],
+      "title": "Build Protocol"
+    },
+    {
+      "attrs": {
+        "enforcement": "ci-gate",
+        "evidence": "Strict typing is enforced now because retrofitting it onto a grown codebase is impractical; the agent inherits Phase 0's conventions, so conventions set before Phase 1 are the ones that propagate.",
+        "falsifies_if": "Merged code carries a type suppression without a recorded justification, or the agent's output requires routine style correction in review — meaning the conventions are not reaching it.",
+        "owner": "executable",
+        "path": "docs/tier2/coding-standards.md",
+        "review_after": "Phase 2",
+        "tier": "2",
+        "tier_name": "Build protocol",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier2/coding-standards",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier2/coding-standards.md"
+      },
+      "status": "frozen",
+      "tags": [
+        "tier2",
+        "executable",
+        "ci-gate"
+      ],
+      "title": "Coding Standards"
+    },
+    {
+      "attrs": {
+        "enforcement": "review-cadence",
+        "evidence": "none — written pre-Phase-0 as a register stub (D32)",
+        "falsifies_if": "Criteria written to this guide show a visible/held-out gap no better than those without it.",
+        "owner": "human",
+        "path": "docs/tier2/criterion-authoring-guide.md",
+        "review_after": "Phase 2",
+        "tier": "2",
+        "tier_name": "Build protocol",
+        "written": "stub"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier2/criterion-authoring-guide",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier2/criterion-authoring-guide.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier2",
+        "human",
+        "review-cadence"
+      ],
+      "title": "Criterion Authoring Guide"
+    },
+    {
+      "attrs": {
+        "enforcement": "ci-gate",
+        "evidence": "Each condition corresponds to a control this architecture depends on. The pre-review scan exists because CI runs before any human sees a pull request, so review is not the first gate.",
+        "falsifies_if": "A change merges with any condition below unmet, or a defect reaches merge that one of these conditions would have caught.",
+        "owner": "executable",
+        "path": "docs/tier2/definition-of-done.md",
+        "review_after": "Phase 2",
+        "tier": "2",
+        "tier_name": "Build protocol",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier2/definition-of-done",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier2/definition-of-done.md"
+      },
+      "status": "frozen",
+      "tags": [
+        "tier2",
+        "executable",
+        "ci-gate"
+      ],
+      "title": "Definition of Done"
+    },
+    {
+      "attrs": {
+        "enforcement": "review-cadence",
+        "evidence": "Derived from the eight completed handoffs (H1–H8) and a repository inventory verified 2026-08-17. Every \"does not exist\" below was checked against the filesystem, not recalled.",
+        "falsifies_if": "Any stage below is completed out of the stated order without a waiver ADR and the stage it was said to block proceeds unaffected — meaning the dependency was asserted rather than real.",
+        "owner": "human",
+        "path": "docs/tier2/execution-order.md",
+        "review_after": "Phase 0 exit",
+        "tier": "2",
+        "tier_name": "Build protocol",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier2/execution-order",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier2",
+        "human",
+        "review-cadence"
+      ],
+      "title": "Execution Order"
+    },
+    {
+      "attrs": {
+        "enforcement": "ci-gate",
+        "evidence": "Every headline number in this project has been wrong on first read, four for four, each time because the instrument was trusted before it was checked. The ACS-1 mutation control is the worked precedent: 47 mutants, worst margin 10 checks, with a negative control that reports UNDETECTED on a no-op mutant and aborts on a mutation that fails to apply.",
+        "falsifies_if": "A suite specified here passes while the control it guards is disabled; or a seeded defect at a delta just outside a declared tolerance is not red; or the null-agent floor scores above zero; or an injected fault produces `pass`.",
+        "owner": "executable",
+        "path": "docs/tier2/harness-self-test-specification.md",
+        "review_after": "Phase 1",
+        "tier": "2",
+        "tier_name": "Build protocol",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier2/harness-self-test-specification",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier2/harness-self-test-specification.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier2",
+        "executable",
+        "ci-gate"
+      ],
+      "title": "Harness Self-Test Specification"
+    },
+    {
+      "attrs": {
+        "enforcement": "review-cadence",
+        "evidence": "none — written pre-Phase-0 as a register stub (D32)",
+        "falsifies_if": "Defects that reach merge are ones a full-diff read would routinely have caught.",
+        "owner": "human",
+        "path": "docs/tier2/review-protocol.md",
+        "review_after": "Phase 2",
+        "tier": "2",
+        "tier_name": "Build protocol",
+        "written": "stub"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier2/review-protocol",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier2/review-protocol.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier2",
+        "human",
+        "review-cadence"
+      ],
+      "title": "Review Protocol"
+    },
+    {
+      "attrs": {
+        "enforcement": "ci-gate",
+        "evidence": "none — written pre-Phase-0 as a register stub (D32)",
+        "falsifies_if": "A phase is exited with a gate red and no waiver ADR recorded.",
+        "owner": "executable",
+        "path": "docs/tier2/stage-gate-definitions.md",
+        "review_after": "Phase 2",
+        "tier": "2",
+        "tier_name": "Build protocol",
+        "written": "stub"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier2/stage-gate-definitions",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier2/stage-gate-definitions.md"
+      },
+      "status": "frozen",
+      "tags": [
+        "tier2",
+        "executable",
+        "ci-gate"
+      ],
+      "title": "Stage Gate Definitions"
+    },
+    {
+      "attrs": {
+        "enforcement": "schema",
+        "evidence": "The schedulability rule is the mechanism behind every credible agent coding result; the interface-signature requirement comes from SWE-bench Pro, which had to add human-authored interface specs because valid solutions were failing as false negatives.",
+        "falsifies_if": "A task passes validation, dispatches, and its criterion turns out to be unexecutable or to admit a solution that does not solve the stated problem.",
+        "owner": "executable",
+        "path": "docs/tier2/task-specification-standard.md",
+        "review_after": "Phase 2",
+        "tier": "2",
+        "tier_name": "Build protocol",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier2/task-specification-standard",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier2/task-specification-standard.md"
+      },
+      "status": "frozen",
+      "tags": [
+        "tier2",
+        "executable",
+        "schema"
+      ],
+      "title": "Task Specification Standard"
+    },
+    {
+      "attrs": {
+        "enforcement": "ci-gate",
+        "evidence": "The visible/held-out split addresses a measured 43-48pp gap on composed operations with no exploit involved. The exclusion of mutation score follows a replication finding that mutation scores are meaningless in a bug-detection setting.",
+        "falsifies_if": "A composed property test is found that an agent could satisfy by special-casing, or held-out pass rate tracks visible pass rate across a full golden set.",
+        "owner": "human",
+        "path": "docs/tier2/testing-strategy.md",
+        "review_after": "Phase 2",
+        "tier": "2",
+        "tier_name": "Build protocol",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier2/testing-strategy",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier2/testing-strategy.md"
+      },
+      "status": "frozen",
+      "tags": [
+        "tier2",
+        "human",
+        "ci-gate"
+      ],
+      "title": "Testing Strategy"
+    },
+    {
+      "attrs": {
+        "enforcement": "schema",
+        "evidence": "none — written pre-Phase-0 as a register stub (D32)",
+        "falsifies_if": "A catalogued agent has no golden tasks and therefore no measurable merge rate.",
+        "owner": "executable",
+        "path": "docs/tier3/agent-catalog.md",
+        "review_after": "Phase 3",
+        "tier": "3",
+        "tier_name": "Agent specifications",
+        "written": "stub"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier3/agent-catalog",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier3/agent-catalog.md"
+      },
+      "status": "directional",
+      "tags": [
+        "tier3",
+        "executable",
+        "schema"
+      ],
+      "title": "Agent Catalog"
+    },
+    {
+      "attrs": {
+        "enforcement": "schema",
+        "evidence": "none — written pre-Phase-0 as a register stub (D32)",
+        "falsifies_if": "An agent is dispatched whose definition names a job title rather than a capability.",
+        "owner": "executable",
+        "path": "docs/tier3/agent-definition-standard.md",
+        "review_after": "Phase 2",
+        "tier": "3",
+        "tier_name": "Agent specifications",
+        "written": "stub"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier3/agent-definition-standard",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier3/agent-definition-standard.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier3",
+        "executable",
+        "schema"
+      ],
+      "title": "Agent Definition Standard"
+    },
+    {
+      "attrs": {
+        "enforcement": "ci-gate",
+        "evidence": "none — written pre-Phase-0 as a register stub (D32)",
+        "falsifies_if": "A configuration change is accepted on an effect size below the set's resolution.",
+        "owner": "human",
+        "path": "docs/tier3/agent-evaluation-protocol.md",
+        "review_after": "Phase 3",
+        "tier": "3",
+        "tier_name": "Agent specifications",
+        "written": "stub"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier3/agent-evaluation-protocol",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier3/agent-evaluation-protocol.md"
+      },
+      "status": "directional",
+      "tags": [
+        "tier3",
+        "human",
+        "ci-gate"
+      ],
+      "title": "Agent Evaluation Protocol"
+    },
+    {
+      "attrs": {
+        "enforcement": "ci-gate",
+        "evidence": "none — written pre-Phase-0 as a register stub (D32)",
+        "falsifies_if": "A grant is issued on visible-criterion pass rate, or survives a fingerprint change.",
+        "owner": "executable",
+        "path": "docs/tier3/autonomy-graduation-policy.md",
+        "review_after": "Phase 4",
+        "tier": "3",
+        "tier_name": "Agent specifications",
+        "written": "stub"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier3/autonomy-graduation-policy",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier3/autonomy-graduation-policy.md"
+      },
+      "status": "directional",
+      "tags": [
+        "tier3",
+        "executable",
+        "ci-gate"
+      ],
+      "title": "Autonomy Graduation Policy"
+    },
+    {
+      "attrs": {
+        "enforcement": "review-cadence",
+        "evidence": "none — written pre-Phase-0 as a register stub (D32)",
+        "falsifies_if": "A context change invalidates cached prefixes without a context_strategy_version bump.",
+        "owner": "human",
+        "path": "docs/tier3/context-engineering-guide.md",
+        "review_after": "Phase 2",
+        "tier": "3",
+        "tier_name": "Agent specifications",
+        "written": "stub"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier3/context-engineering-guide",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier3/context-engineering-guide.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier3",
+        "human",
+        "review-cadence"
+      ],
+      "title": "Context Engineering Guide"
+    },
+    {
+      "attrs": {
+        "enforcement": "schema",
+        "evidence": "none — written pre-Phase-0 as a register stub (D32)",
+        "falsifies_if": "An agent run terminates without either a verdict or a structurally triggered escalation.",
+        "owner": "executable",
+        "path": "docs/tier3/escalation-protocol.md",
+        "review_after": "Phase 2",
+        "tier": "3",
+        "tier_name": "Agent specifications",
+        "written": "stub"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier3/escalation-protocol",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier3/escalation-protocol.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier3",
+        "executable",
+        "schema"
+      ],
+      "title": "Escalation Protocol"
+    },
+    {
+      "attrs": {
+        "enforcement": "schema",
+        "evidence": "none — written pre-Phase-0 as a register stub (D32)",
+        "falsifies_if": "A handoff carries prose the successor relies on without reading the underlying artifact.",
+        "owner": "executable",
+        "path": "docs/tier3/handoff-contract-standard.md",
+        "review_after": "Phase 3",
+        "tier": "3",
+        "tier_name": "Agent specifications",
+        "written": "stub"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier3/handoff-contract-standard",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier3/handoff-contract-standard.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier3",
+        "executable",
+        "schema"
+      ],
+      "title": "Handoff Contract Standard"
+    },
+    {
+      "attrs": {
+        "enforcement": "schema",
+        "evidence": "none — written pre-Phase-0 as a register stub (D32)",
+        "falsifies_if": "A prompt reaches an agent without a recorded version.",
+        "owner": "executable",
+        "path": "docs/tier3/instruction-and-prompt-standard.md",
+        "review_after": "Phase 2",
+        "tier": "3",
+        "tier_name": "Agent specifications",
+        "written": "stub"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier3/instruction-and-prompt-standard",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier3/instruction-and-prompt-standard.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier3",
+        "executable",
+        "schema"
+      ],
+      "title": "Instruction and Prompt Standard"
+    },
+    {
+      "attrs": {
+        "enforcement": "schema",
+        "evidence": "The agentic probe (4 seeds × 5 tasks, 20/20; mean 4.1 turns, 4.75 tool calls) fixes the shape of a short run and supplies the repeat/recovery ambiguity this schema disambiguates; the content-channel defect (15–20% of calls, chain completion reading 20% or 100% on identical model behaviour) and the silent lane reload to defaultContextLength are both measured on the selected lane. The long-horizon and goal-seeking fields rest on nothing observed — Phase 1 is their first measurement, which is why they must be emitted before it starts.",
+        "falsifies_if": "A Phase 1 run completes and a question in \"What this must answer\" cannot be answered from the emitted records without re-running anything; or the instrument-verification suite passes against an instrument that a deliberately injected defect does not move; or a run record stream is chained without having passed the validator specified under Enforcement, which as of 2026-08-15 is specified and unwritten.",
+        "owner": "executable",
+        "path": "docs/tier3/run-instrumentation-specification.md",
+        "review_after": "Phase 1",
+        "tier": "3",
+        "tier_name": "Agent specifications",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier3/run-instrumentation-specification",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier3/run-instrumentation-specification.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier3",
+        "executable",
+        "schema"
+      ],
+      "title": "Run Instrumentation Specification"
+    },
+    {
+      "attrs": {
+        "enforcement": "schema",
+        "evidence": "none — written pre-Phase-0 as a register stub (D32)",
+        "falsifies_if": "A tool's behaviour changes without its description hash changing.",
+        "owner": "executable",
+        "path": "docs/tier3/tool-specification-standard.md",
+        "review_after": "Phase 2",
+        "tier": "3",
+        "tier_name": "Agent specifications",
+        "written": "stub"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier3/tool-specification-standard",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier3/tool-specification-standard.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier3",
+        "executable",
+        "schema"
+      ],
+      "title": "Tool Specification Standard"
+    },
+    {
+      "attrs": {
+        "enforcement": "ci-gate",
+        "evidence": "Append-only defends against the agent and not against hardware failure, kernel-panic corruption, or a bad migration. For an audit-layer product, an unchained audit log is rewritable by anyone holding one login.",
+        "falsifies_if": "A restore drill fails, a chain-head anchor is missing for any day, or an evidence row is found whose hash does not match its predecessor link.",
+        "owner": "executable",
+        "path": "docs/tier4/audit-and-retention-policy.md",
+        "review_after": "Phase 2",
+        "tier": "4",
+        "tier_name": "Security and governance",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier4/audit-and-retention-policy",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier4/audit-and-retention-policy.md"
+      },
+      "status": "frozen",
+      "tags": [
+        "tier4",
+        "executable",
+        "ci-gate"
+      ],
+      "title": "Audit and Retention Policy"
+    },
+    {
+      "attrs": {
+        "enforcement": "review-cadence",
+        "evidence": "none — written pre-Phase-0 as a register stub (D32)",
+        "falsifies_if": "A dataset is used outside the permissions its licence grants.",
+        "owner": "human",
+        "path": "docs/tier4/data-classification-and-handling.md",
+        "review_after": "Phase 0.5",
+        "tier": "4",
+        "tier_name": "Security and governance",
+        "written": "stub"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier4/data-classification-and-handling",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier4/data-classification-and-handling.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier4",
+        "human",
+        "review-cadence"
+      ],
+      "title": "Data Classification and Handling"
+    },
+    {
+      "attrs": {
+        "enforcement": "review-cadence",
+        "evidence": "none — written pre-Phase-0 as a register stub (D32). Its evidence is Phase 1's twenty-plus human gates and the review time they produce, which is why its review point moved from Phase 3 to Phase 1.",
+        "falsifies_if": "A human approval is required for something the harness could have decided deterministically; or a human decision is taken that the evidence chain does not record.",
+        "owner": "human",
+        "path": "docs/tier4/human-in-the-loop-policy.md",
+        "review_after": "Phase 1",
+        "tier": "4",
+        "tier_name": "Security and governance",
+        "written": "stub"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier4/human-in-the-loop-policy",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier4/human-in-the-loop-policy.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier4",
+        "human",
+        "review-cadence"
+      ],
+      "title": "Human-in-the-Loop Policy"
+    },
+    {
+      "attrs": {
+        "enforcement": "schema",
+        "evidence": "Graph-level visibility controls were verified not to constitute a boundary — private state schemas do not hide channels from stream, output_keys is caller-side, and the checkpointer persists everything. The security property has to come from physical separation.",
+        "falsifies_if": "An agent-role connection succeeds against a held-out, verdict or policy table, or any identity is found holding a permission not listed here.",
+        "owner": "executable",
+        "path": "docs/tier4/permission-and-identity-model.md",
+        "review_after": "Phase 2",
+        "tier": "4",
+        "tier_name": "Security and governance",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier4/permission-and-identity-model",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier4/permission-and-identity-model.md"
+      },
+      "status": "frozen",
+      "tags": [
+        "tier4",
+        "executable",
+        "schema"
+      ],
+      "title": "Permission and Identity Model"
+    },
+    {
+      "attrs": {
+        "enforcement": "ci-gate",
+        "evidence": "Documented, not hypothesized. An agent has written an auto-approve setting into its own configuration file, disabling its approval gate because the gate lived in a file it could write (CVE-2025-53773).",
+        "falsifies_if": "A merged diff touches a protected path, or a path that should have been protected is found to have been agent-writable.",
+        "owner": "executable",
+        "path": "docs/tier4/protected-paths-policy.md",
+        "review_after": "Phase 2",
+        "tier": "4",
+        "tier_name": "Security and governance",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier4/protected-paths-policy",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier4/protected-paths-policy.md"
+      },
+      "status": "frozen",
+      "tags": [
+        "tier4",
+        "executable",
+        "ci-gate"
+      ],
+      "title": "Protected Paths Policy"
+    },
+    {
+      "attrs": {
+        "enforcement": "ci-gate",
+        "evidence": "Deny-by-default is asserted by a boot-time canary because a major lab's own evaluation harness was found to have left machines with live internet access despite intended isolation. Allowlisted hosts have been used for exfiltration at CVSS 9.6. The executor-specific assertions (C1–C3, C12) rest on the plan's research notes about OpenHands and are **unverified first-hand** — the executor is not present in this repository and was not fetched; each is written to pass harmlessly if the feature it disables does not exist.",
+        "falsifies_if": "A sandbox boots while a known non-allowlisted connection succeeds, or a credential is found reachable from inside the container, or a run reaches a verdict while any assertion in the containment table below was not executed.",
+        "owner": "executable",
+        "path": "docs/tier4/sandbox-specification.md",
+        "review_after": "Phase 2",
+        "tier": "4",
+        "tier_name": "Security and governance",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier4/sandbox-specification",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier4/sandbox-specification.md"
+      },
+      "status": "frozen",
+      "tags": [
+        "tier4",
+        "executable",
+        "ci-gate"
+      ],
+      "title": "Sandbox Specification"
+    },
+    {
+      "attrs": {
+        "enforcement": "ci-gate",
+        "evidence": "A pull-request-opening flow has been used to exfiltrate a token within eight minutes of the PR being opened. Repository-scoped CI caches survive container ephemerality, so ephemerality alone does not contain a leaked secret.",
+        "falsifies_if": "Any credential is found reachable from agent context, or a secret is discovered outside the declared inventory.",
+        "owner": "executable",
+        "path": "docs/tier4/secrets-management-policy.md",
+        "review_after": "Phase 2",
+        "tier": "4",
+        "tier_name": "Security and governance",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier4/secrets-management-policy",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier4/secrets-management-policy.md"
+      },
+      "status": "frozen",
+      "tags": [
+        "tier4",
+        "executable",
+        "ci-gate"
+      ],
+      "title": "Secrets Management Policy"
+    },
+    {
+      "attrs": {
+        "enforcement": "ci-gate",
+        "evidence": "An unconstrained dependency has broken a graph library's tool node in a patch release. Identical model weights have produced opposite tool-calling outcomes on different serving stacks. Imatrix quantization variants share names while differing in content.",
+        "falsifies_if": "A dependency, image or model artifact resolves to content other than its pinned hash, or a behaviour change is traced to a component whose identity was believed pinned.",
+        "owner": "executable",
+        "path": "docs/tier4/supply-chain-policy.md",
+        "review_after": "Phase 2",
+        "tier": "4",
+        "tier_name": "Security and governance",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier4/supply-chain-policy",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier4/supply-chain-policy.md"
+      },
+      "status": "frozen",
+      "tags": [
+        "tier4",
+        "executable",
+        "ci-gate"
+      ],
+      "title": "Supply Chain Policy"
+    },
+    {
+      "attrs": {
+        "enforcement": "review-cadence",
+        "evidence": "Every threat listed has a documented instance or a measured attack success rate. None is included on speculation; where a threat is theoretical for Alfred specifically, that is stated.",
+        "falsifies_if": "An incident occurs whose mechanism appears nowhere in this model, meaning the model enumerates the wrong hazards.",
+        "owner": "human",
+        "path": "docs/tier4/threat-model.md",
+        "review_after": "Phase 2",
+        "tier": "4",
+        "tier_name": "Security and governance",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier4/threat-model",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier4/threat-model.md"
+      },
+      "status": "frozen",
+      "tags": [
+        "tier4",
+        "human",
+        "review-cadence"
+      ],
+      "title": "Threat Model"
+    },
+    {
+      "attrs": {
+        "enforcement": "generated",
+        "evidence": "none — written pre-Phase-0 as a register stub (D32)",
+        "falsifies_if": "The published reference diverges from the served schema.",
+        "owner": "generated",
+        "path": "docs/tier5/api-reference.md",
+        "review_after": "Phase 1",
+        "tier": "5",
+        "tier_name": "Product",
+        "written": "stub"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier5/api-reference",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier5/api-reference.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier5",
+        "generated",
+        "generated"
+      ],
+      "title": "API Reference"
+    },
+    {
+      "attrs": {
+        "enforcement": "review-cadence",
+        "evidence": "none — written pre-Phase-0 as a register stub (D32)",
+        "falsifies_if": "A customer cannot reproduce a delivered number from the documentation alone.",
+        "owner": "human",
+        "path": "docs/tier5/customer-documentation.md",
+        "review_after": "Phase 2",
+        "tier": "5",
+        "tier_name": "Product",
+        "written": "stub"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier5/customer-documentation",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier5/customer-documentation.md"
+      },
+      "status": "directional",
+      "tags": [
+        "tier5",
+        "human",
+        "review-cadence"
+      ],
+      "title": "Customer Documentation"
+    },
+    {
+      "attrs": {
+        "enforcement": "ci-gate",
+        "evidence": "none — written pre-Phase-0 as a register stub (D32)",
+        "falsifies_if": "An implemented metric diverges from the cited formula without a recorded justification.",
+        "owner": "human",
+        "path": "docs/tier5/domain-specification.md",
+        "review_after": "Phase 1",
+        "tier": "5",
+        "tier_name": "Product",
+        "written": "stub"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier5/domain-specification",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier5/domain-specification.md"
+      },
+      "status": "frozen",
+      "tags": [
+        "tier5",
+        "human",
+        "ci-gate"
+      ],
+      "title": "Domain Specification"
+    },
+    {
+      "attrs": {
+        "enforcement": "ci-gate",
+        "evidence": "The oracle's own regression suite asserts `0.0` or `inf` for several measures, which is why those measures were excluded from the verified task class — a test pinning a sentinel is not evidence the metric computes. Degenerate geometry is also where a wrong number is least likely to throw and most likely to look plausible.",
+        "falsifies_if": "A metric returns a finite number for an input this document declares undefined, or returns NaN anywhere, or a case observed in real scenario data appears nowhere in this catalog.",
+        "owner": "human",
+        "path": "docs/tier5/edge-case-and-degeneracy-specification.md",
+        "review_after": "Phase 1",
+        "tier": "5",
+        "tier_name": "Product",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier5/edge-case-and-degeneracy-specification",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier5/edge-case-and-degeneracy-specification.md"
+      },
+      "status": "frozen",
+      "tags": [
+        "tier5",
+        "human",
+        "ci-gate"
+      ],
+      "title": "Edge Case and Degeneracy Specification"
+    },
+    {
+      "attrs": {
+        "enforcement": "generated",
+        "evidence": "none — written pre-Phase-0 as a register stub (D32)",
+        "falsifies_if": "A metric ships without a catalog entry.",
+        "owner": "generated",
+        "path": "docs/tier5/metric-catalog.md",
+        "review_after": "Phase 1",
+        "tier": "5",
+        "tier_name": "Product",
+        "written": "stub"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier5/metric-catalog",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier5/metric-catalog.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier5",
+        "generated",
+        "generated"
+      ],
+      "title": "Metric Catalog"
+    },
+    {
+      "attrs": {
+        "enforcement": "ci-gate",
+        "evidence": "none — written pre-Phase-0 as a register stub (D32)",
+        "falsifies_if": "A metric is emitted outside its stated validity envelope without a warning.",
+        "owner": "human",
+        "path": "docs/tier5/model-and-algorithm-cards.md",
+        "review_after": "Phase 1",
+        "tier": "5",
+        "tier_name": "Product",
+        "written": "stub"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier5/model-and-algorithm-cards",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier5/model-and-algorithm-cards.md"
+      },
+      "status": "frozen",
+      "tags": [
+        "tier5",
+        "human",
+        "ci-gate"
+      ],
+      "title": "Model and Algorithm Cards"
+    },
+    {
+      "attrs": {
+        "enforcement": "review-cadence",
+        "evidence": "none — written pre-Phase-0 as a register stub (D32)",
+        "falsifies_if": "A requirement here is contradicted by what a named buyer actually asks for.",
+        "owner": "human",
+        "path": "docs/tier5/product-requirements.md",
+        "review_after": "Phase 0.75",
+        "tier": "5",
+        "tier_name": "Product",
+        "written": "stub"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier5/product-requirements",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier5/product-requirements.md"
+      },
+      "status": "directional",
+      "tags": [
+        "tier5",
+        "human",
+        "review-cadence"
+      ],
+      "title": "Product Requirements"
+    },
+    {
+      "attrs": {
+        "enforcement": "ci-gate",
+        "evidence": "none — written pre-Phase-0 as a register stub (D32)",
+        "falsifies_if": "A benchmark claim is made that its method cannot support.",
+        "owner": "human",
+        "path": "docs/tier5/validation-and-benchmark-protocol.md",
+        "review_after": "Phase 2",
+        "tier": "5",
+        "tier_name": "Product",
+        "written": "stub"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier5/validation-and-benchmark-protocol",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier5/validation-and-benchmark-protocol.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier5",
+        "human",
+        "ci-gate"
+      ],
+      "title": "Validation and Benchmark Protocol"
+    },
+    {
+      "attrs": {
+        "enforcement": "ci-gate",
+        "evidence": "none — written pre-Phase-0 as a register stub (D32)",
+        "falsifies_if": "A ceiling is exceeded without dispatch halting.",
+        "owner": "executable",
+        "path": "docs/tier6/cost-management-policy.md",
+        "review_after": "Phase 3",
+        "tier": "6",
+        "tier_name": "Operations",
+        "written": "stub"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier6/cost-management-policy",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier6/cost-management-policy.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier6",
+        "executable",
+        "ci-gate"
+      ],
+      "title": "Cost Management Policy"
+    },
+    {
+      "attrs": {
+        "enforcement": "ci-gate",
+        "evidence": "none — written pre-Phase-0 as a register stub (D32)",
+        "falsifies_if": "A record exists whose cause cannot be traced.",
+        "owner": "executable",
+        "path": "docs/tier6/observability-standard.md",
+        "review_after": "Phase 2",
+        "tier": "6",
+        "tier_name": "Operations",
+        "written": "stub"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier6/observability-standard",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier6/observability-standard.md"
+      },
+      "status": "frozen",
+      "tags": [
+        "tier6",
+        "executable",
+        "ci-gate"
+      ],
+      "title": "Observability Standard"
+    },
+    {
+      "attrs": {
+        "enforcement": "none",
+        "evidence": "none — written pre-Phase-0 as a register stub (D32)",
+        "falsifies_if": "A postmortem is edited after publication.",
+        "owner": "human",
+        "path": "docs/tier6/postmortem-archive.md",
+        "review_after": "Phase 4",
+        "tier": "6",
+        "tier_name": "Operations",
+        "written": "stub"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier6/postmortem-archive",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier6/postmortem-archive.md"
+      },
+      "status": "frozen",
+      "tags": [
+        "tier6",
+        "human",
+        "none"
+      ],
+      "title": "Postmortem Archive"
+    },
+    {
+      "attrs": {
+        "enforcement": "review-cadence",
+        "evidence": "none — written pre-Phase-0 as a register stub (D32)",
+        "falsifies_if": "An incident is handled with no runbook and none is written afterwards.",
+        "owner": "human",
+        "path": "docs/tier6/runbooks.md",
+        "review_after": "Phase 3",
+        "tier": "6",
+        "tier_name": "Operations",
+        "written": "stub"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier6/runbooks",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier6/runbooks.md"
+      },
+      "status": "directional",
+      "tags": [
+        "tier6",
+        "human",
+        "review-cadence"
+      ],
+      "title": "Runbooks"
+    },
+    {
+      "attrs": {
+        "enforcement": "schema",
+        "evidence": "none — written pre-Phase-0 as a register stub (D32)",
+        "falsifies_if": "An objective is breached repeatedly with no alarm configured for it.",
+        "owner": "executable",
+        "path": "docs/tier6/slo-sli-definitions.md",
+        "review_after": "Phase 3",
+        "tier": "6",
+        "tier_name": "Operations",
+        "written": "stub"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier6/slo-sli-definitions",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier6/slo-sli-definitions.md"
+      },
+      "status": "directional",
+      "tags": [
+        "tier6",
+        "executable",
+        "schema"
+      ],
+      "title": "SLO and SLI Definitions"
+    },
+    {
+      "attrs": {
+        "enforcement": "generated",
+        "evidence": "none — written pre-Phase-0 as a register stub (D32)",
+        "falsifies_if": "A decision is enforced in code with no index entry.",
+        "owner": "generated",
+        "path": "docs/tier7/decision-index.md",
+        "review_after": "Phase 2",
+        "tier": "7",
+        "tier_name": "Meta",
+        "written": "stub"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier7/decision-index",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/decision-index.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier7",
+        "generated",
+        "generated"
+      ],
+      "title": "Decision Index"
+    },
+    {
+      "attrs": {
+        "enforcement": "ci-gate",
+        "evidence": "Written pre-Phase-0. Rests on one measured external result (the 49-skill study below) and on the drift hazard this register exists to control.",
+        "falsifies_if": "Documents carrying a valid header drift as badly as documents without one — i.e. a sampled audit at the end of Phase 1 finds no difference in staleness between headed and unheaded documents.",
+        "owner": "human",
+        "path": "docs/tier7/documentation-standard.md",
+        "review_after": "Phase 1",
+        "tier": "7",
+        "tier_name": "Meta",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier7/documentation-standard",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/documentation-standard.md"
+      },
+      "status": "frozen",
+      "tags": [
+        "tier7",
+        "human",
+        "ci-gate"
+      ],
+      "title": "Documentation Standard"
+    },
+    {
+      "attrs": {
+        "enforcement": "review-cadence",
+        "evidence": "none — written pre-Phase-0 as a register stub (D32)",
+        "falsifies_if": "A newcomer following this guide reaches a wrong mental model of the containment boundary.",
+        "owner": "human",
+        "path": "docs/tier7/onboarding-guide.md",
+        "review_after": "Phase 3",
+        "tier": "7",
+        "tier_name": "Meta",
+        "written": "stub"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier7/onboarding-guide",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/onboarding-guide.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier7",
+        "human",
+        "review-cadence"
+      ],
+      "title": "Onboarding Guide"
+    },
+    {
+      "attrs": {
+        "tier": "0"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "tier:tier0",
+      "kind": "tier",
+      "occurrences": [],
+      "shape": "directory",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "docs/tier0"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Tier 0 — Constitution"
+    },
+    {
+      "attrs": {
+        "tier": "1"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "tier:tier1",
+      "kind": "tier",
+      "occurrences": [],
+      "shape": "directory",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "docs/tier1"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Tier 1 — Architecture"
+    },
+    {
+      "attrs": {
+        "tier": "2"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "tier:tier2",
+      "kind": "tier",
+      "occurrences": [],
+      "shape": "directory",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "docs/tier2"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Tier 2 — Build protocol"
+    },
+    {
+      "attrs": {
+        "tier": "3"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "tier:tier3",
+      "kind": "tier",
+      "occurrences": [],
+      "shape": "directory",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "docs/tier3"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Tier 3 — Agent specifications"
+    },
+    {
+      "attrs": {
+        "tier": "4"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "tier:tier4",
+      "kind": "tier",
+      "occurrences": [],
+      "shape": "directory",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "docs/tier4"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Tier 4 — Security and governance"
+    },
+    {
+      "attrs": {
+        "tier": "5"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "tier:tier5",
+      "kind": "tier",
+      "occurrences": [],
+      "shape": "directory",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "docs/tier5"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Tier 5 — Product"
+    },
+    {
+      "attrs": {
+        "tier": "6"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "tier:tier6",
+      "kind": "tier",
+      "occurrences": [],
+      "shape": "directory",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "docs/tier6"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Tier 6 — Operations"
+    },
+    {
+      "attrs": {
+        "tier": "7"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "tier:tier7",
+      "kind": "tier",
+      "occurrences": [],
+      "shape": "directory",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "docs/tier7"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Tier 7 — Meta"
+    }
+  ],
+  "rejected": [],
+  "schema_version": 1,
+  "unparsed": []
+}
