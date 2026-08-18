@@ -1143,3 +1143,89 @@ this ADR.
 **Trusted-wins on a materialization collision.** It would let a candidate name a criterion
 file and have the overwrite read as success. Candidate-wins is the attack. Refusing is the
 only answer that reports what happened.
+
+---
+
+## ADR-0012 — The verdict boundary is a lint, and the lint fails when it has nothing to check
+
+**Date:** 2026-08-17 · **Status:** Accepted · **Supersedes:** none
+
+### Context
+
+D16 says agent nodes are schema-forbidden from writing verdict fields. The verify pass
+established that **LangGraph raises only on *concurrent* unreducered writes** — a
+sequential write to a verdict field raises nothing — so D16 is a convention unless
+something checks it. D39 draws the conclusion: the boundary is physical, and the security
+property comes from port separation rather than from inspecting field names at runtime.
+
+Two thirds of that are enforced elsewhere. The separate process is a process; the separate
+role is a grant, asserted by `assert_grants.py`. The **import path** was enforced nowhere.
+
+### Decision
+
+`scripts/lint_verdict_boundary.py`, three checks in three directions:
+
+**V — vocabulary.** No module in the agent-writable tree declares `verdict`,
+`held_out_result` or `indeterminate_reason`, or returns a type naming one. A return
+annotation enumerating `pass`/`fail`/`indeterminate` is a verdict type whatever it is
+called, so the literal set is checked too — a name check alone misses `-> Literal["pass",
+"fail", "indeterminate"]` on a function called `classify`.
+
+`score` is deliberately **not** in the vocabulary. It is an ordinary word a metric module
+may legitimately use, and a lint that fires on ordinary words gets disabled rather than
+obeyed.
+
+**I — the agent tree must not reach a verdict module, transitively.** The transitive part
+is the whole check: a one-hop version passes on `agent_node -> helpers ->
+evidence.store`. Violations print the full import trail.
+
+**R — a verdict module must not reach the agent tree.** The reverse direction, and the one
+that gets forgotten. `CriterionRunner` executes candidate code as a subprocess and must
+never import it — an import puts agent-authored code inside the process holding the
+`heldout` credential.
+
+**`harness/acs` is not a verdict module, deliberately.** `src/provenance/encoding.py`
+imports the ACS-1 encoder and that edge is correct: there must be exactly one canonical
+form, and a second encoder in the product tree would be a second canonical form. A rule
+banning all of `harness/` would forbid the one import the architecture requires.
+
+### The vacuity guard, which is the reason this ADR exists
+
+**A check that scanned zero files fails rather than passes.** Today the V check has no
+agent-invoking node to look at, because no graph exists. Without the guard the lint would
+report green for a reason that has nothing to do with the property — and would keep
+reporting green on the day the first agent node lands in a directory the globs do not
+cover. The summary line prints the file and module counts for exactly this reason: `V=12,
+I=12, R=10` is a claim someone can check; `OK` is not.
+
+This is D57 applied to a lint rather than to a suite, and it is the fifth instance in this
+project of the same underlying failure — an instrument trusted before it was checked.
+
+### Consequence
+
+`--self-test` is a committed mode of the lint itself rather than a separate test file, so
+it travels with the thing it controls: a negative control in another directory is a
+control someone deletes without noticing what it was for. It plants three violations, and
+its clean control is a function called `score_of` returning `float` — deliberately
+adjacent to the vocabulary, because a control using an obviously unrelated function would
+not notice a check that fired on any annotated return at all.
+
+Both import checks were verified by mutation against the live tree, not only against
+fixtures: an import of `harness.evidence.store` added to `harness/acs/acs1.py` produced
+`provenance.stamp -> provenance.encoding -> harness.acs.acs1 -> harness.evidence.store`, a
+four-hop trail no one-hop check would have seen; an import of `metrics.value` added to
+`harness/criterion/runner.py` fired R. Both reverted.
+
+Wired into CI as two steps, the lint and its self-test, because a lint whose control is
+not itself run is a lint that reports the same thing whether it works or not.
+
+### Rejected
+
+**Enforcing this inside the graph engine.** It is the thing that was measured not to work,
+and it is why D39 exists.
+
+**Banning `harness/` wholesale from the agent tree.** Above — it forbids the ACS-1 import
+that keeps one canonical form.
+
+**Including `score` in the vocabulary.** A lint that fires on ordinary words is a lint
+that gets suppressed, and a suppressed lint enforces nothing while looking like it does.

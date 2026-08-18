@@ -29,20 +29,24 @@ Checked against the filesystem. This is the honest starting position.
 
 | Area | State |
 |---|---|
-| Documentation register | **61 documents**, both gates green. The most complete asset. |
+| Documentation register | **63 documents**, both gates green. The most complete asset. |
 | ACS-1 (encoder, JS second implementation, 343 vectors, 47 mutants) | **Built and mutation-controlled.** |
 | `MetricValue` / `MetricSeries` / reason codebook | **Built.** 98 tests, `pyright --strict` clean. |
 | Result stamping (`src/provenance/`) | **Built**, missing the schema version and upstream toolchain fields. |
 | Lane controls (`harness/lane/`) | **Built**, no mutation harness, no parallel-slot fingerprint field. |
 | Throwaway DB cluster fixture (`harness/db/`) | **Built.** Roles and grants apply against a real cluster. |
 | CI (5 jobs) | **Built and green.** |
-| **Every inspector port** — `CriterionRunner`, `EvidenceStore`, `PolicyEngine`, `AutonomyGate`, `Worker`, `Sandbox`, `VcsGateway` | **None exists.** Zero classes. |
-| **Migration versions** — product, control, evidence, heldout | **All four empty.** No table exists anywhere. |
+| `EvidenceStore` (append-only, hash-chained) | **Built 2026-08-17.** ADR-0010. |
+| `CriterionRunner` (materialize, execute, compose, record) | **Built 2026-08-17.** ADR-0011. |
+| **Remaining inspector ports** — `PolicyEngine`, `AutonomyGate`, `Worker`, `Sandbox`, `VcsGateway` | **None exists.** Zero classes. |
+| **Migration versions** — product, control, evidence, heldout | **Built 2026-08-17.** Fourteen tables. ADR-0009. |
 | `src/thresholds`, `src/ingest`, `src/replay`, `src/api` | **Empty directories.** |
 | `tests/heldout`, `tests/reference` | `__init__.py` only. **No held-out criterion exists.** |
 | Oracle environment (D54) | **Does not exist.** |
 | Seeded resampler (D49 P3) | **Does not exist and has never been specified.** |
-| `assert_grants.py`, `lint_invariants.py`, `lint_tier0_adr.py`, `harness/lane/mutate.py` | **Absent**, all four specified as enforcement somewhere. |
+| `assert_grants.py` | **Built 2026-08-17**, set equality both directions, mutation-controlled. ADR-0009. |
+| `lint_verdict_boundary.py` (D16/D39) | **Built 2026-08-17**, with a committed self-test. ADR-0012. |
+| `lint_invariants.py`, `lint_tier0_adr.py`, `harness/lane/mutate.py` | **Absent**, all three specified as enforcement somewhere. |
 
 ## The calendar finding, stated plainly
 
@@ -62,13 +66,13 @@ not available is arriving at 2026-09-09 and declaring exit on a subset without s
 
 ## Stages
 
-### S0 — Land the decided-but-unapplied text · *blocks nothing, decays if deferred*
+### S0 — Land the decided-but-unapplied text · *blocks nothing, decays if deferred* · **DONE 2026-08-17**
 
 Merge-ready text from H3, H4, H5 and H8 that encodes decisions already made. It blocks no
 build work, and it goes first anyway: unapplied decisions drift out of agreement with the
 code, and this backlog is already three streams deep. Details in *Merge-ready backlog* below.
 
-### S1 — Database foundation · *blocks S3, S4, S6, and all of Phase 1*
+### S1 — Database foundation · *blocks S3, S4, S6, and all of Phase 1* · **DONE 2026-08-17**
 
 Alembic versions for all four schemas — product, control, evidence, heldout — plus
 `harness/db/assert_grants.py` asserting the grant matrix by **set equality, never subset**,
@@ -91,7 +95,7 @@ This stage is gated by an operator decision (O3 below): validate D49's P3 rung, 
 stated degradation now. The environment is required either way, because Phase 0's exit
 criterion *is* reproducing oracle values.
 
-### S3 — Inspector core · *blocks S4, and every verdict ever recorded*
+### S3 — Inspector core · *blocks S4, and every verdict ever recorded* · **DONE 2026-08-17**
 
 `EvidenceStore` (append-only, hash-chained per D43) and `CriterionRunner` (running outside the
 agent tree, materializing its environment from trusted provenance per A1). Verdict writes live
@@ -101,6 +105,18 @@ separate DB role — physical separation, never a runtime field-name check (D39)
 Ships with the D16 lint: no agent-invoking node's return annotation may include a verdict
 field. LangGraph raises only on *concurrent* unreducered writes, so a sequential write to a
 verdict field is silent, and convention alone does not hold this.
+
+**Closed 2026-08-17.** `EvidenceStore` (ADR-0010), `CriterionRunner` (ADR-0011) and
+`scripts/lint_verdict_boundary.py` (ADR-0012) exist and are gated in CI. The lint runs in
+three directions rather than one — vocabulary, agent tree reaching a verdict module
+transitively, and a verdict module reaching the agent tree — and **fails when a check
+scans zero files**, because the V half has no agent-invoking node to look at until a graph
+exists and would otherwise report green for a reason unrelated to the property.
+
+One thing S3 settled that the stage description did not anticipate: held-out reference
+values are graded **outside** the criterion environment. Injecting them into it would put
+the expected answer in the same directory as the code being measured, which a stub reads
+and returns — D50's delegation failure past the oracle-absence probe. ADR-0011.
 
 ### S4 — The two suites, together · *blocks Phase 0 exit; blocked by S1, S2, S3*
 

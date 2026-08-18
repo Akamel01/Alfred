@@ -70,6 +70,20 @@ jobs:
       - name: Migrations are additive-only
         run: python3 scripts/lint_migrations.py
 
+      # D16/D39. LangGraph raises only on *concurrent* unreducered writes, so a
+      # sequential write to a verdict field is silent and the boundary is a
+      # convention unless something checks it. Three directions: the vocabulary in
+      # the agent tree, the agent tree reaching a verdict module transitively, and a
+      # verdict module reaching the agent tree. A check that scanned zero files fails
+      # rather than passing.
+      - name: Verdict boundary holds
+        run: python3 scripts/lint_verdict_boundary.py
+
+      # The lint's own negative control, run first-class rather than trusted. A lint
+      # with no planted violation reports the same thing whether it works or not.
+      - name: Verdict boundary lint detects planted violations
+        run: python3 scripts/lint_verdict_boundary.py --self-test
+
       # ACS-1 test vectors are the published specification (ADR-0004), so a
       # hand-edited vectors.json would silently redefine the standard the evidence
       # chain is audited against.

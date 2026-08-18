@@ -167,7 +167,8 @@ Binding on implementation and easy to miss, since they live inside one document.
 | [ADR-0009](tier1/adr-log.md) | The grant matrix is asserted by set equality, and converging by REVOKE strips ownership | Accepted |
 | [ADR-0010](tier1/adr-log.md) | The evidence chain, and the fork the constraint did not close | Accepted |
 | [ADR-0011](tier1/adr-log.md) | The criterion subprocess computes; the runner compares | Accepted |
+| [ADR-0012](tier1/adr-log.md) | The verdict boundary is a lint, and the lint fails when it has nothing to check | Accepted |
 
 ---
 
-**63 documents mapped** · 43 binding · 13 context · 7 record · 11 architecture decisions
+**63 documents mapped** · 43 binding · 13 context · 7 record · 12 architecture decisions
