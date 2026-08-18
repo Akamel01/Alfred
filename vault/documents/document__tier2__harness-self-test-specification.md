@@ -33,9 +33,12 @@ generated: true
 
 | Field | Value |
 |---|---|
-| `evidence` | Every headline number in this project has been wrong on first read, four for four, each time because the instrument was trusted before it was checked. The ACS-1 mutation control is the worked precedent: 47 mutants, worst margin 10 checks, with a negative control that reports UNDETECTED on a no-op mutant and aborts on a mutation that fails to apply. |
 | `path` | docs/tier2/harness-self-test-specification.md |
 | `tier_name` | Build protocol |
+
+**evidence**
+
+> Every headline number in this project has been wrong on first read, four for four, each time because the instrument was trusted before it was checked. The ACS-1 mutation control is the worked precedent: 47 mutants, worst margin 10 checks, with a negative control that reports UNDETECTED on a no-op mutant and aborts on a mutation that fails to apply.
 
 ## Binds
 

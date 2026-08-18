@@ -25,6 +25,6 @@ generated: true
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `evidence` | Decision 10 was false as written: the deliverable channel and the exfiltration channel were the same channel. AsyncAPI — PR opened 05:08, PAT exfiltrated 05:16, four backdoored npm packages with 3M+ weekly downloads. Actions caches are repository-scoped, so ephemerality fails below the container. |
+**evidence**
+
+> Decision 10 was false as written: the deliverable channel and the exfiltration channel were the same channel. AsyncAPI — PR opened 05:08, PAT exfiltrated 05:16, four backdoored npm packages with 3M+ weekly downloads. Actions caches are repository-scoped, so ephemerality fails below the container.

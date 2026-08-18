@@ -25,6 +25,6 @@ generated: true
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `evidence` | SpecBench: 43–48pp gap between visible and held-out composed tests with **no exploit** — honest agent, honest criterion, honest harness, wrong code. Every anti-tampering control in this plan is orthogonal to it. Plan around a residual ~14.5pp escape even with human supervision. |
+**evidence**
+
+> SpecBench: 43–48pp gap between visible and held-out composed tests with **no exploit** — honest agent, honest criterion, honest harness, wrong code. Every anti-tampering control in this plan is orthogonal to it. Plan around a residual ~14.5pp escape even with human supervision.

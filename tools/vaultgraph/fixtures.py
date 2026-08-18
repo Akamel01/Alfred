@@ -37,7 +37,7 @@ PLAN_FIXTURE = """# Fixture
 | 1 | **Real product with real users** is the first deliverable. | Real usage supplies ground truth. |
 | 55 | **Stamp carries `upstream: Simulated \\| Corpus \\| Unknown`.** | ADR-0003 treats these as two problems. |
 
-| 48 | **Alfred's buyer is the AV developer's own V&V function.** Supersedes decision 1. | K5 established this. |
+| 48 | **Alfred's buyer is the AV developer's own V&V function.** Supersedes decision 1. | K5 established this. **Falsifies if:** no design-partner engagement by Phase 1 exit. |
 
 ### Decision 39 — structural enforcement of D16/D20
 

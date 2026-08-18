@@ -25,6 +25,6 @@ generated: true
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `rationale` | The SDK's loop is Anthropic-shaped: tool-calling formats, caching behavior, internal assumptions. Terminal-Bench showed harness identity moves scores as much as the spread between leading submissions — driving gpt-oss-120b through a Claude-tuned harness is a silent capability tax of unknown size. The `Worker` interface exists precisely to make this swap cheap. |
+**rationale**
+
+> The SDK's loop is Anthropic-shaped: tool-calling formats, caching behavior, internal assumptions. Terminal-Bench showed harness identity moves scores as much as the spread between leading submissions — driving gpt-oss-120b through a Claude-tuned harness is a silent capability tax of unknown size. The `Worker` interface exists precisely to make this swap cheap.

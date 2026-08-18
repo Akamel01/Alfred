@@ -25,9 +25,9 @@ generated: true
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `rationale` | Threshold *selection* is a contested judgment with no standard; only threshold *application* is checkable. Westhofen et al. exists precisely because selection is unresolved. Treating thresholds as cited configuration preserves schedulability under decision 4 and converts a contested parameter into ground truth the agent did not author. |
+**rationale**
+
+> Threshold *selection* is a contested judgment with no standard; only threshold *application* is checkable. Westhofen et al. exists precisely because selection is unresolved. Treating thresholds as cited configuration preserves schedulability under decision 4 and converts a contested parameter into ground truth the agent did not author.
 
 ## Enforced by (code)
 

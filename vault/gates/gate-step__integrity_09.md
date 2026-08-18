@@ -40,17 +40,24 @@ echo "byte-identical: $after"
 
 | Field | Value |
 |---|---|
-| `command` | set -euo pipefail
-before="$(shasum -a 256 harness/acs/vectors.json \| cut -d' ' -f1)"
+| `kind` | run |
+| `ordinal` | 9 |
+
+**command**
+
+> set -euo pipefail
+before="$(shasum -a 256 harness/acs/vectors.json | cut -d' ' -f1)"
 python3 harness/acs/gen_vectors.py > /dev/null
-after="$(shasum -a 256 harness/acs/vectors.json \| cut -d' ' -f1)"
-if ( "$before" != "$after" ); then
+after="$(shasum -a 256 harness/acs/vectors.json | cut -d' ' -f1)"
+if [ "$before" != "$after" ]; then
 echo "vectors.json is not what gen_vectors.py produces."
 echo "  committed:   $before"
 echo "  regenerated: $after"
-echo "Either the generator changed without regene |
-| `kind` | run |
-| `ordinal` | 9 |
+echo "Either the generator changed without regenerating, or the file was hand-edited."
+git --no-pager diff --stat -- harness/acs/vectors.json || true
+exit 1
+fi
+echo "byte-identical: $after"
 
 ## Binds
 

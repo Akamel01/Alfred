@@ -33,9 +33,12 @@ generated: true
 
 | Field | Value |
 |---|---|
-| `evidence` | The oracle's own regression suite asserts `0.0` or `inf` for several measures, which is why those measures were excluded from the verified task class — a test pinning a sentinel is not evidence the metric computes. Degenerate geometry is also where a wrong number is least likely to throw and most likely to look plausible. |
 | `path` | docs/tier5/edge-case-and-degeneracy-specification.md |
 | `tier_name` | Product |
+
+**evidence**
+
+> The oracle's own regression suite asserts `0.0` or `inf` for several measures, which is why those measures were excluded from the verified task class — a test pinning a sentinel is not evidence the metric computes. Degenerate geometry is also where a wrong number is least likely to throw and most likely to look plausible.
 
 ## Binds
 

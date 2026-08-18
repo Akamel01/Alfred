@@ -25,6 +25,6 @@ generated: true
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `evidence` | Anthropic states the action "is not designed to be hardened against prompt injection." Python SDK ≤0.1.59 silently treated `setting_sources=()` as omitted, loading `~/.claude/settings.json` and `CLAUDE.md` into the agent — a control that failed without signalling. Anthropic's sandbox fails **open** unless `sandbox.failIfUnavailable` is true, and "docker is incompatible with the sandbox." |
+**evidence**
+
+> Anthropic states the action "is not designed to be hardened against prompt injection." Python SDK ≤0.1.59 silently treated `setting_sources=[]` as omitted, loading `~/.claude/settings.json` and `CLAUDE.md` into the agent — a control that failed without signalling. Anthropic's sandbox fails **open** unless `sandbox.failIfUnavailable` is true, and "docker is incompatible with the sandbox."

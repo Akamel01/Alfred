@@ -25,6 +25,6 @@ generated: true
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `evidence` | Only commercially-clean combination of data + code + shipped numeric assertions. Waymo bars "Production Systems… even if no monetary compensation is received" — a free prospect demo already qualifies. Argoverse/nuScenes are CC BY-NC-SA with ShareAlike contaminating derivatives. highD forbids redistribution. The earlier highD recommendation was wrong. |
+**evidence**
+
+> Only commercially-clean combination of data + code + shipped numeric assertions. Waymo bars "Production Systems… even if no monetary compensation is received" — a free prospect demo already qualifies. Argoverse/nuScenes are CC BY-NC-SA with ShareAlike contaminating derivatives. highD forbids redistribution. The earlier highD recommendation was wrong.

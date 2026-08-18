@@ -25,6 +25,6 @@ generated: true
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `evidence` | NetArena committed all 5,000 ground-truth tuples to a public repo; GAIA's answers are readable at runtime. Phase 0 deliberately targets *published* values, and training-data contamination survives any network policy. |
+**evidence**
+
+> NetArena committed all 5,000 ground-truth tuples to a public repo; GAIA's answers are readable at runtime. Phase 0 deliberately targets *published* values, and training-data contamination survives any network policy.

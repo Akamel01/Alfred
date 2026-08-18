@@ -33,9 +33,12 @@ generated: true
 
 | Field | Value |
 |---|---|
-| `evidence` | Boundary placement derives from the organizing principle and from measured task-class stratification. The specific thresholds are unset — they require Phase 1-2 data that does not exist. |
 | `path` | docs/tier0/autonomy-boundaries.md |
 | `tier_name` | Constitution |
+
+**evidence**
+
+> Boundary placement derives from the organizing principle and from measured task-class stratification. The specific thresholds are unset — they require Phase 1-2 data that does not exist.
 
 ## Binds
 

@@ -33,9 +33,12 @@ generated: true
 
 | Field | Value |
 |---|---|
-| `evidence` | Each condition corresponds to a control this architecture depends on. The pre-review scan exists because CI runs before any human sees a pull request, so review is not the first gate. |
 | `path` | docs/tier2/definition-of-done.md |
 | `tier_name` | Build protocol |
+
+**evidence**
+
+> Each condition corresponds to a control this architecture depends on. The pre-review scan exists because CI runs before any human sees a pull request, so review is not the first gate.
 
 ## Binds
 

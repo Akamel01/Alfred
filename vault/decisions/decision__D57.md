@@ -25,9 +25,9 @@ generated: true
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `rationale` | A passing suite and a vacuous suite report the same thing, and this project has paid for that lesson twice: ADR-0004 recorded thin ACS-1 margins (3 checks, then 1) that only a mutation control surfaced, and the arity guard in `harness/lane/` rests on a **single** check today against salvage-disabled's 26. The hazard the two-sidedness answers is structural and previously unnamed: `testing-strategy. |
+**rationale**
+
+> A passing suite and a vacuous suite report the same thing, and this project has paid for that lesson twice: ADR-0004 recorded thin ACS-1 margins (3 checks, then 1) that only a mutation control surfaced, and the arity guard in `harness/lane/` rests on a **single** check today against salvage-disabled's 26. The hazard the two-sidedness answers is structural and previously unnamed: `testing-strategy.md` and `failure-semantics.md` both specify the seeded-defect suite entirely in terms of what must go red, and nothing in the register rules out a runner that reds everything. **The floor suite and the ladder are each other's vacuity control** — replace every criterion with `return 0.0` and the floor suite passes while the ladder's green rungs fail — so neither may be specified or owned without the other.
 
 ## Enforced by (code)
 

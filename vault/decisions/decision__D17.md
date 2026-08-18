@@ -25,9 +25,9 @@ generated: true
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `rationale` | Chosen with the waterfall risk explicit. Writing the documents is not the hazard; believing them is. The header contract converts pre-evidence documents from assumptions into scored predictions. |
+**rationale**
+
+> Chosen with the waterfall risk explicit. Writing the documents is not the hazard; believing them is. The header contract converts pre-evidence documents from assumptions into scored predictions.
 
 ## Restated at
 

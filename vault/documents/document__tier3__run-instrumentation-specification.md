@@ -33,9 +33,12 @@ generated: true
 
 | Field | Value |
 |---|---|
-| `evidence` | The agentic probe (4 seeds × 5 tasks, 20/20; mean 4.1 turns, 4.75 tool calls) fixes the shape of a short run and supplies the repeat/recovery ambiguity this schema disambiguates; the content-channel defect (15–20% of calls, chain completion reading 20% or 100% on identical model behaviour) and the silent lane reload to defaultContextLength are both measured on the selected lane. The long-horizon a |
 | `path` | docs/tier3/run-instrumentation-specification.md |
 | `tier_name` | Agent specifications |
+
+**evidence**
+
+> The agentic probe (4 seeds × 5 tasks, 20/20; mean 4.1 turns, 4.75 tool calls) fixes the shape of a short run and supplies the repeat/recovery ambiguity this schema disambiguates; the content-channel defect (15–20% of calls, chain completion reading 20% or 100% on identical model behaviour) and the silent lane reload to defaultContextLength are both measured on the selected lane. The long-horizon and goal-seeking fields rest on nothing observed — Phase 1 is their first measurement, which is why they must be emitted before it starts.
 
 ## Binds
 

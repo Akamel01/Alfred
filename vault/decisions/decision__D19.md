@@ -25,9 +25,9 @@ generated: true
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `rationale` | Every measurement describes a specific system. Model deprecation is scheduled by the provider, not by you — without standing re-qualification, every grant eventually rests on a model that can no longer be run. Fingerprint tracking must therefore exist from Phase 2, not Phase 4. |
+**rationale**
+
+> Every measurement describes a specific system. Model deprecation is scheduled by the provider, not by you — without standing re-qualification, every grant eventually rests on a model that can no longer be run. Fingerprint tracking must therefore exist from Phase 2, not Phase 4.
 
 ## Enforced by (code)
 

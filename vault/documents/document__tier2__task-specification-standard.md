@@ -33,9 +33,12 @@ generated: true
 
 | Field | Value |
 |---|---|
-| `evidence` | The schedulability rule is the mechanism behind every credible agent coding result; the interface-signature requirement comes from SWE-bench Pro, which had to add human-authored interface specs because valid solutions were failing as false negatives. |
 | `path` | docs/tier2/task-specification-standard.md |
 | `tier_name` | Build protocol |
+
+**evidence**
+
+> The schedulability rule is the mechanism behind every credible agent coding result; the interface-signature requirement comes from SWE-bench Pro, which had to add human-authored interface specs because valid solutions were failing as false negatives.
 
 ## Binds
 

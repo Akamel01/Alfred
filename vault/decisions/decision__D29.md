@@ -25,6 +25,6 @@ generated: true
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `rationale` | Three traps. (a) A set built from successes reads ~100% forever and goes green through changes that break everything else — the failures are the informative half. (b) Once a fix is merged the task is trivial, so tasks must run against the parent tree, not HEAD; this is why SWE-bench is constructed that way. (c) At n=20 and p≈0.6 the standard error is roughly 11pp, so an observed 10pp gain is noise |
+**rationale**
+
+> Three traps. (a) A set built from successes reads ~100% forever and goes green through changes that break everything else — the failures are the informative half. (b) Once a fix is merged the task is trivial, so tasks must run against the parent tree, not HEAD; this is why SWE-bench is constructed that way. (c) At n=20 and p≈0.6 the standard error is roughly 11pp, so an observed 10pp gain is noise; resolving ~5pp needs roughly 150–400 tasks. **The Phase 1 twenty and the regression set are therefore two different artifacts** — twenty is ample for a failure taxonomy and useless for comparing configurations. Decision 19's tiered re-qualification depends on this distinction.

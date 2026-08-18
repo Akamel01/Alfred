@@ -25,6 +25,6 @@ generated: true
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `evidence` | Anthropic's own eval harness: "A misconfiguration left the machines that Claude accessed as part of the evaluation with live internet access." That is the base rate for "we configured deny-by-default." CamoLeak (CVSS 9.6) exfiltrated through an allowlisted host. |
+**evidence**
+
+> Anthropic's own eval harness: "A misconfiguration left the machines that Claude accessed as part of the evaluation with live internet access." That is the base rate for "we configured deny-by-default." CamoLeak (CVSS 9.6) exfiltrated through an allowlisted host.

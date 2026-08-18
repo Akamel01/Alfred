@@ -25,9 +25,9 @@ generated: true
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `rationale` | Supersedes decision 17. No study exists on whether a pre-code register helps. The adjacent evidence is actively unfavourable: of 49 agent skills, 39 produced zero improvement, average +1.2%, up to 451% token overhead, and three **degraded** performance up to −10% from version-mismatched guidance — while the seven that gained (up to +30%) did so conditioned on domain alignment and **currency**. A d |
+**rationale**
+
+> Supersedes decision 17. No study exists on whether a pre-code register helps. The adjacent evidence is actively unfavourable: of 49 agent skills, 39 produced zero improvement, average +1.2%, up to 451% token overhead, and three **degraded** performance up to −10% from version-mismatched guidance — while the seven that gained (up to +30%) did so conditioned on domain alignment and **currency**. A document written before Phase 0 produces evidence cannot be current by construction, so the register's measured benefit depends on a property it cannot yet have, and the downside is negative rather than zero for anything wrong. Stubs preserve the complete map, the schema and the uniformity while keeping speculation out of agent context.
 
 ## Enforced by (code)
 

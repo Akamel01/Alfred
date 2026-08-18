@@ -25,6 +25,6 @@ generated: true
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `evidence` | ISSTA 2026 replication: mutants are generated from the possibly-buggy code and tests failing on the original are excluded, which excludes precisely the bug-exposing tests — "rendering the resulting mutation scores meaningless." Rated **fatal**. |
+**evidence**
+
+> ISSTA 2026 replication: mutants are generated from the possibly-buggy code and tests failing on the original are excluded, which excludes precisely the bug-exposing tests — "rendering the resulting mutation scores meaningless." Rated **fatal**.

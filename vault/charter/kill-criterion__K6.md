@@ -26,6 +26,6 @@ No dated demand answer on the **live domain** when the **2026-12-31** anchor is 
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `consequence` | **Build halts until that answer exists.** Passing the anchor is a *factory* verdict and authorizes nothing beyond a decision. The business-development ring-fence returns at the anchor. Recorded because a factory-shaped anchor leaves demand untested at every date — precisely the R10 exposure the calendar was installed to prevent, which must be reassigned rather than allowed to lapse. |
+**consequence**
+
+> **Build halts until that answer exists.** Passing the anchor is a *factory* verdict and authorizes nothing beyond a decision. The business-development ring-fence returns at the anchor. Recorded because a factory-shaped anchor leaves demand untested at every date — precisely the R10 exposure the calendar was installed to prevent, which must be reassigned rather than allowed to lapse.

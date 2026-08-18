@@ -33,9 +33,12 @@ generated: true
 
 | Field | Value |
 |---|---|
-| `evidence` | One published ADR, whose decisive inputs were measured on this machine rather than argued: Pydantic v2's default serialization of infinity, and the cost of per-timestep objects against vectorized evaluation. |
 | `path` | docs/tier1/adr-log.md |
 | `tier_name` | Architecture |
+
+**evidence**
+
+> One published ADR, whose decisive inputs were measured on this machine rather than argued: Pydantic v2's default serialization of infinity, and the cost of per-timestep objects against vectorized evaluation.
 
 ## Binds
 

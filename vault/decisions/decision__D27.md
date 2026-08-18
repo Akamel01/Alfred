@@ -25,9 +25,9 @@ generated: true
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `rationale` | A wrong risk number is not an outage: it does not throw, spike latency, or fail a healthcheck. Every observability mechanism in this plan detects a different class of failure. Remediation therefore has to carry the load, and remediation needs stamping that **cannot be retrofitted** — results computed before it exists are permanently unrecallable. The advisory model works without holding customer d |
+**rationale**
+
+> A wrong risk number is not an outage: it does not throw, spike latency, or fail a healthcheck. Every observability mechanism in this plan detects a different class of failure. Remediation therefore has to carry the load, and remediation needs stamping that **cannot be retrofitted** — results computed before it exists are permanently unrecallable. The advisory model works without holding customer data, so it stays compatible with a customer-deployed product.
 
 ## Enforced by (code)
 

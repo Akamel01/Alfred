@@ -25,9 +25,9 @@ generated: true
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `rationale` | Three of `AutonomyGate`'s four inputs are already emitted by the Phase 1 instrumentation; the defect-escape rate is not — and unlike the others it cannot be reconstructed from history, because nothing in a merged history distinguishes a clean merge from one nobody has looked at yet. A gate built in Phase 4 against a table that started in Phase 4 has no denominator. |
+**rationale**
+
+> Three of `AutonomyGate`'s four inputs are already emitted by the Phase 1 instrumentation; the defect-escape rate is not — and unlike the others it cannot be reconstructed from history, because nothing in a merged history distinguishes a clean merge from one nobody has looked at yet. A gate built in Phase 4 against a table that started in Phase 4 has no denominator.
 
 ## Enforced by (code)
 

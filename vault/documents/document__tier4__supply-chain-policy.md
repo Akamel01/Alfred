@@ -33,9 +33,12 @@ generated: true
 
 | Field | Value |
 |---|---|
-| `evidence` | An unconstrained dependency has broken a graph library's tool node in a patch release. Identical model weights have produced opposite tool-calling outcomes on different serving stacks. Imatrix quantization variants share names while differing in content. |
 | `path` | docs/tier4/supply-chain-policy.md |
 | `tier_name` | Security and governance |
+
+**evidence**
+
+> An unconstrained dependency has broken a graph library's tool node in a patch release. Identical model weights have produced opposite tool-calling outcomes on different serving stacks. Imatrix quantization variants share names while differing in content.
 
 ## Binds
 

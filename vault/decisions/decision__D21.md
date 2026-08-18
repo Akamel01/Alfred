@@ -25,6 +25,6 @@ generated: true
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `rationale` | Forward-compatible at near-zero cost since the invariants already require tenancy. The gate is revenue, not readiness, because "the platform is ready for a second product" is a judgment the platform will always make in its own favour. |
+**rationale**
+
+> Forward-compatible at near-zero cost since the invariants already require tenancy. The gate is revenue, not readiness, because "the platform is ready for a second product" is a judgment the platform will always make in its own favour.

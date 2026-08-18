@@ -117,7 +117,12 @@ def extract(ctx: Context) -> Harvest:
             decision, withdrawn = strip_strikethrough(cells[1])
             attrs = {
                 "rationale": cells[2],
-                "falsifies_if": bold_span(cells[1], "Falsifies if"),
+                # The clause sits in the rationale cell as often as in the decision cell --
+                # D49 states it entirely in the rationale. Scanning only the first cell found
+                # four of the five in the file, and a missing falsification condition is the
+                # one omission this graph is least able to afford.
+                "falsifies_if": (bold_span(cells[1], "Falsifies if")
+                                 or bold_span(cells[2], "Falsifies if")),
                 "number": str(number),
             }
             if withdrawn:

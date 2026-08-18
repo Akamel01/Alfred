@@ -219,6 +219,15 @@ def self_test() -> int:
             "machine-checkable" in rejected_text,
             "a hyphen inside a compound word is being read as a title separator",
         )
+        # The falsification condition is stated in the rationale cell as often as in the
+        # decision cell. Scanning only the first found four of the five in the plan, and a
+        # missing falsification condition is the omission this graph can least afford.
+        d48 = next(n for n in harvest.nodes if n.attrs["number"] == "48")
+        expect(
+            d48.attrs["falsifies_if"].startswith("no design-partner"),
+            f"a falsifies clause in the rationale cell was missed: {d48.attrs['falsifies_if']!r}",
+        )
+
         # A restatement is one node with a second occurrence, never a second node.
         d42 = next(n for n in harvest.nodes if n.attrs["number"] == "42")
         expect(len(d42.occurrences) == 1, f"restatement did not fold into occurrences: {d42.occurrences}")

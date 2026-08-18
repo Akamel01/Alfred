@@ -25,6 +25,6 @@ generated: true
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `rationale` | If the harness verified correctness, a human reading the diff for bugs duplicates the harness — and that duplication is where review fatigue comes from. The human checks what the harness structurally cannot: whether the criterion was the right criterion, whether the agent solved the stated problem or a nearby easier one, future coupling cost, and whether a metric's validity envelope is honestly st |
+**rationale**
+
+> If the harness verified correctness, a human reading the diff for bugs duplicates the harness — and that duplication is where review fatigue comes from. The human checks what the harness structurally cannot: whether the criterion was the right criterion, whether the agent solved the stated problem or a nearby easier one, future coupling cost, and whether a metric's validity envelope is honestly stated.

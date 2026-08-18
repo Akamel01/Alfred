@@ -33,9 +33,12 @@ generated: true
 
 | Field | Value |
 |---|---|
-| `evidence` | No review has happened, so nothing here rests on an observed one. What it does rest on is arithmetic over the plan's own stated numbers (20+ hrs/week capacity, ~20 tasks over ~3 weeks in Phase 1) and on the mechanical properties of the stack the surface is already committed to: server-rendered HTML has no client state to corrupt, a full-page navigation is observable server-side where a CSS toggle  |
 | `path` | docs/tier1/mission-control-design.md |
 | `tier_name` | Architecture |
+
+**evidence**
+
+> No review has happened, so nothing here rests on an observed one. What it does rest on is arithmetic over the plan's own stated numbers (20+ hrs/week capacity, ~20 tasks over ~3 weeks in Phase 1) and on the mechanical properties of the stack the surface is already committed to: server-rendered HTML has no client state to corrupt, a full-page navigation is observable server-side where a CSS toggle is not, and a monotonic clock read at request receipt cannot be moved by the client. Each friction decision below is stated as a claim with the observation that would refute it.
 
 ## Binds
 

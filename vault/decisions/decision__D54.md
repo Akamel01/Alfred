@@ -25,9 +25,9 @@ generated: true
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `rationale` | **Asserting absence only in the agent container leaves the delegation path open at verdict time** — which would have made the control look complete while the hole stayed open in the environment that actually decides the verdict. The denylist cannot be "everything the oracle imports" (that bans numpy) nor "its own distribution name" (that misses the packages shipping the same computation for the re |
+**rationale**
+
+> **Asserting absence only in the agent container leaves the delegation path open at verdict time** — which would have made the control look complete while the hole stayed open in the environment that actually decides the verdict. The denylist cannot be "everything the oracle imports" (that bans numpy) nor "its own distribution name" (that misses the packages shipping the same computation for the reachable-set measure), so the classification is a recorded human judgment re-run whenever the closure changes. `find_spec` rather than `import`, because importing a module to learn whether it is importable executes its module-level code inside the sandbox.
 
 ## Enforced by (code)
 

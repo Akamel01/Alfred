@@ -26,9 +26,9 @@ No signed LOI **and** no documented refusal reasons from three named buyer roles
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `consequence` | **AV-specific investment does not begin** — metric implementation beyond the Phase 1 class, the customer-run container, pilot work, and anything whose value depends on the AV wedge being real. **Factory phases 2–4 proceed regardless.** Phase 2 is the evidence store, the golden set and the failure taxonomy; none of it is product work, and all of it is what the 2026-12-31 anchor tests. Halting the f |
+**consequence**
+
+> **AV-specific investment does not begin** — metric implementation beyond the Phase 1 class, the customer-run container, pilot work, and anything whose value depends on the AV wedge being real. **Factory phases 2–4 proceed regardless.** Phase 2 is the evidence store, the golden set and the failure taxonomy; none of it is product work, and all of it is what the 2026-12-31 anchor tests. Halting the factory on a demand signal would make the anchor unpassable by construction, which is what this row did before 2026-08-17.
 
 ## Stated in prose — unverified
 

@@ -29,9 +29,9 @@ generated: true
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `rationale` | The change is free today and hash-breaking tomorrow — **verified, not assumed:** all four `migrations/*/versions/` directories contain only `.gitkeep`, no Alembic revision exists, no table holds a stamp, and the only `ResultStamp` constructions in the tree are two test fixtures. Zero stamps have ever been persisted. Without a schema version, adding the upstream field later changes the digest of ev |
+**rationale**
+
+> The change is free today and hash-breaking tomorrow — **verified, not assumed:** all four `migrations/*/versions/` directories contain only `.gitkeep`, no Alembic revision exists, no table holds a stamp, and the only `ResultStamp` constructions in the tree are two test fixtures. Zero stamps have ever been persisted. Without a schema version, adding the upstream field later changes the digest of every re-derived stamp with no marker separating old shape from new, so a legitimate schema change presents as tampering — D27's own failure class inside D27's implementation. The decline rests on the canonical-form argument alone; the SHA-256/SHA3-256 tension **dissolves** rather than deciding anything, because SSP's checksum is over artifact bytes and Alfred's is over a structured record, which ADR-0003 already treats as two different problems.
 
 ## Enforced by (code)
 

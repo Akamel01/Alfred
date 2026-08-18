@@ -25,9 +25,9 @@ generated: true
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `evidence` | MCP tool-poisoning changes behavior via descriptions without changing names. `langgraph-prebuilt` 1.0.2 broke `ToolNode.afunc` with an unconstrained dependency. Two professionally-maintained criterion sets rotted within six months. Terminal-Bench 2.0's top four differ by 2.5pp across harnesses — same order as the error bars. |
+**evidence**
+
+> MCP tool-poisoning changes behavior via descriptions without changing names. `langgraph-prebuilt` 1.0.2 broke `ToolNode.afunc` with an unconstrained dependency. Two professionally-maintained criterion sets rotted within six months. Terminal-Bench 2.0's top four differ by 2.5pp across harnesses — same order as the error bars.
 
 ## Stated in prose — unverified
 

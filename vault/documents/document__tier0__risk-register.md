@@ -33,9 +33,12 @@ generated: true
 
 | Field | Value |
 |---|---|
-| `evidence` | Risks R1-R4 and R7-R9 are drawn from measured external results or from this project's own prior failure. R5, R6, R10 and R11 are structural exposures accepted deliberately, each with a named revisit trigger. |
 | `path` | docs/tier0/risk-register.md |
 | `tier_name` | Constitution |
+
+**evidence**
+
+> Risks R1-R4 and R7-R9 are drawn from measured external results or from this project's own prior failure. R5, R6, R10 and R11 are structural exposures accepted deliberately, each with a named revisit trigger.
 
 ## Binds
 

@@ -33,9 +33,12 @@ generated: true
 
 | Field | Value |
 |---|---|
-| `evidence` | Derived from the eight completed handoffs (H1–H8) and a repository inventory verified 2026-08-17. Every "does not exist" below was checked against the filesystem, not recalled. |
 | `path` | docs/tier2/execution-order.md |
 | `tier_name` | Build protocol |
+
+**evidence**
+
+> Derived from the eight completed handoffs (H1–H8) and a repository inventory verified 2026-08-17. Every "does not exist" below was checked against the filesystem, not recalled.
 
 ## Binds
 

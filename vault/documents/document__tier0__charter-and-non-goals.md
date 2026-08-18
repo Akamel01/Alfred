@@ -33,9 +33,12 @@ generated: true
 
 | Field | Value |
 |---|---|
-| `evidence` | none — written pre-Phase-0. The engineering thesis rests on four adversarial research runs; the commercial thesis rests on nothing yet and is the subject of the Phase 0.75 demand gate. |
 | `path` | docs/tier0/charter-and-non-goals.md |
 | `tier_name` | Constitution |
+
+**evidence**
+
+> none — written pre-Phase-0. The engineering thesis rests on four adversarial research runs; the commercial thesis rests on nothing yet and is the subject of the Phase 0.75 demand gate.
 
 ## Binds
 

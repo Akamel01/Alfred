@@ -28,5 +28,8 @@ generated: true
 
 | Field | Value |
 |---|---|
-| `consequence` | The wedge has no forcing function. **D30 is re-argued before any Phase 2 investment.** What survives is a compliance-tooling product bought by OEMs, not attestation compelled by regulators. **DISCHARGED 2026-08-14** by the D30/D48 split: D30 retains the artifact shape, D48 carries the market position. A fired criterion whose consequence has been executed is not executed again. |
 | `event` | FIRED 2026-08-13. |
+
+**consequence**
+
+> The wedge has no forcing function. **D30 is re-argued before any Phase 2 investment.** What survives is a compliance-tooling product bought by OEMs, not attestation compelled by regulators. **DISCHARGED 2026-08-14** by the D30/D48 split: D30 retains the artifact shape, D48 carries the market position. A fired criterion whose consequence has been executed is not executed again.

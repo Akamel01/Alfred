@@ -25,9 +25,9 @@ generated: true
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `evidence` | BenchJack forced 100% resolve on all 500 SWE-bench Verified instances with a ~7-line `conftest.py`. No test file touched. Closes the entire class (`conftest.py`, `.pth`, `sitecustomize`, binary trojans) architecturally rather than by enumeration. Supersedes decision 11's enumerate-the-bad primitive. |
+**evidence**
+
+> BenchJack forced 100% resolve on all 500 SWE-bench Verified instances with a ~7-line `conftest.py`. No test file touched. Closes the entire class (`conftest.py`, `.pth`, `sitecustomize`, binary trojans) architecturally rather than by enumeration. Supersedes decision 11's enumerate-the-bad primitive.
 
 ## Stated in prose — unverified
 

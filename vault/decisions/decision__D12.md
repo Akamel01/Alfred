@@ -25,6 +25,6 @@ generated: true
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `rationale` | Everything the agent reads (issue text, dependency READMEs, error messages, web content) is attacker-reachable and enters its context. Egress control caps damage even when injection succeeds. |
+**rationale**
+
+> Everything the agent reads (issue text, dependency READMEs, error messages, web content) is attacker-reachable and enters its context. Egress control caps damage even when injection succeeds.

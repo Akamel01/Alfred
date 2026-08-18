@@ -25,9 +25,9 @@ generated: true
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `rationale` | Every safeguard here assumes the judge is independent of the worker. An agent editing the judge collapses all of them at once, silently, with tests green — because the tests are downstream of the edit. This is ordinary optimization pressure, not malice: "make the criterion runner faster" that quietly loosens a tolerance looks like success at every layer of observation available. |
+**rationale**
+
+> Every safeguard here assumes the judge is independent of the worker. An agent editing the judge collapses all of them at once, silently, with tests green — because the tests are downstream of the edit. This is ordinary optimization pressure, not malice: "make the criterion runner faster" that quietly loosens a tolerance looks like success at every layer of observation available.
 
 ## Enforced by (code)
 

@@ -33,9 +33,12 @@ generated: true
 
 | Field | Value |
 |---|---|
-| `evidence` | Every threat listed has a documented instance or a measured attack success rate. None is included on speculation; where a threat is theoretical for Alfred specifically, that is stated. |
 | `path` | docs/tier4/threat-model.md |
 | `tier_name` | Security and governance |
+
+**evidence**
+
+> Every threat listed has a documented instance or a measured attack success rate. None is included on speculation; where a threat is theoretical for Alfred specifically, that is stated.
 
 ## Binds
 

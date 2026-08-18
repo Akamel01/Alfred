@@ -25,6 +25,6 @@ generated: true
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `rationale` | Cost as a bill is bookkeeping; cost-per-merged-task is what makes capabilities and models comparable. Merge rate alone ranks a 90%/$50 capability above a 60%/$3 one, which is backwards. An autonomy grant must therefore read "X% merge, $Y per success, on fingerprint Z" — all three. Attribution cannot be applied retroactively, so it must exist before it is needed. |
+**rationale**
+
+> Cost as a bill is bookkeeping; cost-per-merged-task is what makes capabilities and models comparable. Merge rate alone ranks a 90%/$50 capability above a 60%/$3 one, which is backwards. An autonomy grant must therefore read "X% merge, $Y per success, on fingerprint Z" — all three. Attribution cannot be applied retroactively, so it must exist before it is needed.

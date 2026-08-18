@@ -33,9 +33,12 @@ generated: true
 
 | Field | Value |
 |---|---|
-| `evidence` | none — written pre-Phase-0 as a register stub (D32). Its evidence is Phase 1's twenty-plus human gates and the review time they produce, which is why its review point moved from Phase 3 to Phase 1. |
 | `path` | docs/tier4/human-in-the-loop-policy.md |
 | `tier_name` | Security and governance |
+
+**evidence**
+
+> none — written pre-Phase-0 as a register stub (D32). Its evidence is Phase 1's twenty-plus human gates and the review time they produce, which is why its review point moved from Phase 3 to Phase 1.
 
 ## Binds
 

@@ -33,9 +33,12 @@ generated: true
 
 | Field | Value |
 |---|---|
-| `evidence` | The role split and the separate held-out table are required because graph-level visibility controls were found not to constitute a boundary; the hash chain is required because append-only alone does not survive a single login compromise. The Phase 2 tables section rests on no observation at all — it is written against D25/D29/D35/D40/D49 and Phase 1 is its first test; it is included only where the |
 | `path` | docs/tier1/data-architecture.md |
 | `tier_name` | Architecture |
+
+**evidence**
+
+> The role split and the separate held-out table are required because graph-level visibility controls were found not to constitute a boundary; the hash chain is required because append-only alone does not survive a single login compromise. The Phase 2 tables section rests on no observation at all — it is written against D25/D29/D35/D40/D49 and Phase 1 is its first test; it is included only where the alternative is a measurement that cannot be taken retroactively.
 
 ## Binds
 

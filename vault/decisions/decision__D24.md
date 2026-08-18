@@ -25,6 +25,6 @@ generated: true
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `rationale` | Chosen for throughput and to let decomposition scale without human involvement. **Known exposure, accepted:** budget ceilings become advisory, since an agent approaching its cap can split into subtasks that each receive fresh budget. No malice is required — it is the locally rational move under a constraint. A global tree cap would have preserved the same agent freedom while bounding total spend;  |
+**rationale**
+
+> Chosen for throughput and to let decomposition scale without human involvement. **Known exposure, accepted:** budget ceilings become advisory, since an agent approaching its cap can split into subtasks that each receive fresh budget. No malice is required — it is the locally rational move under a constraint. A global tree cap would have preserved the same agent freedom while bounding total spend; the absence of a stop is the deliberate trade. Logged in the Risk Register with revisit trigger: first observed decomposition tree exceeding expected spend by 5×.

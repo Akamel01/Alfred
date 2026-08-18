@@ -25,6 +25,6 @@ generated: true
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `rationale` | Every forbidden-advancement condition in this plan is a promise made to a future self who will be under pressure and will want to proceed. A gate that can be waived silently is a note, not a gate — but an unwaivable gate gets bypassed entirely rather than adjusted honestly. Making the override expensive and permanent is the realistic control. Waiver count becomes its own health metric. Note this i |
+**rationale**
+
+> Every forbidden-advancement condition in this plan is a promise made to a future self who will be under pressure and will want to proceed. A gate that can be waived silently is a note, not a gate — but an unwaivable gate gets bypassed entirely rather than adjusted honestly. Making the override expensive and permanent is the realistic control. Waiver count becomes its own health metric. Note this is the only control in the architecture aimed at the human rather than the agents, and it addresses the failure that actually occurred last time.

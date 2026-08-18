@@ -25,6 +25,6 @@ generated: true
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `rationale` | The replay harness is permanent infrastructure — it is how streaming gets validated, how agent changes get scored, and how customer-reported discrepancies get reproduced. Building it first is not a detour. |
+**rationale**
+
+> The replay harness is permanent infrastructure — it is how streaming gets validated, how agent changes get scored, and how customer-reported discrepancies get reproduced. Building it first is not a detour.

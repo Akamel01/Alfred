@@ -101,11 +101,21 @@ def render(node: Node, outgoing: list[tuple[Edge, Node]], incoming: list[tuple[E
     if extra:
         lines.append("## Fields")
         lines.append("")
-        lines.append("| Field | Value |")
-        lines.append("|---|---|")
+        # Long values get their own block rather than a truncated table cell. A rationale cut
+        # off at four hundred characters is a note asserting it carries something it does not.
+        short = [(k, v) for k, v in extra if len(v) <= 160]
+        if short:
+            lines.append("| Field | Value |")
+            lines.append("|---|---|")
+            for key, value in short:
+                lines.append(f"| `{key}` | {value.translate(_ESCAPE)} |")
+            lines.append("")
         for key, value in extra:
-            lines.append(f"| `{key}` | {value.translate(_ESCAPE)[:400]} |")
-        lines.append("")
+            if len(value) > 160:
+                lines.append(f"**{key}**")
+                lines.append("")
+                lines.append(f"> {value}")
+                lines.append("")
 
     if node.occurrences:
         lines.append("## Restated at")

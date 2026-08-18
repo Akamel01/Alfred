@@ -25,9 +25,9 @@ generated: true
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `rationale` | Calibrating on visible-criterion pass rate would certify exactly the agents that reward-hack hardest, since hacking agents saturate the visible suite by definition — SpecBench shows validation scores near-identical across scaffolds while held-out scores diverge 43–48pp. The interface-signature component is required because SWE-bench Pro had to bolt human-authored interface specs onto every task: v |
+**rationale**
+
+> Calibrating on visible-criterion pass rate would certify exactly the agents that reward-hack hardest, since hacking agents saturate the visible suite by definition — SpecBench shows validation scores near-identical across scaffolds while held-out scores diverge 43–48pp. The interface-signature component is required because SWE-bench Pro had to bolt human-authored interface specs onto every task: valid solutions were failing as false negatives against under-determined executable criteria. That component cannot fully graduate to agents, since it is the thing preventing those false negatives.
 
 ## Enforced by (code)
 

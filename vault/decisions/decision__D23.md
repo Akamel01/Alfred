@@ -25,9 +25,9 @@ generated: true
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `rationale` | Agents almost never stop — default behavior under an unsatisfiable task is a plausible partial solution, not an admission. Escalation therefore cannot depend on the agent recognizing it is stuck, since that is precisely the judgment the failure compromises. An agent that can declare itself blocked can also declare itself done. |
+**rationale**
+
+> Agents almost never stop — default behavior under an unsatisfiable task is a plausible partial solution, not an admission. Escalation therefore cannot depend on the agent recognizing it is stuck, since that is precisely the judgment the failure compromises. An agent that can declare itself blocked can also declare itself done.
 
 ## Enforced by (code)
 

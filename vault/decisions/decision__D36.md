@@ -25,9 +25,9 @@ generated: true
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `rationale` | Free inference turns retry-until-green into a search process sampling the distribution of solutions that pass visible checks — some fraction of which fail held-out. Expensive inference accidentally capped that search via budget; local removes the accidental protection, which promotes A3 from hardening to load-bearing. Per-task-after-retries is the honest unit when attempts are free. The gate then  |
+**rationale**
+
+> Free inference turns retry-until-green into a search process sampling the distribution of solutions that pass visible checks — some fraction of which fail held-out. Expensive inference accidentally capped that search via budget; local removes the accidental protection, which promotes A3 from hardening to load-bearing. Per-task-after-retries is the honest unit when attempts are free. The gate then constrains *scope* instead of being weakened: "implement metric M per published spec, matching reference values" is already a plausible starting class.
 
 ## Enforced by (code)
 

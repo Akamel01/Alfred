@@ -33,9 +33,12 @@ generated: true
 
 | Field | Value |
 |---|---|
-| `evidence` | Derived from four adversarial research runs (~63 agents, ~1,450 fetched sources) and from the documented failure of a prior attempt at this system. Each principle names the evidence or the failure it answers. |
 | `path` | docs/tier0/operating-principles.md |
 | `tier_name` | Constitution |
+
+**evidence**
+
+> Derived from four adversarial research runs (~63 agents, ~1,450 fetched sources) and from the documented failure of a prior attempt at this system. Each principle names the evidence or the failure it answers.
 
 ## Binds
 

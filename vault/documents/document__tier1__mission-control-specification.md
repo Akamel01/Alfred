@@ -33,9 +33,12 @@ generated: true
 
 | Field | Value |
 |---|---|
-| `evidence` | The surface's obligations are derived from controls that already exist — three-valued verdicts (Failure Semantics), the run record stream's `task_end.human_review_ms` field, which is specified as "recorded from the review interaction, not estimated" and today has no instrument, and the capacity ledger's requirement for human minutes per task. Nothing here rests on an observed review: no review has |
 | `path` | docs/tier1/mission-control-specification.md |
 | `tier_name` | Architecture |
+
+**evidence**
+
+> The surface's obligations are derived from controls that already exist — three-valued verdicts (Failure Semantics), the run record stream's `task_end.human_review_ms` field, which is specified as "recorded from the review interaction, not estimated" and today has no instrument, and the capacity ledger's requirement for human minutes per task. Nothing here rests on an observed review: no review has happened.
 
 ## Binds
 

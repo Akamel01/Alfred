@@ -33,9 +33,12 @@ generated: true
 
 | Field | Value |
 |---|---|
-| `evidence` | Strict typing is enforced now because retrofitting it onto a grown codebase is impractical; the agent inherits Phase 0's conventions, so conventions set before Phase 1 are the ones that propagate. |
 | `path` | docs/tier2/coding-standards.md |
 | `tier_name` | Build protocol |
+
+**evidence**
+
+> Strict typing is enforced now because retrofitting it onto a grown codebase is impractical; the agent inherits Phase 0's conventions, so conventions set before Phase 1 are the ones that propagate.
 
 ## Binds
 

@@ -33,9 +33,12 @@ generated: true
 
 | Field | Value |
 |---|---|
-| `evidence` | Graph-level visibility controls were verified not to constitute a boundary — private state schemas do not hide channels from stream, output_keys is caller-side, and the checkpointer persists everything. The security property has to come from physical separation. |
 | `path` | docs/tier4/permission-and-identity-model.md |
 | `tier_name` | Security and governance |
+
+**evidence**
+
+> Graph-level visibility controls were verified not to constitute a boundary — private state schemas do not hide channels from stream, output_keys is caller-side, and the checkpointer persists everything. The security property has to come from physical separation.
 
 ## Binds
 

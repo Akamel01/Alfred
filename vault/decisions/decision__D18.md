@@ -25,6 +25,6 @@ generated: true
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `rationale` | A role has no input/output contract, therefore no golden tasks and no measurable merge rate. Role-based agents structurally break the Phase 4 autonomy mechanism. Agents also must justify themselves against a deterministic alternative: open input space and checkable output, or it is a node. |
+**rationale**
+
+> A role has no input/output contract, therefore no golden tasks and no measurable merge rate. Role-based agents structurally break the Phase 4 autonomy mechanism. Agents also must justify themselves against a deterministic alternative: open input space and checkable output, or it is a node.

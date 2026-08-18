@@ -33,9 +33,12 @@ generated: true
 
 | Field | Value |
 |---|---|
-| `evidence` | Deny-by-default is asserted by a boot-time canary because a major lab's own evaluation harness was found to have left machines with live internet access despite intended isolation. Allowlisted hosts have been used for exfiltration at CVSS 9.6. The executor-specific assertions (C1–C3, C12) rest on the plan's research notes about OpenHands and are **unverified first-hand** — the executor is not pres |
 | `path` | docs/tier4/sandbox-specification.md |
 | `tier_name` | Security and governance |
+
+**evidence**
+
+> Deny-by-default is asserted by a boot-time canary because a major lab's own evaluation harness was found to have left machines with live internet access despite intended isolation. Allowlisted hosts have been used for exfiltration at CVSS 9.6. The executor-specific assertions (C1–C3, C12) rest on the plan's research notes about OpenHands and are **unverified first-hand** — the executor is not present in this repository and was not fetched; each is written to pass harmlessly if the feature it disables does not exist.
 
 ## Binds
 

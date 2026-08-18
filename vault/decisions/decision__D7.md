@@ -25,9 +25,9 @@ The adversary is **deterministic tooling, not a second LLM**: Hypothesis propert
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `rationale` | Properties encode intent over generated inputs; the agent cannot special-case past inputs it never sees. Mutation score measures branch coverage only. An LLM adversary is reserved for what neither reaches: missing requirements. |
+**rationale**
+
+> Properties encode intent over generated inputs; the agent cannot special-case past inputs it never sees. Mutation score measures branch coverage only. An LLM adversary is reserved for what neither reaches: missing requirements.
 
 ## Stated in prose — unverified
 

@@ -33,9 +33,12 @@ generated: true
 
 | Field | Value |
 |---|---|
-| `evidence` | A pull-request-opening flow has been used to exfiltrate a token within eight minutes of the PR being opened. Repository-scoped CI caches survive container ephemerality, so ephemerality alone does not contain a leaked secret. |
 | `path` | docs/tier4/secrets-management-policy.md |
 | `tier_name` | Security and governance |
+
+**evidence**
+
+> A pull-request-opening flow has been used to exfiltrate a token within eight minutes of the PR being opened. Repository-scoped CI caches survive container ephemerality, so ephemerality alone does not contain a leaked secret.
 
 ## Binds
 

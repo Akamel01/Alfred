@@ -25,6 +25,6 @@ generated: true
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `rationale` | Honest answer to the memory arithmetic: one ~60 GB resident model is one worker. Throughput comes from uptime, not parallelism — tasks/day = f(prefill speed, turns, retries). The Postgres `SKIP LOCKED` queue is already multi-host-aware, so a second Mac Studio is a capital decision, not an architectural one. |
+**rationale**
+
+> Honest answer to the memory arithmetic: one ~60 GB resident model is one worker. Throughput comes from uptime, not parallelism — tasks/day = f(prefill speed, turns, retries). The Postgres `SKIP LOCKED` queue is already multi-host-aware, so a second Mac Studio is a capital decision, not an architectural one.

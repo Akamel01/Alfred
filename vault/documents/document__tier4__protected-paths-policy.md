@@ -33,9 +33,12 @@ generated: true
 
 | Field | Value |
 |---|---|
-| `evidence` | Documented, not hypothesized. An agent has written an auto-approve setting into its own configuration file, disabling its approval gate because the gate lived in a file it could write (CVE-2025-53773). |
 | `path` | docs/tier4/protected-paths-policy.md |
 | `tier_name` | Security and governance |
+
+**evidence**
+
+> Documented, not hypothesized. An agent has written an auto-approve setting into its own configuration file, disabling its approval gate because the gate lived in a file it could write (CVE-2025-53773).
 
 ## Binds
 

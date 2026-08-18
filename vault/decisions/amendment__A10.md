@@ -25,6 +25,6 @@ generated: true
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `evidence` | TrapDoor planted `CLAUDE.md` and `.cursorrules` with zero-width-encoded instructions and opened PRs against LangChain, MetaGPT and OpenHands. GitHub flags bidi but not zero-width. Also: CI runs before any human sees the PR, so review is not the first gate. |
+**evidence**
+
+> TrapDoor planted `CLAUDE.md` and `.cursorrules` with zero-width-encoded instructions and opened PRs against LangChain, MetaGPT and OpenHands. GitHub flags bidi but not zero-width. Also: CI runs before any human sees the PR, so review is not the first gate.

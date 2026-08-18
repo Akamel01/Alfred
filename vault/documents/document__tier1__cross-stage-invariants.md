@@ -33,9 +33,12 @@ generated: true
 
 | Field | Value |
 |---|---|
-| `evidence` | Each invariant is included because its retrofit cost is a migration or a rewrite, and several are the specific omissions that made a prior attempt expensive to correct. |
 | `path` | docs/tier1/cross-stage-invariants.md |
 | `tier_name` | Architecture |
+
+**evidence**
+
+> Each invariant is included because its retrofit cost is a migration or a rewrite, and several are the specific omissions that made a prior attempt expensive to correct.
 
 ## Binds
 

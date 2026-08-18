@@ -33,9 +33,12 @@ generated: true
 
 | Field | Value |
 |---|---|
-| `evidence` | Append-only defends against the agent and not against hardware failure, kernel-panic corruption, or a bad migration. For an audit-layer product, an unchained audit log is rewritable by anyone holding one login. |
 | `path` | docs/tier4/audit-and-retention-policy.md |
 | `tier_name` | Security and governance |
+
+**evidence**
+
+> Append-only defends against the agent and not against hardware failure, kernel-panic corruption, or a bad migration. For an audit-layer product, an unchained audit log is rewritable by anyone holding one login.
 
 ## Binds
 

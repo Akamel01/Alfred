@@ -25,6 +25,6 @@ generated: true
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `rationale` | EvilGenie found LLM judges outperformed held-out tests at reward-hack detection (0 FP / 0 FN across three models) with "only minimal improvement from the use of held out test cases" — so decision 7's original exclusion was a determinism preference presented as an efficacy claim. The evidence is real but weakly powered (27-problem accuracy set; false negatives are uncountable without exhaustive rev |
+**rationale**
+
+> EvilGenie found LLM judges outperformed held-out tests at reward-hack detection (0 FP / 0 FN across three models) with "only minimal improvement from the use of held out test cases" — so decision 7's original exclusion was a determinism preference presented as an efficacy claim. The evidence is real but weakly powered (27-problem accuracy set; false negatives are uncountable without exhaustive review), which is why the judge earns weight by measurement rather than receiving it. Advisory framing keeps decision 16 intact. Note it does **not** engage the SpecBench class — composed property tests remain load-bearing.

@@ -33,9 +33,12 @@ generated: true
 
 | Field | Value |
 |---|---|
-| `evidence` | Two documented cases of controls failing open silently: an eval sandbox left with live internet access under a deny-by-default configuration, and an SDK that treated an empty settings-source list as omitted and loaded user configuration anyway. Both failed without signalling. |
 | `path` | docs/tier1/failure-semantics.md |
 | `tier_name` | Architecture |
+
+**evidence**
+
+> Two documented cases of controls failing open silently: an eval sandbox left with live internet access under a deny-by-default configuration, and an SDK that treated an empty settings-source list as omitted and loaded user configuration anyway. Both failed without signalling.
 
 ## Binds
 

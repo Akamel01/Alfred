@@ -33,9 +33,12 @@ generated: true
 
 | Field | Value |
 |---|---|
-| `evidence` | The record shape, the claim/fault split and the read-recording obligation rest on measured behaviour of the selected lane — the content-channel defect (15–20% of calls), the silent reload to defaultContextLength, and the parallel-slot effect on prefix reuse — and on the Run Instrumentation Specification, which this port must be able to fill. Everything specific to the selected executor (OpenHands) |
 | `path` | docs/tier1/worker-port-contract.md |
 | `tier_name` | Architecture |
+
+**evidence**
+
+> The record shape, the claim/fault split and the read-recording obligation rest on measured behaviour of the selected lane — the content-channel defect (15–20% of calls), the silent reload to defaultContextLength, and the parallel-slot effect on prefix reuse — and on the Run Instrumentation Specification, which this port must be able to fill. Everything specific to the selected executor (OpenHands) rests on the plan's research notes and is **unverified first-hand**: the executor is not present in this repository and was not fetched. Those obligations are marked in place.
 
 ## Binds
 

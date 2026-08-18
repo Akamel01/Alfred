@@ -25,6 +25,6 @@ generated: true
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `evidence` | GitLost's failure was a read-side judgment call. Spearman ρ ≈ −0.67 (turns) and −0.73 (tokens) against score — cheap, strong, agent-unwriteable failure predictors. Largest agentic-PR rejection buckets are abandonment (40.6%) and duplicates (25.3%), both structurally detectable. |
+**evidence**
+
+> GitLost's failure was a read-side judgment call. Spearman ρ ≈ −0.67 (turns) and −0.73 (tokens) against score — cheap, strong, agent-unwriteable failure predictors. Largest agentic-PR rejection buckets are abandonment (40.6%) and duplicates (25.3%), both structurally detectable.

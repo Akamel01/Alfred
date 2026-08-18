@@ -25,6 +25,6 @@ generated: true
 
 ## Fields
 
-| Field | Value |
-|---|---|
-| `rationale` | The architecture's central claim is that the harness produces facts and the agent produces claims; that survives only if a worker which could not be shown to have run says so instead of returning something verdict-shaped. **The most likely defect in any adaptor is reporting a killed executor as an agent failure**, which silently moves harness flakiness into the numerator of the only number the aut |
+**rationale**
+
+> The architecture's central claim is that the harness produces facts and the agent produces claims; that survives only if a worker which could not be shown to have run says so instead of returning something verdict-shaped. **The most likely defect in any adaptor is reporting a killed executor as an agent failure**, which silently moves harness flakiness into the numerator of the only number the autonomy gates read — so origin is an explicit part of the return type rather than something the harness infers from an exception. The port names no executor concept anywhere, which is what makes D38's "the `Worker` interface exists to make this swap cheap" true rather than aspirational. Specified in `docs/tier1/worker-port-contract.md`; `provisional` not `frozen`, because every executor-specific obligation rests on research notes rather than a running executor.

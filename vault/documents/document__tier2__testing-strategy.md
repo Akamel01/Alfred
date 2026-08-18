@@ -33,9 +33,12 @@ generated: true
 
 | Field | Value |
 |---|---|
-| `evidence` | The visible/held-out split addresses a measured 43-48pp gap on composed operations with no exploit involved. The exclusion of mutation score follows a replication finding that mutation scores are meaningless in a bug-detection setting. |
 | `path` | docs/tier2/testing-strategy.md |
 | `tier_name` | Build protocol |
+
+**evidence**
+
+> The visible/held-out split addresses a measured 43-48pp gap on composed operations with no exploit involved. The exclusion of mutation score follows a replication finding that mutation scores are meaningless in a bug-detection setting.
 
 ## Binds
 
