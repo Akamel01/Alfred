@@ -6,7 +6,7 @@ Documents are classified by what stops them from lying, never by topic. See
 [Documentation Standard](tier7/documentation-standard.md) for the header contract,
 the stub policy, and the authorship boundary.
 
-**63 documents** · 28 written, 35 stubs · 35 executable or generated (55%)
+**63 documents** · 29 written, 34 stubs · 35 executable or generated (55%)
 
 ## Tier 0 — Constitution
 
@@ -39,7 +39,7 @@ the stub policy, and the authorship boundary.
 
 | Document | Status | Owner | Enforcement | Written |
 |---|---|---|---|---|
-| [Branch, Release and Deploy Protocol](tier2/branch-release-deploy-protocol.md) | frozen | executable | `ci-gate` | stub |
+| [Branch, Release and Deploy Protocol](tier2/branch-release-deploy-protocol.md) | provisional | executable | `ci-gate` | full |
 | [Build Protocol](tier2/build-protocol.md) | provisional | human | `review-cadence` | stub |
 | [Coding Standards](tier2/coding-standards.md) | frozen | executable | `ci-gate` | full |
 | [Criterion Authoring Guide](tier2/criterion-authoring-guide.md) | provisional | human | `review-cadence` | stub |

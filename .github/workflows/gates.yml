@@ -200,6 +200,12 @@ jobs:
       - name: Oracle boundary (pins, refusals, admissibility)
         run: uv run pytest harness/oracle
 
+      # S8. The ledger half and the artifact-identity half run everywhere; the three
+      # tests that actually deploy skip without the built images, which is correct on a
+      # runner and is why every refusal that can be tested without a daemon is.
+      - name: Deploy and rollback (ledger, identity, refusals)
+        run: uv run pytest harness/deploy
+
   # ---------------------------------------------------------------- database
   database:
     name: database (throwaway cluster, roles and grants)

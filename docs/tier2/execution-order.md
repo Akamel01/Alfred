@@ -249,9 +249,53 @@ drill restoring only to latest cannot distinguish a working WAL archive from a w
 backup with a broken archive, and PITR is the capability that matters after the bad
 migration D43 names.
 
-### S8 — Deploy and rollback · *blocks Phase 0 exit*
+### S8 — Deploy and rollback · *blocks Phase 0 exit* · **DONE 2026-08-18**
 
 `docker compose up` serves the API; deploy and rollback both execute and are verified.
+
+**Closed 2026-08-18.** `src/api/` is the deployable unit, `deploy/api.Dockerfile` builds
+it, the compose file carries the service, and `harness/deploy/` holds the ledger, the
+driver and the tests. Two releases were built, deployed and rolled back on this machine;
+each transition was confirmed by reading `/version` from the running service.
+
+**One decision carries the whole stage: the release identity is baked into the artifact.**
+`/version` reports what the running image says it is, from build arguments promoted to
+environment variables — never from the repository, a mount, or a `git` call at request
+time. Read the identity from outside the artifact and a rollback reports the old release
+while the new code keeps serving, with the verifier agreeing: the check passes in exactly
+the situation it exists to detect. An image built without an identity fails at import
+rather than serving anonymously.
+
+Deploy goes **through** `docker compose` rather than around it, because the exit criterion
+names that path and a mechanism verified on some other path has verified some other
+mechanism. Rollback is the same code with a different target — a rollback running code a
+deploy never exercises is a path first executed during an incident. The ledger is written
+only *after* the intended release is observed serving; recording first would leave a
+history claiming a deploy that never took, and the rollback target is chosen from that
+history.
+
+Three states are failures rather than no-ops, each with a test: rolling back with no
+recorded release, rolling back when every recorded release is the one serving, and a
+deploy whose service answers with a different release than the one intended. That last one
+is the control the stage rests on — verified by exit code it passes, because
+`docker compose up` succeeded.
+
+The rollback target is found by scanning for a different `release_id`, not by taking the
+second-to-last row. A positional rule oscillates: after deploy r1, deploy r2, rollback to
+r1, the second-to-last row is r2, so the next rollback returns to r2, then r1, forever,
+reporting success at every step.
+
+`docs/tier2/branch-release-deploy-protocol.md` is promoted from stub. Its branch and patch
+half remains unobserved and says so — no agent branch has ever been opened.
+
+**Two things this stage does not do.** There is no rollback of the *database*: evidence
+migrations are additive-only and their downgrade raises, so an application rollback across
+a migration is not symmetric. Phase 0 does not hit it because the API holds no database
+credential, and S7's point-in-time recovery is where it gets answered — still outstanding.
+And a **technology selection record is owed** for FastAPI and uvicorn:
+`docs/tier1/technology-selection-records.md` is `owner: human`, and its falsification
+condition — "a technology is adopted with no corresponding record" — is met until the
+operator writes one.
 
 ### S9 — Phase 1 build · *blocked by S1–S8 and by O1*
 

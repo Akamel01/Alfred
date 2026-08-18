@@ -221,3 +221,14 @@ def test_the_oracle_agrees_with_its_own_pinned_literals() -> None:
     assert result.report["counts"]["error"] == 0
     assert result.report["counts"]["mismatch"] == 0
     assert result.report["counts"]["ok"] >= MINIMUM_POINTS
+
+
+def test_the_image_tag_has_one_source_of_truth() -> None:
+    """The tag is derived from the pinned SHA, never typed.
+
+    It was briefly typed, one character longer, and the consequence was not a failure but
+    a *skip* — the integration test stopped running and reported green. A tag with two
+    sources of truth is a check that can silently stop checking.
+    """
+    assert pins.IMAGE_TAG == f"alfred-oracle:{pins.ORACLE_COMMIT_SHA[:12]}"
+    assert pins.IMAGE_TAG.split(":")[1] in pins.ORACLE_COMMIT_SHA

@@ -47,6 +47,27 @@ class OracleRun:
         return list(self.report.get("findings", []))
 
 
+def build_image(*, tag: str = IMAGE_TAG) -> str:
+    """Build the oracle image under the tag the rest of this module expects.
+
+    A helper rather than a documented command line, because the two were briefly out of
+    step: the image was built under a hand-typed tag one character longer than
+    `IMAGE_TAG`, so `image_exists` returned False and the integration test *skipped*
+    rather than failed. A skip is the quietest possible way for a check to stop running,
+    and the tag had two sources of truth. Now it has one.
+    """
+    subprocess.run(
+        [
+            "docker", "build",
+            "--platform", PLATFORM,
+            "-t", tag,
+            str(Path(__file__).resolve().parent),
+        ],
+        check=True,
+    )
+    return tag
+
+
 def image_exists(tag: str = IMAGE_TAG) -> bool:
     result = subprocess.run(
         ["docker", "image", "inspect", tag], capture_output=True, text=True, check=False

@@ -62,7 +62,7 @@ Product skeleton. The largest reading set, because Phase 0 builds what cannot be
 | 18 | [Task Specification Standard](tier2/task-specification-standard.md) | binding | frozen | what makes a task schedulable; criterion structure |
 | 19 | [Model and Algorithm Cards](tier5/model-and-algorithm-cards.md) | binding | stub | validity envelopes ship with the product |
 | 20 | [Stage Gate Definitions](tier2/stage-gate-definitions.md) | binding | stub | the executable exits, and the waiver discipline for overriding one |
-| 21 | [Branch, Release and Deploy Protocol](tier2/branch-release-deploy-protocol.md) | binding | stub | deploy and rollback are Phase 0 exit criteria |
+| 21 | [Branch, Release and Deploy Protocol](tier2/branch-release-deploy-protocol.md) | binding | provisional | deploy and rollback are Phase 0 exit criteria |
 | 22 | [Risk Register](tier0/risk-register.md) | context | provisional | open risks with revisit triggers; check before assuming something is handled |
 | 23 | [Criterion Authoring Guide](tier2/criterion-authoring-guide.md) | context | stub | stub — promote once real criteria have been authored |
 

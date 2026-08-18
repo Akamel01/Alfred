@@ -7,11 +7,17 @@ readme = "README.md"
 
 # Runtime closure is deliberately small. Every addition requires a technology
 # selection record naming what was rejected (docs/tier2/coding-standards.md).
+# FastAPI and uvicorn arrive with S8 under D13. A technology selection record is OWED
+# and is not written here: docs/tier1/technology-selection-records.md is `owner: human`,
+# and its falsification condition — "a technology is adopted with no corresponding
+# record" — is now met until the operator writes one.
 dependencies = [
     "numpy>=2.1",
     "pydantic>=2.11",
     "alembic>=1.14",
     "sqlalchemy>=2.0",
+    "fastapi>=0.141.1",
+    "uvicorn[standard]>=0.52.3",
 ]
 
 [project.optional-dependencies]
@@ -33,7 +39,7 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 # Layout is fixed by docs/tier2/coding-standards.md § Structure.
-packages = ["src/domain", "src/metrics", "src/provenance", "src/thresholds"]
+packages = ["src/api", "src/domain", "src/metrics", "src/provenance", "src/thresholds"]
 
 # --------------------------------------------------------------------------- lint
 
