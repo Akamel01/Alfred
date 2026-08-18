@@ -174,7 +174,8 @@ Binding on implementation and easy to miss, since they live inside one document.
 | [ADR-0016](tier1/adr-log.md) | `StampedResult` takes its schema version from the stamp it contains | Accepted |
 | [ADR-0017](tier1/adr-log.md) | A containment assertion with an unread premise is a hole, and a hole never passes | Accepted |
 | [ADR-0018](tier1/adr-log.md) | The executor moved, and eleven of thirteen premises were wrong | Accepted |
+| [ADR-0019](tier1/adr-log.md) | D38's sandbox rationale, verified: true of one configuration, false of the default | Accepted |
 
 ---
 
-**63 documents mapped** · 43 binding · 13 context · 7 record · 18 architecture decisions
+**63 documents mapped** · 43 binding · 13 context · 7 record · 19 architecture decisions

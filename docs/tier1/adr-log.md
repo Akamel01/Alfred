@@ -1838,3 +1838,110 @@ not exist costs nothing" would have bought.
 
 `harness/containment/` is inspector machinery under D20. This is the mandatory ADR under
 major-fix #8; the line-by-line review is O9 and has not happened.
+
+---
+
+## ADR-0019 — D38's sandbox rationale, verified: true of one configuration, false of the default
+
+**Date:** 2026-08-18 · **Status:** Accepted · **Supersedes:** none · **Amends:** D38's sandbox rationale; ADR-0018's outstanding list · **See also:** ADR-0018 (which recorded this as unverified), ADR-0017 (the shells), ADR-0007 (the vacuity being avoided)
+
+### Context
+
+D38 selected OpenHands for two properties. ADR-0018 confirmed the second — durable
+per-event persistence — against `OpenHands/software-agent-sdk` at
+`d460d1a0b6bd35e054ad146c6078205df4686387`, and recorded the first as **not re-checked**:
+
+> a real Docker sandbox (ActionExecutor inside the container, action/observation event
+> stream over REST)
+
+That sentence was written about a repository that no longer holds the code. This ADR checks
+it against the pinned tree. Every citation below is a `path:line` in that tree.
+
+### Decision
+
+**The rationale is upheld in substance, wrong in every proper noun, and — decisively — it
+describes one configuration of the SDK rather than the SDK.** D38 stays as the selection;
+what changes is that the sandbox is now a thing Alfred must *configure and assert*, not a
+property it inherits by choosing this dependency.
+
+### Clause by clause
+
+| D38's words | Verdict | What the pinned tree says |
+|---|---|---|
+| "a real Docker sandbox" | **True, and opt-in** | `DockerWorkspace(RemoteWorkspace)` runs `docker run -d` on `ghcr.io/openhands/agent-server:latest-python` and health-checks it (`openhands-workspace/openhands/workspace/docker/workspace.py:53,171`). It is one of five workspace kinds; `docker`, `apptainer`, `remote_api` and `cloud` all exist. |
+| "ActionExecutor" | **False as a name** | Zero occurrences repository-wide. The executor is the `agent-server` FastAPI app; the loop is `EventService` / `LocalConversation`. |
+| "inside the container" | **True** | The server constructs its own `LocalWorkspace` for tool execution (`openhands-agent-server/openhands/agent_server/conversation_service.py:244`, `event_service.py:972`), so under `DockerWorkspace` the tools run in the container and the client holds only an HTTP handle. |
+| "action/observation event stream" | **True** | `ActionEvent` (`openhands-sdk/openhands/sdk/event/llm_convertible/action.py:24`) and `ObservationEvent` (`observation.py:32`). |
+| "over REST" | **True, and incomplete** | REST at `/conversations/{id}/events` (`event_router.py:30,195,206`), but the live stream the client actually consumes is a **WebSocket**, `/sockets/events/{conversation_id}` (`openhands-sdk/openhands/sdk/conversation/impl/remote_conversation.py:217`). A containment control written against REST alone would watch the wrong socket. |
+
+### The finding that matters more than any of those
+
+**The sandbox is not the default, and the type system does not say so.**
+`Workspace(working_dir=...)` with no `host` returns a `LocalWorkspace`
+(`openhands-sdk/openhands/sdk/workspace/workspace.py:36-49`), which "operates on the host
+filesystem" and is "suitable for development and testing" (`local.py:17-29`). Meanwhile
+`BaseWorkspace`'s own docstring says workspaces "provide a **sandboxed** environment"
+(`base.py:27-33`) — a claim that is false of the class the factory returns by default.
+
+The consequence for Alfred is precise: **no C-assertion in the specification currently
+checks which workspace kind is in use.** Every containment control is written as though the
+container is a given. An adaptor constructed against the default would run the agent on the
+host, and C1, C2, C3 and C10 would all still pass, because each reads configuration and
+event streams that exist identically in the local case. That is ADR-0007's third outcome
+again — executed, passed, vacuous — at a layer above the one the shells were built to guard.
+
+### Four properties the rationale asserted by implication and the tree does not provide
+
+None of these is a defect in the SDK; each is a default that "a real Docker sandbox" was
+read as excluding, and does not.
+
+1. **The agent server is unauthenticated by default.** `session_api_keys` defaults empty and
+   "empty list implies the server will be unsecured" (`config.py:223-232`, `33-44`);
+   `DockerWorkspace` then sets `api_key = None` outright (`docker/workspace.py:278`). The
+   server is told to bind `0.0.0.0` (`workspace.py:255-257`) and published with
+   `-p {host_port}:8000` (`:222`), which Docker binds on **all host interfaces**. An
+   unauthenticated remote-code-execution endpoint is reachable off-box unless the operator
+   sets `SESSION_API_KEY` or firewalls the port.
+2. **The container is unhardened.** The `docker run` argument list (`:238-260`) carries no
+   `--cap-drop`, no `--read-only`, no `--security-opt`, no user namespace and no
+   `--network none`; egress is the default bridge, i.e. open. Inside, the agent user has
+   `NOPASSWD:ALL` sudo (`openhands-agent-server/openhands/agent_server/docker/Dockerfile:149`),
+   so any assertion about in-container privilege is defeated by one command.
+3. **Two egress channels exist that the specification never enumerated:** `webhooks`
+   (`config.py:300`) POSTs events out of the container, and `telemetry` (`:396`) ships to
+   PostHog or an arbitrary HTTP endpoint. C6's deny-by-default network policy is what stops
+   them; nothing in the executor's own configuration does.
+4. **The evidence is deleted by default at the end of the run.** `Conversation(...)` defaults
+   `delete_on_close=True` (`openhands-sdk/openhands/sdk/conversation/conversation.py:84,113,142`);
+   on close the client issues `DELETE /conversations/{id}`
+   (`impl/remote_conversation.py:1729-1739`), and the server `safe_rmtree`s the conversation
+   directory (`conversation_service.py:1725-1731`). The workspace survives; the event log does
+   not.
+
+Point 4 falsifies **C1 as written**. C1 claims "every event the adaptor observed is present
+on disk at end of run", and its check reads the persisted directory — a directory the default
+configuration removes before that read. C1 needs `delete_on_close` as a hole and a fourth
+clause; that amendment is **required and is not made here**, because `harness/containment/`
+is inspector machinery whose current patch is still unreviewed on O9.
+
+### One confusable pair, recorded so it is not collapsed
+
+`persistence_dir` exists at two layers with **opposite** requirements. Client-side, passing it
+with a `RemoteWorkspace` raises `ValueError`
+(`openhands-sdk/openhands/sdk/conversation/conversation.py:155-160`). Server-side it is
+`StartConversationRequest.persistence_dir`, defaulting to `"workspace/conversations"`
+(`openhands-agent-server/openhands/agent_server/models.py:134`). C1 cites the server-side
+field and is therefore at the correct layer. A future reader unifying the two names would
+break C1 in the direction that still reads green.
+
+### Consequences
+
+- D38's sandbox rationale is **verified, with the qualification that it describes
+  `DockerWorkspace` and not the SDK's default**. ADR-0018's outstanding item is discharged.
+- **Opened, and not closed here:** a C-assertion that the workspace kind in use is the
+  container one — the missing control that makes the other four vacuous when it is absent;
+  C1's `delete_on_close` clause; and whether points 1 and 2 are Alfred's to assert
+  (`--cap-drop`, `--network`, sudo) or S6's host-level `nftables` work already covering them.
+- **Still outstanding from ADR-0018:** C4 and C11, blocked on a run fingerprint record that
+  does not exist; and whether Agent Canvas being the headline product changes the executor's
+  trajectory.

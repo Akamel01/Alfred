@@ -161,6 +161,29 @@ dispatch on. **A shell never passes.**
 > - **C10.** Configuration also hoists through `OH_*` environment variables, which are
 >   merged over the file. A search-path check alone passes a fully hoisted container.
 
+> **D38's sandbox rationale was verified 2026-08-18 against the same pinned tree.** ADR-0019.
+> It is upheld in substance and wrong in every proper noun — there is no `ActionExecutor`,
+> the executor is the `agent-server` FastAPI app, and the live event stream the client
+> consumes is a **WebSocket** (`/sockets/events/{conversation_id}`), not the REST route.
+> Two consequences bear on this table:
+>
+> - **The container is not the default.** `Workspace(working_dir=...)` with no `host`
+>   returns a `LocalWorkspace` that operates on the host filesystem, while `BaseWorkspace`'s
+>   own docstring calls every workspace "sandboxed". **No row below asserts which workspace
+>   kind is in use**, and C1, C2, C3 and C10 all read configuration and event streams that
+>   exist identically in the local case — so all four would pass on an agent running on the
+>   host. That control is owed and is not written.
+> - **C1 is falsified as written.** `Conversation(...)` defaults `delete_on_close=True`; on
+>   close the server removes the conversation directory. C1's end-of-run read is of a
+>   directory the default configuration deletes first. C1 needs `delete_on_close` as a hole
+>   and a fourth clause; the amendment is owed and is not made.
+>
+> ADR-0019 also records four unhardened defaults the rationale was read as excluding: the
+> agent server is unauthenticated by default and published on all host interfaces; the
+> container runs with no `--cap-drop`, no `--read-only`, open egress, and `NOPASSWD:ALL`
+> sudo inside; and `webhooks` and `telemetry` are two egress channels this specification
+> never enumerated, stopped only by C6's deny-by-default policy.
+
 The rest of the table needs no executor vocabulary and is written for real: C8, C9, C12 and
 C13 in `harness/containment/inside.py`, C14 in `reassert.py`, C15 in `patch_side.py`, C6 and
 C7 as before. **C4 and C11 are not written**, and are blocked on something other than O5: both
