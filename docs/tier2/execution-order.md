@@ -46,6 +46,7 @@ Checked against the filesystem. This is the honest starting position.
 | Seeded resampler (D49 P3) | **Does not exist and has never been specified.** |
 | `assert_grants.py` | **Built 2026-08-17**, set equality both directions, mutation-controlled. ADR-0009. |
 | `lint_verdict_boundary.py` (D16/D39) | **Built 2026-08-17**, with a committed self-test. ADR-0012. |
+| C6 egress canary, C7 oracle-absence probe | **Built 2026-08-17.** ADR-0013. Enforcement (`nftables`, build-time closure) outstanding. |
 | `lint_invariants.py`, `lint_tier0_adr.py`, `harness/lane/mutate.py` | **Absent**, all three specified as enforcement somewhere. |
 
 ## The calendar finding, stated plainly
@@ -140,7 +141,7 @@ asserted values reproduced on the six named scenarios within a documented tolera
 documentation stating plainly that these are CriMe's self-consistency tests and are therefore
 ground truth only for a reimplementation treating CriMe as an oracle.
 
-### S6 — Containment · *blocks Phase 1 dispatch; blocked by S1*
+### S6 — Containment · *blocks Phase 1 dispatch; blocked by S1* · **PROBES DONE 2026-08-17, enforcement outstanding**
 
 Egress canary (A7) — the run refuses to start unless a known non-allowlisted connection
 fails, enforced by `nftables` default-drop, because environment-variable proxy configuration
@@ -151,6 +152,14 @@ its module-level code inside the sandbox.
 
 Every failure path fail-closed, the probe erroring included. `not_executed` is a failure,
 never a pass.
+
+**Partly closed 2026-08-17** (ADR-0013). `harness/containment/` carries the assertion
+vocabulary, the versioned denylist and network policy under `policy/`, the C6 canary with
+its loopback control, and the C7 probe's layers 1–3. What remains is the enforcement half,
+which is not code in this repository: `nftables` default-drop in the host network
+namespace, and the image-build closure check wired to a real resolved lockfile. Until
+those exist the canary is a verification with nothing to verify against — and it says so,
+reporting FAILED on any unfiltered host.
 
 ### S7 — Durability · *blocks Phase 0 exit; blocked by S1*
 

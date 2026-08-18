@@ -1,0 +1,67 @@
+{
+  "_comment": [
+    "D50/D54. Versioned protected policy configuration; the version is a fingerprint field.",
+    "Two sets, and the split between them is a RECORDED HUMAN JUDGEMENT rather than an",
+    "inference. Banning everything the oracle imports would ban numpy; banning only its own",
+    "distribution name would miss the packages shipping the same computation for the",
+    "reachable-set measure. Every entry therefore carries its reason as data rather than as a",
+    "comment, so the reason travels into the digest and a silent reclassification changes the",
+    "fingerprint.",
+    "",
+    "JSON rather than YAML, and stdlib json rather than a parser: this file bounds what the",
+    "sandbox is allowed to contain, and its loader should not sit downstream of the supply",
+    "chain it exists to constrain.",
+    "",
+    "UNVERIFIED, and flagged rather than buried: the import names below are taken from this",
+    "project's records, not read first-hand from each distribution at a pinned version. O5",
+    "(read OpenHands at the pinned SHA) has a sibling here — the closure check at image build",
+    "reads real metadata and is what turns these strings into facts. Until it runs, a wrong",
+    "import name is an assertion that passes while naming nothing, which is exactly the",
+    "vacuity ADR-0007 named."
+  ],
+  "version": 1,
+  "denied": [
+    {
+      "distribution": "commonroad-crime",
+      "modules": ["commonroad_crime"],
+      "reason": "The oracle itself. Computes every measure in the schedulable task class."
+    },
+    {
+      "distribution": "commonroad-reach",
+      "modules": ["commonroad_reach"],
+      "reason": "Supplies the reachable-set computation behind the drivable-area measure, which is in the schedulable class. Denied on what it computes, not on its name."
+    },
+    {
+      "distribution": "commonroad-drivability-checker",
+      "modules": ["commonroad_dc"],
+      "reason": "Supplies collision and drivability primitives an implementation could delegate the drivable-area measure to."
+    },
+    {
+      "distribution": "commonroad-clcs",
+      "modules": ["commonroad_clcs"],
+      "reason": "Curvilinear coordinate system used by the reachable-set path. Denied for the same reason as commonroad-reach."
+    }
+  ],
+  "permitted_substrate": [
+    {
+      "distribution": "numpy",
+      "modules": ["numpy"],
+      "reason": "Numeric substrate. Carries no measure implementation. Banning it would ban the product."
+    },
+    {
+      "distribution": "scipy",
+      "modules": ["scipy"],
+      "reason": "Numeric substrate. Carries no measure implementation."
+    },
+    {
+      "distribution": "shapely",
+      "modules": ["shapely"],
+      "reason": "Geometry primitives. Carries no criticality-measure implementation."
+    },
+    {
+      "distribution": "commonroad-io",
+      "modules": ["commonroad"],
+      "reason": "Scenario reader only. Parses the XML corpus and computes no measure. Distinct top-level module from commonroad_crime, and the distinction is the reason both are listed."
+    }
+  ]
+}

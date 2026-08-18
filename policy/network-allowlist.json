@@ -1,0 +1,44 @@
+{
+  "_comment": [
+    "A7/C6. Deny-by-default egress with an allowlist. Enforcement is nftables default-drop",
+    "OUTSIDE the container; this file is the declaration and the canary below is the",
+    "verification. The split matters: environment-variable proxy configuration is advisory",
+    "and bypassable, so a policy asserted by reading configuration asserts nothing.",
+    "",
+    "The canary targets are IP literals AND a DNS name, deliberately. An IP literal tests",
+    "raw egress with DNS removed as a confound; a DNS name tests resolution. A canary that",
+    "only ever fails at name resolution proves nothing about egress on a host with no",
+    "resolver — it would report the same green on a correctly firewalled container and on a",
+    "container whose /etc/resolv.conf is empty while every port is open.",
+    "",
+    "forbidden_allowlist_patterns: C6 also requires that no package registry appears in the",
+    "allowlist. The runtime image is pulled OUTSIDE the sandbox network namespace precisely",
+    "so no registry needs to be reachable from inside, and a registry host here would undo",
+    "that without touching any other control."
+  ],
+  "version": 1,
+  "allowlist": [],
+  "canary_targets": [
+    {
+      "host": "1.1.1.1",
+      "port": 443,
+      "kind": "ip_literal",
+      "reason": "Raw egress with DNS removed as a confound. A public resolver's TLS port, chosen because it is reachable from any unfiltered network and belongs to nobody this project transacts with."
+    },
+    {
+      "host": "pypi.org",
+      "port": 443,
+      "kind": "dns_name",
+      "reason": "Name resolution plus egress. Also the single most consequential host to be able to reach from inside the sandbox: it is how a denied distribution would arrive."
+    }
+  ],
+  "forbidden_allowlist_patterns": [
+    "pypi.org",
+    "files.pythonhosted.org",
+    "registry.npmjs.org",
+    "docker.io",
+    "ghcr.io",
+    "index.docker.io",
+    "quay.io"
+  ]
+}

@@ -1229,3 +1229,108 @@ that keeps one canonical form.
 
 **Including `score` in the vocabulary.** A lint that fires on ordinary words is a lint
 that gets suppressed, and a suppressed lint enforces nothing while looking like it does.
+
+---
+
+## ADR-0013 — Containment probes, and the control that stops each one reading green
+
+**Date:** 2026-08-17 · **Status:** Accepted · **Supersedes:** none
+
+### Context
+
+S6 builds two of the fifteen boot assertions: C6, the egress canary (A7), and C7, oracle
+absence (D50/D54). Both are assertions about the *absence* of something, and an
+absence-assertion is the easiest kind to satisfy vacuously — a probe that cannot run, a
+target list that is empty, an enumeration that found nothing because it looked nowhere.
+
+### Decision
+
+**`not_executed` is a first-class outcome and `require_all_passed` treats it exactly as
+`failed`** (F25). An absent assertion is also a failure, not a skip: an assertion nobody
+ran and one nobody wrote are indistinguishable from the dispatch side, and both mean the
+control was not applied.
+
+ADR-0007's fourth outcome — executed, passed, and **vacuous** — is deliberately not
+representable in the enum, because an assertion cannot know from inside that its own
+premise is misnamed. It travels instead as `premise_verified=False`, and
+`AssertionReport.unverified_premises` is what a reader consults before quoting a green
+report as evidence.
+
+**The canary runs a loopback control first.** A probe reporting "the target was
+unreachable" reports the same thing when egress is blocked and when its own socket layer
+is broken. Control failure yields `not_executed`, never `passed`.
+
+**The canary policy must declare at least one IP-literal target.** A canary whose every
+target is a DNS name reports identical green on a firewalled container and on one with an
+empty resolver and every port open. The loader refuses a policy without one, and refuses a
+policy with no targets at all — a canary with nothing to try passes unconditionally.
+
+**The oracle probe uses `find_spec` and only on top-level names.** Importing a module to
+learn whether it is importable executes its module-level code inside the sandbox.
+`find_spec("a.b")` imports `a`; `find_spec("a")` imports nothing, so the top-level
+restriction is load-bearing rather than incidental.
+
+**Zero interpreters and zero scanned paths are both `not_executed`.** A probe with nothing
+to probe reports what a clean probe reports.
+
+**The denylist records a reason per entry, as data, inside the digest.** D54 calls the
+classification a recorded human judgement. Reasons as comments would sit outside the hash,
+so a silent reclassification would not invalidate a single autonomy grant measured under
+the old one. `permitted_substrate` is loaded too: a package in neither set is
+**unclassified**, and the closure check reports that separately from denied, because "we
+have not looked at this one" and "we looked and it carries no measure" are different facts
+and only the second is a decision.
+
+### What these probes do not close
+
+Named here because a green report will be quoted. The canary proves the named targets are
+unreachable; it does **not** prove a policy is the reason, since a container with no
+network interface passes identically. Distinguishing them needs a reachable allowlisted
+host, and the Phase 1 allowlist is empty by design.
+
+The oracle probe closes acquisition, declaration, presence and naming. It does not close
+**meaning**: a renamed, reformatted vendored copy passes it, as do a shared object reached
+through `ctypes`, a subprocess binary, a data file of constants, and reconstruction from
+model weights. These are D50's already-recorded open holes and none is closed here.
+
+### Two findings from running it
+
+**`python*` is not an interpreter glob.** On the first real machine, discovery matched
+`python3.14-config` — a shell script that exits 1 on an unrecognised flag — and the probe
+correctly refused to read "could not run" as "nothing found", reporting `not_executed` for
+an entire clean container. Fail-closed working perfectly on a set that should never have
+contained the member. Deciding what is *in* the interpreter set is a different question
+from failing closed on a member that cannot be probed, and collapsing them makes the probe
+unusable. Membership is now an explicit name rule with its own test.
+
+**Three suites were not in CI.** `harness/evidence`, `harness/criterion`,
+`harness/containment` and `harness/lane` were all absent from `gates.yml` — built,
+passing locally, and gating nothing. Added. Worth recording as a class: every new suite in
+this project has needed a separate, easily-forgotten act to become a gate, and nothing
+checks that a test directory is reachable from CI.
+
+### Consequence
+
+Each claim is mutation-controlled, verified by applying and reverting: reading
+`not_executed` as passed fails exactly `test_not_executed_is_treated_as_failed`; replacing
+`find_spec` with `__import__` fails exactly
+`test_a_denied_module_on_the_import_path_fails`, because the planted module raises at
+module level and the probe's fail-closed path converts it to `not_executed`; removing the
+loopback control fails exactly `test_canary_is_not_executed_when_its_control_fails`.
+
+The canary suite owns its own listener rather than using the machine's network, because a
+canary suite depending on connectivity passes on an unplugged laptop — the one condition
+under which a canary proves nothing. Run against the real policy on the development host,
+the canary correctly reports **FAILED**: `1.1.1.1:443` and `pypi.org:443` are both
+reachable there, which is the same finding Anthropic recorded in their own harness.
+
+### Rejected
+
+**Filtering non-interpreters by swallowing their probe failure.** It would make every
+genuinely unprobeable interpreter invisible, which is the failure the fail-closed rule
+exists for.
+
+**Treating any `.pth` as a failure unconditionally.** A developer virtualenv legitimately
+carries them, and a probe that cannot be run outside the container is a probe nobody runs
+until it matters. `strict_import_hooks` is the parameter, True inside the container, and
+both branches are tested.

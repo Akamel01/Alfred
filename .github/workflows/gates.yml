@@ -176,6 +176,17 @@ jobs:
       - name: bench harness self-tests
         run: uv run pytest bench
 
+      # Lane controls, and the containment probes that need no database: the egress
+      # canary (C6) and the oracle-absence probe (C7). Both run against loopback and
+      # temporary trees rather than against the runner's network state — a canary suite
+      # that depended on the machine's connectivity would pass on an unplugged laptop,
+      # which is the one condition under which a canary proves nothing.
+      - name: Lane controls
+        run: uv run pytest harness/lane
+
+      - name: Containment probes (C6 egress canary, C7 oracle absence)
+        run: uv run pytest harness/containment
+
   # ---------------------------------------------------------------- database
   database:
     name: database (throwaway cluster, roles and grants)
@@ -208,6 +219,20 @@ jobs:
         env:
           ALFRED_REQUIRE_DB: "1"
         run: uv run pytest harness/db
+
+      # The inspector core against the same cluster. EvidenceStore's chain tests stage
+      # tampering and forks as the superuser, which is the only way to reach a schema
+      # where no role in the matrix holds UPDATE — and is the operator-level compromise
+      # append-only alone does not survive.
+      - name: EvidenceStore — append-only and hash chain
+        env:
+          ALFRED_REQUIRE_DB: "1"
+        run: uv run pytest harness/evidence
+
+      - name: CriterionRunner — materialization, execution, verdict composition
+        env:
+          ALFRED_REQUIRE_DB: "1"
+        run: uv run pytest harness/criterion
 
   # ---------------------------------------------------------------- mutation control
   mutation:
