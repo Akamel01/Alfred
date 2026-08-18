@@ -2,7 +2,7 @@
 status:        frozen
 owner:         executable
 enforcement:   ci-gate
-evidence:      Deny-by-default is asserted by a boot-time canary because a major lab's own evaluation harness was found to have left machines with live internet access despite intended isolation. Allowlisted hosts have been used for exfiltration at CVSS 9.6. The executor-specific assertions (C1–C3, C5, C10) rest on OpenHands' own vocabulary and are **unverified first-hand** — the executor is not present in this repository and was not fetched. Each is implemented as a shell whose unread holes yield `not_executed`, never `passed` (ADR-0017); the earlier "written to pass harmlessly" position is withdrawn, because it holds for an absent feature and fails for a misnamed one.
+evidence:      Deny-by-default is asserted by a boot-time canary because a major lab's own evaluation harness was found to have left machines with live internet access despite intended isolation. Allowlisted hosts have been used for exfiltration at CVSS 9.6. The executor-specific assertions (C1–C3, C5, C10) were **read first-hand 2026-08-18** at `OpenHands/software-agent-sdk` `d460d1a0…` and every answer cites a `path:line` (ADR-0018, discharging O5). The read corrected eleven of thirteen recorded premises, including one — C3's approval-event count — that could not have been implemented at all. Each assertion remains a shell whose unread holes yield `not_executed`, never `passed` (ADR-0017); the earlier "written to pass harmlessly" position is withdrawn, because it holds for an absent feature and fails for a misnamed one.
 falsifies_if:  A sandbox boots while a known non-allowlisted connection succeeds, or a credential is found reachable from inside the container, or a run reaches a verdict while any assertion in the containment table below was not executed.
 review_after:  Phase 2
 ---
@@ -66,8 +66,9 @@ in eight minutes, ending in four backdoored packages with millions of weekly dow
 
 ## Persistence and recording
 
-Per-event persistence is asserted enabled at startup and **verified by end-of-run event
-count**, not by trusting a flag. Every file read and every search issued is recorded to
+Per-event persistence is asserted **not disabled** at startup — it defaults on, and is
+switched off only by setting `persistence_dir` to `None` (ADR-0018) — and **verified by
+end-of-run event count**, not by trusting a flag. Every file read and every search issued is recorded to
 the evidence store as the run's observed context.
 
 Recording is what makes nondeterministic retrieval compatible with a fingerprint:
@@ -106,16 +107,16 @@ documented failures in this class actually were.
 
 | # | Assertion | Runs | Catches | On failure |
 |---|---|---|---|---|
-| C1 | Per-event persistence enabled, **and** the durable event count at end of run is ≥ the count the adaptor observed, with every observed event id present on disk | config outside; count outside, on the mounted volume | persistence silently off (it is opt-in), partial flush, a truncated read log | claim rejected, `indeterminate` |
-| C2 | No compaction: every condenser and summarizer disabled in configuration, **and** zero condensation-class events in the end-of-run stream | config outside; stream check outside | a summary upstream of a verdict, inherited from the executor rather than authored by Alfred (I16) | `indeterminate` |
-| C3 | No second approval surface: the executor's own frontend is not served, no listening socket exposes it, its confirmation/approval mode is disabled, **and** zero approval-class events appear in the stream | socket scan inside; config outside; stream check outside | an operator approving work inside the execution plane, where the approval lands in the executor's event stream and never in Alfred's evidence chain | run does not start; a stream-side hit rejects the claim |
+| C1 | Persistence **not disabled** — `persistence_dir` is a path and is switched off only by an explicit `None` (ADR-0018; it is not opt-in) — **and** the durable event count at end of run is ≥ the count the adaptor observed, with every observed event id present on disk | config outside; count outside, on the mounted volume | persistence explicitly disabled, partial flush, a truncated read log | claim rejected, `indeterminate` |
+| C2 | No compaction: `Agent.condenser` is `None` or the explicit no-op (ADR-0018 — two legitimate spellings), **and** zero events of class `Condensation`, `CondensationRequest` or `CondensationSummaryEvent` in the end-of-run stream (three classes, not one) | config outside; stream check outside | a summary upstream of a verdict, inherited from the executor rather than authored by Alfred (I16) | `indeterminate` |
+| C3 | No second approval surface **and no interactive surface**: `confirmation_policy` is `NeverConfirm`, the conversation never entered `WAITING_FOR_CONFIRMATION`, no rejection carries `rejection_source="user"`, **and** no VS Code or VNC server is enabled or listening (ADR-0018 — approval emits no event, so the original "zero approval-class events" conjunct is withdrawn as unimplementable) | socket scan inside; config outside; stream check outside | an operator approving work inside the execution plane, where the approval lands in the executor's event stream and never in Alfred's evidence chain | run does not start; a stream-side hit rejects the claim |
 | C4 | Runtime image digest equals `runtime_image_digest` in the fingerprint; image mirrored locally; pulled outside the sandbox network namespace | outside | tag drift, silent rebuild, a registry appearing in the in-sandbox allowlist | run does not start |
 | C5 | Executor pinned by commit SHA resolved **through** the canonical-path redirect, not to it | build time, outside | a redirecting canonical path and a repository with no tags to pin to | build fails |
 | C6 | Egress canary fires; Postgres unreachable; no registry host in the allowlist | inside | live network, held-out reachability | run does not start |
 | C7 | Oracle absence — see below | inside probe + outside closure check | a run that measures delegation instead of implementation | run does not start |
 | C8 | No credential and no secret-bearing environment variable | inside | the deliverable channel becoming the exfiltration channel | run does not start |
 | C9 | Mount set enumerated inside the container equals the dispatch spec exactly, mode for mode | inside | agent-chosen read paths (A9), an over-broad harness mount | run does not start |
-| C10 | Loaded configuration hash equals the harness-supplied configuration; no user-level or project-level configuration file exists at any path the executor searches | inside | config hoisting — an SDK in this ecosystem silently treated an empty settings-source list as "unset" and loaded user configuration anyway | run does not start |
+| C10 | Loaded configuration hash equals the harness-supplied configuration; no configuration file exists at any searched path; **and no `OH_*` environment variable overrides it** (ADR-0018 — the loader merges the environment over the file, so a search-path check alone passes a fully hoisted container) | inside | config hoisting — an SDK in this ecosystem silently treated an empty settings-source list as "unset" and loaded user configuration anyway | run does not start |
 | C11 | Lane fingerprint asserted: `loaded_context_length`, parallel slot count, model id, quantization | outside, against the serving layer | a lane that reconfigured itself unobserved | run does not start |
 | C12 | Writable set is exactly the repo tree and the patch output volume; every interpreter path outside the repo tree is mounted read-only | inside | a mid-run install into site-packages | run does not start |
 | C13 | No package archives or resolver caches: no `.whl`, `.tar.gz`, `.zip`, no `pip`/`uv` cache directory, under any mount | inside | an offline install of something egress control already blocks downloading | run does not start |
@@ -138,9 +139,27 @@ none of which has been read first-hand.
 The five are implemented as **shells** in `harness/containment/shells.py`: each names its
 claim, the holes its check needs, and the check itself. An unread hole yields
 `not_executed`, which F25 makes a failure and which `Worker.check_handle` already refuses to
-dispatch on. **A shell never passes.** `open_holes()` is O5's worklist, and its count
-reaching zero — by *answering* holes, not deleting them, which CI checks — is what
-discharges O5.
+dispatch on. **A shell never passes.**
+
+> **O5 was discharged 2026-08-18, and it corrected eleven of thirteen answers.** ADR-0018.
+> The executor is `OpenHands/software-agent-sdk` at `d460d1a0…`, **not** the repository D38
+> names: `OpenHands/OpenHands` is now Agent Canvas, a TypeScript frontend holding eight
+> Python files, all CI scripts and test mocks. Every hole now cites a `path:line` in the
+> pinned tree, and a hole cannot be answered without one — after O5 the failure mode is not
+> an unread hole but an answered one nobody can re-verify. The rows below are amended:
+>
+> - **C1.** Persistence is **not** opt-in. `persistence_dir` defaults to a path and is
+>   disabled only by an explicit `None`, so the assertion is *not disabled* rather than
+>   *enabled*, and it is a path rather than a flag.
+> - **C2.** Three condensation event classes, not one, and two legitimate spellings of
+>   "no condenser".
+> - **C3.** The third conjunct **cannot be implemented as worded** — approval emits no
+>   event, so "zero approval-class events" would pass over a run a human approved in full.
+>   It is replaced by three observables and one new clause; see below.
+> - **C5.** The redirect is real, and following it lands on the *frontend*. The repository
+>   does have tags, contrary to the row's note.
+> - **C10.** Configuration also hoists through `OH_*` environment variables, which are
+>   merged over the file. A search-path check alone passes a fully hoisted container.
 
 The rest of the table needs no executor vocabulary and is written for real: C8, C9, C12 and
 C13 in `harness/containment/inside.py`, C14 in `reassert.py`, C15 in `patch_side.py`, C6 and

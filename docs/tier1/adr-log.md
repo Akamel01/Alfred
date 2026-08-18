@@ -1725,3 +1725,116 @@ Implementing the shells. `premise_verified` was already written, already tested,
 unable to affect anything — the flag existed, the converter did not, and nothing had ever
 carried a probe result to a handle because no adaptor exists yet. A field that is correct and
 unreachable reads exactly like a field that works.
+
+---
+
+## ADR-0018 — The executor moved, and eleven of thirteen premises were wrong
+
+**Date:** 2026-08-18 · **Status:** Accepted · **Supersedes:** none · **Amends:** D38's selection target; the Sandbox Specification's C1, C2, C3, C5 and C10 rows · **Discharges:** O5 · **See also:** ADR-0007 (the vacuity this prevented), ADR-0017 (the shells that held the holes)
+
+### Context
+
+O5 was "read OpenHands at the pinned SHA". Two things were wrong with that sentence.
+
+**There was no pinned SHA.** "Pinned by commit SHA" appears as an instruction in five places
+— plan:114, plan:878, `execution-order.md:302`, the C5 row, D53 — and nowhere as a value. The
+pin was an intention that had been restated often enough to read as a decision.
+
+**And the repository named by D38 no longer contains an executor.** Read 2026-08-18:
+`github.com/OpenHands/OpenHands` at `1916c9046c4e6a1e081be1ba06e278d182a40133` is **Agent
+Canvas**, a TypeScript/React/Electron "developer control center". It holds eight Python
+files: five CI scripts and three test mocks. The agent moved to
+`github.com/OpenHands/software-agent-sdk`, whose `openhands-agent-server` is the REST API
+Agent Canvas itself connects to.
+
+### Decision
+
+**1. The executor is `OpenHands/software-agent-sdk`, pinned at
+`d460d1a0b6bd35e054ad146c6078205df4686387`** (default-branch HEAD at read time, 2026-08-18).
+`OpenHands/OpenHands` at `1916c904…` is recorded as **checked and not adopted**, so a future
+reader meeting that URL in D38 can see it was rejected rather than overlooked.
+
+Both pins are constants in `harness/containment/shells.py` and C5 asserts against them.
+
+**2. D38's selection rationale must be re-verified, not inherited.** It selected OpenHands
+for "a real Docker sandbox (ActionExecutor inside the container, action/observation event
+stream over REST)" and "documented durable per-event persistence". Those properties were
+asserted of a repository that no longer holds the code. The persistence property **is**
+confirmed against the SDK below; the sandbox property is not re-checked here and is recorded
+as outstanding.
+
+**3. Two corrections to recorded facts about the repository itself.** The canonical-path
+redirect is real and worse than one hop: `OpenDevin/OpenDevin` and `All-Hands-AI/OpenHands`
+both 301 to `OpenHands/OpenHands`, which is not the executor — so following the redirect
+faithfully still lands somewhere wrong. And the C5 row's "a repository with no tags to pin
+to" is false: `v1.14.0` was the most recent tag at read time. HEAD was pinned deliberately,
+so that the vocabulary read is the vocabulary pinned; not because nothing else existed.
+
+### What the read found — eleven corrections in thirteen answers
+
+| # | Premise as recorded | What the source says |
+|---|---|---|
+| C1 | Persistence is **opt-in**; assert enabled at startup | `persistence_dir: str \| None` **defaults to `"workspace/conversations"`** — on unless explicitly `None`. The assertion is *not disabled*, not *enabled*, and the two differ on every default configuration. A path, not a flag. |
+| C2 | `CondensationSummaryEvent` is the compaction event | **Three** classes: `Condensation`, `CondensationRequest`, `CondensationSummaryEvent`. The note named the third. |
+| C2 | Assert the condenser disabled | `Agent.condenser: CondenserBase \| None = None`. **Two** ways to be off — `None`, or the explicit `NoOpCondenser` — and `PipelineCondenser` composes others, so a non-null value is never safe from the field name. |
+| C3 | A confirmation/approval **mode** key | `confirmation_policy: ConfirmationPolicyBase = NeverConfirm()`, a polymorphic object with arms `AlwaysConfirm` / `NeverConfirm` / `ConfirmRisky`. Not a boolean. |
+| C3 | Assert **zero approval-class events** in the stream | **No such event exists.** Rejection emits `UserRejectObservation` (`rejection_source` `"user"` or `"hook"`); acceptance is *implicit* — `run()`'s second call executes the pending actions and emits nothing. |
+| C3 | The executor's own **frontend** is the surface to close | `enable_vscode: bool = True`. **A full VS Code server runs inside the agent container by default**, on port 8001. `enable_vnc` exists too, defaulting False. |
+| C5 | The repository has no tags | It has tags; `v1.14.0` was latest at read time. |
+| C5 | The canonical path is a redirect — pin by SHA | True, and insufficient: the redirect target is the frontend, not the executor. |
+| C10 | Configuration hoists through **files** at search paths | `load_config` reads one file — `OPENHANDS_AGENT_SERVER_CONFIG_PATH`, else `workspace/openhands_agent_server_config.json` — and then **merges `OH_*` environment variables over it**. |
+
+Two answers needed no correction: the `persistence_dir` and `confirmation_policy` key names
+themselves, which is to say the research notes got the two easiest facts right and were
+wrong or incomplete about everything that mattered.
+
+### The one that could not be implemented as specified
+
+C3's third conjunct — "zero approval-class events appear in the stream" — **is not
+implementable, and would have passed over the exact hazard it names.** Approval leaves no
+trace in the event stream, so a human could confirm every action in a run and the stream
+would carry zero approval-class events. This is worse than ADR-0007's misnamed key: no name
+would have made it work.
+
+It is replaced by three observables, which together are stronger than what was asked:
+
+- `confirmation_policy` is `NeverConfirm` on the loaded configuration;
+- the conversation never entered `WAITING_FOR_CONFIRMATION`, which is **persisted** in
+  conversation state and is the only durable trace that a human was asked;
+- no `UserRejectObservation` carries `rejection_source="user"` — a human *rejecting* proves a
+  human was being asked, whatever the configuration claims. `"hook"` is Alfred's own
+  PreToolUse block and is deliberately not a finding.
+
+A fourth clause is added that the specification never contemplated: `enable_vscode` and
+`enable_vnc` false, and nothing listening on the surface ports. C3 was written against a chat
+frontend with an approval button. A VS Code server is an arbitrary file-edit and
+code-execution surface for a human, it is **on by default**, and anything done through it
+lands in no event stream at any layer — not Alfred's, and not the executor's either.
+
+### Consequences and enforcement
+
+- All thirteen holes are answered and each cites a `path:line` in the pinned tree. **A hole
+  cannot be filled without a source**: after O5 the failure mode is no longer an unread hole
+  but an answered one nobody can re-verify. `unsourced_holes()` is CI-asserted empty.
+- `open_holes()` is empty and CI asserts it. Any hole reset to `UNREAD` by a future executor
+  change reopens O5 and returns that assertion to `not_executed`; the suite tests the refusal
+  by blinding one hole per shell rather than by trusting that it still works.
+- Corrections travel *with* the values, in `Hole.correction`. A research note that quietly
+  becomes a constant is how a premise stops being rechecked.
+- **Outstanding, and not closed by this ADR:** D38's sandbox rationale against the SDK; C4 and
+  C11, still blocked on a run fingerprint record that does not exist; and whether Agent Canvas
+  being the project's headline product changes the executor's trajectory for Alfred's purposes.
+
+### Why this vindicates writing the shells first
+
+Eleven corrections in thirteen answers. Every one would have been a green assertion: a
+`persistence_dir` check asserting `True` against a path, two unnamed condensation event
+classes, a boolean test against a policy object, an event count that can never be non-zero, a
+VS Code server nobody looked for, and a configuration channel nobody enumerated. That is what
+`sandbox-specification.md:125`'s "an assertion that harmlessly passes on a feature that does
+not exist costs nothing" would have bought.
+
+### Why this is an inspector patch
+
+`harness/containment/` is inspector machinery under D20. This is the mandatory ADR under
+major-fix #8; the line-by-line review is O9 and has not happened.

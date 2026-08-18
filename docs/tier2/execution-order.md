@@ -30,9 +30,9 @@ Checked against the filesystem. This is the honest starting position.
 | Area | State |
 |---|---|
 | Documentation register | **63 documents**, both gates green. The most complete asset. |
-| ACS-1 (encoder, JS second implementation, 343 vectors, 47 mutants) | **Built and mutation-controlled.** |
+| ACS-1 (encoder, JS second implementation, 350 vectors, 47 mutants) | **Built and mutation-controlled.** |
 | `MetricValue` / `MetricSeries` / reason codebook | **Built.** 98 tests, `pyright --strict` clean. |
-| Result stamping (`src/provenance/`) | **Built**, missing the schema version and upstream toolchain fields. |
+| Result stamping (`src/provenance/`) | **Built 2026-08-18.** Ten-key v1 stamp, upstream toolchain union, two-stage verifier. ADR-0006, ADR-0016. |
 | Lane controls (`harness/lane/`) | **Built**, no mutation harness, no parallel-slot fingerprint field. |
 | Throwaway DB cluster fixture (`harness/db/`) | **Built.** Roles and grants apply against a real cluster. |
 | CI (5 jobs) | **Built and green.** |
@@ -303,13 +303,17 @@ operator writes one.
 assertions (D53); patch validation on the privileged side with the A10 unicode scan; and the
 mission-control command surface, which is inspector under D51 and therefore operator-built.
 
-**The OpenHands source read (O5) must precede the containment assertions.** Their premises are
-unverified first-hand, and an assertion resting on a *misnamed* config key or event class
-reports `passed` while the control it names does nothing — executed, passed, and vacuous. That
-is a third outcome the register does not currently name.
+**The executor source read (O5) had to precede the containment assertions, and it did —
+2026-08-18, ADR-0018.** The argument for the ordering was that an assertion resting on a
+*misnamed* config key or event class reports `passed` while the control it names does nothing.
+The read settled it empirically: **eleven of thirteen recorded premises were wrong**, including
+one conjunct that could not have been implemented at any name, and the repository the plan
+selected no longer contains an executor at all.
 
-**Domain-neutral half closed 2026-08-18. The containment assertions are not, and cannot be
-until O5.**
+**Domain-neutral half closed 2026-08-18, and the containment assertions followed it the same
+day once O5 was discharged.** C1-C3, C5, C10 read first-hand and filled; C8, C9, C12-C15
+written for real; C4 and C11 still absent, blocked on a run fingerprint record that does not
+exist in this repository.
 
 `harness/worker/port.py` is the contract as executable types: the value types, the
 `SandboxHandle` carrying its own proof, `WorkerOutcome` with members for agent-attributed
@@ -345,13 +349,13 @@ bytes as a C string, so `harness/` can be written `"a/harness/\150arm.py"`, whic
 prefix-match in its raw form. Paths are decoded before any decision, and the bypass has
 its own test.
 
-**Still blocked, and it is the rest of the stage.** The fifteen boot assertions C1-C15
-rest on premises about the executor that nobody has checked first-hand — the executor is
-not in this repository and has not been fetched. An assertion resting on a *misnamed*
-config key or event class reports `passed` while the control it names does nothing:
-executed, passed, and vacuous (ADR-0007). That is not closable by inference about
-OpenHands' vocabulary, and guessing would produce fifteen green assertions that mean
-nothing. **O5.**
+**Closed 2026-08-18.** The fifteen boot assertions rested on premises nobody had checked
+first-hand. O5 read the executor at `OpenHands/software-agent-sdk` `d460d1a0…` and corrected
+eleven of thirteen: persistence is not opt-in, there are three condensation event classes
+rather than one, the confirmation policy is an object rather than a mode flag, a VS Code
+server runs inside the container by default, configuration hoists through `OH_*` environment
+variables, and C3's approval-event conjunct could not have worked at any name because approval
+emits no event. Guessing would have produced green assertions for every one of them.
 
 Also outstanding: the mission-control command surface, which is inspector under D51 and
 therefore operator-built.
@@ -387,7 +391,7 @@ These cannot be built by anyone else, and four of them block stages above.
 | O2 | Defect-escape **observation window** | The 2026-12-31 anchor's pass condition | Before Phase 2 exit |
 | O3 | D49 P3: validate, or take the stated degradation to the 10 strong P1 measures | S2's scope; Phase 1's exit shape | **2026-09-09** |
 | O4 | Phase 0 exit: move the date under a waiver ADR, or narrow the exit | Everything | **2026-09-09** |
-| O5 | Read OpenHands at the pinned SHA | S9's containment assertions | Before S9 |
+| ~~O5~~ | ~~Read OpenHands at the pinned SHA~~ | — | **DONE 2026-08-18.** ADR-0018. The executor had moved: `OpenHands/software-agent-sdk` at `d460d1a0…`, not the repository D38 names. Eleven of thirteen premises corrected. |
 | O6 | Company formation — entity, liability-capped pilot template, insurance quote | First prospect conversation | **2026-09-09** |
 | O7 | EU 2022/1426 approval-register lookup (~1 hr) | Should precede conversation one | Before O8 |
 | O8 | Three Track-1 discovery conversations | K1, K2 | **2026-10-07** |

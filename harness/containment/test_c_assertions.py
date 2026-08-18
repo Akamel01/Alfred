@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from dataclasses import replace
 from uuid import uuid4
 
 import pytest
@@ -42,6 +43,11 @@ from harness.containment.patch_side import (
 )
 from harness.containment.reassert import REASSERTED, compare, reassert
 from harness.containment.shells import (
+    CANVAS_COMMIT,
+    CANVAS_REPO,
+    EXECUTOR_COMMIT,
+    EXECUTOR_REPO,
+    REDIRECTING_PATHS,
     SHELLS,
     UNREAD,
     ExecutorObservation,
@@ -50,6 +56,7 @@ from harness.containment.shells import (
     PremiseShell,
     evaluate,
     open_holes,
+    unsourced_holes,
 )
 from harness.worker.port import (
     Admissibility,
@@ -74,19 +81,28 @@ def denylist() -> Denylist:
 
 
 def test_no_shell_can_pass_while_a_hole_is_unread() -> None:
-    """ADR-0007 as a single assertion, over every shell in the register.
+    """ADR-0007 as a single assertion, and it survives O5.
 
-    The observation is deliberately the *most favourable* one available: empty config, empty
-    stream, empty everything, which is what a check would read as "nothing enabled, nothing
-    emitted" and pass on. Every shell must still report `NOT_EXECUTED`, because the names
-    those checks would look for have not been read.
+    The holes are answered now, so this resets one and checks the refusal still holds. The
+    observation is deliberately the *most favourable* available — empty everything, which is
+    what a check reads as "nothing enabled, nothing emitted" and passes on. The shell must
+    still report `NOT_EXECUTED`, because one name it would look for is unread again.
+
+    Written against a reset rather than deleted with O5, because the executor will change and
+    a hole will go back to UNREAD. The refusal has to hold then too.
     """
     favourable = ExecutorObservation()
     for shell in SHELLS:
-        result = evaluate(shell, favourable)
+        blinded = PremiseShell(
+            assertion_id=shell.assertion_id,
+            claim=shell.claim,
+            holes=(Hole(name=shell.holes[0].name, kind=shell.holes[0].kind, question="?"),)
+            + shell.holes[1:],
+            check=shell.check,
+        )
+        result = evaluate(blinded, favourable)
         assert result.outcome is AssertionOutcome.NOT_EXECUTED, shell.assertion_id
         assert not result.premise_verified, shell.assertion_id
-        assert "O5" in result.detail
 
 
 def test_the_shell_register_is_not_empty() -> None:
@@ -101,17 +117,41 @@ def test_every_shell_has_at_least_one_hole() -> None:
         assert shell.holes, shell.assertion_id
 
 
-def test_the_open_hole_worklist_is_not_empty() -> None:
-    """O5's worklist. Zero open holes while the executor is unread means holes were deleted."""
-    worklist = open_holes()
-    assert worklist
-    assert all("." in handle for handle in worklist)
+def test_every_hole_is_answered() -> None:
+    """O5 is discharged. Any hole going back to UNREAD fails here and reopens it."""
+    assert open_holes() == ()
+
+
+def test_every_answer_cites_a_source() -> None:
+    """The control that replaces the worklist.
+
+    An unread hole announces itself; an answered one with no citation does not. It reads as a
+    fact and may be something somebody typed, which is the state O5 existed to leave behind.
+    """
+    assert unsourced_holes() == ()
+    for shell in SHELLS:
+        for hole in shell.holes:
+            assert hole.source, f"{shell.assertion_id}.{hole.name}"
+
+
+def test_a_hole_cannot_be_answered_without_a_source() -> None:
+    with pytest.raises(ValueError, match="not a reading"):
+        Hole(name="x", kind=HoleKind.CONFIG_KEY, question="?").filled("v", source="  ")
+
+
+def test_the_pins_are_recorded_and_are_not_the_frontend() -> None:
+    """ADR-0018. D38 names the repository that is now Agent Canvas, which is not the executor."""
+    assert EXECUTOR_REPO.endswith("software-agent-sdk")
+    assert len(EXECUTOR_COMMIT) == 40
+    assert EXECUTOR_REPO != CANVAS_REPO
+    assert EXECUTOR_COMMIT != CANVAS_COMMIT
+    assert REDIRECTING_PATHS
 
 
 def test_an_unread_hole_is_falsy_and_distinguishable_from_an_empty_answer() -> None:
-    """`()` means the executor has no such class. UNREAD means nobody looked."""
+    """`()` means the executor was read and has no such class. UNREAD means nobody looked."""
     unread = Hole(name="x", kind=HoleKind.EVENT_CLASS, question="?")
-    answered_empty = unread.filled(())
+    answered_empty = unread.filled((), source="somewhere.py:1")
     assert not unread.read
     assert answered_empty.read
     assert not unread.value  # falsy, so `if hole.value:` cannot misread it as present
@@ -121,104 +161,228 @@ def test_an_unread_hole_is_falsy_and_distinguishable_from_an_empty_answer() -> N
 
 def test_a_hole_cannot_be_filled_with_unread() -> None:
     with pytest.raises(ValueError, match="not filling it"):
-        Hole(name="x", kind=HoleKind.CONFIG_KEY, question="?").filled(UNREAD)
+        Hole(name="x", kind=HoleKind.CONFIG_KEY, question="?").filled(UNREAD, source="x.py:1")
 
 
 def test_filling_an_unknown_hole_name_raises() -> None:
     """A typo that silently did nothing would leave a shell unread while looking filled."""
-    shell = next(s for s in SHELLS if s.assertion_id == "C2")
+    shell = _shell("C2")
     with pytest.raises(KeyError, match="no such hole"):
         shell.with_holes(condenser_disable_key="x")
 
 
-# ------------------------------------------------- the checks, once the holes are answered
+# --------------------------------------------------- the checks, against what O5 actually read
 
 
-def _c2_filled() -> PremiseShell:
-    shell = next(s for s in SHELLS if s.assertion_id == "C2")
-    return shell.with_holes(
-        condenser_disable_keys=("agent.condenser.enabled",),
-        condensation_event_classes=("CondensationAction", "Summary"),
-    )
+def _shell(assertion_id: str) -> PremiseShell:
+    return next(s for s in SHELLS if s.assertion_id == assertion_id)
 
 
-def test_a_filled_shell_passes_on_a_clean_observation() -> None:
-    """The must-pass half. Without it every test here is satisfied by a constant failure."""
-    result = evaluate(
-        _c2_filled(),
-        ExecutorObservation(
-            config={"agent.condenser.enabled": False},
-            stream_event_classes=("MessageAction", "CmdRunAction"),
-        ),
-    )
-    assert result.outcome is AssertionOutcome.PASSED
+CLEAN = ExecutorObservation(
+    config={
+        "persistence_dir": "workspace/conversations",
+        "condenser": None,
+        "confirmation_policy": "NeverConfirm",
+        "enable_vscode": False,
+        "enable_vnc": False,
+    },
+    config_hash="h",
+    harness_config_hash="h",
+    executor_repo=EXECUTOR_REPO,
+    executor_commit_sha=EXECUTOR_COMMIT,
+    executor_resolved_through_redirect=True,
+)
+
+
+@pytest.mark.parametrize("assertion_id", ["C1", "C2", "C3", "C5", "C10"])
+def test_every_shell_passes_on_a_correctly_configured_executor(assertion_id: str) -> None:
+    """The must-pass half. Without it every failing case below is met by refusing everything."""
+    result = evaluate(_shell(assertion_id), CLEAN)
+    assert result.outcome is AssertionOutcome.PASSED, result.detail
     assert result.premise_verified
 
 
-def test_a_filled_shell_fails_on_a_configured_condenser() -> None:
-    result = evaluate(
-        _c2_filled(),
-        ExecutorObservation(config={"agent.condenser.enabled": True}),
-    )
+# ---- C1: the premise inverted at O5
+
+
+def test_c1_fails_when_persistence_is_explicitly_disabled() -> None:
+    """`persistence_dir` defaults to a path, so the hazard is an explicit None, not an absent key."""
+    obs = replace(CLEAN, config={**CLEAN.config, "persistence_dir": None})
+    result = evaluate(_shell("C1"), obs)
     assert result.outcome is AssertionOutcome.FAILED
-    assert "condenser" in result.detail
+    assert "not persisted" in result.detail
 
 
-def test_a_filled_shell_fails_on_a_condensation_event_even_with_config_off() -> None:
-    """C2's two conjuncts are independent findings once the vocabulary is right.
-
-    This is the case the specification's original wording would have missed: configuration
-    disabled and a condensation event in the stream anyway.
-    """
-    result = evaluate(
-        _c2_filled(),
-        ExecutorObservation(
-            config={"agent.condenser.enabled": False},
-            stream_event_classes=("MessageAction", "Summary"),
-        ),
-    )
+def test_c1_fails_when_the_key_is_absent_rather_than_assuming_the_default() -> None:
+    """The loaded configuration is what is asserted, not the library's default."""
+    config = {k: v for k, v in CLEAN.config.items() if k != "persistence_dir"}
+    result = evaluate(_shell("C1"), replace(CLEAN, config=config))
     assert result.outcome is AssertionOutcome.FAILED
-    assert "I16" in result.detail
+    assert "absent" in result.detail
 
 
 def test_c1_fails_when_an_observed_event_is_not_durable() -> None:
-    shell = next(s for s in SHELLS if s.assertion_id == "C1").with_holes(
-        persistence_enabled_key="core.persist_events"
+    """The count half, which D53 insists on because a flag says only what was intended."""
+    obs = replace(
+        CLEAN,
+        observed_event_ids=frozenset({"e1", "e2"}),
+        durable_event_ids=frozenset({"e1"}),
     )
-    result = evaluate(
-        shell,
-        ExecutorObservation(
-            config={"core.persist_events": True},
-            observed_event_ids=frozenset({"e1", "e2"}),
-            durable_event_ids=frozenset({"e1"}),
-        ),
-    )
+    result = evaluate(_shell("C1"), obs)
     assert result.outcome is AssertionOutcome.FAILED
     assert "F19" in result.detail or "absent from disk" in result.detail
 
 
-def test_c3_fails_when_the_frontend_is_listening() -> None:
-    shell = next(s for s in SHELLS if s.assertion_id == "C3").with_holes(
-        approval_mode_key="security.confirmation_mode",
-        frontend_ports=("3000",),
-        approval_event_classes=(),
-    )
-    result = evaluate(
-        shell,
-        ExecutorObservation(
-            config={"security.confirmation_mode": False}, listening_ports=(3000, 8080)
-        ),
-    )
-    assert result.outcome is AssertionOutcome.FAILED
-    assert "frontend" in result.detail
+# ---- C2: two ways to be off, three event classes
 
 
-def test_c10_fails_when_no_search_path_is_known() -> None:
-    """A path set of zero makes the config-hoisting half unfalsifiable, so it is a failure."""
-    shell = next(s for s in SHELLS if s.assertion_id == "C10").with_holes(config_search_paths=())
-    result = evaluate(shell, ExecutorObservation(config_hash="a", harness_config_hash="a"))
+@pytest.mark.parametrize("off", [None, "NoOpCondenser", "NoOpCondenserSettings"])
+def test_c2_accepts_both_spellings_of_off(off: object) -> None:
+    """A check accepting only None would fail a correctly configured executor."""
+    obs = replace(CLEAN, config={**CLEAN.config, "condenser": off})
+    assert evaluate(_shell("C2"), obs).outcome is AssertionOutcome.PASSED
+
+
+def test_c2_fails_on_a_configured_condenser() -> None:
+    obs = replace(CLEAN, config={**CLEAN.config, "condenser": "LLMSummarizingCondenser"})
+    result = evaluate(_shell("C2"), obs)
     assert result.outcome is AssertionOutcome.FAILED
-    assert "scanned none" in result.detail
+    assert "condenser is configured" in result.detail
+
+
+@pytest.mark.parametrize(
+    "event_class", ["Condensation", "CondensationRequest", "CondensationSummaryEvent"]
+)
+def test_c2_catches_each_of_the_three_condensation_classes(event_class: str) -> None:
+    """The research note named one of three. Each is checked separately, so a missed name shows."""
+    obs = replace(CLEAN, stream_event_classes=("MessageAction", event_class))
+    result = evaluate(_shell("C2"), obs)
+    assert result.outcome is AssertionOutcome.FAILED
+    assert "I16" in result.detail
+
+
+def test_c2_fails_on_a_condensation_event_even_with_the_field_off() -> None:
+    """The two conjuncts are independent findings once the vocabulary is right."""
+    obs = replace(CLEAN, stream_event_classes=("Condensation",))
+    assert obs.config["condenser"] is None
+    assert evaluate(_shell("C2"), obs).outcome is AssertionOutcome.FAILED
+
+
+# ---- C3: the conjunct that could not be implemented, and the surface nobody specified
+
+
+def test_c3_fails_on_a_confirming_policy() -> None:
+    obs = replace(CLEAN, config={**CLEAN.config, "confirmation_policy": "AlwaysConfirm"})
+    result = evaluate(_shell("C3"), obs)
+    assert result.outcome is AssertionOutcome.FAILED
+    assert "NeverConfirm" in result.detail
+
+
+def test_c3_catches_a_human_approval_that_emits_no_event() -> None:
+    """The whole reason the specification's third conjunct was replaced.
+
+    Approval emits nothing: rejection produces UserRejectObservation and acceptance is
+    implicit on the second run() call. An event-counting check sees a clean stream here.
+    """
+    obs = replace(
+        CLEAN,
+        execution_statuses=("RUNNING", "WAITING_FOR_CONFIRMATION", "RUNNING", "FINISHED"),
+        stream_event_classes=("MessageAction", "ActionEvent", "ObservationEvent"),
+    )
+    result = evaluate(_shell("C3"), obs)
+    assert result.outcome is AssertionOutcome.FAILED
+    assert "emits no event" in result.detail
+
+
+def test_c3_catches_a_user_sourced_rejection() -> None:
+    """A human rejecting proves a human was being asked, whatever the configuration says."""
+    obs = replace(CLEAN, rejection_sources=("user",))
+    result = evaluate(_shell("C3"), obs)
+    assert result.outcome is AssertionOutcome.FAILED
+    assert "rejection_source='user'" in result.detail
+
+
+def test_c3_does_not_fire_on_alfreds_own_hook_block() -> None:
+    """`rejection_source='hook'` is Alfred's PreToolUse block, not a human approval surface."""
+    obs = replace(CLEAN, rejection_sources=("hook", "hook"))
+    assert evaluate(_shell("C3"), obs).outcome is AssertionOutcome.PASSED
+
+
+@pytest.mark.parametrize("surface", ["enable_vscode", "enable_vnc"])
+def test_c3_catches_an_interactive_surface_enabled(surface: str) -> None:
+    """`enable_vscode` defaults to True: a VS Code server inside the container, unless disabled."""
+    obs = replace(CLEAN, config={**CLEAN.config, surface: True})
+    result = evaluate(_shell("C3"), obs)
+    assert result.outcome is AssertionOutcome.FAILED
+    assert surface in result.detail
+
+
+def test_c3_catches_the_surface_listening_even_when_configuration_says_off() -> None:
+    """Configuration is an intention; a listening socket is the fact."""
+    obs = replace(CLEAN, listening_ports=(8001,))
+    result = evaluate(_shell("C3"), obs)
+    assert result.outcome is AssertionOutcome.FAILED
+    assert "listening" in result.detail
+
+
+def test_c3_ignores_the_agent_servers_own_api_port() -> None:
+    """8000 is the REST API Alfred drives. It is not a human surface."""
+    obs = replace(CLEAN, listening_ports=(8000,))
+    assert evaluate(_shell("C3"), obs).outcome is AssertionOutcome.PASSED
+
+
+# ---- C5: the repository the plan named is not the executor
+
+
+def test_c5_fails_on_the_frontend_repository() -> None:
+    """D38 names this repository. At its HEAD it is Agent Canvas and holds no executor."""
+    obs = replace(CLEAN, executor_repo=CANVAS_REPO, executor_commit_sha=CANVAS_COMMIT)
+    result = evaluate(_shell("C5"), obs)
+    assert result.outcome is AssertionOutcome.FAILED
+
+
+def test_c5_fails_when_the_commit_was_not_resolved_through_the_redirect() -> None:
+    obs = replace(CLEAN, executor_resolved_through_redirect=False)
+    result = evaluate(_shell("C5"), obs)
+    assert result.outcome is AssertionOutcome.FAILED
+    assert "redirect" in result.detail
+
+
+def test_c5_fails_on_a_drifted_commit() -> None:
+    obs = replace(CLEAN, executor_commit_sha="f" * 40)
+    assert evaluate(_shell("C5"), obs).outcome is AssertionOutcome.FAILED
+
+
+# ---- C10: the channel the specification did not enumerate
+
+
+def test_c10_fails_on_a_hoisted_configuration_file() -> None:
+    obs = replace(CLEAN, config_files_found=("workspace/openhands_agent_server_config.json",))
+    result = evaluate(_shell("C10"), obs)
+    assert result.outcome is AssertionOutcome.FAILED
+    assert "searched paths" in result.detail
+
+
+def test_c10_catches_configuration_hoisted_through_the_environment() -> None:
+    """The half that was not specified. `OH_*` variables are merged over the file.
+
+    A container configured entirely through the environment leaves no file to find, so a
+    search-path check alone reports a clean pass over a fully hoisted configuration.
+    """
+    obs = replace(CLEAN, config_env_names=("PATH", "OH_ENABLE_VSCODE", "OH_SESSION_API_KEYS_0"))
+    result = evaluate(_shell("C10"), obs)
+    assert result.outcome is AssertionOutcome.FAILED
+    assert "environment variable" in result.detail
+
+
+def test_c10_ignores_environment_variables_outside_the_prefix() -> None:
+    obs = replace(CLEAN, config_env_names=("PATH", "HOME", "OHM_SOMETHING"))
+    assert evaluate(_shell("C10"), obs).outcome is AssertionOutcome.PASSED
+
+
+def test_c10_fails_when_the_hashes_differ() -> None:
+    obs = replace(CLEAN, config_hash="a", harness_config_hash="b")
+    assert evaluate(_shell("C10"), obs).outcome is AssertionOutcome.FAILED
 
 
 # ================================================================================== C8
