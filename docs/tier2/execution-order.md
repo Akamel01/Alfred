@@ -47,6 +47,7 @@ Checked against the filesystem. This is the honest starting position.
 | `assert_grants.py` | **Built 2026-08-17**, set equality both directions, mutation-controlled. ADR-0009. |
 | `lint_verdict_boundary.py` (D16/D39) | **Built 2026-08-17**, with a committed self-test. ADR-0012. |
 | C6 egress canary, C7 oracle-absence probe | **Built 2026-08-17.** ADR-0013. Enforcement (`nftables`, build-time closure) outstanding. |
+| Chain re-walk (JS), anchor, D-synthetic restore drill | **Built 2026-08-17.** ADR-0014. WAL archiving, PITR, off-machine target and D-production outstanding. |
 | `lint_invariants.py`, `lint_tier0_adr.py`, `harness/lane/mutate.py` | **Absent**, all three specified as enforcement somewhere. |
 
 ## The calendar finding, stated plainly
@@ -161,7 +162,7 @@ namespace, and the image-build closure check wired to a real resolved lockfile. 
 those exist the canary is a verification with nothing to verify against — and it says so,
 reporting FAILED on any unfiltered host.
 
-### S7 — Durability · *blocks Phase 0 exit; blocked by S1*
+### S7 — Durability · *blocks Phase 0 exit; blocked by S1* · **D-SYNTHETIC DONE 2026-08-17, archiving and PITR outstanding**
 
 Continuous WAL archiving and base backups to an off-machine target; evidence rows
 hash-chained with the head anchored off-machine daily; a restore drill as an executable check.
@@ -172,6 +173,19 @@ the **JavaScript** implementation — checking a chain the Python encoder wrote,
 encoder, checks nothing — and must assert the walk is **total**: one head, no forks. A chain
 check that verifies each link but never checks they form a single path passes on a forked
 audit log.
+
+**D-synthetic done 2026-08-17** (ADR-0014). `verify_chain.mjs` re-walks under stock Node
+against the anchor; `export.py` computes nothing; the drill dumps and restores into a
+*second* throwaway cluster and refuses to restore into its source. Two findings are asserted
+for rather than tolerated: no Tier 0 recovery objective exists, and artifact resolution is
+unexercised because no artifact store does.
+
+**Outstanding, and it is most of the stage — none of it code in this repository:**
+continuous WAL archiving, an off-machine target, the daily anchor job, **point-in-time
+recovery**, and a recorded D-production run. PITR matters more than its omission looks: a
+drill restoring only to latest cannot distinguish a working WAL archive from a working base
+backup with a broken archive, and PITR is the capability that matters after the bad
+migration D43 names.
 
 ### S8 — Deploy and rollback · *blocks Phase 0 exit*
 

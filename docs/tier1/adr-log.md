@@ -1334,3 +1334,107 @@ exists for.
 carries them, and a probe that cannot be run outside the container is a probe nobody runs
 until it matters. `strict_import_hooks` is the parameter, True inside the container, and
 both branches are tested.
+
+---
+
+## ADR-0014 — The chain is re-walked by the implementation that did not write it
+
+**Date:** 2026-08-17 · **Status:** Accepted · **Supersedes:** none
+
+### Context
+
+D43 requires evidence rows hash-chained with the head anchored off-machine daily, and a
+restore drill as an executable check. §6 of the harness self-test specification adds the
+constraint that decides the design: **a drill using the Python encoder to check a chain
+the Python encoder wrote is checking nothing.**
+
+### Decision
+
+**The re-walk is `harness/evidence/verify_chain.mjs`, stock Node, no dependencies.** Same
+argument as `acs1.mjs` and the same reader: the claim Alfred sells is that a third party
+recomputes the digests without running Alfred's code, and a claim only ever checked by its
+own author is an assertion.
+
+**The exporter computes nothing.** `export.py` selects stored columns and writes them out.
+Any digest or derivation there would be a Python claim the independent implementation then
+re-checks against itself. It is allowed to know which columns exist; not what they contain.
+
+**The walker holds its own table-to-separator map, duplicated deliberately.** `verdict` and
+`operator_action` carry no `record_type` column — their record type is the table. Putting
+it in the export would mean Node recomputing digests from a separator Python chose. Two
+maps that disagree make every digest mismatch, which is the loud failure and the right one.
+
+**The anchor's head is derived by the walker, not by Python.** If Python derived it, an
+encoder defect would produce a wrong anchor and a later restore would agree with it
+perfectly. The anchor's *authority* comes from being written before any compromise and
+living where the live machine cannot reach; its *content* comes from the non-Python
+reading.
+
+**The drill restores into a second cluster and refuses to restore into its source.** A
+drill whose failure mode is the incident is not a drill.
+
+**Data-only, into a cluster whose schema came from the migrations.** This separates "the
+schema is what the migrations say" from "the rows are what the backup holds". A restore
+bringing its own schema can bring back a *different* schema — an evidence table with a
+dropped column, a missing check constraint — and every row lands in it without complaint.
+
+**Comparison three is done by JavaScript.** The specification lists four: row counts,
+primary-key set equality, per-row content hash against the stored digest, and the full
+re-walk. The third recomputes a digest, so a Python version would check the encoder
+against itself. Python does the two that are not digest claims; Node does both that are.
+
+### What the second implementation caught, immediately
+
+Writing the walker against a plain JavaScript object failed at the first row:
+`acs1.mjs` refuses object literals outright, because JavaScript cannot distinguish `1`
+from `1.0` and the encoder demands a representation that carries the distinction. The
+digest input is a `Map`. Every value in it is a string or `null`, so nothing here needed
+`f64()` or `BigInt` — **and the refusal still earned its place**, because the alternative
+was a walker that produced digests which happened to agree with Python today.
+
+### Two findings recorded rather than skipped
+
+**No Tier 0 recovery objective exists.** `grep` over Tier 0, Tier 1 and Tier 6 returns
+nothing for RPO, RTO or "recovery objective". The specification's instruction is to record
+the number and treat the absence as a finding, never a skip — so the drill emits the
+measured restore wall-clock alongside `no Tier 0 recovery objective exists to compare it
+against`, and the test asserts that finding is present. It becomes an operator item.
+
+**Artifact resolution is unexercised.** No artifact store exists, so no `evidence.artifact`
+rows are restored and the resolution check has nothing to resolve. Reported as a finding
+rather than passing: an unexercised check reports what a clean check reports.
+
+The drill test asserts the finding set **exactly** — `len(findings) == 2` — so a third
+finding fails the gate and either of these two disappearing does too. A drill that
+accumulates tolerated findings is a drill that stops being read.
+
+### Consequence
+
+Verified by mutation, applied and reverted. Changing Python's `LINK_RECORD_TYPE` to `.v2`
+fails every walker test, which is what proves the two implementations agree because they
+compute the same thing rather than because one was derived from the other. Removing
+`chain_id` from the digest input fails the store's own suite as well.
+
+`test_node_is_available` fails loudly when Node is missing, and Node is now a required step
+in the database CI job. A drill that silently degrades to a Python re-walk when Node is
+absent is a drill that checks the encoder against itself on exactly the machines nobody
+looked at.
+
+### What remains, and it is most of S7
+
+This is **D-synthetic only**. A green CI run is not "restore verified" for Phase 0 exit —
+that criterion means a recorded **D-production** run against the actual off-machine backup.
+Also outstanding, and none of it is code in this repository: continuous WAL archiving, an
+off-machine target, the daily anchor job, and **point-in-time recovery**. PITR matters more
+than the omission looks: a drill restoring only to latest cannot distinguish a working WAL
+archive from a working base backup with a broken archive, and PITR is the capability that
+matters after the bad migration D43 names.
+
+### Rejected
+
+**A Python re-walk, with the JavaScript one as a later addition.** It is the thing the
+specification forbids, and the version that exists first is the version that gets trusted.
+
+**Marking the drill `slow` so it can be deselected.** A marker there is a switch for
+turning off the only end-to-end restore check, against a gate whose absence is
+unrecoverable data loss. It costs one extra throwaway cluster.

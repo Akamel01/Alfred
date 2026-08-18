@@ -203,6 +203,15 @@ jobs:
       - name: Set up Python
         run: uv python install ${{ env.PYTHON_VERSION }}
 
+      # Node is REQUIRED here, not optional. The restore drill's chain re-walk runs
+      # `harness/evidence/verify_chain.mjs` under stock Node: a drill using the Python
+      # encoder to check a chain the Python encoder wrote is checking nothing. A runner
+      # without Node must fail the job, and `test_node_is_available` makes it fail loudly
+      # rather than degrading to a self-referential walk.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
       # --extra db: psycopg is an optional extra so the type and test gates do not
       # depend on a wheel that lags the interpreter.
       - name: Sync dependencies from the lockfile
@@ -224,7 +233,15 @@ jobs:
       # tampering and forks as the superuser, which is the only way to reach a schema
       # where no role in the matrix holds UPDATE — and is the operator-level compromise
       # append-only alone does not survive.
-      - name: EvidenceStore — append-only and hash chain
+      # Includes the D-SYNTHETIC restore drill: dump, restore into a second throwaway
+      # cluster, and compare four ways with the chain re-walk done by Node.
+      #
+      # A green run here is NOT "restore verified" for Phase 0 exit. That criterion means
+      # a recorded D-PRODUCTION run — the actual off-machine backup restored and compared
+      # against the live anchor — which cannot run in CI, because CI has no access to the
+      # off-machine target. D-synthetic proves the mechanism; only D-production proves the
+      # artifact.
+      - name: EvidenceStore, chain re-walk, and the D-synthetic restore drill
         env:
           ALFRED_REQUIRE_DB: "1"
         run: uv run pytest harness/evidence
