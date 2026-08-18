@@ -172,7 +172,8 @@ Binding on implementation and easy to miss, since they live inside one document.
 | [ADR-0014](tier1/adr-log.md) | The chain is re-walked by the implementation that did not write it | Accepted |
 | [ADR-0015](tier1/adr-log.md) | A missing candidate file is the candidate's failure, not the harness's fault | accepted |
 | [ADR-0016](tier1/adr-log.md) | `StampedResult` takes its schema version from the stamp it contains | Accepted |
+| [ADR-0017](tier1/adr-log.md) | A containment assertion with an unread premise is a hole, and a hole never passes | Accepted |
 
 ---
 
-**63 documents mapped** · 43 binding · 13 context · 7 record · 16 architecture decisions
+**63 documents mapped** · 43 binding · 13 context · 7 record · 17 architecture decisions

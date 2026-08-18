@@ -160,6 +160,16 @@ class AssertionResult:
     executed_inside_container: bool
     observed: Mapping[str, str]
     detail_ref: ArtifactRef | None = None
+    # ADR-0007's third outcome, carried across the boundary rather than left on the probe.
+    # An assertion whose subject was never inspected first-hand can be `passed` and vacuous:
+    # a config key read from a research note rather than from source passes harmlessly if the
+    # feature is *absent* and passes deceptively if it is merely *misnamed*. Without this
+    # field the state exists on the probe report and is invisible to `check_handle`, which is
+    # the only thing that gates dispatch — so it could be recorded and never acted on.
+    #
+    # Defaults True because the overwhelming majority of assertions rest on facts observed
+    # inside the container. An adaptor that means "unverified" has to say so.
+    premise_verified: bool = True
 
 
 @dataclass(frozen=True)
@@ -169,6 +179,31 @@ class AssertionReport:
 
     def by_id(self) -> Mapping[str, AssertionResult]:
         return {r.assertion_id: r for r in self.results}
+
+    @property
+    def unverified_premises(self) -> tuple[str, ...]:
+        """Which assertions rest on a premise nobody has checked first-hand.
+
+        What a reader consults before quoting a green report as evidence, and what
+        `check_handle` refuses on when the run is a measurement.
+        """
+        return tuple(r.assertion_id for r in self.results if not r.premise_verified)
+
+
+class Admissibility(Enum):
+    """What the run is for, which decides how an unverified premise is treated.
+
+    ADR-0007: a run whose containment rests on unread executor vocabulary is admissible for
+    **build** work and not admissible as a **measurement** under I16 or T10. The distinction
+    is real — refusing build work would stop the executor being integrated at all, and
+    admitting a measurement would put a number into the merge rate that rests on a name
+    nobody checked.
+
+    There is deliberately no third member and no default of convenience.
+    """
+
+    BUILD = "build"
+    MEASUREMENT = "measurement"
 
 
 @dataclass(frozen=True)
@@ -342,8 +377,18 @@ class Worker(Protocol):
 # -------------------------------------------------------- the structural refusals
 
 
-def check_handle(handle: SandboxHandle, required: frozenset[str]) -> None:
+def check_handle(
+    handle: SandboxHandle,
+    required: frozenset[str],
+    *,
+    admissibility: Admissibility = Admissibility.MEASUREMENT,
+) -> None:
     """Refuse to dispatch unless every required assertion is present and passed.
+
+    `admissibility` defaults to `MEASUREMENT`, which is the strict end. A default of `BUILD`
+    would make every caller that forgot the argument admit a vacuous control into the merge
+    rate, and the whole point of the flag is that the permissive case is the one somebody
+    has to ask for.
 
     Lives here rather than in each adaptor: a refusal reimplemented per adaptor is a
     refusal that will eventually be implemented once with a subtle difference, and this
@@ -375,6 +420,17 @@ def check_handle(handle: SandboxHandle, required: frozenset[str]) -> None:
             "here for the same reason it is everywhere else: an unproven control is a "
             "failed control."
         )
+
+    if admissibility is Admissibility.MEASUREMENT:
+        unverified = sorted(i for i in required if not present[i].premise_verified)
+        if unverified:
+            raise ContainmentFailure(
+                f"required assertions rest on an unverified premise: {unverified}. Each "
+                "passed, and each may have passed vacuously — a control named by a key "
+                "nobody read reports the same green whether the feature is absent or "
+                "merely misnamed (ADR-0007). Admissible for build work, not as a "
+                "measurement under I16 or T10."
+            )
 
 
 VERDICT_VOCABULARY: Final = frozenset(

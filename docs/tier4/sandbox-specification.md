@@ -2,7 +2,7 @@
 status:        frozen
 owner:         executable
 enforcement:   ci-gate
-evidence:      Deny-by-default is asserted by a boot-time canary because a major lab's own evaluation harness was found to have left machines with live internet access despite intended isolation. Allowlisted hosts have been used for exfiltration at CVSS 9.6. The executor-specific assertions (C1–C3, C12) rest on the plan's research notes about OpenHands and are **unverified first-hand** — the executor is not present in this repository and was not fetched; each is written to pass harmlessly if the feature it disables does not exist.
+evidence:      Deny-by-default is asserted by a boot-time canary because a major lab's own evaluation harness was found to have left machines with live internet access despite intended isolation. Allowlisted hosts have been used for exfiltration at CVSS 9.6. The executor-specific assertions (C1–C3, C5, C10) rest on OpenHands' own vocabulary and are **unverified first-hand** — the executor is not present in this repository and was not fetched. Each is implemented as a shell whose unread holes yield `not_executed`, never `passed` (ADR-0017); the earlier "written to pass harmlessly" position is withdrawn, because it holds for an absent feature and fails for a misnamed one.
 falsifies_if:  A sandbox boots while a known non-allowlisted connection succeeds, or a credential is found reachable from inside the container, or a run reaches a verdict while any assertion in the containment table below was not executed.
 review_after:  Phase 2
 ---
@@ -122,12 +122,30 @@ documented failures in this class actually were.
 | C14 | End-of-run re-assertion of C7, C9, C12, C13 | inside, after the agent stops, before the claim is accepted | anything that appeared during the run | claim rejected, `indeterminate` |
 | C15 | Patch-side check: the diff adds no dependency, no import of a denied module, and no file whose normalized content hash matches a denied source file | outside, privileged, on the patch | the oracle arriving through the deliverable channel | patch rejected |
 
-C1, C2 and C3 rest on an unverified premise about the selected executor's features. Each
-is written so that it passes harmlessly if the feature does not exist: a config key that
-is absent is set anyway, and a count of events that cannot occur is zero. **An assertion
-that harmlessly passes on a feature that does not exist costs nothing; its absence would
-cost a great deal**, which is the whole argument for writing them before the executor is
-inspected.
+C1, C2, C3, C5 and C10 rest on the selected executor's own vocabulary — configuration keys,
+event class names, configuration search paths — none of which is in this repository and
+none of which has been read first-hand.
+
+> **Amended by ADR-0017.** This paragraph previously argued that each was written to pass
+> harmlessly if the feature did not exist, on the grounds that *"an assertion that
+> harmlessly passes on a feature that does not exist costs nothing."* **That argument is
+> withdrawn.** It holds for an *absent* feature and fails for a *misnamed* one, and C2's two
+> conjuncts and C3's three are not independent — each rests on the same vocabulary, so one
+> wrong name defeats all of them at once while the assertion reports `passed` with
+> compaction running upstream of a verdict (ADR-0007). Fifteen green assertions that mean
+> nothing are worse than fifteen absent ones, because the green ones stop anybody looking.
+
+The five are implemented as **shells** in `harness/containment/shells.py`: each names its
+claim, the holes its check needs, and the check itself. An unread hole yields
+`not_executed`, which F25 makes a failure and which `Worker.check_handle` already refuses to
+dispatch on. **A shell never passes.** `open_holes()` is O5's worklist, and its count
+reaching zero — by *answering* holes, not deleting them, which CI checks — is what
+discharges O5.
+
+The rest of the table needs no executor vocabulary and is written for real: C8, C9, C12 and
+C13 in `harness/containment/inside.py`, C14 in `reassert.py`, C15 in `patch_side.py`, C6 and
+C7 as before. **C4 and C11 are not written**, and are blocked on something other than O5: both
+compare against a run fingerprint record that does not exist in this repository yet.
 
 ## Oracle absence
 

@@ -1605,3 +1605,123 @@ eight characters of key set and no version. Recorded because the general argumen
 in the log and had been applied once rather than exhaustively — which is the failure mode
 `## Open items` describes as the register discovering its own conditions unrunnable at their
 deadline rather than before it.
+
+---
+
+## ADR-0017 — A containment assertion with an unread premise is a hole, and a hole never passes
+
+**Date:** 2026-08-18 · **Status:** Accepted · **Supersedes:** none · **Amends:** ADR-0007 (which names the third outcome and does not say how it is represented or acted on) · **See also:** the Sandbox Specification's containment table, whose C1–C3 paragraph this contradicts and which is amended by this record
+
+### Context
+
+ADR-0007 established that C1–C3, C5 and C10 can be **executed, passed and vacuous**: each
+rests on the selected executor's own vocabulary — configuration keys, event class names,
+configuration search paths — none of which is in this repository and none of which has been
+read first-hand. It recorded the state and prescribed a label: such assertions are recorded
+as `passed (unverified vocabulary)` and a run under them is admissible for build work and
+not as a measurement.
+
+Two things were missing, and both were found while implementing the assertions.
+
+**First, the state could not reach the thing that acts on it.** `premise_verified` existed on
+`harness/containment/assertions.py`'s `Assertion`. The shape that travels on `SandboxHandle`
+and that `Worker.check_handle` reads — `harness/worker/port.py`'s `AssertionResult` — had no
+such field, and no converter between the two vocabularies existed at all. So ADR-0007's third
+state was recorded on a report nobody consulted and invisible at the only gate that refuses a
+dispatch. A distinction that cannot reach a decision is a comment.
+
+**Second, ADR-0007 says nothing about an assertion that has no key name at all.** It presumes
+a name exists and is unverified — taken from a research note. An assertion written before
+anybody reads the executor has something weaker: a *hole*. The Sandbox Specification's own
+answer to that case is at `sandbox-specification.md:125` and is the position this ADR
+rejects: *"an assertion that harmlessly passes on a feature that does not exist costs
+nothing."* True for an absent feature. False for a misnamed one, and false in the direction
+that matters, because fifteen green assertions that mean nothing are worse than fifteen
+absent ones — the green ones stop anybody looking.
+
+### Decision
+
+**1. A hole is a first-class object, and an assertion with an unread hole reports
+`not_executed`.**
+
+`harness/containment/shells.py` carries a register of `PremiseShell`s. Each names its claim,
+its holes, and the check that runs once the holes are filled. `evaluate` refuses to call the
+check while any hole is unread and returns `NOT_EXECUTED` with `premise_verified=False`.
+
+`NOT_EXECUTED` rather than `FAILED`: nothing was checked, and reporting a failure would claim
+the control ran and found a problem. F25 already makes `not_executed` a failure at every gate,
+so the refusal is inherited rather than reimplemented — `check_handle` needed no change to
+refuse a shell.
+
+**Never `PASSED`, under any observation.** The suite asserts this against the *most
+favourable* observation available — empty configuration, empty stream, empty everything,
+which is precisely what a check would read as "nothing enabled, nothing emitted" and pass on.
+
+**2. `UNREAD` is a sentinel and is not `None`, and an empty answer is an answer.**
+
+A hole holding `()` means *the executor was read and has no such event class*. A hole holding
+`UNREAD` means *nobody looked*. These are different findings and the first is a legitimate,
+useful result. `None` was rejected because some executor configuration could legitimately hold
+it, and a hole whose unread state collides with a legal value can be filled by accident. The
+sentinel is falsy so that `if hole.value:` cannot misread it as present, and `.read` is the
+only correct test.
+
+This is the same distinction ADR-0006 draws between an absent optional field and a declared
+blank, arriving independently in a different subsystem. Recorded as such because the pattern
+recurring twice in one week is evidence it will recur again.
+
+**3. `premise_verified` crosses to the handle, and `check_handle` gains an admissibility
+argument.**
+
+`AssertionResult` gains `premise_verified: bool = True`. `harness/containment/handle.py` is
+the single crossing from probe vocabulary to handle vocabulary, one-way by design: there is no
+`from_result`, because reconstructing a probe result from adaptor-supplied data is the shape
+of every control that ends up checking a copy of its own input.
+
+`check_handle` takes `admissibility: Admissibility`, and **the default is `MEASUREMENT`** —
+the strict end. Under `MEASUREMENT` a required assertion with `premise_verified=False` refuses
+the dispatch; under `BUILD` it is admitted. A default of `BUILD` would mean every caller that
+forgot the argument admitted a vacuous control into the merge rate, and the whole point of the
+flag is that the permissive case is the one somebody has to ask for.
+
+**4. The outcome mapping between the two vocabularies is written out, not derived.**
+
+The two enums have identical members and values today. A mapping that relied on that would
+misroute silently the first time either grew a member — which is how `not_executed` ends up
+collapsed into a neighbour, the single defect this whole layer exists to prevent.
+
+### What this changes about the Sandbox Specification
+
+`sandbox-specification.md:125` and its `evidence:` header both argue C1–C3 are written to pass
+harmlessly. **That paragraph is superseded by this record.** The assertions are written; they
+do not pass; they name what has to be read. The specification's table is unchanged — every
+claim in it still stands — and only the argument for writing them as harmless passes is
+withdrawn.
+
+### Consequences and enforcement
+
+- Five shells are registered: C1, C2, C3, C5, C10. `open_holes()` is O5's worklist and its
+  count reaching zero is what discharges O5.
+- CI asserts the worklist is **non-empty** while the executor is unread. Deleting a hole is
+  the cheapest way to make O5 look finished, and it is the one thing this check catches.
+- C8, C9, C12, C13 are implemented for real, since none rests on executor vocabulary. C14
+  folds the end-of-run re-assertion; C15 checks the patch. Each carries a control that fails
+  on an empty scan.
+- C4 and C11 are **not** written: both compare against a run fingerprint record that does not
+  exist in this repository. They are blocked on that, not on O5, and saying so is more useful
+  than a shell whose hole is "the fingerprint".
+- `Admissibility` is a two-member enum with no third member and no default of convenience.
+
+### Why this is an inspector patch
+
+All of it is `harness/`, which is inspector machinery under D20. Major-fix #8 permits an
+agent-drafted inspector patch only under line-by-line human review with a mandatory ADR. This
+is that ADR. The review is O9 and has not happened, so the change is landed and unreviewed,
+and that is the honest state to record.
+
+### What found it
+
+Implementing the shells. `premise_verified` was already written, already tested, and already
+unable to affect anything — the flag existed, the converter did not, and nothing had ever
+carried a probe result to a handle because no adaptor exists yet. A field that is correct and
+unreachable reads exactly like a field that works.

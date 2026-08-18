@@ -184,7 +184,11 @@ jobs:
       - name: Lane controls
         run: uv run pytest harness/lane
 
-      - name: Containment probes (C6 egress canary, C7 oracle absence)
+      # C6 and C7 probe for real; C8/C9/C12/C13/C14/C15 are assertions over constructed
+      # observations; C1/C2/C3/C5/C10 are shells whose unread holes must report
+      # `not_executed`. The suite's own control is that no shell can be made to pass against
+      # the most favourable observation available — if it can, the shells are decoration.
+      - name: Containment (C6, C7 probes; C8-C15; and the O5 shells that must not pass)
         run: uv run pytest harness/containment
 
       # S4. The two suites and the three controls that stop them reading green for free.
