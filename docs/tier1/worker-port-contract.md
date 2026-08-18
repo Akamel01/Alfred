@@ -150,7 +150,7 @@ class AssertionOutcome(Enum):
 
 @dataclass(frozen=True)
 class AssertionResult:
-    assertion_id: str        # "C1".."C15", see Sandbox Specification § Executor containment
+    assertion_id: str        # "C1".."C16", see Sandbox Specification § Executor containment
     outcome: AssertionOutcome
     executed_inside_container: bool
     observed: Mapping[str, str]

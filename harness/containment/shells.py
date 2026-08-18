@@ -173,6 +173,18 @@ class ExecutorObservation:
     # substitute for an approval event, because approval emits none.
     execution_statuses: tuple[str, ...] = ()
     listening_ports: tuple[int, ...] = ()
+    # Whether the durable read was taken *after* the conversation was closed. `None` means
+    # the adaptor did not say, which C1 treats as a problem rather than as "probably fine":
+    # the client deletes the conversation on close by default, so a read of unknown ordering
+    # is a read that may have happened before the directory was removed.
+    durable_read_after_close: bool | None = None
+    # The `kind` tag of the workspace and the class of the conversation actually in use.
+    # `kind` is the class name (`utils/models.py:199`), so these are compared as names.
+    workspace_kind: str | None = None
+    conversation_kind: str | None = None
+    # The container the adaptor started. Without one, the two names above describe an object
+    # graph with nothing behind it.
+    container_id: str | None = None
     executor_repo: str | None = None
     executor_commit_sha: str | None = None
     executor_resolved_through_redirect: bool | None = None
@@ -301,6 +313,16 @@ def _check_c1(holes: Mapping[str, HoleValue], obs: ExecutorObservation) -> Asser
 
     The count half is unchanged and is the half D53 and plan:431 both insist on: persistence
     is verified by end-of-run event count, **not by a flag**. A flag says what was intended.
+
+    **The fourth clause exists because the third was being read against a directory the
+    default configuration deletes** (ADR-0019). `Conversation(...)` defaults
+    `delete_on_close=True`; on close the client issues `DELETE /conversations/{id}` and the
+    server `safe_rmtree`s the conversation directory. The workspace survives, the event log
+    does not. So two things are asserted, and neither alone is enough: deletion is off, *and*
+    the durable read was taken after close. Deletion off with a read taken before close still
+    proves nothing about what survives the run, and a read after close under
+    `delete_on_close=True` is a read of an empty directory that C1 would report as a missing
+    event count rather than as the configuration error it is.
     """
     key = _as_key(holes["persistence_dir_key"])
     configured = obs.config.get(key, "<absent>")
@@ -312,6 +334,28 @@ def _check_c1(holes: Mapping[str, HoleValue], obs: ExecutorObservation) -> Asser
     elif not str(configured).strip():
         problems.append(f"{key!r} is empty; a blank path is not a persistence directory")
 
+    delete_key = _as_key(holes["delete_on_close_key"])
+    delete_on_close = obs.config.get(delete_key, "<absent>")
+    if delete_on_close is True:
+        problems.append(
+            f"{delete_key!r} is True; the conversation directory is removed on close, so a "
+            "durable read proves nothing about what survives the run"
+        )
+    elif delete_on_close == "<absent>":
+        problems.append(
+            f"{delete_key!r} is absent from the loaded configuration; it defaults to True and "
+            "the default deletes the evidence"
+        )
+    elif delete_on_close is not False:
+        problems.append(f"{delete_key!r} is {delete_on_close!r}; expected False")
+
+    if obs.durable_read_after_close is not True:
+        problems.append(
+            "the durable read was not stated to have been taken after close"
+            if obs.durable_read_after_close is None
+            else "the durable read was taken before close; deletion happens at close"
+        )
+
     missing = obs.observed_event_ids - obs.durable_event_ids
     if missing:
         problems.append(f"{len(missing)} observed event id(s) absent from disk")
@@ -320,7 +364,12 @@ def _check_c1(holes: Mapping[str, HoleValue], obs: ExecutorObservation) -> Asser
             f"durable count {len(obs.durable_event_ids)} below observed "
             f"{len(obs.observed_event_ids)}; the read log is a subset of unknown size (F19)"
         )
-    return _verdict("C1", problems, "persistence configured; every observed event durable")
+    return _verdict(
+        "C1",
+        problems,
+        "persistence configured; deletion on close off; every observed event durable "
+        "on a read taken after close",
+    )
 
 
 def _check_c2(holes: Mapping[str, HoleValue], obs: ExecutorObservation) -> Assertion:
@@ -464,18 +513,88 @@ def _check_c10(holes: Mapping[str, HoleValue], obs: ExecutorObservation) -> Asse
     return _verdict("C10", problems, "loaded config is the harness's; nothing hoisted")
 
 
+
+def _check_c16(holes: Mapping[str, HoleValue], obs: ExecutorObservation) -> Assertion:
+    """The agent is running in the container at all.
+
+    **Every other executor-premise assertion assumes this and none of them checks it**
+    (ADR-0019). `Workspace(working_dir=...)` with no `host` returns a `LocalWorkspace`, which
+    executes on the host filesystem, while `BaseWorkspace`'s own docstring calls every
+    workspace "sandboxed". On a host-side run C1, C2, C3 and C10 all still pass: each reads
+    configuration keys and event classes that exist identically in the local case. That is
+    four green assertions over an agent with no container around it, which is ADR-0007's
+    third outcome one layer above where the shells were built to guard.
+
+    Three clauses, and each covers a different way of being wrong:
+
+    1. **The workspace kind is a container kind**, matched against a closed set of names
+       rather than a substring or a base class. `kind` is the class name, so a subclass is a
+       different name — deliberately, because `DockerDevWorkspace` *builds the image on the
+       fly* from a base image and is therefore not the pinned-image premise C5 and the
+       layer-1 closure check are written against.
+    2. **The conversation is the remote one.** A container-backed workspace paired with a
+       local conversation would run the loop in Alfred's own process; the factory does not
+       allow it today, but the factory is not the only constructor and this asserts the
+       outcome rather than trusting the route to it.
+    3. **A container id was recorded.** Without one the first two clauses describe an object
+       graph and nothing else: a `workspace_kind` string is a self-report, and a self-report
+       with no container behind it is the failure this assertion exists to catch.
+    """
+    problems: list[str] = []
+
+    allowed = set(_as_names(holes["container_workspace_kinds"]))
+    host_kind = _as_key(holes["host_workspace_kind"])
+    kind = obs.workspace_kind
+    if kind is None:
+        problems.append(
+            "the workspace kind was not reported; the assertion cannot tell a container from "
+            "the host, which is the one thing it exists to tell"
+        )
+    elif kind == host_kind:
+        problems.append(
+            f"the workspace is {host_kind!r}, which executes on the host filesystem; the "
+            "agent is not in a container and every other C assertion passes anyway"
+        )
+    elif kind not in allowed:
+        problems.append(f"workspace kind {kind!r} is not one of {sorted(allowed)}")
+
+    required_conversation = _as_key(holes["remote_conversation_class"])
+    if obs.conversation_kind is None:
+        problems.append("the conversation class was not reported")
+    elif obs.conversation_kind != required_conversation:
+        problems.append(
+            f"the conversation is {obs.conversation_kind!r}, not {required_conversation!r}; "
+            "the agent loop is running in Alfred's own process"
+        )
+
+    if not (obs.container_id or "").strip():
+        problems.append(
+            "no container id was recorded; the workspace kind is a self-report and nothing "
+            "behind it was observed"
+        )
+
+    return _verdict(
+        "C16",
+        problems,
+        f"workspace kind {obs.workspace_kind}; {required_conversation}; container "
+        f"{(obs.container_id or '')[:12]}",
+    )
+
+
+
 # ================================================================== the register of shells
 #
 # Every `source` is a path:line inside EXECUTOR_REPO at EXECUTOR_COMMIT.
 
 _SERVER = "openhands-agent-server/openhands/agent_server"
 _SDK = "openhands-sdk/openhands/sdk"
+_WORKSPACE = "openhands-workspace/openhands/workspace"
 
 C1: Final = PremiseShell(
     assertion_id="C1",
     claim=(
-        "Conversation persistence is configured, and every event the adaptor observed is "
-        "present on disk at end of run"
+        "Conversation persistence is configured, the conversation is not deleted on close, "
+        "and every event the adaptor observed is present on disk on a read taken after close"
     ),
     holes=(
         Hole(
@@ -489,6 +608,23 @@ C1: Final = PremiseShell(
                 "The research note said persistence is opt-in and must be asserted enabled. "
                 "It is `str | None` defaulting to 'workspace/conversations' — on unless "
                 "explicitly set to None. The assertion is 'not disabled', not 'enabled'."
+            ),
+        ),
+        Hole(
+            name="delete_on_close_key",
+            kind=HoleKind.CONFIG_KEY,
+            question="Which key decides whether the persisted conversation survives the run?",
+        ).filled(
+            "delete_on_close",
+            source=f"{_SDK}/conversation/conversation.py:142",
+            correction=(
+                "Not in the specification, and it falsified C1 as written (ADR-0019). It "
+                "defaults to **True** in every constructor path; on close the client issues "
+                "DELETE /conversations/{id} "
+                f"({_SDK}/conversation/impl/remote_conversation.py:1729-1739) and the server "
+                "safe_rmtree's the conversation directory "
+                f"({_SERVER}/conversation_service.py:1725-1731). The workspace is preserved; "
+                "the event log is not. C1 was reading a directory the default removes."
             ),
         ),
     ),
@@ -662,4 +798,62 @@ C10: Final = PremiseShell(
     check=_check_c10,
 )
 
-SHELLS: Final[tuple[PremiseShell, ...]] = (C1, C2, C3, C5, C10)
+C16: Final = PremiseShell(
+    assertion_id="C16",
+    claim=(
+        "The agent executes inside the container: a container-backed workspace kind, the "
+        "remote conversation, and a recorded container id"
+    ),
+    holes=(
+        Hole(
+            name="container_workspace_kinds",
+            kind=HoleKind.CONFIG_VALUE,
+            question="Which workspace kinds put the agent in a container Alfred controls?",
+        ).filled(
+            ("DockerWorkspace",),
+            source=f"{_WORKSPACE}/docker/workspace.py:53",
+            correction=(
+                "A closed set of one, and the exclusions are the point. `DockerDevWorkspace` "
+                f"({_WORKSPACE}/docker/dev_workspace.py:10) builds the image on the fly from a "
+                "base image, which is not the pinned image C5 and the layer-1 closure check "
+                "assume. `APIRemoteWorkspace` and `OpenHandsCloudWorkspace` "
+                f"({_WORKSPACE}/remote_api/workspace.py:19, {_WORKSPACE}/cloud/workspace.py:53) "
+                "put the run on somebody else's machine, which D35 forbids outright. "
+                "`ApptainerWorkspace` is a container but not one this specification's mount, "
+                "egress and writable-set assertions were written against."
+            ),
+        ),
+        Hole(
+            name="host_workspace_kind",
+            kind=HoleKind.CONFIG_VALUE,
+            question="Which workspace kind runs the agent on the host?",
+        ).filled(
+            "LocalWorkspace",
+            source=f"{_SDK}/workspace/local.py:17",
+            correction=(
+                "Named separately from 'not in the allowed set' so the failure says which "
+                "way it went wrong. It is also **the default**: `Workspace(working_dir=...)` "
+                f"with no host returns it ({_SDK}/workspace/workspace.py:36-49), while "
+                f"`BaseWorkspace`'s docstring ({_SDK}/workspace/base.py:27-33) calls every "
+                "workspace sandboxed."
+            ),
+        ),
+        Hole(
+            name="remote_conversation_class",
+            kind=HoleKind.CONFIG_VALUE,
+            question="Which conversation class runs the agent loop in the container rather than in-process?",
+        ).filled(
+            "RemoteConversation",
+            source=f"{_SDK}/conversation/conversation.py:155,192",
+            correction=(
+                "The factory selects it from the workspace type and refuses `persistence_dir` "
+                "for it — which is why C1 cites the **server-side** persistence_dir "
+                f"({_SERVER}/models.py:134) and not this one. The same name at two layers "
+                "with opposite requirements; unifying them would break C1 green-side."
+            ),
+        ),
+    ),
+    check=_check_c16,
+)
+
+SHELLS: Final[tuple[PremiseShell, ...]] = (C1, C2, C3, C5, C10, C16)

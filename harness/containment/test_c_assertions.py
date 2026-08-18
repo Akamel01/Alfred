@@ -77,7 +77,7 @@ def denylist() -> Denylist:
     return load_denylist(DENYLIST_PATH)
 
 
-# ============================================================== the shells (C1,C2,C3,C5,C10)
+# ========================================================== the shells (C1,C2,C3,C5,C10,C16)
 
 
 def test_no_shell_can_pass_while_a_hole_is_unread() -> None:
@@ -107,8 +107,8 @@ def test_no_shell_can_pass_while_a_hole_is_unread() -> None:
 
 def test_the_shell_register_is_not_empty() -> None:
     """D57. The loop above would pass over an empty register."""
-    assert len(SHELLS) >= 5
-    assert {s.assertion_id for s in SHELLS} == {"C1", "C2", "C3", "C5", "C10"}
+    assert len(SHELLS) >= 6
+    assert {s.assertion_id for s in SHELLS} == {"C1", "C2", "C3", "C5", "C10", "C16"}
 
 
 def test_every_shell_has_at_least_one_hole() -> None:
@@ -181,6 +181,7 @@ def _shell(assertion_id: str) -> PremiseShell:
 CLEAN = ExecutorObservation(
     config={
         "persistence_dir": "workspace/conversations",
+        "delete_on_close": False,
         "condenser": None,
         "confirmation_policy": "NeverConfirm",
         "enable_vscode": False,
@@ -188,13 +189,17 @@ CLEAN = ExecutorObservation(
     },
     config_hash="h",
     harness_config_hash="h",
+    durable_read_after_close=True,
+    workspace_kind="DockerWorkspace",
+    conversation_kind="RemoteConversation",
+    container_id="c0ffee0000",
     executor_repo=EXECUTOR_REPO,
     executor_commit_sha=EXECUTOR_COMMIT,
     executor_resolved_through_redirect=True,
 )
 
 
-@pytest.mark.parametrize("assertion_id", ["C1", "C2", "C3", "C5", "C10"])
+@pytest.mark.parametrize("assertion_id", ["C1", "C2", "C3", "C5", "C10", "C16"])
 def test_every_shell_passes_on_a_correctly_configured_executor(assertion_id: str) -> None:
     """The must-pass half. Without it every failing case below is met by refusing everything."""
     result = evaluate(_shell(assertion_id), CLEAN)
@@ -231,6 +236,101 @@ def test_c1_fails_when_an_observed_event_is_not_durable() -> None:
     result = evaluate(_shell("C1"), obs)
     assert result.outcome is AssertionOutcome.FAILED
     assert "F19" in result.detail or "absent from disk" in result.detail
+
+
+
+def test_c1_fails_when_the_conversation_is_deleted_on_close() -> None:
+    """ADR-0019. The default removes the conversation directory; C1 was reading it after."""
+    obs = replace(CLEAN, config={**CLEAN.config, "delete_on_close": True})
+    result = evaluate(_shell("C1"), obs)
+    assert result.outcome is AssertionOutcome.FAILED
+    assert "removed on close" in result.detail
+
+
+def test_c1_fails_when_delete_on_close_is_absent_because_its_default_deletes() -> None:
+    """The absent case and the True case are the same hazard: the library default is True."""
+    config = {k: v for k, v in CLEAN.config.items() if k != "delete_on_close"}
+    result = evaluate(_shell("C1"), replace(CLEAN, config=config))
+    assert result.outcome is AssertionOutcome.FAILED
+    assert "defaults to True" in result.detail
+
+
+@pytest.mark.parametrize("ordering", [None, False])
+def test_c1_fails_when_the_durable_read_was_not_taken_after_close(ordering: bool | None) -> None:
+    """Deletion off is not enough: a read taken before close says nothing about what survives.
+
+    `None` — the adaptor not saying — fails the same way as an explicit "before". An
+    unstated ordering read as satisfactory is how this clause would quietly stop running.
+    """
+    result = evaluate(_shell("C1"), replace(CLEAN, durable_read_after_close=ordering))
+    assert result.outcome is AssertionOutcome.FAILED
+    assert "after close" in result.detail or "before close" in result.detail
+
+
+# ---- C16: the assertion the other four assumed
+
+
+HOST_SIDE = replace(
+    CLEAN,
+    workspace_kind="LocalWorkspace",
+    conversation_kind="LocalConversation",
+    container_id=None,
+)
+
+
+def test_c16_fails_on_a_host_side_workspace() -> None:
+    result = evaluate(_shell("C16"), HOST_SIDE)
+    assert result.outcome is AssertionOutcome.FAILED
+    assert "host filesystem" in result.detail
+
+
+@pytest.mark.parametrize("assertion_id", ["C1", "C2", "C3", "C10"])
+def test_the_other_shells_pass_on_a_host_side_run_which_is_why_c16_exists(
+    assertion_id: str,
+) -> None:
+    """The vacuity demonstration, and the whole argument for the assertion.
+
+    Nothing about this observation is in a container. Every one of these four still reports
+    `passed`, because each reads configuration keys and event classes that exist identically
+    when the agent runs on the host. Four green assertions over an agent with no container
+    around it — ADR-0007's third outcome, one layer above where the shells guard.
+    """
+    result = evaluate(_shell(assertion_id), HOST_SIDE)
+    assert result.outcome is AssertionOutcome.PASSED, result.detail
+
+
+@pytest.mark.parametrize("kind", ["DockerDevWorkspace", "APIRemoteWorkspace", "ApptainerWorkspace"])
+def test_c16_rejects_container_kinds_outside_the_closed_set(kind: str) -> None:
+    """A closed set of names, not a substring or a base class.
+
+    `DockerDevWorkspace` subclasses `DockerWorkspace` and would pass an `isinstance` check
+    while building its image on the fly, which is not the pinned image C5 assumes.
+    """
+    result = evaluate(_shell("C16"), replace(CLEAN, workspace_kind=kind))
+    assert result.outcome is AssertionOutcome.FAILED
+    assert kind in result.detail
+
+
+def test_c16_fails_when_the_workspace_kind_was_not_reported() -> None:
+    """Unreported is not benign: it is precisely the thing the assertion cannot infer."""
+    result = evaluate(_shell("C16"), replace(CLEAN, workspace_kind=None))
+    assert result.outcome is AssertionOutcome.FAILED
+    assert "not reported" in result.detail
+
+
+def test_c16_fails_on_a_container_workspace_driven_by_a_local_conversation() -> None:
+    """The factory forbids this pairing; the factory is not the only constructor."""
+    result = evaluate(_shell("C16"), replace(CLEAN, conversation_kind="LocalConversation"))
+    assert result.outcome is AssertionOutcome.FAILED
+    assert "Alfred's own process" in result.detail
+
+
+@pytest.mark.parametrize("container_id", [None, "", "   "])
+def test_c16_fails_without_a_container_id(container_id: str | None) -> None:
+    """Both names above are self-reports. Without a container they describe an object graph."""
+    result = evaluate(_shell("C16"), replace(CLEAN, container_id=container_id))
+    assert result.outcome is AssertionOutcome.FAILED
+    assert "no container id" in result.detail
 
 
 # ---- C2: two ways to be off, three event classes

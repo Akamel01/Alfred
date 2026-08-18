@@ -107,7 +107,7 @@ documented failures in this class actually were.
 
 | # | Assertion | Runs | Catches | On failure |
 |---|---|---|---|---|
-| C1 | Persistence **not disabled** — `persistence_dir` is a path and is switched off only by an explicit `None` (ADR-0018; it is not opt-in) — **and** the durable event count at end of run is ≥ the count the adaptor observed, with every observed event id present on disk | config outside; count outside, on the mounted volume | persistence explicitly disabled, partial flush, a truncated read log | claim rejected, `indeterminate` |
+| C1 | Persistence **not disabled** — `persistence_dir` is a path and is switched off only by an explicit `None` (ADR-0018; it is not opt-in) — **`delete_on_close` is `False`** (ADR-0019; it defaults to `True` and the server removes the conversation directory on close) — **and** the durable event count is ≥ the count the adaptor observed, with every observed event id present on disk, **on a read taken after close** | config outside; count outside, on the mounted volume, after close | persistence explicitly disabled, the evidence deleted at close, partial flush, a truncated read log | claim rejected, `indeterminate` |
 | C2 | No compaction: `Agent.condenser` is `None` or the explicit no-op (ADR-0018 — two legitimate spellings), **and** zero events of class `Condensation`, `CondensationRequest` or `CondensationSummaryEvent` in the end-of-run stream (three classes, not one) | config outside; stream check outside | a summary upstream of a verdict, inherited from the executor rather than authored by Alfred (I16) | `indeterminate` |
 | C3 | No second approval surface **and no interactive surface**: `confirmation_policy` is `NeverConfirm`, the conversation never entered `WAITING_FOR_CONFIRMATION`, no rejection carries `rejection_source="user"`, **and** no VS Code or VNC server is enabled or listening (ADR-0018 — approval emits no event, so the original "zero approval-class events" conjunct is withdrawn as unimplementable) | socket scan inside; config outside; stream check outside | an operator approving work inside the execution plane, where the approval lands in the executor's event stream and never in Alfred's evidence chain | run does not start; a stream-side hit rejects the claim |
 | C4 | Runtime image digest equals `runtime_image_digest` in the fingerprint; image mirrored locally; pulled outside the sandbox network namespace | outside | tag drift, silent rebuild, a registry appearing in the in-sandbox allowlist | run does not start |
@@ -122,6 +122,7 @@ documented failures in this class actually were.
 | C13 | No package archives or resolver caches: no `.whl`, `.tar.gz`, `.zip`, no `pip`/`uv` cache directory, under any mount | inside | an offline install of something egress control already blocks downloading | run does not start |
 | C14 | End-of-run re-assertion of C7, C9, C12, C13 | inside, after the agent stops, before the claim is accepted | anything that appeared during the run | claim rejected, `indeterminate` |
 | C15 | Patch-side check: the diff adds no dependency, no import of a denied module, and no file whose normalized content hash matches a denied source file | outside, privileged, on the patch | the oracle arriving through the deliverable channel | patch rejected |
+| C16 | The agent executes inside the container at all: the workspace `kind` is `DockerWorkspace` (a closed set of names — `DockerDevWorkspace` builds its image on the fly, `APIRemoteWorkspace` and `OpenHandsCloudWorkspace` run off-machine against D35), the conversation is `RemoteConversation`, and a container id was recorded | outside, at dispatch | **a run with no container around it, on which C1, C2, C3 and C10 all still pass** (ADR-0019) | run does not start |
 
 C1, C2, C3, C5 and C10 rest on the selected executor's own vocabulary — configuration keys,
 event class names, configuration search paths — none of which is in this repository and
@@ -172,11 +173,13 @@ dispatch on. **A shell never passes.**
 >   own docstring calls every workspace "sandboxed". **No row below asserts which workspace
 >   kind is in use**, and C1, C2, C3 and C10 all read configuration and event streams that
 >   exist identically in the local case — so all four would pass on an agent running on the
->   host. That control is owed and is not written.
+>   host. That control is now **C16**, written the same day.
 > - **C1 is falsified as written.** `Conversation(...)` defaults `delete_on_close=True`; on
 >   close the server removes the conversation directory. C1's end-of-run read is of a
->   directory the default configuration deletes first. C1 needs `delete_on_close` as a hole
->   and a fourth clause; the amendment is owed and is not made.
+>   directory the default configuration deletes first. C1 now carries `delete_on_close` as a
+>   hole and a fourth clause: deletion off, **and** the durable read taken after close.
+>   Neither half alone is enough — deletion off with a read taken before close still proves
+>   nothing about what survives the run.
 >
 > ADR-0019 also records four unhardened defaults the rationale was read as excluding: the
 > agent server is unauthenticated by default and published on all host interfaces; the
@@ -184,9 +187,10 @@ dispatch on. **A shell never passes.**
 > sudo inside; and `webhooks` and `telemetry` are two egress channels this specification
 > never enumerated, stopped only by C6's deny-by-default policy.
 
-The rest of the table needs no executor vocabulary and is written for real: C8, C9, C12 and
-C13 in `harness/containment/inside.py`, C14 in `reassert.py`, C15 in `patch_side.py`, C6 and
-C7 as before. **C4 and C11 are not written**, and are blocked on something other than O5: both
+C16 is a shell too, in the same file, and holds three answered holes of its own. The rest of
+the table needs no executor vocabulary and is written for real: C8, C9, C12 and C13 in
+`harness/containment/inside.py`, C14 in `reassert.py`, C15 in `patch_side.py`, C6 and C7 as
+before. **C4 and C11 are not written**, and are blocked on something other than O5: both
 compare against a run fingerprint record that does not exist in this repository yet.
 
 ## Oracle absence
