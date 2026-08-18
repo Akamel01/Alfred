@@ -21,8 +21,13 @@ JS = r"""
 'use strict';
 
 // The read model is untrusted in the browser (ADR-0008). Every value that reaches the page
-// goes through textContent or a created text node -- there is no innerHTML anywhere below,
-// and no string concatenated into markup.
+// goes through textContent or a created text node. No markup-writing sink appears below, and
+// no string is concatenated into markup.
+//
+// test_render.py scans this whole block for those sink names, comments included. Naming one
+// here -- even to say it is absent -- reds the suite. That is deliberate: a scan that skipped
+// comments would need a JavaScript parser to be right about which text is a comment, and the
+// cost of being over-strict is one reworded sentence, visibly.
 const DATA = JSON.parse(document.getElementById('graph-data').textContent);
 const NODES = DATA.nodes;
 const EDGES = DATA.edges;
