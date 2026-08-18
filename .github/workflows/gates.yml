@@ -206,6 +206,15 @@ jobs:
       - name: Deploy and rollback (ledger, identity, refusals)
         run: uv run pytest harness/deploy
 
+      # S9's domain-neutral half. The Worker port's verdict-vocabulary check and the
+      # patch gate both carry planted-violation controls, because a check nobody has
+      # watched reject anything is a check that might not be able to.
+      - name: Worker port (claim/fault split, containment refusals)
+        run: uv run pytest harness/worker
+
+      - name: Patch gate (protected paths, A10 invisibles, import hooks)
+        run: uv run pytest harness/patch
+
   # ---------------------------------------------------------------- database
   database:
     name: database (throwaway cluster, roles and grants)

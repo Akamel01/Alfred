@@ -297,7 +297,7 @@ And a **technology selection record is owed** for FastAPI and uvicorn:
 condition — "a technology is adopted with no corresponding record" — is met until the
 operator writes one.
 
-### S9 — Phase 1 build · *blocked by S1–S8 and by O1*
+### S9 — Phase 1 build · *blocked by S1–S8 and by O1* · **PORT AND PATCH GATE DONE 2026-08-18**
 
 `Worker` port and the OpenHands adaptor, pinned by commit SHA; the fifteen numbered boot
 assertions (D53); patch validation on the privileged side with the A10 unicode scan; and the
@@ -307,6 +307,54 @@ mission-control command surface, which is inspector under D51 and therefore oper
 unverified first-hand, and an assertion resting on a *misnamed* config key or event class
 reports `passed` while the control it names does nothing — executed, passed, and vacuous. That
 is a third outcome the register does not currently name.
+
+**Domain-neutral half closed 2026-08-18. The containment assertions are not, and cannot be
+until O5.**
+
+`harness/worker/port.py` is the contract as executable types: the value types, the
+`SandboxHandle` carrying its own proof, `WorkerOutcome` with members for agent-attributed
+terminations *only*, the three fault classes with their taxonomy classes, and the `Worker`
+protocol. Nothing in it names an executor concept, which is what makes D38's "the `Worker`
+interface exists to make this swap cheap" true rather than aspirational.
+
+Two refusals are implemented once, in the port, rather than per adaptor. `check_handle`
+raises `ContainmentFailure` when a required assertion is absent or carries any outcome
+other than `passed` — `not_executed` included, because an unproven control is a failed
+control. It also raises on an **empty required set**: a worker that requires nothing has
+been configured to check nothing, and from outside that is indistinguishable from every
+check passing. `verdict_vocabulary_violations` walks the claim's transitive closure and
+reports any field named with a verdict word, with `claim_closure_size` as its vacuity
+guard and a planted-violation control per word in the vocabulary.
+
+**`WorkerOutcome` has no member for the executor dying, and the gap is the design.** The
+most likely defect in any adaptor is reporting a killed executor as an agent failure,
+which moves harness flakiness into the numerator of the only number the autonomy gates
+read. It is unrepresentable here rather than discouraged.
+
+`harness/patch/validate.py` is the privileged-side gate (A2/A10). It **reads** the diff
+and never applies it: a check running after application has a dirty tree as its failure
+mode, and `git apply` following a symlink is the escape the path rules exist to prevent.
+Refusals: protected prefixes under D20, path traversal, absolute paths, symlink modes,
+import hooks (`conftest.py`, `sitecustomize.py`, `.pth`), instruction files, and the A10
+scan for zero-width, bidi and control characters on added lines only. Every finding is
+collected rather than raising on the first, because a reviewer handed one refusal at a
+time learns the rule set by exhaustion and starts treating a boundary as an obstacle.
+
+One refusal is there because a naive version would have missed it: git quotes unusual
+bytes as a C string, so `harness/` can be written `"a/harness/\150arm.py"`, which does not
+prefix-match in its raw form. Paths are decoded before any decision, and the bypass has
+its own test.
+
+**Still blocked, and it is the rest of the stage.** The fifteen boot assertions C1-C15
+rest on premises about the executor that nobody has checked first-hand — the executor is
+not in this repository and has not been fetched. An assertion resting on a *misnamed*
+config key or event class reports `passed` while the control it names does nothing:
+executed, passed, and vacuous (ADR-0007). That is not closable by inference about
+OpenHands' vocabulary, and guessing would produce fifteen green assertions that mean
+nothing. **O5.**
+
+Also outstanding: the mission-control command surface, which is inspector under D51 and
+therefore operator-built.
 
 ---
 
