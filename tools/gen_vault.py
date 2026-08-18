@@ -88,10 +88,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"\n{len(result.failures)} extraction failure(s) — no output written")
         return 1
 
-    sources = mirror.load_manifest()
-    inputs = {f"{s.id}_sha256": s.sha256 for s in sources}
-    inputs.update({f"{s.id}_mirror": s.mirror for s in sources})
-    content = dumps(build_payload(result, inputs))
+    content = dumps(build_payload(result, mirror.graph_inputs()))
 
     tree = (
         {} if args.graph_only

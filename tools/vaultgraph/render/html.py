@@ -152,7 +152,49 @@ def _gauges(nodes: list[Node], edges: list[Edge], anomalies: list, unparsed: lis
     )
 
 
-def render(nodes: list[Node], edges: list[Edge], anomalies: list, unparsed: list) -> str:
+#: The live-refresh control, served only by the local surface and never written to the
+#: committed page. A published artifact cannot run the generator -- no runtime capability
+#: grants a page repository access -- so a button there would be a control that lies about
+#: what it does. The parameter is explicit rather than injected for the same reason the graph
+#: is embedded rather than concatenated: the committed file cannot accidentally acquire one.
+LIVE_CONTROL = """
+<button type="button" class="chip" id="regenerate">Regenerate from repository</button>
+<span id="regenerate-status" class="kicker" role="status"></span>
+"""
+
+LIVE_SCRIPT = """
+(function () {
+  const button = document.getElementById('regenerate');
+  const status = document.getElementById('regenerate-status');
+  if (!button) return;
+  button.addEventListener('click', async () => {
+    button.disabled = true;
+    status.textContent = 'Re-reading the repository…';
+    try {
+      const response = await fetch('/refresh', {
+        method: 'POST',
+        headers: { 'X-Refresh-Token': REFRESH_TOKEN },
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || 'refresh failed');
+      status.textContent = result.summary;
+      setTimeout(() => window.location.reload(), 700);
+    } catch (error) {
+      button.disabled = false;
+      status.textContent = String(error.message || error);
+    }
+  });
+})();
+"""
+
+
+def render(
+    nodes: list[Node],
+    edges: list[Edge],
+    anomalies: list,
+    unparsed: list,
+    live_token: str | None = None,
+) -> str:
     payload = _payload(nodes, edges, anomalies, unparsed)
     colours = json.dumps(
         {kind.value: colour for kind, colour in sorted(KIND_COLOURS.items(), key=lambda p: p[0].value)},
@@ -167,6 +209,10 @@ def render(nodes: list[Node], edges: list[Edge], anomalies: list, unparsed: list
             ("derived", ' stroke-dasharray="5 3"', "derived — matched in a comment span"),
             ("prose", ' stroke-dasharray="1.5 3"', "prose — read from free text, unverified"),
         )
+    )
+    live_control = LIVE_CONTROL if live_token else ""
+    live_script = (
+        f"const REFRESH_TOKEN = {json.dumps(live_token)};{LIVE_SCRIPT}" if live_token else ""
     )
     return f"""<title>{_escape(TITLE)}</title>
 <style>{CSS}</style>
@@ -188,7 +234,7 @@ def render(nodes: list[Node], edges: list[Edge], anomalies: list, unparsed: list
     <canvas id="stage-canvas" tabindex="0" aria-label="Knowledge graph. Click a node to inspect it."></canvas>
     <div class="stage-controls">
       <input type="search" id="search" placeholder="Filter by title or id" aria-label="Filter nodes">
-      <button type="button" class="chip" id="refit">Fit to view</button>
+      <button type="button" class="chip" id="refit">Fit to view</button>{live_control}
     </div>
     <div id="inspector" data-open="false" aria-live="polite"></div>
   </div>
@@ -200,5 +246,5 @@ def render(nodes: list[Node], edges: list[Edge], anomalies: list, unparsed: list
 </footer>
 
 <script type="application/json" id="graph-data">{_embed(payload)}</script>
-<script>const KIND_COLOURS = {colours};{JS}</script>
+<script>const KIND_COLOURS = {colours};{JS}{live_script}</script>
 """

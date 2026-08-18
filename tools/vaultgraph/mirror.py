@@ -148,3 +148,17 @@ def check(*, require_origin: bool = False) -> tuple[int, list[str]]:
                 "(origin absent, as expected off the operator's machine)"
             )
     return (1 if failed else 0), messages
+
+
+def graph_inputs() -> dict[str, str]:
+    """What `graph.json` records about the sources it was built from.
+
+    One function rather than one per caller: the CLI and the local surface both stamp this,
+    and when they each built it their own way they disagreed — the server omitted the mirror
+    path, so a graph served live differed from the committed one in a field neither had any
+    reason to differ in.
+    """
+    sources = load_manifest()
+    inputs = {f"{s.id}_sha256": s.sha256 for s in sources}
+    inputs.update({f"{s.id}_mirror": s.mirror for s in sources})
+    return inputs
