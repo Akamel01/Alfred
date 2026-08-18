@@ -11,12 +11,30 @@ dependency nobody has verified" is one filter rather than a reading exercise.
 from __future__ import annotations
 
 from ..model import Edge, Node, NodeKind
+from .html import LOCAL_SURFACE
 from .note import BANNER
 
 VAULT = "vault"
 
+REFRESH = f"""## Refresh
 
-def _page(title: str, intro: str, blocks: list[tuple[str, str]]) -> str:
+This vault is derived. Nothing here is authored, and a hand edit fails
+`python3 tools/gen_vault.py --check`, so the way to change a note is to change what it was
+read from and rebuild.
+
+```
+python3 tools/serve_vault.py
+```
+
+Then open <{LOCAL_SURFACE}> and press **Regenerate from repository**. One press re-syncs the
+plan mirror, re-reads the repository, and rewrites `vault/`, `graph.json` and
+`docs-graph.html` together, so the three never disagree about what the repository says.
+
+The button is a link rather than a button because a note is markdown and markdown does not
+run. It is on the served page, where code can run and where the working tree is reachable."""
+
+
+def _page(title: str, intro: str, blocks: list[tuple[str, str]], *, refresh: bool = False) -> str:
     lines = [
         "---", "kind: index", f'title: "{title}"', "generated: true", "---", "",
         f"# {title}", "", BANNER, "", intro, "",
@@ -27,6 +45,9 @@ def _page(title: str, intro: str, blocks: list[tuple[str, str]]) -> str:
         lines.append("```dataview")
         lines.append(query.strip())
         lines.append("```")
+        lines.append("")
+    if refresh:
+        lines.append(REFRESH)
         lines.append("")
     return "\n".join(lines).rstrip("\n") + "\n"
 
@@ -49,6 +70,7 @@ GROUP BY kind
 SORT length(rows) DESC
 """),
         ],
+        refresh=True,
     )
 
     documents = _page(

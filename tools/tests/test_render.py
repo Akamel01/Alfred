@@ -135,15 +135,58 @@ def test_repository_text_never_becomes_markup() -> None:
         assert _markup_sinks(_page_script(page)) == []
 
 
+#: The one address either page may name: the local surface, which is where the working
+#: refresh button lives. Loopback is not an external host -- and the committed page carries it
+#: as text in a <code> element, so naming it is not reaching it.
+LOOPBACK = render_html.LOCAL_SURFACE
+
+
+def _external_hosts(page: str) -> list[str]:
+    return [
+        url for url in re.findall(r"https?://[^\s\"'<>)]*", page) if not url.startswith(LOOPBACK)
+    ]
+
+
+def test_the_external_host_scan_detects_a_planted_one() -> None:
+    """The control. The scan now has an exception in it, and an exception is how a check stops
+    checking: a substring test that allowed the loopback prefix would allow
+    `http://127.0.0.1.evil.example` with it."""
+    assert _external_hosts(_artifact()) == []
+    for planted in ("https://cdn.example/x.css", "http://127.0.0.1.evil.example/x",
+                    "http://10.0.0.1/x"):
+        assert _external_hosts(planted), f"a planted {planted!r} was not detected"
+
+
 def test_the_artifact_reaches_no_external_host() -> None:
     # The artifact CSP blocks every external host, so a CDN link or a font URL is a silent
     # failure rather than a fallback. True of both pages -- the served one may talk to its own
     # origin, never to another.
     for page in (_artifact(), _artifact(live_token="t0ken")):
-        assert "http://" not in page
-        assert "https://" not in page
+        assert _external_hosts(page) == []
         assert "//cdn" not in page
         assert "@import" not in page
+
+
+def test_the_committed_page_names_the_surface_that_can_refresh_it() -> None:
+    """A page that cannot run the generator must not show a control implying it can. Saying
+    nothing instead leaves a reader with a stale graph, no way to tell it is stale, and no way
+    to find the button -- so the committed page names the address and the served page has it."""
+    committed = _artifact()
+    assert "Snapshot" in committed
+    assert LOOPBACK in committed
+    assert 'id="regenerate"' not in committed, "the committed page shows a button it cannot honour"
+    served = _artifact(live_token="t0ken")
+    assert 'id="regenerate"' in served
+    assert "Snapshot" not in served, "the served page shows the snapshot notice instead of its button"
+
+
+def test_the_address_the_pages_name_is_the_one_the_server_binds() -> None:
+    """Two hand-copies of an address are how a refresh button points at nothing. The renderer
+    already knew the server's route and token header; this is the check that keeps the third
+    fact from drifting silently."""
+    import tools.serve_vault as serve
+
+    assert LOOPBACK == f"http://{serve.HOST}:{serve.DEFAULT_PORT}"
 
 
 def test_the_committed_artifact_makes_no_request_at_all() -> None:

@@ -27,6 +27,11 @@ from .script import JS
 OUTPUT = "docs-graph.html"
 TITLE = "Alfred Register Graph"
 
+#: Where the working refresh button lives. Spelled once, here, and asserted against
+#: `serve_vault`'s own defaults by a test -- the renderer already knew the server's route and
+#: token header, and a third hand-copy of the same address is how those quietly disagree.
+LOCAL_SURFACE = "http://127.0.0.1:8787"
+
 #: One hue per kind, grouped by what the kind is: the register in ultramarine, the argument
 #: (decisions, ADRs, amendments) in a warmer blue, the calendar (stages, operator items) in
 #: brass, the charter's kill criteria and risks in oxide, the machine in slate. Colour carries
@@ -165,6 +170,16 @@ LIVE_CONTROL = """
 <span id="regenerate-status" class="kicker" role="status"></span>
 """
 
+#: What the committed page says where the served page puts the button. A page that cannot run
+#: the generator must not show a control that implies it can, but saying nothing leaves a
+#: reader with a stale graph and no way to tell it is stale or what to do about it. The URL is
+#: loopback and appears as text: the page names where the button is, it does not go there.
+STATIC_REFRESH = (
+    '<span class="kicker">Snapshot · rebuild with '
+    "<code>python3 tools/serve_vault.py</code> at "
+    f'<code>{LOCAL_SURFACE}</code></span>'
+)
+
 LIVE_SCRIPT = """
 (function () {
   const button = document.getElementById('regenerate');
@@ -213,7 +228,7 @@ def render(
             ("prose", ' stroke-dasharray="1.5 3"', "prose — read from free text, unverified"),
         )
     )
-    live_control = LIVE_CONTROL if live_token else ""
+    live_control = LIVE_CONTROL if live_token else STATIC_REFRESH
     live_script = (
         f"const REFRESH_TOKEN = {json.dumps(live_token)};{LIVE_SCRIPT}" if live_token else ""
     )
