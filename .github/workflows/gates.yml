@@ -187,6 +187,19 @@ jobs:
       - name: Containment probes (C6 egress canary, C7 oracle absence)
         run: uv run pytest harness/containment
 
+      # S4. The two suites and the three controls that stop them reading green for free.
+      # Runs here rather than in the product job: it measures the runner, not the product,
+      # and it needs no database — the criterion is synthetic precisely so that a factory
+      # gate does not depend on a domain that may be written off.
+      - name: Harness self-test (null-agent floor, seeded-defect ladder, controls)
+        run: uv run pytest harness/selftest
+
+      # The oracle boundary. The integration test skips without the image, which is
+      # correct on a CI runner and is why the unit half carries every refusal separately:
+      # a suite whose only real assertion is behind a skip is a suite that does not run.
+      - name: Oracle boundary (pins, refusals, admissibility)
+        run: uv run pytest harness/oracle
+
   # ---------------------------------------------------------------- database
   database:
     name: database (throwaway cluster, roles and grants)

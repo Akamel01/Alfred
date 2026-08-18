@@ -85,7 +85,7 @@ fails silently in the safe-looking direction.
 Nothing that stores a verdict, an evidence row, or a held-out value can be built before this.
 It is the widest blocker on the board.
 
-### S2 — Oracle environment · *blocks S5's reference values, the S4 ladder's calibration, and the D49 P3 decision*
+### S2 — Oracle environment · *blocks S5's reference values and the D49 P3 decision* · **ENVIRONMENT DONE 2026-08-18**
 
 One offline environment, pinned at CriMe commit `60bebed`, that never executes agent-authored
 code. Its outputs cross into `heldout` as data; its code never crosses at all (D54). Likely a
@@ -96,6 +96,38 @@ not after.
 This stage is gated by an operator decision (O3 below): validate D49's P3 rung, or take D49's
 stated degradation now. The environment is required either way, because Phase 0's exit
 criterion *is* reproducing oracle values.
+
+**The wheel question is answered, and it forced the answer rather than informing it.**
+Measured against the PyPI JSON API on 2026-08-18, not read from a classifier: no arm64
+wheel has ever been published for `commonroad-drivability-checker`, `commonroad-reach` or
+`commonroad-clcs`, on any operating system. The last two have never published a macOS wheel
+of any kind; the first has published sixteen, every one `macosx_10_13_x86_64`, Intel only,
+none since 2022 — while its classifiers declare `Operating System :: MacOS`. The classifier
+is a claim by the publisher; the wheel list is the fact, and the question was answerable
+either way from the metadata with only one of the two answers true. So the image is
+`linux/amd64` under emulation, and Python 3.11 because `commonroad-reach` declares
+`requires_python <3.12`. Both recorded in `harness/oracle/pins.py`.
+
+**Environment closed 2026-08-18.** `harness/oracle/` holds the pinned image, the
+in-container extractor, the driver and the loader. The run posture answers D50's
+acquisition hole directly: `--network none`, `--read-only`, non-root, no repository mount
+at all, and the pyximport build warmed into the image so the run compiles nothing. Two
+things the build discovered that a future attempt to slim the image will rediscover: the
+closure is **not wheels-only** (`polygon3` is sdist-only and needs a compiler), and
+`commonroad_reach` **compiles a Cython module at import time**.
+
+**What is done here is the mechanism, and the mechanism is the factory's.** The 28-point
+set that proved it out — 28 ok, 0 mismatch, 0 error, every point agreeing with CriMe's own
+pinned literal — is domain content and is a worked seed, not the deliverable. Extending it,
+and everything downstream of it, is agent work under the ownership rule below.
+
+**A labelling defect the extraction found in the plan's own exit criterion.** Read from
+`tests/test_time_domain.py` at the pinned SHA: the value 2.4 recorded as `ttc_1` is computed
+by **`TTCStar`**, and the value 1.25 recorded as `ttc_4` is returned by **`TTR`** on
+`ZAM_Urban-7_1_S-2`, in a test whose local variable is named after the lines above it.
+Phase 0's exit criterion quotes both as TTC values. Reproducing "TTC = 1.25" would be
+reproducing a different measure and calling it a pass. `bench/tasks/phase1_tasks.json` has
+both right; the prose does not.
 
 ### S3 — Inspector core · *blocks S4, and every verdict ever recorded* · **DONE 2026-08-17**
 
@@ -120,7 +152,7 @@ values are graded **outside** the criterion environment. Injecting them into it 
 the expected answer in the same directory as the code being measured, which a stub reads
 and returns — D50's delegation failure past the oracle-absence probe. ADR-0011.
 
-### S4 — The two suites, together · *blocks Phase 0 exit; blocked by S1, S2, S3*
+### S4 — The two suites, together · *blocks Phase 0 exit; blocked by S1, S3* · **DONE 2026-08-18**
 
 The null-agent floor suite and the seeded-defect ladder are **one stage because they are each
 other's vacuity control**. Replace every criterion with `return 0.0` and the floor suite passes
@@ -133,6 +165,36 @@ The ladder is two-sided: green inside tolerance at δ = 0, τ/2, τ·(1−ε); r
 calibration** — passing the far rungs with it absent means τ could be ten times looser and
 nothing would notice. ε is measured from the criterion's noise floor, never chosen; a τ that
 cannot resolve ε is a finding about τ.
+
+**Closed 2026-08-18, and the S2 dependency dissolved on inspection.** The ladder measures
+the *runner's* tolerance behaviour, not a metric's correctness, so calibrating it against a
+domain metric would confound the two and make a factory gate depend on a domain that may be
+written off. `harness/selftest/` uses a **synthetic** criterion instead: the sum of floats
+spanning many magnitudes, chosen because it has a genuine, measurable noise floor —
+summation is order-dependent, so two equally correct implementations disagree by a real
+amount. Measured spread **1.02e-2** over 64 seeded permutations; at τ = 0.05 that gives
+**ε = 0.203**, and `run_ladder` *refuses* a τ inside the noise floor rather than widening
+it, because a suite that silently corrected the tolerance would report a calibration it had
+just invented.
+
+Six rungs, six agreements, both calibrating rungs correct. The three controls are committed
+beside the suites and demonstrate the mutual claim rather than asserting it:
+
+| Control | ladder green rungs | ladder red rungs | floor suite |
+|---|---|---|---|
+| always-pass | miss | **catch 3/3** | **catches** |
+| always-fail | **catch 3/3** | miss | **fooled — passes** |
+| every criterion `return 0.0` | **catch 3/3** | miss | **fooled — passes** |
+
+That is the argument for one stage rather than two, on real data: a runner that fails
+unconditionally passes the floor suite cleanly and is caught only by the ladder's green
+rungs.
+
+**The floor suite found a defect before it had ever passed** — `materialize` raised on an
+absent candidate path, which a caller maps to a harness fault, which maps to
+`indeterminate`, which is excluded from the merge rate on both sides. The null agent would
+have left the denominator instead of scoring at the floor. Fixed and split by owner: a
+missing *trusted* path still raises. ADR-0015, and it is an inspector patch awaiting O9.
 
 ### S5 — Product path to a reproduced number · *blocks Phase 0 exit; blocked by S1, S2*
 
@@ -203,6 +265,25 @@ reports `passed` while the control it names does nothing — executed, passed, a
 is a third outcome the register does not currently name.
 
 ---
+
+## The ownership rule
+
+Set by the operator on 2026-08-18, and it re-cuts several stages: **AV domain content —
+metrics, reference values, the product path — is agent work. What is built, verified,
+validated and tested here is the factory.**
+
+The split is by layer, not by stage. The oracle *environment* is factory and is inspector
+besides, since agents may never author their own ground truth; the *point set* is domain.
+The *ports* — `TrajectorySource`, `Metric`, `ReplayHarness` — are factory; every
+implementation behind them is domain. S4, S8 and the domain-neutral half of S9 are factory
+throughout.
+
+One dependency dissolved under the rule, and it had been recorded as real: S4 was listed as
+blocked by S2 for the ladder's calibration. Calibrating the inspector against domain content
+was the wrong instinct — see S4.
+
+Tier 0 carries the authorship boundary and is permanently operator-authored, so this rule is
+recorded here rather than there. Whether it belongs in Tier 0 is an operator edit.
 
 ## Operator-owned, non-delegable
 

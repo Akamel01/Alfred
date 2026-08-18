@@ -1438,3 +1438,72 @@ specification forbids, and the version that exists first is the version that get
 **Marking the drill `slow` so it can be deselected.** A marker there is a switch for
 turning off the only end-to-end restore check, against a gate whose absence is
 unrecoverable data loss. It costs one extra throwaway cluster.
+
+## ADR-0015 — A missing candidate file is the candidate's failure, not the harness's fault
+
+**Date:** 2026-08-18 · **Status:** accepted · **Supersedes:** nothing · **Amends:** ADR-0011
+
+### Context
+
+S4's null-agent floor suite is specified to assert that a run taking no actions scores
+**zero and verdict `fail`, never `indeterminate`** — because `indeterminate` is excluded
+from the merge rate on both sides, so a do-nothing run recorded that way leaves the
+denominator instead of landing in it at the floor.
+
+On its first execution the floor suite did not produce a verdict at all. `materialize`
+raised `MaterializationError: candidate path 'solution.py' does not exist`. A caller
+receiving an exception from the materializer has been handed a harness fault, and a
+harness fault is exactly what maps to `indeterminate`. So the null agent — the cheapest
+and most likely degenerate case in the whole system — would have been scored as harness
+flakiness and dropped from the measurement, silently, in the direction that flatters the
+merge rate.
+
+The original refusal was not wrong for no reason. Its test carried one: *"a declaration
+naming a path that is not there would otherwise materialize nothing, and the criterion
+would fail for a reason unrelated to the work — or pass vacuously."* That reasoning is
+sound for the **trusted** half and does not transfer to the **candidate** half, and the
+single check conflated them.
+
+### Decision
+
+The two halves of a declaration have different owners and now fail differently.
+
+A missing **trusted** path still raises. The harness declared its own criterion and the
+criterion is not there; that is a broken inspector and it must stop.
+
+A missing **candidate** path is recorded in `Materialization.missing_candidate_paths` and
+materialization continues. The criterion then fails on its own, because the file genuinely
+is not present — what changes is that the failure is attributed to the candidate rather
+than to the harness.
+
+Absence is reported **only after every other refusal has run**. The absolute-path and
+symlink-traversal checks execute first, so `allow_absent` cannot become a way to smuggle a
+declaration past them by naming something that does not exist yet. That has its own test.
+
+### Consequences
+
+The floor suite now returns `fail` with score `0.0` and no indeterminate reason, which is
+what it was specified to assert.
+
+`Materialization` gains a field, so the manifest an auditor recomputes is unchanged while
+the record of what the candidate did not produce becomes available to the evidence row.
+Nothing downstream reads it yet; it is recorded because "the candidate declared a file and
+wrote none" is not reconstructible afterwards from a tree that does not contain it.
+
+The vacuous-pass hazard the original test named is not reintroduced: a candidate that
+produces nothing materializes nothing, and the visible criterion fails at import. It was
+never the raise that prevented the vacuous pass — it was the criterion.
+
+### Why this is an inspector patch
+
+`harness/criterion/materialize.py` is inspector machinery under D20. Major-fix #8 permits
+an agent-drafted inspector patch only under line-by-line human review with a mandatory
+ADR. This is that ADR; the review is O9 and has not happened. Until it does, the change is
+landed but unreviewed, and that is the honest state to record.
+
+### What found it
+
+The floor suite, on its first run, before it had ever passed. Recorded because the value of
+S4 is not that the two suites pass — it is that they fail against a runner that should
+fail, and the first thing this one did was fail against a real defect in the code it
+measures.

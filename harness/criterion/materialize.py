@@ -78,6 +78,16 @@ class Materialization:
 
     root: Path
     manifest: dict[str, str]
+    # Declared by the candidate half and absent from its tree. Recorded rather than
+    # raised: a run that produced no file at all is a *candidate* outcome, and raising
+    # here would surface it to the caller as a harness fault. A harness fault maps to
+    # `indeterminate`, which is excluded from the merge rate on both sides — so a
+    # null-agent run would vanish from the denominator instead of scoring at the floor.
+    # The criterion still fails, because the file genuinely is not there; what changes is
+    # that the failure is attributed to the candidate, which is where it belongs.
+    #
+    # A missing *trusted* path stays an exception. That one really is a broken harness.
+    missing_candidate_paths: tuple[str, ...] = ()
 
     @property
     def candidate_file_count(self) -> int:
@@ -96,7 +106,9 @@ def _is_import_hook(name: str) -> bool:
     return name in IMPORT_HOOK_NAMES or name.endswith(IMPORT_HOOK_SUFFIXES)
 
 
-def _checked_child(root: Path, relative: str, *, origin: str) -> Path:
+def _checked_child(
+    root: Path, relative: str, *, origin: str, allow_absent: bool = False
+) -> Path | None:
     """Resolve `relative` under `root`, refusing anything that leaves or links away.
 
     `is_symlink()` is checked on every component rather than only the leaf: a declared
@@ -115,6 +127,12 @@ def _checked_child(root: Path, relative: str, *, origin: str) -> Path:
                 f"{origin} path {relative!r} traverses a symlink at {walked.relative_to(root)}; "
                 f"a symlink names one file and delivers another"
             )
+
+    if allow_absent and not candidate.exists() and not candidate.is_symlink():
+        # Absent, and every refusal above has already run. Absence is reported only after
+        # the symlink and absolute-path checks, so a declaration that would have been
+        # refused is still refused rather than passing as "the candidate did not write it".
+        return None
 
     try:
         resolved = candidate.resolve(strict=True)
@@ -178,13 +196,19 @@ def materialize(
 
     manifest: dict[str, str] = {}
     written_by: dict[str, str] = {}
+    missing_candidate: list[str] = []
 
     for origin, root, declared_paths in (
         ("candidate", candidate_root, spec.candidate_paths),
         ("trusted", trusted_root, spec.trusted_paths),
     ):
         for relative in declared_paths:
-            declared = _checked_child(root, relative, origin=origin)
+            declared = _checked_child(
+                root, relative, origin=origin, allow_absent=origin == "candidate"
+            )
+            if declared is None:
+                missing_candidate.append(relative)
+                continue
             for source in _files_under(root, declared, origin=origin):
                 key = str(source.relative_to(root))
 
@@ -212,4 +236,8 @@ def materialize(
                 manifest[key] = _sha256(target)
                 written_by[key] = origin
 
-    return Materialization(root=destination, manifest=manifest)
+    return Materialization(
+        root=destination,
+        manifest=manifest,
+        missing_candidate_paths=tuple(missing_candidate),
+    )
