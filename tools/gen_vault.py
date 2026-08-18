@@ -22,7 +22,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from tools.vaultgraph import mirror                          # noqa: E402
 from tools.vaultgraph.runner import run                      # noqa: E402
 from tools.vaultgraph.selftest import self_test               # noqa: E402
-from tools.vaultgraph.serialize import build_payload, dumps   # noqa: E402
+from tools.vaultgraph.render import vault as render_vault      # noqa: E402
+from tools.vaultgraph.serialize import (                       # noqa: E402
+    build_payload, compare_tree, dumps, write_tree,
+)
 from tools.vaultgraph.textio import ROOT                      # noqa: E402
 
 GRAPH = ROOT / "graph.json"
@@ -54,6 +57,8 @@ def main(argv: list[str] | None = None) -> int:
                         help="with --check, treat an absent plan origin as a failure")
     parser.add_argument("--self-test", action="store_true", dest="selftest",
                         help="run the planted fixtures that prove the guards fire")
+    parser.add_argument("--graph-only", action="store_true", dest="graph_only",
+                        help="write graph.json and skip the vault")
     parser.add_argument("--verbose", action="store_true", help="list every unparsed item")
     args = parser.parse_args(argv)
 
@@ -87,18 +92,40 @@ def main(argv: list[str] | None = None) -> int:
     inputs.update({f"{s.id}_mirror": s.mirror for s in sources})
     content = dumps(build_payload(result, inputs))
 
+    tree = (
+        {} if args.graph_only
+        else render_vault.build(result.nodes, result.edges, result.anomalies, result.unparsed)
+    )
+
     if args.check:
+        problems: list[str] = []
         if not GRAPH.exists():
-            print("ERROR graph.json is missing — run python3 tools/gen_vault.py")
+            problems.append("missing: graph.json")
+        elif GRAPH.read_text(encoding="utf-8") != content:
+            problems.append("differs: graph.json")
+        problems.extend(compare_tree(ROOT, tree))
+        if problems:
+            for problem in problems[:20]:
+                print(f"  {problem}")
+            if len(problems) > 20:
+                print(f"  ... and {len(problems) - 20} more")
+            print(
+                f"ERROR the vault is stale or hand-edited ({len(problems)} problem(s)) — "
+                "run python3 tools/gen_vault.py"
+            )
             return 1
-        if GRAPH.read_text(encoding="utf-8") != content:
-            print("ERROR graph.json is stale — run python3 tools/gen_vault.py")
-            return 1
-        print(f"OK graph current ({len(result.nodes)} nodes, {len(result.edges)} edges)")
+        print(
+            f"OK vault current ({len(result.nodes)} nodes, {len(result.edges)} edges, "
+            f"{len(tree)} notes)"
+        )
         return 0
 
     GRAPH.write_text(content, encoding="utf-8", newline="\n")
-    print(f"OK wrote graph.json ({len(result.nodes)} nodes, {len(result.edges)} edges)")
+    written, removed = write_tree(ROOT, tree)
+    print(
+        f"OK wrote graph.json ({len(result.nodes)} nodes, {len(result.edges)} edges) "
+        f"and {len(tree)} vault notes ({written} changed, {removed} orphan(s) removed)"
+    )
     return 0
 
 

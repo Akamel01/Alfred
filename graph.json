@@ -10,6 +10,11 @@
           "path": "pyproject.toml"
         }
       ]
+    },
+    {
+      "detail": "the risk register is not in numeric order: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R12, R11",
+      "kind": "risk-register-order",
+      "refs": []
     }
   ],
   "counts": {
@@ -19,13 +24,19 @@
     "document": 63,
     "gate": 5,
     "gate-step": 33,
+    "kill-criterion": 6,
     "module": 118,
+    "operator-item": 9,
+    "risk": 12,
     "schema": 5,
-    "tier": 8
+    "stage": 10,
+    "tier": 8,
+    "unresolved": 3
   },
   "edge_counts": {
     "amended_by": 2,
     "amends": 5,
+    "blocks": 35,
     "contains": 143,
     "declares_absent": 1,
     "enforced_by": 137,
@@ -124,6 +135,461 @@
         "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
       },
       "src": "amendment:A6"
+    },
+    {
+      "confidence": "prose",
+      "dst": "stage:S9",
+      "evidence": "S9 blocked by O1",
+      "extractor": "stages",
+      "kind": "blocks",
+      "source": {
+        "end_line": 194,
+        "line": 194,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "src": "operator-item:O1"
+    },
+    {
+      "confidence": "prose",
+      "dst": "stage:S9",
+      "evidence": "O1 blocks S9",
+      "extractor": "stages",
+      "kind": "blocks",
+      "source": {
+        "end_line": 213,
+        "line": 213,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "src": "operator-item:O1"
+    },
+    {
+      "confidence": "prose",
+      "dst": "stage:S2",
+      "evidence": "O3 blocks S2",
+      "extractor": "stages",
+      "kind": "blocks",
+      "source": {
+        "end_line": 215,
+        "line": 215,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "src": "operator-item:O3"
+    },
+    {
+      "confidence": "prose",
+      "dst": "unresolved:phase-1",
+      "evidence": "O3 blocks Phase 1",
+      "extractor": "stages",
+      "kind": "blocks",
+      "source": {
+        "end_line": 215,
+        "line": 215,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "src": "operator-item:O3"
+    },
+    {
+      "confidence": "prose",
+      "dst": "stage:S9",
+      "evidence": "O5 blocks S9",
+      "extractor": "stages",
+      "kind": "blocks",
+      "source": {
+        "end_line": 217,
+        "line": 217,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "src": "operator-item:O5"
+    },
+    {
+      "confidence": "prose",
+      "dst": "kill-criterion:K1",
+      "evidence": "O8 blocks K1",
+      "extractor": "stages",
+      "kind": "blocks",
+      "source": {
+        "end_line": 220,
+        "line": 220,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "src": "operator-item:O8"
+    },
+    {
+      "confidence": "prose",
+      "dst": "kill-criterion:K2",
+      "evidence": "O8 blocks K2",
+      "extractor": "stages",
+      "kind": "blocks",
+      "source": {
+        "end_line": 220,
+        "line": 220,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "src": "operator-item:O8"
+    },
+    {
+      "confidence": "prose",
+      "dst": "stage:S3",
+      "evidence": "S1 blocks S3",
+      "extractor": "stages",
+      "kind": "blocks",
+      "source": {
+        "end_line": 77,
+        "line": 77,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "src": "stage:S1"
+    },
+    {
+      "confidence": "prose",
+      "dst": "stage:S4",
+      "evidence": "S1 blocks S4",
+      "extractor": "stages",
+      "kind": "blocks",
+      "source": {
+        "end_line": 77,
+        "line": 77,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "src": "stage:S1"
+    },
+    {
+      "confidence": "prose",
+      "dst": "stage:S4",
+      "evidence": "S4 blocked by S1",
+      "extractor": "stages",
+      "kind": "blocks",
+      "source": {
+        "end_line": 123,
+        "line": 123,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "src": "stage:S1"
+    },
+    {
+      "confidence": "prose",
+      "dst": "stage:S5",
+      "evidence": "S5 blocked by S1",
+      "extractor": "stages",
+      "kind": "blocks",
+      "source": {
+        "end_line": 137,
+        "line": 137,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "src": "stage:S1"
+    },
+    {
+      "confidence": "prose",
+      "dst": "stage:S6",
+      "evidence": "S1 blocks S6",
+      "extractor": "stages",
+      "kind": "blocks",
+      "source": {
+        "end_line": 77,
+        "line": 77,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "src": "stage:S1"
+    },
+    {
+      "confidence": "prose",
+      "dst": "stage:S6",
+      "evidence": "S6 blocked by S1",
+      "extractor": "stages",
+      "kind": "blocks",
+      "source": {
+        "end_line": 145,
+        "line": 145,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "src": "stage:S1"
+    },
+    {
+      "confidence": "prose",
+      "dst": "stage:S7",
+      "evidence": "S7 blocked by S1",
+      "extractor": "stages",
+      "kind": "blocks",
+      "source": {
+        "end_line": 165,
+        "line": 165,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "src": "stage:S1"
+    },
+    {
+      "confidence": "prose",
+      "dst": "stage:S9",
+      "evidence": "S9 blocked by S1",
+      "extractor": "stages",
+      "kind": "blocks",
+      "source": {
+        "end_line": 194,
+        "line": 194,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "src": "stage:S1"
+    },
+    {
+      "confidence": "prose",
+      "dst": "unresolved:phase-1",
+      "evidence": "S1 blocks Phase 1",
+      "extractor": "stages",
+      "kind": "blocks",
+      "source": {
+        "end_line": 77,
+        "line": 77,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "src": "stage:S1"
+    },
+    {
+      "confidence": "prose",
+      "dst": "decision:D49",
+      "evidence": "S2 blocks D49",
+      "extractor": "stages",
+      "kind": "blocks",
+      "source": {
+        "end_line": 88,
+        "line": 88,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "src": "stage:S2"
+    },
+    {
+      "confidence": "prose",
+      "dst": "stage:S4",
+      "evidence": "S2 blocks S4",
+      "extractor": "stages",
+      "kind": "blocks",
+      "source": {
+        "end_line": 88,
+        "line": 88,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "src": "stage:S2"
+    },
+    {
+      "confidence": "prose",
+      "dst": "stage:S4",
+      "evidence": "S4 blocked by S2",
+      "extractor": "stages",
+      "kind": "blocks",
+      "source": {
+        "end_line": 123,
+        "line": 123,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "src": "stage:S2"
+    },
+    {
+      "confidence": "prose",
+      "dst": "stage:S5",
+      "evidence": "S2 blocks S5",
+      "extractor": "stages",
+      "kind": "blocks",
+      "source": {
+        "end_line": 88,
+        "line": 88,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "src": "stage:S2"
+    },
+    {
+      "confidence": "prose",
+      "dst": "stage:S5",
+      "evidence": "S5 blocked by S2",
+      "extractor": "stages",
+      "kind": "blocks",
+      "source": {
+        "end_line": 137,
+        "line": 137,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "src": "stage:S2"
+    },
+    {
+      "confidence": "prose",
+      "dst": "stage:S9",
+      "evidence": "S9 blocked by S2",
+      "extractor": "stages",
+      "kind": "blocks",
+      "source": {
+        "end_line": 194,
+        "line": 194,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "src": "stage:S2"
+    },
+    {
+      "confidence": "prose",
+      "dst": "stage:S4",
+      "evidence": "S3 blocks S4",
+      "extractor": "stages",
+      "kind": "blocks",
+      "source": {
+        "end_line": 100,
+        "line": 100,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "src": "stage:S3"
+    },
+    {
+      "confidence": "prose",
+      "dst": "stage:S4",
+      "evidence": "S4 blocked by S3",
+      "extractor": "stages",
+      "kind": "blocks",
+      "source": {
+        "end_line": 123,
+        "line": 123,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "src": "stage:S3"
+    },
+    {
+      "confidence": "prose",
+      "dst": "stage:S9",
+      "evidence": "S9 blocked by S3",
+      "extractor": "stages",
+      "kind": "blocks",
+      "source": {
+        "end_line": 194,
+        "line": 194,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "src": "stage:S3"
+    },
+    {
+      "confidence": "prose",
+      "dst": "stage:S9",
+      "evidence": "S9 blocked by S4",
+      "extractor": "stages",
+      "kind": "blocks",
+      "source": {
+        "end_line": 194,
+        "line": 194,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "src": "stage:S4"
+    },
+    {
+      "confidence": "prose",
+      "dst": "unresolved:phase-0-exit",
+      "evidence": "S4 blocks Phase 0 exit",
+      "extractor": "stages",
+      "kind": "blocks",
+      "source": {
+        "end_line": 123,
+        "line": 123,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "src": "stage:S4"
+    },
+    {
+      "confidence": "prose",
+      "dst": "stage:S9",
+      "evidence": "S9 blocked by S5",
+      "extractor": "stages",
+      "kind": "blocks",
+      "source": {
+        "end_line": 194,
+        "line": 194,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "src": "stage:S5"
+    },
+    {
+      "confidence": "prose",
+      "dst": "unresolved:phase-0-exit",
+      "evidence": "S5 blocks Phase 0 exit",
+      "extractor": "stages",
+      "kind": "blocks",
+      "source": {
+        "end_line": 137,
+        "line": 137,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "src": "stage:S5"
+    },
+    {
+      "confidence": "prose",
+      "dst": "stage:S9",
+      "evidence": "S9 blocked by S6",
+      "extractor": "stages",
+      "kind": "blocks",
+      "source": {
+        "end_line": 194,
+        "line": 194,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "src": "stage:S6"
+    },
+    {
+      "confidence": "prose",
+      "dst": "unresolved:phase-1-dispatch",
+      "evidence": "S6 blocks Phase 1 dispatch",
+      "extractor": "stages",
+      "kind": "blocks",
+      "source": {
+        "end_line": 145,
+        "line": 145,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "src": "stage:S6"
+    },
+    {
+      "confidence": "prose",
+      "dst": "stage:S9",
+      "evidence": "S9 blocked by S7",
+      "extractor": "stages",
+      "kind": "blocks",
+      "source": {
+        "end_line": 194,
+        "line": 194,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "src": "stage:S7"
+    },
+    {
+      "confidence": "prose",
+      "dst": "unresolved:phase-0-exit",
+      "evidence": "S7 blocks Phase 0 exit",
+      "extractor": "stages",
+      "kind": "blocks",
+      "source": {
+        "end_line": 165,
+        "line": 165,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "src": "stage:S7"
+    },
+    {
+      "confidence": "prose",
+      "dst": "stage:S9",
+      "evidence": "S9 blocked by S8",
+      "extractor": "stages",
+      "kind": "blocks",
+      "source": {
+        "end_line": 194,
+        "line": 194,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "src": "stage:S8"
+    },
+    {
+      "confidence": "prose",
+      "dst": "unresolved:phase-0-exit",
+      "evidence": "S8 blocks Phase 0 exit",
+      "extractor": "stages",
+      "kind": "blocks",
+      "source": {
+        "end_line": 190,
+        "line": 190,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "src": "stage:S8"
     },
     {
       "confidence": "structural",
@@ -3924,6 +4390,19 @@
       "unparsed": 0
     },
     {
+      "edges": 0,
+      "expect_rejected": null,
+      "max_nodes": null,
+      "max_unparsed": 0,
+      "min_edges": 0,
+      "min_nodes": 18,
+      "name": "charter",
+      "nodes": 18,
+      "rejected": 0,
+      "scanned": 2,
+      "unparsed": 0
+    },
+    {
       "edges": 48,
       "expect_rejected": null,
       "max_nodes": null,
@@ -3974,6 +4453,19 @@
       "rejected": 0,
       "scanned": 110,
       "unparsed": 0
+    },
+    {
+      "edges": 35,
+      "expect_rejected": null,
+      "max_nodes": null,
+      "max_unparsed": 1,
+      "min_edges": 20,
+      "min_nodes": 19,
+      "name": "stages",
+      "nodes": 22,
+      "rejected": 0,
+      "scanned": 1,
+      "unparsed": 1
     },
     {
       "edges": 37,
@@ -8588,6 +9080,132 @@
     },
     {
       "attrs": {
+        "consequence": "**The AV wedge is parked; the factory continues.** Not a third re-argument — K1 and K5 both previously read \"D30 is re-argued\", D30 *was* re-argued on 2026-08-14, and a kill criterion whose consequence is to re-argue the decision just re-argued is a rescheduling, not a kill. **Parking means:** no further AV-specific investment (K2), the business-development ring-fence is lifted and those hours go to the factory, and the existing CriMe task class is retained as the factory's substrate. **A domain re-run is deliberately not triggered.** The arithmetic forbids it: a re-run decided 2026-10-21 has 71 days to the anchor, against the 57 days the AV track needed to get from a *verified oracle* to K1's own answer — with four research runs and ~1,450 fetched sources already behind it, and a contact list a new domain would not have. A pivot therefore arrives at the anchor holding exactly the evidence that K1 firing represents. Demand returns at **K6**, not before.",
+        "event": "",
+        "number": "K1"
+      },
+      "body": "No design-partner engagement by **2026-10-07** (Phase 1 exit)",
+      "extractor": "charter",
+      "id": "kill-criterion:K1",
+      "kind": "kill-criterion",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 85,
+        "line": 85,
+        "path": "docs/tier0/charter-and-non-goals.md"
+      },
+      "status": "armed",
+      "tags": [],
+      "title": "No design-partner engagement by **2026-10-07** (Phase 1 exit)"
+    },
+    {
+      "attrs": {
+        "consequence": "**AV-specific investment does not begin** — metric implementation beyond the Phase 1 class, the customer-run container, pilot work, and anything whose value depends on the AV wedge being real. **Factory phases 2–4 proceed regardless.** Phase 2 is the evidence store, the golden set and the failure taxonomy; none of it is product work, and all of it is what the 2026-12-31 anchor tests. Halting the factory on a demand signal would make the anchor unpassable by construction, which is what this row did before 2026-08-17.",
+        "event": "",
+        "number": "K2"
+      },
+      "body": "No signed LOI **and** no documented refusal reasons from three named buyer roles by **2026-10-07**",
+      "extractor": "charter",
+      "id": "kill-criterion:K2",
+      "kind": "kill-criterion",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 86,
+        "line": 86,
+        "path": "docs/tier0/charter-and-non-goals.md"
+      },
+      "status": "armed",
+      "tags": [],
+      "title": "No signed LOI **and** no documented refusal reasons from three named buyer roles by **2026-10-07**"
+    },
+    {
+      "attrs": {
+        "consequence": "Narrow the task class. Never lower the bar, never add orchestration.",
+        "event": "",
+        "number": "K3"
+      },
+      "body": "Per-task merge rate below ~50% at Phase 1 exit (**2026-10-07**) after the bounded retry budget, **read as a Wilson 95% interval rather than a point estimate — the criterion fires when the interval's lower bound sits below 0.50** (at n=20 that means fewer than 15/20; at n=10, fewer than 9/10)",
+      "extractor": "charter",
+      "id": "kill-criterion:K3",
+      "kind": "kill-criterion",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 87,
+        "line": 87,
+        "path": "docs/tier0/charter-and-non-goals.md"
+      },
+      "status": "armed",
+      "tags": [],
+      "title": "Per-task merge rate below ~50% at Phase 1 exit (**2026-10-07**) after the bounded retry budget, **read as a Wilson 95% interval rather than a point estimate — the criterion fires when the interval's l"
+    },
+    {
+      "attrs": {
+        "consequence": "D35 (pure-local) is re-argued, with the frontier-API lane as the named alternative.",
+        "event": "",
+        "number": "K4"
+      },
+      "body": "Factory wall-clock per merged task exceeds the measured human baseline by a stated factor, at Phase 2 exit (**2026-11-04**)",
+      "extractor": "charter",
+      "id": "kill-criterion:K4",
+      "kind": "kill-criterion",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 88,
+        "line": 88,
+        "path": "docs/tier0/charter-and-non-goals.md"
+      },
+      "status": "armed",
+      "tags": [],
+      "title": "Factory wall-clock per merged task exceeds the measured human baseline by a stated factor, at Phase 2 exit (**2026-11-04**)"
+    },
+    {
+      "attrs": {
+        "consequence": "The wedge has no forcing function. **D30 is re-argued before any Phase 2 investment.** What survives is a compliance-tooling product bought by OEMs, not attestation compelled by regulators. **DISCHARGED 2026-08-14** by the D30/D48 split: D30 retains the artifact shape, D48 carries the market position. A fired criterion whose consequence has been executed is not executed again.",
+        "event": "FIRED 2026-08-13.",
+        "number": "K5"
+      },
+      "body": "**FIRED 2026-08-13.** No instrument requires the attester to be independent of the simulation vendor: EU AI Act Art. 2(2) excludes ADS from substantive duties; EU 2022/1426 makes validation discretionary and document-based; NHTSA withdrew AV STEP (91 FR 38619); UK AV Act 2024 does not contain the word \"independent\".",
+      "extractor": "charter",
+      "id": "kill-criterion:K5",
+      "kind": "kill-criterion",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 89,
+        "line": 89,
+        "path": "docs/tier0/charter-and-non-goals.md"
+      },
+      "status": "fired",
+      "tags": [],
+      "title": "**FIRED 2026-08-13.** No instrument requires the attester to be independent of the simulation vendor: EU AI Act Art. 2(2) excludes ADS from substantive duties; EU 2022/1426 makes validation discretion"
+    },
+    {
+      "attrs": {
+        "consequence": "**Build halts until that answer exists.** Passing the anchor is a *factory* verdict and authorizes nothing beyond a decision. The business-development ring-fence returns at the anchor. Recorded because a factory-shaped anchor leaves demand untested at every date — precisely the R10 exposure the calendar was installed to prevent, which must be reassigned rather than allowed to lapse.",
+        "event": "",
+        "number": "K6"
+      },
+      "body": "No dated demand answer on the **live domain** when the **2026-12-31** anchor is reached — a named buyer role at three organisations, the artifact they would pay for in their own words, or documented refusal reasons",
+      "extractor": "charter",
+      "id": "kill-criterion:K6",
+      "kind": "kill-criterion",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 90,
+        "line": 90,
+        "path": "docs/tier0/charter-and-non-goals.md"
+      },
+      "status": "armed",
+      "tags": [],
+      "title": "No dated demand answer on the **live domain** when the **2026-12-31** anchor is reached — a named buyer role at three organisations, the artifact they would pay for in their own words, or documented r"
+    },
+    {
+      "attrs": {
         "is_test": "false",
         "lint_gated": "false",
         "path": ".github/workflows/gates.yml",
@@ -11514,6 +12132,435 @@
     },
     {
       "attrs": {
+        "blocks": "The capacity gate; S9's sizing",
+        "due": "Before Phase 1",
+        "number": "O1"
+      },
+      "body": "`F` (fixed weekly obligations, min/week) and target `n` (tasks/day, **stated as dispatched or merged**)",
+      "extractor": "stages",
+      "id": "operator-item:O1",
+      "kind": "operator-item",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 213,
+        "line": 213,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "`F` (fixed weekly obligations, min/week) and target `n` (tasks/day, **stated as dispatched or merged**)"
+    },
+    {
+      "attrs": {
+        "blocks": "The 2026-12-31 anchor's pass condition",
+        "due": "Before Phase 2 exit",
+        "number": "O2"
+      },
+      "body": "Defect-escape **observation window**",
+      "extractor": "stages",
+      "id": "operator-item:O2",
+      "kind": "operator-item",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 214,
+        "line": 214,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Defect-escape **observation window**"
+    },
+    {
+      "attrs": {
+        "blocks": "S2's scope; Phase 1's exit shape",
+        "due": "2026-09-09",
+        "number": "O3"
+      },
+      "body": "D49 P3: validate, or take the stated degradation to the 10 strong P1 measures",
+      "extractor": "stages",
+      "id": "operator-item:O3",
+      "kind": "operator-item",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 215,
+        "line": 215,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "D49 P3: validate, or take the stated degradation to the 10 strong P1 measures"
+    },
+    {
+      "attrs": {
+        "blocks": "Everything",
+        "due": "2026-09-09",
+        "number": "O4"
+      },
+      "body": "Phase 0 exit: move the date under a waiver ADR, or narrow the exit",
+      "extractor": "stages",
+      "id": "operator-item:O4",
+      "kind": "operator-item",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 216,
+        "line": 216,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Phase 0 exit: move the date under a waiver ADR, or narrow the exit"
+    },
+    {
+      "attrs": {
+        "blocks": "S9's containment assertions",
+        "due": "Before S9",
+        "number": "O5"
+      },
+      "body": "Read OpenHands at the pinned SHA",
+      "extractor": "stages",
+      "id": "operator-item:O5",
+      "kind": "operator-item",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 217,
+        "line": 217,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Read OpenHands at the pinned SHA"
+    },
+    {
+      "attrs": {
+        "blocks": "First prospect conversation",
+        "due": "2026-09-09",
+        "number": "O6"
+      },
+      "body": "Company formation — entity, liability-capped pilot template, insurance quote",
+      "extractor": "stages",
+      "id": "operator-item:O6",
+      "kind": "operator-item",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 218,
+        "line": 218,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Company formation — entity, liability-capped pilot template, insurance quote"
+    },
+    {
+      "attrs": {
+        "blocks": "Should precede conversation one",
+        "due": "Before O8",
+        "number": "O7"
+      },
+      "body": "EU 2022/1426 approval-register lookup (~1 hr)",
+      "extractor": "stages",
+      "id": "operator-item:O7",
+      "kind": "operator-item",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 219,
+        "line": 219,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "EU 2022/1426 approval-register lookup (~1 hr)"
+    },
+    {
+      "attrs": {
+        "blocks": "K1, K2",
+        "due": "2026-10-07",
+        "number": "O8"
+      },
+      "body": "Three Track-1 discovery conversations",
+      "extractor": "stages",
+      "id": "operator-item:O8",
+      "kind": "operator-item",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 220,
+        "line": 220,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Three Track-1 discovery conversations"
+    },
+    {
+      "attrs": {
+        "blocks": "Their landing",
+        "due": "Rolling",
+        "number": "O9"
+      },
+      "body": "Line-by-line review of inspector patches — ACS-1 `operator_action` vector, `lint_tier0_adr.py`",
+      "extractor": "stages",
+      "id": "operator-item:O9",
+      "kind": "operator-item",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 221,
+        "line": 221,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Line-by-line review of inspector patches — ACS-1 `operator_action` vector, `lint_tier0_adr.py`"
+    },
+    {
+      "attrs": {
+        "heading": "Nobody buys it",
+        "number": "R1"
+      },
+      "body": "",
+      "extractor": "charter",
+      "id": "risk:R1",
+      "kind": "risk",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 15,
+        "line": 15,
+        "path": "docs/tier0/risk-register.md"
+      },
+      "status": "open",
+      "tags": [],
+      "title": "Nobody buys it"
+    },
+    {
+      "attrs": {
+        "heading": "No forcing function (managed since 2026-08-12)",
+        "number": "R10"
+      },
+      "body": "",
+      "extractor": "charter",
+      "id": "risk:R10",
+      "kind": "risk",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 120,
+        "line": 120,
+        "path": "docs/tier0/risk-register.md"
+      },
+      "status": "open",
+      "tags": [],
+      "title": "No forcing function (managed since 2026-08-12)"
+    },
+    {
+      "attrs": {
+        "heading": "Documentation as a corruption vector",
+        "number": "R11"
+      },
+      "body": "",
+      "extractor": "charter",
+      "id": "risk:R11",
+      "kind": "risk",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 205,
+        "line": 205,
+        "path": "docs/tier0/risk-register.md"
+      },
+      "status": "open",
+      "tags": [],
+      "title": "Documentation as a corruption vector"
+    },
+    {
+      "attrs": {
+        "heading": "The data licence is unaffordable, so the wedge must not require one",
+        "number": "R12"
+      },
+      "body": "",
+      "extractor": "charter",
+      "id": "risk:R12",
+      "kind": "risk",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 186,
+        "line": 186,
+        "path": "docs/tier0/risk-register.md"
+      },
+      "status": "open",
+      "tags": [],
+      "title": "The data licence is unaffordable, so the wedge must not require one"
+    },
+    {
+      "attrs": {
+        "heading": "Single machine is a single point of total loss",
+        "number": "R2"
+      },
+      "body": "",
+      "extractor": "charter",
+      "id": "risk:R2",
+      "kind": "risk",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 26,
+        "line": 26,
+        "path": "docs/tier0/risk-register.md"
+      },
+      "status": "open",
+      "tags": [],
+      "title": "Single machine is a single point of total loss"
+    },
+    {
+      "attrs": {
+        "heading": "Plausible-but-wrong numbers do not announce themselves",
+        "number": "R3"
+      },
+      "body": "",
+      "extractor": "charter",
+      "id": "risk:R3",
+      "kind": "risk",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 39,
+        "line": 39,
+        "path": "docs/tier0/risk-register.md"
+      },
+      "status": "open",
+      "tags": [],
+      "title": "Plausible-but-wrong numbers do not announce themselves"
+    },
+    {
+      "attrs": {
+        "heading": "Held-out criteria leak",
+        "number": "R4"
+      },
+      "body": "",
+      "extractor": "charter",
+      "id": "risk:R4",
+      "kind": "risk",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 50,
+        "line": 50,
+        "path": "docs/tier0/risk-register.md"
+      },
+      "status": "open",
+      "tags": [],
+      "title": "Held-out criteria leak"
+    },
+    {
+      "attrs": {
+        "heading": "Budget ceilings are advisory (accepted)",
+        "number": "R5"
+      },
+      "body": "",
+      "extractor": "charter",
+      "id": "risk:R5",
+      "kind": "risk",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 63,
+        "line": 63,
+        "path": "docs/tier0/risk-register.md"
+      },
+      "status": "accepted",
+      "tags": [],
+      "title": "Budget ceilings are advisory (accepted)"
+    },
+    {
+      "attrs": {
+        "heading": "Pure-local capability ceiling (accepted)",
+        "number": "R6"
+      },
+      "body": "",
+      "extractor": "charter",
+      "id": "risk:R6",
+      "kind": "risk",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 73,
+        "line": 73,
+        "path": "docs/tier0/risk-register.md"
+      },
+      "status": "accepted",
+      "tags": [],
+      "title": "Pure-local capability ceiling (accepted)"
+    },
+    {
+      "attrs": {
+        "heading": "Prompt injection via everything the agent reads",
+        "number": "R7"
+      },
+      "body": "",
+      "extractor": "charter",
+      "id": "risk:R7",
+      "kind": "risk",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 86,
+        "line": 86,
+        "path": "docs/tier0/risk-register.md"
+      },
+      "status": "open",
+      "tags": [],
+      "title": "Prompt injection via everything the agent reads"
+    },
+    {
+      "attrs": {
+        "heading": "The harness measures itself",
+        "number": "R8"
+      },
+      "body": "",
+      "extractor": "charter",
+      "id": "risk:R8",
+      "kind": "risk",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 99,
+        "line": 99,
+        "path": "docs/tier0/risk-register.md"
+      },
+      "status": "open",
+      "tags": [],
+      "title": "The harness measures itself"
+    },
+    {
+      "attrs": {
+        "heading": "Review capacity, not compute, is the bottleneck",
+        "number": "R9"
+      },
+      "body": "",
+      "extractor": "charter",
+      "id": "risk:R9",
+      "kind": "risk",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 110,
+        "line": 110,
+        "path": "docs/tier0/risk-register.md"
+      },
+      "status": "open",
+      "tags": [],
+      "title": "Review capacity, not compute, is the bottleneck"
+    },
+    {
+      "attrs": {
         "additive_only_lint": "false",
         "migrations": "1",
         "path": "migrations/harness/control",
@@ -11623,6 +12670,216 @@
         "protected"
       ],
       "title": "roles"
+    },
+    {
+      "attrs": {
+        "clause": "blocks nothing, decays if deferred",
+        "completion": "DONE 2026-08-17",
+        "number": "S0"
+      },
+      "body": "Land the decided-but-unapplied text · *blocks nothing, decays if deferred* · **DONE 2026-08-17**",
+      "extractor": "stages",
+      "id": "stage:S0",
+      "kind": "stage",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 71,
+        "line": 71,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "status": "done",
+      "tags": [],
+      "title": "Land the decided-but-unapplied text"
+    },
+    {
+      "attrs": {
+        "clause": "blocks S3, S4, S6, and all of Phase 1",
+        "completion": "DONE 2026-08-17",
+        "number": "S1"
+      },
+      "body": "Database foundation · *blocks S3, S4, S6, and all of Phase 1* · **DONE 2026-08-17**",
+      "extractor": "stages",
+      "id": "stage:S1",
+      "kind": "stage",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 77,
+        "line": 77,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "status": "done",
+      "tags": [],
+      "title": "Database foundation"
+    },
+    {
+      "attrs": {
+        "clause": "blocks S5's reference values, the S4 ladder's calibration, and the D49 P3 decision",
+        "completion": "",
+        "number": "S2"
+      },
+      "body": "Oracle environment · *blocks S5's reference values, the S4 ladder's calibration, and the D49 P3 decision*",
+      "extractor": "stages",
+      "id": "stage:S2",
+      "kind": "stage",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 88,
+        "line": 88,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "status": "not-started",
+      "tags": [],
+      "title": "Oracle environment"
+    },
+    {
+      "attrs": {
+        "clause": "blocks S4, and every verdict ever recorded",
+        "completion": "DONE 2026-08-17",
+        "number": "S3"
+      },
+      "body": "Inspector core · *blocks S4, and every verdict ever recorded* · **DONE 2026-08-17**",
+      "extractor": "stages",
+      "id": "stage:S3",
+      "kind": "stage",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 100,
+        "line": 100,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "status": "done",
+      "tags": [],
+      "title": "Inspector core"
+    },
+    {
+      "attrs": {
+        "clause": "blocks Phase 0 exit; blocked by S1, S2, S3",
+        "completion": "",
+        "number": "S4"
+      },
+      "body": "The two suites, together · *blocks Phase 0 exit; blocked by S1, S2, S3*",
+      "extractor": "stages",
+      "id": "stage:S4",
+      "kind": "stage",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 123,
+        "line": 123,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "status": "not-started",
+      "tags": [],
+      "title": "The two suites, together"
+    },
+    {
+      "attrs": {
+        "clause": "blocks Phase 0 exit; blocked by S1, S2",
+        "completion": "",
+        "number": "S5"
+      },
+      "body": "Product path to a reproduced number · *blocks Phase 0 exit; blocked by S1, S2*",
+      "extractor": "stages",
+      "id": "stage:S5",
+      "kind": "stage",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 137,
+        "line": 137,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "status": "not-started",
+      "tags": [],
+      "title": "Product path to a reproduced number"
+    },
+    {
+      "attrs": {
+        "clause": "blocks Phase 1 dispatch; blocked by S1",
+        "completion": "PROBES DONE 2026-08-17, enforcement outstanding",
+        "number": "S6"
+      },
+      "body": "Containment · *blocks Phase 1 dispatch; blocked by S1* · **PROBES DONE 2026-08-17, enforcement outstanding**",
+      "extractor": "stages",
+      "id": "stage:S6",
+      "kind": "stage",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 145,
+        "line": 145,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "status": "partial",
+      "tags": [],
+      "title": "Containment"
+    },
+    {
+      "attrs": {
+        "clause": "blocks Phase 0 exit; blocked by S1",
+        "completion": "D-SYNTHETIC DONE 2026-08-17, archiving and PITR outstanding",
+        "number": "S7"
+      },
+      "body": "Durability · *blocks Phase 0 exit; blocked by S1* · **D-SYNTHETIC DONE 2026-08-17, archiving and PITR outstanding**",
+      "extractor": "stages",
+      "id": "stage:S7",
+      "kind": "stage",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 165,
+        "line": 165,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "status": "partial",
+      "tags": [],
+      "title": "Durability"
+    },
+    {
+      "attrs": {
+        "clause": "blocks Phase 0 exit",
+        "completion": "",
+        "number": "S8"
+      },
+      "body": "Deploy and rollback · *blocks Phase 0 exit*",
+      "extractor": "stages",
+      "id": "stage:S8",
+      "kind": "stage",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 190,
+        "line": 190,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "status": "not-started",
+      "tags": [],
+      "title": "Deploy and rollback"
+    },
+    {
+      "attrs": {
+        "clause": "blocked by S1–S8 and by O1",
+        "completion": "",
+        "number": "S9"
+      },
+      "body": "Phase 1 build · *blocked by S1–S8 and by O1*",
+      "extractor": "stages",
+      "id": "stage:S9",
+      "kind": "stage",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 194,
+        "line": 194,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "status": "not-started",
+      "tags": [],
+      "title": "Phase 1 build"
     },
     {
       "attrs": {
@@ -11775,6 +13032,69 @@
       "status": "",
       "tags": [],
       "title": "Tier 7 — Meta"
+    },
+    {
+      "attrs": {
+        "raw": "Phase 0 exit"
+      },
+      "body": "",
+      "extractor": "stages",
+      "id": "unresolved:phase-0-exit",
+      "kind": "unresolved",
+      "occurrences": [],
+      "shape": "stub",
+      "source": {
+        "end_line": 123,
+        "line": 123,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "status": "",
+      "tags": [
+        "unresolved"
+      ],
+      "title": "Phase 0 exit"
+    },
+    {
+      "attrs": {
+        "raw": "Phase 1"
+      },
+      "body": "",
+      "extractor": "stages",
+      "id": "unresolved:phase-1",
+      "kind": "unresolved",
+      "occurrences": [],
+      "shape": "stub",
+      "source": {
+        "end_line": 77,
+        "line": 77,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "status": "",
+      "tags": [
+        "unresolved"
+      ],
+      "title": "Phase 1"
+    },
+    {
+      "attrs": {
+        "raw": "Phase 1 dispatch"
+      },
+      "body": "",
+      "extractor": "stages",
+      "id": "unresolved:phase-1-dispatch",
+      "kind": "unresolved",
+      "occurrences": [],
+      "shape": "stub",
+      "source": {
+        "end_line": 145,
+        "line": 145,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "status": "",
+      "tags": [
+        "unresolved"
+      ],
+      "title": "Phase 1 dispatch"
     }
   ],
   "rejected": [
@@ -11860,5 +13180,16 @@
     }
   ],
   "schema_version": 1,
-  "unparsed": []
+  "unparsed": [
+    {
+      "extractor": "stages",
+      "reason": "dependency names no target this graph can resolve",
+      "source": {
+        "end_line": 100,
+        "line": 100,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "text": "every verdict ever recorded"
+    }
+  ]
 }

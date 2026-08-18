@@ -76,3 +76,52 @@ def dumps(payload: dict[str, Any]) -> str:
     """The one serialization. A trailing newline so the file ends like every other text file
     in the repo and `git diff` does not report `\\ No newline at end of file` forever."""
     return json.dumps(payload, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
+
+
+def write_tree(root, tree: dict[str, str]) -> tuple[int, int]:
+    """Write the planned vault and remove anything under it that was not planned.
+
+    An orphan is a file the generator never planned. A hand-*edited* note is caught by
+    content comparison; a hand-*created* one is only caught by noticing nobody planned it.
+    Both are the same defect -- a fact that exists only in the vault -- so both are removed
+    on a write and both fail a check."""
+    written = 0
+    for rel_path, content in sorted(tree.items()):
+        target = root / rel_path
+        target.parent.mkdir(parents=True, exist_ok=True)
+        if not target.exists() or target.read_text(encoding="utf-8") != content:
+            target.write_text(content, encoding="utf-8", newline="\n")
+            written += 1
+    removed = 0
+    for orphan in sorted(find_orphans(root, tree), reverse=True):
+        (root / orphan).unlink()
+        removed += 1
+    for directory in sorted((root / "vault").rglob("*"), reverse=True):
+        if directory.is_dir() and not any(directory.iterdir()):
+            directory.rmdir()
+    return written, removed
+
+
+def find_orphans(root, tree: dict[str, str]) -> list[str]:
+    base = root / "vault"
+    if not base.is_dir():
+        return []
+    planned = set(tree)
+    return sorted(
+        p.relative_to(root).as_posix()
+        for p in base.rglob("*")
+        if p.is_file() and p.relative_to(root).as_posix() not in planned
+    )
+
+
+def compare_tree(root, tree: dict[str, str]) -> list[str]:
+    """Every way the committed vault can disagree with a fresh build."""
+    problems: list[str] = []
+    for rel_path, content in sorted(tree.items()):
+        target = root / rel_path
+        if not target.exists():
+            problems.append(f"missing: {rel_path}")
+        elif target.read_text(encoding="utf-8") != content:
+            problems.append(f"differs: {rel_path}")
+    problems.extend(f"orphan: {p}" for p in find_orphans(root, tree))
+    return problems

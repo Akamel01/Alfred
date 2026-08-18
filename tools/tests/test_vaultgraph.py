@@ -338,3 +338,123 @@ def test_no_edge_endpoint_is_dangling() -> None:
     known = {n.id for n in result.nodes}
     dangling = sorted({e.src for e in result.edges} | {e.dst for e in result.edges}) 
     assert [d for d in dangling if d not in known] == []
+
+
+# ---- stages, charter and the vault ---------------------------------------------------------
+
+def test_all_ten_stages_with_their_completion_state() -> None:
+    result = _result()
+    stages = {n.attrs["number"]: n.status for n in result.nodes if n.kind is NodeKind.STAGE}
+    assert len(stages) == 10
+    assert [s for s, st in stages.items() if st == "done"] == ["S0", "S1", "S3"]
+    assert [s for s, st in stages.items() if st == "partial"] == ["S6", "S7"]
+
+
+def test_the_two_dependency_claims_the_board_turns_on() -> None:
+    # S2 blocks S4 and S5, and O3 blocks S2 — the acceptance criterion asks for both to be
+    # visible in one view, which requires both to be edges first.
+    result = _result()
+    blocks = {(e.src, e.dst) for e in result.edges if e.kind.value == "blocks"}
+    assert ("stage:S2", "stage:S4") in blocks
+    assert ("stage:S2", "stage:S5") in blocks
+    assert ("operator-item:O3", "stage:S2") in blocks
+
+
+def test_the_stage_dag_has_no_cycle() -> None:
+    result = _result()
+    stage_ids = {n.id for n in result.nodes if n.kind is NodeKind.STAGE}
+    graph: dict[str, set[str]] = {s: set() for s in stage_ids}
+    for edge in result.edges:
+        if edge.kind.value == "blocks" and edge.src in stage_ids and edge.dst in stage_ids:
+            graph[edge.src].add(edge.dst)
+    colour: dict[str, int] = {}
+
+    def visit(node: str) -> bool:
+        colour[node] = 1
+        for nxt in sorted(graph[node]):
+            if colour.get(nxt) == 1 or (colour.get(nxt) is None and visit(nxt)):
+                return True
+        colour[node] = 2
+        return False
+
+    assert not any(visit(s) for s in sorted(stage_ids) if s not in colour)
+
+
+def test_kill_criteria_and_risks_come_from_tier_zero_not_the_plan() -> None:
+    # The plan references K1-K6 and R1-R12 constantly and defines neither.
+    result = _result()
+    kills = [n for n in result.nodes if n.kind is NodeKind.KILL_CRITERION]
+    risks = [n for n in result.nodes if n.kind is NodeKind.RISK]
+    assert len(kills) == 6 and len(risks) == 12
+    assert all(n.source.path == "docs/tier0/charter-and-non-goals.md" for n in kills)
+    assert all(n.source.path == "docs/tier0/risk-register.md" for n in risks)
+    assert [n.attrs["number"] for n in kills if n.status == "fired"] == ["K5"]
+
+
+def test_the_risk_register_being_out_of_order_is_surfaced() -> None:
+    # R12 sits between R10 and R11. Surfaced, not silently sorted.
+    result = _result()
+    assert any(a.kind == "risk-register-order" for a in result.anomalies)
+
+
+def test_prose_edges_never_claim_structural_confidence() -> None:
+    result = _result()
+    prose = [e for e in result.edges if e.kind.value == "blocks"]
+    assert prose and all(e.confidence.value == "prose" for e in prose)
+    assert all(e.evidence for e in prose)
+
+
+# ---- vault tree ----------------------------------------------------------------------------
+
+from tools.vaultgraph.render import vault as render_vault  # noqa: E402
+from tools.vaultgraph.serialize import compare_tree  # noqa: E402
+
+
+def _tree():
+    result = run(ROOT)
+    return result, render_vault.build(
+        result.nodes, result.edges, result.anomalies, result.unparsed
+    )
+
+
+def test_the_committed_vault_matches_a_fresh_build() -> None:
+    _result_, tree = _tree()
+    assert compare_tree(ROOT, tree) == []
+
+
+def test_every_node_gets_exactly_one_note() -> None:
+    result, tree = _tree()
+    notes = [p for p in tree if p.endswith(".md") and "/" in p.removeprefix("vault/")]
+    assert len(notes) == len(result.nodes)
+
+
+def test_every_note_carries_the_banner_and_a_resolving_source() -> None:
+    _result_, tree = _tree()
+    for path, content in tree.items():
+        if not path.endswith(".md"):
+            continue
+        assert "Generated — do not edit" in content, path
+
+
+def test_the_vault_is_byte_identical_on_a_second_build() -> None:
+    _r1, first = _tree()
+    _r2, second = _tree()
+    assert first == second
+
+
+def test_the_canvas_uses_stable_ids_and_no_random_layout() -> None:
+    # A force layout would move every card whenever one was added, so the committed board
+    # would diff on every rebuild for reasons that are not changes.
+    _result_, tree = _tree()
+    board = json.loads(tree["vault/Stage DAG.canvas"])
+    assert board["nodes"] and board["edges"]
+    xs = {n["x"] for n in board["nodes"]}
+    assert all(x % 420 == 0 for x in xs)
+
+
+def test_renderers_cannot_reach_the_extractors() -> None:
+    from tools.vaultgraph.selftest import _reaches
+
+    render_dir = ROOT / "tools" / "vaultgraph" / "render"
+    for module in sorted(render_dir.glob("*.py")):
+        assert _reaches(module, "extract") is None, module.name

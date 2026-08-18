@@ -1,0 +1,37 @@
+---
+kind: gate-step
+id: "gate-step:integrity.07"
+title: "Verdict boundary holds"
+shape: "step"
+job: "integrity"
+source: ".github/workflows/gates.yml:79"
+extractor: "workflows"
+tags: [protected]
+aliases:
+  - "Verdict boundary holds"
+  - "integrity.07"
+generated: true
+---
+
+# Verdict boundary holds
+
+> [!warning] Generated — do not edit
+> This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
+
+**Source** · `.github/workflows/gates.yml:79`
+
+## Statement
+
+python3 scripts/lint_verdict_boundary.py
+
+## Fields
+
+| Field | Value |
+|---|---|
+| `command` | python3 scripts/lint_verdict_boundary.py |
+| `kind` | run |
+| `ordinal` | 7 |
+
+## Binds
+
+- [[gate__integrity|integrity (fixtures and register)]] **contains** → this

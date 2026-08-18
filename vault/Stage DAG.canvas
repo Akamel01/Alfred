@@ -1,0 +1,482 @@
+{
+  "edges": [
+    {
+      "fromNode": "ff0243eb509856eb",
+      "fromSide": "right",
+      "id": "46bc2c0e1991a34d",
+      "label": "O1 blocks S9",
+      "toNode": "c6ba452e6a2d0e1c",
+      "toSide": "left"
+    },
+    {
+      "fromNode": "ff0243eb509856eb",
+      "fromSide": "right",
+      "id": "dd4d97fe8d90d7d3",
+      "label": "S9 blocked by O1",
+      "toNode": "c6ba452e6a2d0e1c",
+      "toSide": "left"
+    },
+    {
+      "fromNode": "a9f3bb75570dab21",
+      "fromSide": "right",
+      "id": "c1f3d26af2b49a2f",
+      "label": "O3 blocks S2",
+      "toNode": "b2840c5b12be8a38",
+      "toSide": "left"
+    },
+    {
+      "fromNode": "a9f3bb75570dab21",
+      "fromSide": "right",
+      "id": "d2d5607d9c8e5561",
+      "label": "O3 blocks Phase 1",
+      "toNode": "02157bb979b9392c",
+      "toSide": "left"
+    },
+    {
+      "fromNode": "dfe15253c92976c9",
+      "fromSide": "right",
+      "id": "c4af4752a904be77",
+      "label": "O5 blocks S9",
+      "toNode": "c6ba452e6a2d0e1c",
+      "toSide": "left"
+    },
+    {
+      "fromNode": "25c4d1e303c8e65c",
+      "fromSide": "right",
+      "id": "d6c5b0475b447032",
+      "label": "S1 blocks S3",
+      "toNode": "fe1e453aa0344b57",
+      "toSide": "left"
+    },
+    {
+      "fromNode": "25c4d1e303c8e65c",
+      "fromSide": "right",
+      "id": "28d17fdb286d6f8b",
+      "label": "S1 blocks S4",
+      "toNode": "060abb0710a90da6",
+      "toSide": "left"
+    },
+    {
+      "fromNode": "25c4d1e303c8e65c",
+      "fromSide": "right",
+      "id": "7b894a8eee51e20c",
+      "label": "S4 blocked by S1",
+      "toNode": "060abb0710a90da6",
+      "toSide": "left"
+    },
+    {
+      "fromNode": "25c4d1e303c8e65c",
+      "fromSide": "right",
+      "id": "f52102fab7a6d5f9",
+      "label": "S5 blocked by S1",
+      "toNode": "fa5e99c4d8e47eec",
+      "toSide": "left"
+    },
+    {
+      "fromNode": "25c4d1e303c8e65c",
+      "fromSide": "right",
+      "id": "5b8b78c58312f060",
+      "label": "S1 blocks S6",
+      "toNode": "aade385e88436ad6",
+      "toSide": "left"
+    },
+    {
+      "fromNode": "25c4d1e303c8e65c",
+      "fromSide": "right",
+      "id": "8c052e5c210070aa",
+      "label": "S6 blocked by S1",
+      "toNode": "aade385e88436ad6",
+      "toSide": "left"
+    },
+    {
+      "fromNode": "25c4d1e303c8e65c",
+      "fromSide": "right",
+      "id": "320a2d20d4c17930",
+      "label": "S7 blocked by S1",
+      "toNode": "a8493ff5c5e670c4",
+      "toSide": "left"
+    },
+    {
+      "fromNode": "25c4d1e303c8e65c",
+      "fromSide": "right",
+      "id": "0224ffa082262ca2",
+      "label": "S9 blocked by S1",
+      "toNode": "c6ba452e6a2d0e1c",
+      "toSide": "left"
+    },
+    {
+      "fromNode": "25c4d1e303c8e65c",
+      "fromSide": "right",
+      "id": "e336ccd6db96ecb9",
+      "label": "S1 blocks Phase 1",
+      "toNode": "02157bb979b9392c",
+      "toSide": "left"
+    },
+    {
+      "fromNode": "b2840c5b12be8a38",
+      "fromSide": "right",
+      "id": "c6f1963bb2e5c74d",
+      "label": "S2 blocks S4",
+      "toNode": "060abb0710a90da6",
+      "toSide": "left"
+    },
+    {
+      "fromNode": "b2840c5b12be8a38",
+      "fromSide": "right",
+      "id": "727095c3b283d59e",
+      "label": "S4 blocked by S2",
+      "toNode": "060abb0710a90da6",
+      "toSide": "left"
+    },
+    {
+      "fromNode": "b2840c5b12be8a38",
+      "fromSide": "right",
+      "id": "88f01904379589e6",
+      "label": "S2 blocks S5",
+      "toNode": "fa5e99c4d8e47eec",
+      "toSide": "left"
+    },
+    {
+      "fromNode": "b2840c5b12be8a38",
+      "fromSide": "right",
+      "id": "5859ac925e4a718f",
+      "label": "S5 blocked by S2",
+      "toNode": "fa5e99c4d8e47eec",
+      "toSide": "left"
+    },
+    {
+      "fromNode": "b2840c5b12be8a38",
+      "fromSide": "right",
+      "id": "5afe01288ef03f1c",
+      "label": "S9 blocked by S2",
+      "toNode": "c6ba452e6a2d0e1c",
+      "toSide": "left"
+    },
+    {
+      "fromNode": "fe1e453aa0344b57",
+      "fromSide": "right",
+      "id": "2789bd3a1e730dbc",
+      "label": "S3 blocks S4",
+      "toNode": "060abb0710a90da6",
+      "toSide": "left"
+    },
+    {
+      "fromNode": "fe1e453aa0344b57",
+      "fromSide": "right",
+      "id": "74ea4ba3575991b1",
+      "label": "S4 blocked by S3",
+      "toNode": "060abb0710a90da6",
+      "toSide": "left"
+    },
+    {
+      "fromNode": "fe1e453aa0344b57",
+      "fromSide": "right",
+      "id": "9ec3e48200ab6a3f",
+      "label": "S9 blocked by S3",
+      "toNode": "c6ba452e6a2d0e1c",
+      "toSide": "left"
+    },
+    {
+      "fromNode": "060abb0710a90da6",
+      "fromSide": "right",
+      "id": "01b249071d2f139f",
+      "label": "S9 blocked by S4",
+      "toNode": "c6ba452e6a2d0e1c",
+      "toSide": "left"
+    },
+    {
+      "fromNode": "060abb0710a90da6",
+      "fromSide": "right",
+      "id": "8b31608423a44892",
+      "label": "S4 blocks Phase 0 exit",
+      "toNode": "3b242ea83a8167e6",
+      "toSide": "left"
+    },
+    {
+      "fromNode": "fa5e99c4d8e47eec",
+      "fromSide": "right",
+      "id": "8fe41e036ba893f2",
+      "label": "S9 blocked by S5",
+      "toNode": "c6ba452e6a2d0e1c",
+      "toSide": "left"
+    },
+    {
+      "fromNode": "fa5e99c4d8e47eec",
+      "fromSide": "right",
+      "id": "be97849ba1c5befc",
+      "label": "S5 blocks Phase 0 exit",
+      "toNode": "3b242ea83a8167e6",
+      "toSide": "left"
+    },
+    {
+      "fromNode": "aade385e88436ad6",
+      "fromSide": "right",
+      "id": "da914df7a2668203",
+      "label": "S9 blocked by S6",
+      "toNode": "c6ba452e6a2d0e1c",
+      "toSide": "left"
+    },
+    {
+      "fromNode": "aade385e88436ad6",
+      "fromSide": "right",
+      "id": "92f2e967fd91500e",
+      "label": "S6 blocks Phase 1 dispatch",
+      "toNode": "13d48fbdb0c0a459",
+      "toSide": "left"
+    },
+    {
+      "fromNode": "a8493ff5c5e670c4",
+      "fromSide": "right",
+      "id": "442ff6395b189f43",
+      "label": "S9 blocked by S7",
+      "toNode": "c6ba452e6a2d0e1c",
+      "toSide": "left"
+    },
+    {
+      "fromNode": "a8493ff5c5e670c4",
+      "fromSide": "right",
+      "id": "ca3dd4c7d5064473",
+      "label": "S7 blocks Phase 0 exit",
+      "toNode": "3b242ea83a8167e6",
+      "toSide": "left"
+    },
+    {
+      "fromNode": "d2deb15efa0b8ec2",
+      "fromSide": "right",
+      "id": "69326adef6a3776e",
+      "label": "S9 blocked by S8",
+      "toNode": "c6ba452e6a2d0e1c",
+      "toSide": "left"
+    },
+    {
+      "fromNode": "d2deb15efa0b8ec2",
+      "fromSide": "right",
+      "id": "c92f340f85f1334a",
+      "label": "S8 blocks Phase 0 exit",
+      "toNode": "3b242ea83a8167e6",
+      "toSide": "left"
+    }
+  ],
+  "nodes": [
+    {
+      "color": "6",
+      "file": "vault/execution/operator-item__O1.md",
+      "height": 120,
+      "id": "ff0243eb509856eb",
+      "type": "file",
+      "width": 330,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "color": "6",
+      "file": "vault/execution/operator-item__O2.md",
+      "height": 120,
+      "id": "daab60ffebf9bae2",
+      "type": "file",
+      "width": 330,
+      "x": 0,
+      "y": 190
+    },
+    {
+      "color": "6",
+      "file": "vault/execution/operator-item__O3.md",
+      "height": 120,
+      "id": "a9f3bb75570dab21",
+      "type": "file",
+      "width": 330,
+      "x": 0,
+      "y": 380
+    },
+    {
+      "color": "6",
+      "file": "vault/execution/operator-item__O4.md",
+      "height": 120,
+      "id": "37f39f5bd356ef9e",
+      "type": "file",
+      "width": 330,
+      "x": 0,
+      "y": 570
+    },
+    {
+      "color": "6",
+      "file": "vault/execution/operator-item__O5.md",
+      "height": 120,
+      "id": "dfe15253c92976c9",
+      "type": "file",
+      "width": 330,
+      "x": 0,
+      "y": 760
+    },
+    {
+      "color": "6",
+      "file": "vault/execution/operator-item__O6.md",
+      "height": 120,
+      "id": "f4ebac9df2eecf6d",
+      "type": "file",
+      "width": 330,
+      "x": 0,
+      "y": 950
+    },
+    {
+      "color": "6",
+      "file": "vault/execution/operator-item__O7.md",
+      "height": 120,
+      "id": "d50960425c24cab1",
+      "type": "file",
+      "width": 330,
+      "x": 0,
+      "y": 1140
+    },
+    {
+      "color": "6",
+      "file": "vault/execution/operator-item__O8.md",
+      "height": 120,
+      "id": "57118f0e55ecc5dc",
+      "type": "file",
+      "width": 330,
+      "x": 0,
+      "y": 1330
+    },
+    {
+      "color": "6",
+      "file": "vault/execution/operator-item__O9.md",
+      "height": 120,
+      "id": "3ae722bd402fa1ee",
+      "type": "file",
+      "width": 330,
+      "x": 0,
+      "y": 1520
+    },
+    {
+      "color": "4",
+      "file": "vault/execution/stage__S0.md",
+      "height": 120,
+      "id": "a6d7d29b5087e7a3",
+      "type": "file",
+      "width": 330,
+      "x": 420,
+      "y": 0
+    },
+    {
+      "color": "4",
+      "file": "vault/execution/stage__S1.md",
+      "height": 120,
+      "id": "25c4d1e303c8e65c",
+      "type": "file",
+      "width": 330,
+      "x": 420,
+      "y": 190
+    },
+    {
+      "color": "1",
+      "file": "vault/execution/stage__S2.md",
+      "height": 120,
+      "id": "b2840c5b12be8a38",
+      "type": "file",
+      "width": 330,
+      "x": 420,
+      "y": 380
+    },
+    {
+      "color": "4",
+      "file": "vault/execution/stage__S3.md",
+      "height": 120,
+      "id": "fe1e453aa0344b57",
+      "type": "file",
+      "width": 330,
+      "x": 420,
+      "y": 570
+    },
+    {
+      "color": "1",
+      "file": "vault/execution/stage__S4.md",
+      "height": 120,
+      "id": "060abb0710a90da6",
+      "type": "file",
+      "width": 330,
+      "x": 420,
+      "y": 760
+    },
+    {
+      "color": "1",
+      "file": "vault/execution/stage__S5.md",
+      "height": 120,
+      "id": "fa5e99c4d8e47eec",
+      "type": "file",
+      "width": 330,
+      "x": 420,
+      "y": 950
+    },
+    {
+      "color": "2",
+      "file": "vault/execution/stage__S6.md",
+      "height": 120,
+      "id": "aade385e88436ad6",
+      "type": "file",
+      "width": 330,
+      "x": 420,
+      "y": 1140
+    },
+    {
+      "color": "2",
+      "file": "vault/execution/stage__S7.md",
+      "height": 120,
+      "id": "a8493ff5c5e670c4",
+      "type": "file",
+      "width": 330,
+      "x": 420,
+      "y": 1330
+    },
+    {
+      "color": "1",
+      "file": "vault/execution/stage__S8.md",
+      "height": 120,
+      "id": "d2deb15efa0b8ec2",
+      "type": "file",
+      "width": 330,
+      "x": 420,
+      "y": 1520
+    },
+    {
+      "color": "1",
+      "file": "vault/execution/stage__S9.md",
+      "height": 120,
+      "id": "c6ba452e6a2d0e1c",
+      "type": "file",
+      "width": 330,
+      "x": 420,
+      "y": 1710
+    },
+    {
+      "color": "6",
+      "file": "vault/execution/unresolved__phase-0-exit.md",
+      "height": 120,
+      "id": "3b242ea83a8167e6",
+      "type": "file",
+      "width": 330,
+      "x": 840,
+      "y": 0
+    },
+    {
+      "color": "6",
+      "file": "vault/execution/unresolved__phase-1.md",
+      "height": 120,
+      "id": "02157bb979b9392c",
+      "type": "file",
+      "width": 330,
+      "x": 840,
+      "y": 190
+    },
+    {
+      "color": "6",
+      "file": "vault/execution/unresolved__phase-1-dispatch.md",
+      "height": 120,
+      "id": "13d48fbdb0c0a459",
+      "type": "file",
+      "width": 330,
+      "x": 840,
+      "y": 380
+    }
+  ]
+}

@@ -13,11 +13,14 @@ from __future__ import annotations
 from typing import Final
 
 from ..protocol import ExtractorSpec, validate_registry
-from . import adrs, amendments, code, decisions, documents, references, workflows
+from . import (adrs, amendments, charter, code, decisions, documents, references,
+               stages, workflows)
 
 EXTRACTORS: Final[tuple[ExtractorSpec, ...]] = (
     documents.SPEC,
     adrs.SPEC,
+    charter.SPEC,
+    stages.SPEC,
     decisions.SPEC,
     amendments.SPEC,
     code.SPEC,
@@ -29,6 +32,6 @@ EXTRACTORS: Final[tuple[ExtractorSpec, ...]] = (
 
 #: The registry has its own floor, for the same reason each extractor does: a registry that
 #: lost every entry would otherwise report a clean run over an empty graph.
-REGISTRY_FLOOR: Final = 7
+REGISTRY_FLOOR: Final = 9
 
 validate_registry(EXTRACTORS, floor=REGISTRY_FLOOR)

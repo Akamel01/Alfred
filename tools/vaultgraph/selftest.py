@@ -19,100 +19,52 @@ import tempfile
 from pathlib import Path
 
 from .extract import EXTRACTORS, code, decisions, documents, references
-from .mirror import MIRROR_NAME
+from .fixtures import _plant, _plant_code, _plant_plan
 from .model import Minter, MintError, Node, NodeKind, SourceRef
 from .protocol import Context, ExtractorSpec, Harvest, Rejected, Unparsed
+from .render import vault as render_vault
 from .runner import _audit, run
-from .serialize import build_payload, dumps
+from .serialize import build_payload, compare_tree, dumps, write_tree
 
-DOC = """---
-status:        frozen
-owner:         human
-enforcement:   none
-evidence:      none — planted fixture
-falsifies_if:  This fixture is read as anything other than a fixture.
-review_after:  Phase 4
----
+def _imports(path: Path) -> set[str]:
+    """Module names a file imports, absolute and relative alike."""
+    import ast as _ast
 
-# {title}
-
-Body.
-"""
-
-
-#: Every decision shape the plan uses, one instance each, plus the eight commentary spans that
-#: wear the same clothes. Real text, lightly trimmed -- a fixture written in invented prose
-#: proves the rule against prose nobody will ever parse.
-PLAN_FIXTURE = """# Fixture
-
-| # | Decision | Rationale |
-|---|---|---|
-| 1 | **Real product with real users** is the first deliverable. | Real usage supplies ground truth. |
-| 55 | **Stamp carries `upstream: Simulated \\| Corpus \\| Unknown`.** | ADR-0003 treats these as two problems. |
-
-| 48 | **Alfred's buyer is the AV developer's own V&V function.** Supersedes decision 1. | K5 established this. |
-
-### Decision 39 — structural enforcement of D16/D20
-
-### Decision 41 RESOLVED — the lane is Qwen3 on MLX (2026-08-11)
-
-**Decision 42 — Demand gate and company-level kill criteria.** The largest risk.
-
-**Decision 42 amended — the gate moves to Phase 0.75.** Restated later.
-
-| A7 | **Decision 12 becomes a machine-checkable criterion**, not a policy. | Egress canary. |
-| A9 | **Decision 23 extends to the read side**: readable paths fixed by the harness. | Enforced by mount. |
-| 38 | **Decision 9's named harness demoted to provisional.** Buy-the-loop stands. | The SDK's loop is Anthropic-shaped. |
-
-- **Decision 7's LLM exclusion** — EvilGenie found LLM judges outperformed held-out tests.
-- **Decision 6's graduation metric** — calibrating on visible-criterion pass rate.
-- **Decision 2's ceiling** — metric computation is machine-checkable.
-- **Decision 17** — no evidence exists either way.
-
-**Decision 37 turns out to be a correctness safeguard, not just a constraint.** mlx-lm issue #965.
-"""
+    tree = _ast.parse(path.read_text(encoding="utf-8"))
+    names: set[str] = set()
+    package = "tools.vaultgraph" + ("." + path.parent.name if path.parent.name != "vaultgraph" else "")
+    for statement in _ast.walk(tree):
+        if isinstance(statement, _ast.Import):
+            names.update(alias.name for alias in statement.names)
+        elif isinstance(statement, _ast.ImportFrom):
+            base = statement.module or ""
+            if statement.level:
+                prefix = package.rsplit(".", statement.level - 1)[0] if statement.level > 1 else package
+                base = f"{prefix}.{base}" if base else prefix
+            names.add(base)
+            names.update(f"{base}.{alias.name}" for alias in statement.names)
+    return names
 
 
-def _plant_plan(root: Path) -> None:
-    (root / "plan").mkdir(parents=True, exist_ok=True)
-    (root / "plan" / MIRROR_NAME).write_text(PLAN_FIXTURE, encoding="utf-8")
-
-
-#: A module where the same token appears twice: once as live code, once in a comment. Only
-#: the comment is a claim about a decision. `0xD16` and `D16_CONSTANT` are the reason this
-#: extractor uses `tokenize` spans rather than a line regex.
-REFERENCE_FIXTURE = '''"""Fixture module (ADR-0001).
-
-Docstrings are claims too, so this one must be found.
-"""
-
-MASK = 0xD16ABC
-D40_CONSTANT = 7
-
-
-def compute() -> int:
-    # D19: this comment is the claim, and the only D19 on this line that counts.
-    return MASK + D40_CONSTANT
-'''
-
-
-def _plant_code(root: Path) -> None:
-    package = root / "harness" / "fixture"
-    package.mkdir(parents=True, exist_ok=True)
-    (package / "__init__.py").write_text('"""Fixture package."""\n', encoding="utf-8")
-    (package / "probe.py").write_text(REFERENCE_FIXTURE, encoding="utf-8")
-
-
-def _plant(root: Path) -> None:
-    docs = root / "docs"
-    (docs / "tier0").mkdir(parents=True)
-    (docs / "tier1").mkdir(parents=True)
-    (docs / "tier0" / "charter.md").write_text(DOC.format(title="Charter"), encoding="utf-8")
-    (docs / "tier1" / "architecture.md").write_text(DOC.format(title="Architecture"), encoding="utf-8")
-    # The adjacent pair: same directory, same extension, same frontmatter shape. Generated,
-    # therefore excluded — exactly as `lint_docs.main` excludes them.
-    (docs / "README.md").write_text(DOC.format(title="Register"), encoding="utf-8")
-    (docs / "READING-MAP.md").write_text(DOC.format(title="Reading map"), encoding="utf-8")
+def _reaches(start: Path, forbidden: str) -> list[str] | None:
+    """Shortest import trail from `start` into `forbidden`, or None. BFS rather than a one-hop
+    check, because `render.note -> helpers -> extract.decisions` is exactly the leak a direct
+    check would miss -- the same reason `scripts/lint_verdict_boundary.py` walks the graph."""
+    package_root = Path(__file__).resolve().parent
+    queue: list[tuple[Path, list[str]]] = [(start, [start.stem])]
+    seen = {start}
+    while queue:
+        current, trail = queue.pop(0)
+        for name in sorted(_imports(current)):
+            if forbidden in name:
+                return trail + [name]
+            if not name.startswith("tools.vaultgraph."):
+                continue
+            candidate = package_root / (name.removeprefix("tools.vaultgraph.").replace(".", "/") + ".py")
+            if candidate.is_file() and candidate not in seen:
+                seen.add(candidate)
+                queue.append((candidate, trail + [candidate.stem]))
+    return None
 
 
 def _synthetic(nodes: int, unparsed: int = 0, rejected: int = 0) -> Harvest:
@@ -333,6 +285,61 @@ def self_test() -> int:
             "a package declared in pyproject and missing from disk raised no anomaly",
         )
 
+
+    # ---- 12. Renderers are downstream of one extraction and cannot reach it.
+    render_dir = Path(__file__).resolve().parent / "render"
+    for module in sorted(render_dir.glob("*.py")):
+        trail = _reaches(module, "extract")
+        expect(
+            trail is None,
+            f"render/{module.name} reaches the extractors: {' -> '.join(trail or [])}",
+        )
+
+    # ---- 13. --check catches a hand edit and a hand-created note. The first is caught by
+    #          content comparison; the second only by noticing nobody planned it.
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        _plant(root)
+        result = run(root)
+        tree = render_vault.build(result.nodes, result.edges, result.anomalies, result.unparsed)
+        write_tree(root, tree)
+        expect(not compare_tree(root, tree), "a freshly written vault did not compare clean")
+
+        edited = root / sorted(tree)[0]
+        edited.write_text(edited.read_text(encoding="utf-8") + "\nhand edit\n", encoding="utf-8")
+        problems = compare_tree(root, tree)
+        expect(any(p.startswith("differs:") for p in problems), "a hand edit was not detected")
+        edited.write_text(tree[sorted(tree)[0]], encoding="utf-8")
+
+        stray = root / "vault" / "documents" / "authored-by-hand.md"
+        stray.write_text("a fact that exists only here\n", encoding="utf-8")
+        problems = compare_tree(root, tree)
+        expect(
+            any(p.startswith("orphan:") for p in problems),
+            "a hand-created note was not detected as an orphan",
+        )
+        stray.unlink()
+
+        missing = root / sorted(tree)[0]
+        missing.unlink()
+        expect(
+            any(p.startswith("missing:") for p in compare_tree(root, tree)),
+            "a deleted note was not detected",
+        )
+
+    # ---- 14. Every note carries the banner and a source pointer that resolves.
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        _plant(root)
+        result = run(root)
+        tree = render_vault.build(result.nodes, result.edges, result.anomalies, result.unparsed)
+        notes = [c for path, c in sorted(tree.items()) if path.endswith(".md")]
+        expect(notes, "the vault built no notes at all")
+        expect(
+            all("Generated — do not edit" in c for c in notes),
+            "a note shipped without the generated banner",
+        )
+
     # ---- 6. Every registered extractor declares floors. Belt and braces: the registry already
     #         raises at import, and this asserts the raise is reachable.
     for spec in EXTRACTORS:
@@ -353,7 +360,8 @@ def self_test() -> int:
         f"(2 documents, 2 tiers, 0 flagged), all four decision shapes read and 8 "
         f"commentary spans refused, escaped pipes and orphan rows survive, code ids read "
         f"from comment spans and not from hex literals, floors exact at the boundary, "
-        f"{len(EXTRACTORS)} extractors declare floors"
+        f"{len(EXTRACTORS)} extractors declare floors, renderers cannot reach extractors, "
+        f"and --check catches an edit, an orphan and a deletion"
     )
     return 0
 
