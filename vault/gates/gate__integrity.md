@@ -37,6 +37,9 @@ generated: true
 - **contains** → [[gate-step__integrity_07|Verdict boundary holds]]
 - **contains** → [[gate-step__integrity_08|Verdict boundary lint detects planted violations]]
 - **contains** → [[gate-step__integrity_09|ACS-1 vectors regenerate byte-identically]]
+- **contains** → [[gate-step__integrity_10|Vault generator detects its own vacuity]]
+- **contains** → [[gate-step__integrity_11|Vault and published graph are current]]
+- **contains** → [[gate-step__integrity_12|Vault generator suites]]
 - [[gate__database|database (throwaway cluster, roles and grants)]] **needs** → this
 - [[gate__inspector|inspector (ACS-1, lane, bench)]] **needs** → this
 - [[gate__product|product (lint, types, tests)]] **needs** → this

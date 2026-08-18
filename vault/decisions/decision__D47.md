@@ -26,3 +26,7 @@ generated: true
 ## Restated at
 
 - `plan/handoff-autonomous-software-engineering-fizzy-dahl.md:502`
+
+## Enforced by (code)
+
+- **enforced_by** → [[module___github_workflows_gates_yml|.github/workflows/gates.yml]] — nowhere. That property is what admits them as a read model under D44/D47/D51 rather

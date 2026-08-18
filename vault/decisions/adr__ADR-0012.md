@@ -29,3 +29,7 @@ generated: true
 | Field | Value |
 |---|---|
 | `status_raw` | Accepted |
+
+## Enforced by (code)
+
+- **enforced_by** → [[module___github_workflows_gates_yml|.github/workflows/gates.yml]] — would pass. That is the failure this project has paid for four times (ADR-0012,

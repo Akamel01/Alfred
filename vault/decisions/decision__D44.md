@@ -22,3 +22,7 @@ generated: true
 ## Statement
 
 **Decision 44 — The evidence store IS the memory; typed views + gated promotion. No extraction pipeline.** Memory = SQL/typed views over the append-only evidence store (failure taxonomy by metric class, per-capability merge history, prior artifacts by content hash). Anything worth injecting into future agent context graduates through the D32 register — human-reviewed, versioned, evidence-based, expiring — and its version joins the D19 fingerprint. In-task retrieval stays agentic (grep/read, D26-recorded). Rationale: an LLM-extraction memory layer (Mem0/Letta/Zep class) is (a) an unfingerprinta
+
+## Enforced by (code)
+
+- **enforced_by** → [[module___github_workflows_gates_yml|.github/workflows/gates.yml]] — nowhere. That property is what admits them as a read model under D44/D47/D51 rather

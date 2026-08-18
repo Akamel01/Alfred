@@ -29,3 +29,7 @@ generated: true
 | Field | Value |
 |---|---|
 | `status_raw` | Accepted |
+
+## Enforced by (code)
+
+- **enforced_by** → [[module___github_workflows_gates_yml|.github/workflows/gates.yml]] — ADR-0013), arriving through a new door.

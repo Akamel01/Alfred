@@ -108,6 +108,37 @@ jobs:
           fi
           echo "byte-identical: $after"
 
+      # The vault and the published graph are derived from the repository and authored
+      # nowhere. That property is what admits them as a read model under D44/D47/D51 rather
+      # than an unfingerprinted write path into agent context — and it is a property only a
+      # check can hold. Every generated note says "do not edit"; without this step that
+      # sentence is a wish.
+      #
+      # --self-test runs first and deliberately: it proves the vacuity guards fire before
+      # --check is trusted to mean anything. A generator whose extractors silently matched
+      # nothing would emit a smaller vault, --check would compare it against itself, and both
+      # would pass. That is the failure this project has paid for four times (ADR-0012,
+      # ADR-0013), arriving through a new door.
+      - name: Vault generator detects its own vacuity
+        run: python3 tools/gen_vault.py --self-test
+
+      # --check fails three ways: a note that differs, a note that is missing, and a note
+      # nobody planned. The third is the one content comparison alone cannot see — a
+      # hand-edited note differs from its planned text, but a hand-created one has no planned
+      # text to differ from, and both are the same defect.
+      #
+      # The plan mirror is verified here too. Where ~/.claude/plans is absent, as it is on
+      # every runner, the mirror is checked against its own manifest and that is not a
+      # failure; drift is only detectable where the origin exists, and that is the operator's
+      # machine.
+      - name: Vault and published graph are current
+        run: python3 tools/gen_vault.py --check
+
+      - name: Vault generator suites
+        # By explicit path: pyproject's testpaths is `tests`, and a documentation generator
+        # must not be able to red the product gate.
+        run: uv run pytest tools/tests
+
   # ---------------------------------------------------------------- product gates
   product:
     name: product (lint, types, tests)

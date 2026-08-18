@@ -35,6 +35,7 @@ generated: true
 
 ## Enforced by (code)
 
+- **enforced_by** → [[module___github_workflows_gates_yml|.github/workflows/gates.yml]] — nowhere. That property is what admits them as a read model under D44/D47/D51 rather
 - **enforced_by** → [[module__harness_evidence_store|Append-only, hash-chained evidence writes.]] — # stable if a table is ever renamed, and so D51's "distinguished by ACS-1 domain
 - **enforced_by** → [[module__harness_evidence_store|Append-only, hash-chained evidence writes.]] — """One operator action, written before its side effect is emitted (D51).
 
