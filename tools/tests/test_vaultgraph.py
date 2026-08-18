@@ -150,8 +150,27 @@ def test_registry_rejects_a_floorless_extractor() -> None:
         name="floorless", kinds=(NodeKind.DOCUMENT,), min_nodes=0, max_nodes=None,
         min_edges=0, max_unparsed=0, expect_rejected=None, run=lambda ctx: Harvest(),
     )
-    with pytest.raises(RegistryError, match="no floor"):
+    with pytest.raises(RegistryError, match="no node floor"):
         validate_registry((spec,), floor=1)
+
+
+def test_an_edge_only_extractor_must_declare_that_it_mints_nothing() -> None:
+    # `references` legitimately mints no nodes. Its floor lives on edges -- but "mints
+    # nothing" has to be stated as max_nodes=0, so a node appearing there by accident is
+    # caught rather than absorbed.
+    def spec(**over: object) -> ExtractorSpec:
+        base: dict[str, object] = dict(
+            name="edges-only", kinds=(NodeKind.DOCUMENT,), min_nodes=0, max_nodes=0,
+            min_edges=5, max_unparsed=0, expect_rejected=None, run=lambda ctx: Harvest(),
+        )
+        base.update(over)
+        return ExtractorSpec(**base)  # type: ignore[arg-type]
+
+    validate_registry((spec(),), floor=1)             # explicit, and floored on edges
+    with pytest.raises(RegistryError, match="no node floor"):
+        validate_registry((spec(max_nodes=None),), floor=1)
+    with pytest.raises(RegistryError, match="nodes or edges"):
+        validate_registry((spec(min_edges=0),), floor=1)
 
 
 def test_registry_rejects_duplicate_names() -> None:
@@ -243,3 +262,79 @@ def test_restatements_fold_into_occurrences_rather_than_new_nodes() -> None:
 def test_all_twelve_amendments_are_extracted() -> None:
     result = _result()
     assert sum(1 for n in result.nodes if n.kind is NodeKind.AMENDMENT) == 12
+
+
+# ---- code, gates and references -----------------------------------------------------------
+
+def test_the_declared_but_absent_package_is_a_node() -> None:
+    # pyproject.toml names src/thresholds in the wheel packages and in ruff's first-party set;
+    # the directory does not exist. Dropping it would hide the class of gap this graph is for.
+    result = _result()
+    absent = [n for n in result.nodes if n.shape == "declared-absent"]
+    assert [n.attrs["path"] for n in absent] == ["src/thresholds"]
+    assert any(a.kind == "declared-absent-package" for a in result.anomalies)
+
+
+def test_the_two_acs1_implementations_are_two_nodes() -> None:
+    # harness/acs/acs1.py and harness/acs/acs1.mjs are independent implementations of one
+    # specification, written from the spec rather than translated. Collapsing them into a
+    # single node would erase the property the pair exists to demonstrate.
+    result = _result()
+    ids = {n.id for n in result.nodes}
+    assert "module:harness.acs.acs1" in ids
+    assert "module:harness.acs.acs1.mjs" in ids
+
+
+def test_d20_protected_paths_are_marked() -> None:
+    result = _result()
+    protected = {n.attrs.get("path", "") for n in result.nodes if "protected" in n.tags}
+    assert "scripts/lint_verdict_boundary.py" in protected
+    assert "policy/oracle-denylist.json" in protected
+    # The product tree is factory, not inspector, and must not be marked.
+    assert not any(p.startswith("src/") for p in protected if p)
+
+
+def test_lint_coverage_is_recorded_as_narrower_than_the_tree() -> None:
+    # ruff and pyright are configured over the product tree only. A graph showing every
+    # module under the same gate would assert something false.
+    result = _result()
+    modules = [n for n in result.nodes if n.kind is NodeKind.MODULE and n.attrs.get("path")]
+    gated = {n.attrs["path"] for n in modules if n.attrs.get("lint_gated") == "true"}
+    assert any(p.startswith("src/") for p in gated)
+    assert not any(p.startswith("harness/") for p in gated)
+
+
+def test_all_five_gate_jobs_and_their_dependency_order() -> None:
+    result = _result()
+    jobs = {n.id for n in result.nodes if n.kind is NodeKind.GATE}
+    assert jobs == {"gate:integrity", "gate:product", "gate:inspector",
+                    "gate:database", "gate:mutation"}
+    needs = {(e.src, e.dst) for e in result.edges if e.kind.value == "needs"}
+    assert ("gate:mutation", "gate:inspector") in needs
+    assert ("gate:product", "gate:integrity") in needs
+
+
+def test_every_gate_step_carries_a_command() -> None:
+    # The multi-line `run: |` block for the ACS-1 byte-identity check used to come back empty,
+    # because a comment line between two jobs discarded the collected block before the step
+    # closed. A step with no command is a gate the graph cannot answer questions about.
+    result = _result()
+    steps = [n for n in result.nodes if n.kind is NodeKind.GATE_STEP]
+    assert len(steps) >= 30
+    assert all(n.attrs["command"] for n in steps)
+
+
+def test_reference_edges_are_derived_and_never_structural() -> None:
+    # A decision id written beside a function is a claim by whoever wrote the comment, not a
+    # checked relation. The graph must not render it as though it were a table column.
+    result = _result()
+    enforced = [e for e in result.edges if e.kind.value == "enforced_by"]
+    assert len(enforced) >= 100
+    assert all(e.confidence.value == "derived" for e in enforced)
+
+
+def test_no_edge_endpoint_is_dangling() -> None:
+    result = _result()
+    known = {n.id for n in result.nodes}
+    dangling = sorted({e.src for e in result.edges} | {e.dst for e in result.edges}) 
+    assert [d for d in dangling if d not in known] == []

@@ -109,10 +109,21 @@ def validate_registry(specs: tuple[ExtractorSpec, ...], *, floor: int) -> None:
         names.add(spec.name)
         if not spec.kinds:
             raise RegistryError(f"extractor {spec.name!r} declares no node kinds")
+        # Every extractor declares a floor on something it produces. Most produce nodes;
+        # `references` produces only edges, and for those the claim "this mints nothing" has
+        # to be stated explicitly as max_nodes == 0 rather than left as an absent floor --
+        # otherwise a node appearing there by accident would pass unnoticed.
         if spec.min_nodes <= 0:
-            raise RegistryError(
-                f"extractor {spec.name!r} declares no floor; D57 requires one"
-            )
+            if spec.max_nodes != 0:
+                raise RegistryError(
+                    f"extractor {spec.name!r} declares no node floor; an extractor that mints "
+                    "no nodes must say so with max_nodes=0"
+                )
+            if spec.min_edges <= 0:
+                raise RegistryError(
+                    f"extractor {spec.name!r} declares no floor on nodes or edges; "
+                    "D57 requires one"
+                )
         if spec.max_nodes is not None and spec.max_nodes < spec.min_nodes:
             raise RegistryError(f"extractor {spec.name!r} has max_nodes below min_nodes")
         if spec.min_edges < 0 or spec.max_unparsed < 0:

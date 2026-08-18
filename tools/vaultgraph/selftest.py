@@ -18,7 +18,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-from .extract import EXTRACTORS, decisions, documents
+from .extract import EXTRACTORS, code, decisions, documents, references
 from .mirror import MIRROR_NAME
 from .model import Minter, MintError, Node, NodeKind, SourceRef
 from .protocol import Context, ExtractorSpec, Harvest, Rejected, Unparsed
@@ -76,6 +76,31 @@ PLAN_FIXTURE = """# Fixture
 def _plant_plan(root: Path) -> None:
     (root / "plan").mkdir(parents=True, exist_ok=True)
     (root / "plan" / MIRROR_NAME).write_text(PLAN_FIXTURE, encoding="utf-8")
+
+
+#: A module where the same token appears twice: once as live code, once in a comment. Only
+#: the comment is a claim about a decision. `0xD16` and `D16_CONSTANT` are the reason this
+#: extractor uses `tokenize` spans rather than a line regex.
+REFERENCE_FIXTURE = '''"""Fixture module (ADR-0001).
+
+Docstrings are claims too, so this one must be found.
+"""
+
+MASK = 0xD16ABC
+D40_CONSTANT = 7
+
+
+def compute() -> int:
+    # D19: this comment is the claim, and the only D19 on this line that counts.
+    return MASK + D40_CONSTANT
+'''
+
+
+def _plant_code(root: Path) -> None:
+    package = root / "harness" / "fixture"
+    package.mkdir(parents=True, exist_ok=True)
+    (package / "__init__.py").write_text('"""Fixture package."""\n', encoding="utf-8")
+    (package / "probe.py").write_text(REFERENCE_FIXTURE, encoding="utf-8")
 
 
 def _plant(root: Path) -> None:
@@ -272,10 +297,51 @@ def self_test() -> int:
             "the blank-line-separated orphan row was dropped — something is parsing tables",
         )
 
+
+    # ---- 10. Comment and docstring spans only. A hex literal and an identifier carrying the
+    #          same digits are the adjacent control: they must stay silent while the comment
+    #          three lines below them is heard.
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        _plant_code(root)
+        harvest = references.extract(_ctx(root))
+        found = sorted({e.src for e in harvest.edges})
+        expect(
+            found == ["adr:ADR-0001", "decision:D19"],
+            f"reference spans: found {found}, expected the docstring ADR and the comment D19 "
+            "only — 0xD16ABC and D40_CONSTANT are code, not claims",
+        )
+        expect(not harvest.unparsed, f"reference fixture left unparsed items: {harvest.unparsed}")
+        expect(
+            all(e.confidence.value == "derived" for e in harvest.edges),
+            "a reference edge claimed structural confidence; a comment is not a table column",
+        )
+
+    # ---- 11. Declared-but-absent packages are surfaced, never dropped.
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        _plant_code(root)
+        (root / "pyproject.toml").write_text(
+            '[tool.hatch.build.targets.wheel]\npackages = ["src/domain", "src/ghost"]\n',
+            encoding="utf-8",
+        )
+        harvest = code.extract(_ctx(root))
+        absent = [n for n in harvest.nodes if n.shape == "declared-absent"]
+        expect(len(absent) == 2, f"declared-absent packages: found {len(absent)}, expected 2")
+        expect(
+            any(a.kind == "declared-absent-package" for a in harvest.anomalies),
+            "a package declared in pyproject and missing from disk raised no anomaly",
+        )
+
     # ---- 6. Every registered extractor declares floors. Belt and braces: the registry already
     #         raises at import, and this asserts the raise is reachable.
     for spec in EXTRACTORS:
-        expect(spec.min_nodes > 0, f"{spec.name} declares no floor")
+        # A floor on nodes, or -- for an extractor that mints nothing and only relates what
+        # others minted -- an explicit max_nodes=0 plus a floor on edges.
+        expect(
+            spec.min_nodes > 0 or (spec.max_nodes == 0 and spec.min_edges > 0),
+            f"{spec.name} declares no floor on anything it produces",
+        )
 
     for message in failures:
         print(f"FAIL self-test: {message}")
@@ -285,8 +351,9 @@ def self_test() -> int:
     print(
         f"OK self-test — vacuity guard fires on an empty tree, docs control clean "
         f"(2 documents, 2 tiers, 0 flagged), all four decision shapes read and 8 "
-        f"commentary spans refused, escaped pipes and orphan rows survive, floors exact "
-        f"at the boundary, {len(EXTRACTORS)} extractors declare floors"
+        f"commentary spans refused, escaped pipes and orphan rows survive, code ids read "
+        f"from comment spans and not from hex literals, floors exact at the boundary, "
+        f"{len(EXTRACTORS)} extractors declare floors"
     )
     return 0
 
