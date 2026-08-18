@@ -18,7 +18,8 @@ import sys
 import tempfile
 from pathlib import Path
 
-from .extract import EXTRACTORS, documents
+from .extract import EXTRACTORS, decisions, documents
+from .mirror import MIRROR_NAME
 from .model import Minter, MintError, Node, NodeKind, SourceRef
 from .protocol import Context, ExtractorSpec, Harvest, Rejected, Unparsed
 from .runner import _audit, run
@@ -37,6 +38,44 @@ review_after:  Phase 4
 
 Body.
 """
+
+
+#: Every decision shape the plan uses, one instance each, plus the eight commentary spans that
+#: wear the same clothes. Real text, lightly trimmed -- a fixture written in invented prose
+#: proves the rule against prose nobody will ever parse.
+PLAN_FIXTURE = """# Fixture
+
+| # | Decision | Rationale |
+|---|---|---|
+| 1 | **Real product with real users** is the first deliverable. | Real usage supplies ground truth. |
+| 55 | **Stamp carries `upstream: Simulated \\| Corpus \\| Unknown`.** | ADR-0003 treats these as two problems. |
+
+| 48 | **Alfred's buyer is the AV developer's own V&V function.** Supersedes decision 1. | K5 established this. |
+
+### Decision 39 — structural enforcement of D16/D20
+
+### Decision 41 RESOLVED — the lane is Qwen3 on MLX (2026-08-11)
+
+**Decision 42 — Demand gate and company-level kill criteria.** The largest risk.
+
+**Decision 42 amended — the gate moves to Phase 0.75.** Restated later.
+
+| A7 | **Decision 12 becomes a machine-checkable criterion**, not a policy. | Egress canary. |
+| A9 | **Decision 23 extends to the read side**: readable paths fixed by the harness. | Enforced by mount. |
+| 38 | **Decision 9's named harness demoted to provisional.** Buy-the-loop stands. | The SDK's loop is Anthropic-shaped. |
+
+- **Decision 7's LLM exclusion** — EvilGenie found LLM judges outperformed held-out tests.
+- **Decision 6's graduation metric** — calibrating on visible-criterion pass rate.
+- **Decision 2's ceiling** — metric computation is machine-checkable.
+- **Decision 17** — no evidence exists either way.
+
+**Decision 37 turns out to be a correctness safeguard, not just a constraint.** mlx-lm issue #965.
+"""
+
+
+def _plant_plan(root: Path) -> None:
+    (root / "plan").mkdir(parents=True, exist_ok=True)
+    (root / "plan" / MIRROR_NAME).write_text(PLAN_FIXTURE, encoding="utf-8")
 
 
 def _plant(root: Path) -> None:
@@ -172,6 +211,67 @@ def self_test() -> int:
     ]
     expect(seeds[0] == seeds[1], "output differs across PYTHONHASHSEED — a set is reaching output")
 
+
+    # ---- 7. Every decision shape is read, and every commentary lookalike is refused.
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        _plant_plan(root)
+        harvest = decisions.extract(_ctx(root))
+        numbers = sorted(int(n.attrs["number"]) for n in harvest.nodes)
+        expect(
+            numbers == [1, 38, 39, 41, 42, 48, 55],
+            f"decision shapes: extracted {numbers}, expected [1, 38, 39, 41, 42, 48, 55]",
+        )
+        shapes = sorted({n.shape for n in harvest.nodes})
+        expect(
+            shapes == ["bold-paragraph", "heading", "table-row"],
+            f"not every shape was exercised: {shapes}",
+        )
+        expect(
+            len(harvest.rejected) == 8,
+            f"rejected {len(harvest.rejected)} commentary spans, expected exactly 8: "
+            + "; ".join(r.text[:40] for r in harvest.rejected),
+        )
+        expect(not harvest.unparsed, f"fixture left unparsed items: {harvest.unparsed}")
+
+        # The adjacent control for the title rule. `machine-checkable` puts an ASCII hyphen
+        # inside a span that is NOT a definition; accepting a bare hyphen as a title separator
+        # read it as one, and this fixture is what said so.
+        rejected_text = " ".join(r.text for r in harvest.rejected)
+        expect(
+            "machine-checkable" in rejected_text,
+            "a hyphen inside a compound word is being read as a title separator",
+        )
+        # A restatement is one node with a second occurrence, never a second node.
+        d42 = next(n for n in harvest.nodes if n.attrs["number"] == "42")
+        expect(len(d42.occurrences) == 1, f"restatement did not fold into occurrences: {d42.occurrences}")
+
+    # ---- 8. The escaped pipe. Every decision row has three cells; D55's has three only if
+    #         `\\|` inside a code span is not treated as a cell boundary.
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        _plant_plan(root)
+        harvest = decisions.extract(_ctx(root))
+        d55 = next((n for n in harvest.nodes if n.attrs["number"] == "55"), None)
+        expect(d55 is not None, "the escaped-pipe row was not extracted at all")
+        if d55 is not None:
+            expect(
+                "Simulated | Corpus | Unknown" in d55.body,
+                f"escaped pipes were not restored in the cell body: {d55.body[:120]}",
+            )
+
+    # ---- 9. A markdown table parser is the wrong tool here, and this asserts it stays gone.
+    #         The `| 48 |` row above is separated from the table by a blank line, so a parser
+    #         that requires a header row sees a headerless fragment and yields nothing.
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        _plant_plan(root)
+        harvest = decisions.extract(_ctx(root))
+        expect(
+            any(n.attrs["number"] == "48" for n in harvest.nodes),
+            "the blank-line-separated orphan row was dropped — something is parsing tables",
+        )
+
     # ---- 6. Every registered extractor declares floors. Belt and braces: the registry already
     #         raises at import, and this asserts the raise is reachable.
     for spec in EXTRACTORS:
@@ -183,9 +283,10 @@ def self_test() -> int:
         print(f"\n{len(failures)} self-test failure(s)")
         return 1
     print(
-        f"OK self-test — vacuity guard fires on an empty tree, control clean "
-        f"(2 documents, 2 tiers, 0 flagged), floors exact at the boundary, "
-        f"{len(EXTRACTORS)} extractor(s) declare floors"
+        f"OK self-test — vacuity guard fires on an empty tree, docs control clean "
+        f"(2 documents, 2 tiers, 0 flagged), all four decision shapes read and 8 "
+        f"commentary spans refused, escaped pipes and orphan rows survive, floors exact "
+        f"at the boundary, {len(EXTRACTORS)} extractors declare floors"
     )
     return 0
 

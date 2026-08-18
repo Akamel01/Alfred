@@ -19,6 +19,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from tools.vaultgraph import mirror                          # noqa: E402
 from tools.vaultgraph.runner import run                      # noqa: E402
 from tools.vaultgraph.selftest import self_test               # noqa: E402
 from tools.vaultgraph.serialize import build_payload, dumps   # noqa: E402
@@ -47,6 +48,10 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true",
                         help="compare against the committed output; write nothing")
+    parser.add_argument("--sync-plan", action="store_true", dest="sync_plan",
+                        help="re-copy the plan file into plan/ and re-stamp its manifest")
+    parser.add_argument("--require-origin", action="store_true", dest="require_origin",
+                        help="with --check, treat an absent plan origin as a failure")
     parser.add_argument("--self-test", action="store_true", dest="selftest",
                         help="run the planted fixtures that prove the guards fire")
     parser.add_argument("--verbose", action="store_true", help="list every unparsed item")
@@ -54,6 +59,19 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.selftest:
         return self_test()
+
+    if args.sync_plan:
+        code, message = mirror.sync()
+        print(message)
+        return code
+
+    # Mirror integrity first. A graph built from a corrupted or drifted snapshot is worse than
+    # no graph, because its source pointers still look like they resolve.
+    mirror_code, mirror_messages = mirror.check(require_origin=args.require_origin)
+    for message in mirror_messages:
+        print(f"  {message}")
+    if mirror_code:
+        return mirror_code
 
     result = run(ROOT)
     _report(result, verbose=args.verbose)
@@ -64,7 +82,10 @@ def main(argv: list[str] | None = None) -> int:
         print(f"\n{len(result.failures)} extraction failure(s) — no output written")
         return 1
 
-    content = dumps(build_payload(result, {}))
+    sources = mirror.load_manifest()
+    inputs = {f"{s.id}_sha256": s.sha256 for s in sources}
+    inputs.update({f"{s.id}_mirror": s.mirror for s in sources})
+    content = dumps(build_payload(result, inputs))
 
     if args.check:
         if not GRAPH.exists():

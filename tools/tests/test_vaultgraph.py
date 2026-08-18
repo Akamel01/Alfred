@@ -169,3 +169,77 @@ def test_ids_differing_only_by_case_are_refused() -> None:
     minter.mint(NodeKind.DECISION, "D1", SourceRef("f.md", 1))
     with pytest.raises(MintError, match="case-insensitively"):
         minter.mint(NodeKind.DECISION, "d1", SourceRef("f.md", 2))
+
+
+# ---- the plan mirror ----------------------------------------------------------------------
+
+from tools.vaultgraph import mirror  # noqa: E402
+
+
+def test_the_mirror_matches_its_manifest() -> None:
+    code, messages = mirror.check()
+    assert code == 0, messages
+
+
+def test_an_absent_origin_is_not_a_failure(monkeypatch: pytest.MonkeyPatch) -> None:
+    # CI, a clean clone, and anyone else's machine all have no ~/.claude/plans. Absence is
+    # never a failure; drift always is. Without this the vault stops building off one laptop.
+    monkeypatch.setattr(mirror, "origin_path", lambda source: Path("/nonexistent/plan.md"))
+    code, messages = mirror.check()
+    assert code == 0
+    assert any("origin absent" in m for m in messages)
+
+
+def test_an_absent_origin_fails_only_when_the_operator_asks(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(mirror, "origin_path", lambda source: Path("/nonexistent/plan.md"))
+    assert mirror.check(require_origin=True)[0] == 1
+
+
+def test_a_drifted_origin_fails(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    drifted = tmp_path / "drifted.md"
+    drifted.write_text("not the plan", encoding="utf-8")
+    monkeypatch.setattr(mirror, "origin_path", lambda source: drifted)
+    code, messages = mirror.check()
+    assert code == 1
+    assert any("drifted" in m for m in messages)
+
+
+def test_the_manifest_carries_no_timestamp() -> None:
+    # A capture time is unverifiable metadata that would break the manifest's own byte
+    # determinism to record something nothing checks.
+    raw = (ROOT / "plan" / "manifest.json").read_text(encoding="utf-8")
+    assert "captured" not in raw and "timestamp" not in raw
+
+
+# ---- decisions ----------------------------------------------------------------------------
+
+def test_all_fifty_seven_decisions_are_extracted() -> None:
+    result = _result()
+    numbers = sorted(
+        int(n.attrs["number"]) for n in result.nodes if n.kind is NodeKind.DECISION
+    )
+    assert numbers == list(range(1, 58))
+
+
+def test_the_decision_shapes_are_split_as_the_plan_writes_them() -> None:
+    # 48 table rows (D1-D38 plus the blank-line-separated D48-D57), 3 headings (D39-D41),
+    # 6 bold-lead paragraphs (D42-D47).
+    result = _result()
+    shapes: dict[str, int] = {}
+    for node in result.nodes:
+        if node.kind is NodeKind.DECISION:
+            shapes[node.shape] = shapes.get(node.shape, 0) + 1
+    assert shapes == {"table-row": 48, "heading": 3, "bold-paragraph": 6}
+
+
+def test_restatements_fold_into_occurrences_rather_than_new_nodes() -> None:
+    result = _result()
+    by_number = {n.attrs["number"]: n for n in result.nodes if n.kind is NodeKind.DECISION}
+    assert len(by_number["45"].occurrences) == 2   # amended, then finalized
+    assert len(by_number["47"].occurrences) == 1   # amended
+    assert len(by_number["17"].occurrences) == 1   # the superseded decision's own chapter
+
+
+def test_all_twelve_amendments_are_extracted() -> None:
+    result = _result()
+    assert sum(1 for n in result.nodes if n.kind is NodeKind.AMENDMENT) == 12

@@ -1,13 +1,56 @@
 {
   "anomalies": [],
   "counts": {
+    "amendment": 12,
+    "decision": 57,
     "document": 63,
     "tier": 8
   },
   "edge_counts": {
-    "contains": 63
+    "amends": 3,
+    "contains": 63,
+    "supersedes": 1
   },
   "edges": [
+    {
+      "confidence": "prose",
+      "dst": "decision:D11",
+      "evidence": "D11 named in A1",
+      "extractor": "amendments",
+      "kind": "amends",
+      "source": {
+        "end_line": 175,
+        "line": 175,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "src": "amendment:A1"
+    },
+    {
+      "confidence": "prose",
+      "dst": "decision:D7",
+      "evidence": "D7 named in A5",
+      "extractor": "amendments",
+      "kind": "amends",
+      "source": {
+        "end_line": 179,
+        "line": 179,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "src": "amendment:A5"
+    },
+    {
+      "confidence": "prose",
+      "dst": "decision:D19",
+      "evidence": "D19 named in A6",
+      "extractor": "amendments",
+      "kind": "amends",
+      "source": {
+        "end_line": 180,
+        "line": 180,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "src": "amendment:A6"
+    },
     {
       "confidence": "structural",
       "dst": "document:tier0/autonomy-boundaries",
@@ -826,9 +869,48 @@
         "path": "docs/tier7/onboarding-guide.md"
       },
       "src": "tier:tier7"
+    },
+    {
+      "confidence": "prose",
+      "dst": "decision:D17",
+      "evidence": "Supersedes decision 17",
+      "extractor": "decisions",
+      "kind": "supersedes",
+      "source": {
+        "end_line": 76,
+        "line": 76,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "src": "decision:D32"
     }
   ],
   "extractors": [
+    {
+      "edges": 3,
+      "expect_rejected": null,
+      "max_nodes": 12,
+      "max_unparsed": 0,
+      "min_edges": 3,
+      "min_nodes": 12,
+      "name": "amendments",
+      "nodes": 12,
+      "rejected": 0,
+      "scanned": 1,
+      "unparsed": 0
+    },
+    {
+      "edges": 1,
+      "expect_rejected": 8,
+      "max_nodes": 57,
+      "max_unparsed": 0,
+      "min_edges": 1,
+      "min_nodes": 57,
+      "name": "decisions",
+      "nodes": 57,
+      "rejected": 8,
+      "scanned": 1,
+      "unparsed": 0
+    },
     {
       "edges": 63,
       "expect_rejected": null,
@@ -844,8 +926,1453 @@
     }
   ],
   "generator": "tools/vaultgraph",
-  "inputs": {},
+  "inputs": {
+    "handoff-plan_mirror": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md",
+    "handoff-plan_sha256": "4be206a52a4a3ac01b9c6ef68314865b9f6ed59222399c5d7e7702d798f05d5c"
+  },
   "nodes": [
+    {
+      "attrs": {
+        "evidence": "BenchJack forced 100% resolve on all 500 SWE-bench Verified instances with a ~7-line `conftest.py`. No test file touched. Closes the entire class (`conftest.py`, `.pth`, `sitecustomize`, binary trojans) architecturally rather than by enumeration. Supersedes decision 11's enumerate-the-bad primitive.",
+        "number": "A1"
+      },
+      "body": "**`CriterionRunner` runs outside the agent's tree** and materializes the test environment itself from trusted provenance, ignoring everything outside declared source paths. Add a **null-agent floor test** — a run taking no actions, whose score is the harness's floor — as a standing Phase 0 criterion.",
+      "extractor": "amendments",
+      "id": "amendment:A1",
+      "kind": "amendment",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 175,
+        "line": 175,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "`CriterionRunner` runs outside the agent's tree"
+    },
+    {
+      "attrs": {
+        "evidence": "TrapDoor planted `CLAUDE.md` and `.cursorrules` with zero-width-encoded instructions and opened PRs against LangChain, MetaGPT and OpenHands. GitHub flags bidi but not zero-width. Also: CI runs before any human sees the PR, so review is not the first gate.",
+        "number": "A10"
+      },
+      "body": "**Deterministic pre-review gate** rejecting any diff introducing non-ASCII control, zero-width or bidi characters outside declared string literals — with particular force on agent-instruction files. Hash-lock the full dependency closure; scan for `.pth`, `sitecustomize` and instruction-file additions.",
+      "extractor": "amendments",
+      "id": "amendment:A10",
+      "kind": "amendment",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 184,
+        "line": 184,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Deterministic pre-review gate"
+    },
+    {
+      "attrs": {
+        "evidence": "Only commercially-clean combination of data + code + shipped numeric assertions. Waymo bars \"Production Systems… even if no monetary compensation is received\" — a free prospect demo already qualifies. Argoverse/nuScenes are CC BY-NC-SA with ShareAlike contaminating derivatives. highD forbids redistribution. The earlier highD recommendation was wrong.",
+        "number": "A11"
+      },
+      "body": "**Phase 0 builds on CommonRoad scenarios + CommonRoad-CriMe** (BSD-3 throughout). Verify the scenario repo's `LICENSE.txt` directly first. Add a **Phase 0.5 gate: obtain commercial data licence**, with budget and calendar, before any pilot.",
+      "extractor": "amendments",
+      "id": "amendment:A11",
+      "kind": "amendment",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 185,
+        "line": 185,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Phase 0 builds on CommonRoad scenarios + CommonRoad-CriMe"
+    },
+    {
+      "attrs": {
+        "evidence": "Anthropic states the action \"is not designed to be hardened against prompt injection.\" Python SDK ≤0.1.59 silently treated `setting_sources=[]` as omitted, loading `~/.claude/settings.json` and `CLAUDE.md` into the agent — a control that failed without signalling. Anthropic's sandbox fails **open** unless `sandbox.failIfUnavailable` is true, and \"docker is incompatible with the sandbox.\"",
+        "number": "A12"
+      },
+      "body": "**Claude Agent SDK contributes zero security properties** and must run as an untrusted process inside Alfred's own containment. Set every isolation option explicitly; add a startup assertion that no user/project settings loaded. Resolve the Docker-vs-Anthropic-sandbox either/or explicitly.",
+      "extractor": "amendments",
+      "id": "amendment:A12",
+      "kind": "amendment",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 186,
+        "line": 186,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Claude Agent SDK contributes zero security properties"
+    },
+    {
+      "attrs": {
+        "evidence": "Decision 10 was false as written: the deliverable channel and the exfiltration channel were the same channel. AsyncAPI — PR opened 05:08, PAT exfiltrated 05:16, four backdoored npm packages with 3M+ weekly downloads. Actions caches are repository-scoped, so ephemerality fails below the container.",
+        "number": "A2"
+      },
+      "body": "**No GitHub credential in the agent container.** Container emits a patch file to a mounted volume; a separate uncontaminated process opens the PR. Never `pull_request_target` with head checkout. Disable `actions/cache` on workflows touching agent branches.",
+      "extractor": "amendments",
+      "id": "amendment:A2",
+      "kind": "amendment",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 176,
+        "line": 176,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "No GitHub credential in the agent container"
+    },
+    {
+      "attrs": {
+        "evidence": "SpecBench: 43–48pp gap between visible and held-out composed tests with **no exploit** — honest agent, honest criterion, honest harness, wrong code. Every anti-tampering control in this plan is orthogonal to it. Plan around a residual ~14.5pp escape even with human supervision.",
+        "number": "A3"
+      },
+      "body": "**Held-out criterion class the agent never sees.** Visible criteria test metrics in isolation; hidden criteria compose them end-to-end across scenario families.",
+      "extractor": "amendments",
+      "id": "amendment:A3",
+      "kind": "amendment",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 177,
+        "line": 177,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Held-out criterion class the agent never sees"
+    },
+    {
+      "attrs": {
+        "evidence": "ISSTA 2026 replication: mutants are generated from the possibly-buggy code and tests failing on the original are excluded, which excludes precisely the bug-exposing tests — \"rendering the resulting mutation scores meaningless.\" Rated **fatal**.",
+        "number": "A4"
+      },
+      "body": "**Delete mutmut from the adversary role.** Retain only as regression on the already-trusted human-built skeleton. Never gate on mutation score in a bug-detection setting.",
+      "extractor": "amendments",
+      "id": "amendment:A4",
+      "kind": "amendment",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 178,
+        "line": 178,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Delete mutmut from the adversary role"
+    },
+    {
+      "attrs": {
+        "evidence": "Only control that engages the SpecBench failure mode. Inverts decision 7's original billing.",
+        "number": "A5"
+      },
+      "body": "**Property tests over COMPOSED operations become the load-bearing correctness control**, not secondary hardening.",
+      "extractor": "amendments",
+      "id": "amendment:A5",
+      "kind": "amendment",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 179,
+        "line": 179,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Property tests over COMPOSED operations become the load-bearing correctness control"
+    },
+    {
+      "attrs": {
+        "evidence": "MCP tool-poisoning changes behavior via descriptions without changing names. `langgraph-prebuilt` 1.0.2 broke `ToolNode.afunc` with an unconstrained dependency. Two professionally-maintained criterion sets rotted within six months. Terminal-Bench 2.0's top four differ by 2.5pp across harnesses — same order as the error bars.",
+        "number": "A6"
+      },
+      "body": "**Extend the decision 19 fingerprint** to add: resolved lockfile hash, hash of every tool *description* in context, criterion-set version **and expiry**, turn/cost budget.",
+      "extractor": "amendments",
+      "id": "amendment:A6",
+      "kind": "amendment",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 180,
+        "line": 180,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Extend the decision 19 fingerprint"
+    },
+    {
+      "attrs": {
+        "evidence": "Anthropic's own eval harness: \"A misconfiguration left the machines that Claude accessed as part of the evaluation with live internet access.\" That is the base rate for \"we configured deny-by-default.\" CamoLeak (CVSS 9.6) exfiltrated through an allowlisted host.",
+        "number": "A7"
+      },
+      "body": "**Decision 12 becomes a machine-checkable criterion**, not a policy: egress canary on every sandbox boot attempting a known non-allowlisted connection; run refuses to start unless it fails. Enforce with nftables default-drop + REDIRECT — env-var proxy config is advisory and bypassable.",
+      "extractor": "amendments",
+      "id": "amendment:A7",
+      "kind": "amendment",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 181,
+        "line": 181,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Decision 12 becomes a machine-checkable criterion"
+    },
+    {
+      "attrs": {
+        "evidence": "NetArena committed all 5,000 ground-truth tuples to a public repo; GAIA's answers are readable at runtime. Phase 0 deliberately targets *published* values, and training-data contamination survives any network policy.",
+        "number": "A8"
+      },
+      "body": "**Organizing principle amended**: ground truth the agent did not author **and cannot retrieve**. Reference values held out of agent context and network reach, injected by `CriterionRunner` at verdict time, plus held-out perturbations on resampled slices whose answers were never published.",
+      "extractor": "amendments",
+      "id": "amendment:A8",
+      "kind": "amendment",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 182,
+        "line": 182,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Organizing principle amended"
+    },
+    {
+      "attrs": {
+        "evidence": "GitLost's failure was a read-side judgment call. Spearman ρ ≈ −0.67 (turns) and −0.73 (tokens) against score — cheap, strong, agent-unwriteable failure predictors. Largest agentic-PR rejection buckets are abandonment (40.6%) and duplicates (25.3%), both structurally detectable.",
+        "number": "A9"
+      },
+      "body": "**Decision 23 extends to the read side**: readable paths fixed by the harness at dispatch and enforced by the filesystem mount, never chosen by the agent mid-run. Add turn-count, token-spend and wall-clock escalation triggers.",
+      "extractor": "amendments",
+      "id": "amendment:A9",
+      "kind": "amendment",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 183,
+        "line": 183,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Decision 23 extends to the read side"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "1",
+        "rationale": "Real usage supplies ground truth. Without it, validation stays synthetic and the platform is built against imagined requirements — the original failure mode."
+      },
+      "body": "**Real product with real users** is the first deliverable; the factory is a byproduct.",
+      "extractor": "decisions",
+      "id": "decision:D1",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 45,
+        "line": 45,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Real product with real users"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "10",
+        "rationale": "Worst case from a fully compromised agent is a pull request that gets declined."
+      },
+      "body": "**Hard blast-radius separation.** Ephemeral container, throwaway DB from migrations, no production credentials in context, output is a PR only. Deploy stays CI-triggered on merge.",
+      "extractor": "decisions",
+      "id": "decision:D10",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 54,
+        "line": 54,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Hard blast-radius separation"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "11",
+        "rationale": "Otherwise the agent can make checks pass by deleting them — a standard reward-hacking outcome, not a hypothetical."
+      },
+      "body": "**Protected paths are harness-enforced**, defined by ground-truth provenance (see below).",
+      "extractor": "decisions",
+      "id": "decision:D11",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 55,
+        "line": 55,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Protected paths are harness-enforced"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "12",
+        "rationale": "Everything the agent reads (issue text, dependency READMEs, error messages, web content) is attacker-reachable and enters its context. Egress control caps damage even when injection succeeds."
+      },
+      "body": "**Network deny-by-default with allowlist** in the sandbox.",
+      "extractor": "decisions",
+      "id": "decision:D12",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 56,
+        "line": 56,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Network deny-by-default with allowlist"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "13",
+        "rationale": "Single toolchain. Pydantic gives executable contracts. Hypothesis is the strongest available adversary. numpy/scipy is correct for the domain."
+      },
+      "body": "**Python throughout.** `uv`, `ruff`, `pytest` + `hypothesis`, `pyright --strict`, FastAPI + Pydantic, Alembic, Postgres, Docker.",
+      "extractor": "decisions",
+      "id": "decision:D13",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 57,
+        "line": 57,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Python throughout"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "14",
+        "rationale": "The replay harness is permanent infrastructure — it is how streaming gets validated, how agent changes get scored, and how customer-reported discrepancies get reproduced. Building it first is not a detour."
+      },
+      "body": "**Batch replay first; streaming later.** Phase 0 ingests a scenario log and returns metrics deterministically.",
+      "extractor": "decisions",
+      "id": "decision:D14",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 58,
+        "line": 58,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Batch replay first; streaming later"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "15",
+        "rationale": "Battle-tested implementation of typed channels, reducers, and conditional edges. Adopting the model directly avoids designing it from scratch."
+      },
+      "body": "**LangGraph as the graph engine**, with Pydantic state schemas and the Postgres checkpointer.",
+      "extractor": "decisions",
+      "id": "decision:D15",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 59,
+        "line": 59,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "LangGraph as the graph engine"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "16",
+        "rationale": "Resolves the conflict between LangGraph's node-returns-state-update model and decision 5, inside LangGraph's own ownership model rather than fighting it."
+      },
+      "body": "**Verdict fields are owned by deterministic nodes.** Agent nodes are schema-forbidden from writing them. Evidence lives in Postgres tables, not in graph state.",
+      "extractor": "decisions",
+      "id": "decision:D16",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 60,
+        "line": 60,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Verdict fields are owned by deterministic nodes"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "17",
+        "rationale": "Chosen with the waterfall risk explicit. Writing the documents is not the hazard; believing them is. The header contract converts pre-evidence documents from assumptions into scored predictions."
+      },
+      "body": "**The full ~55-document register is written before Phase 0 code**, with mandatory status headers, declared evidence basis, and falsification conditions.",
+      "extractor": "decisions",
+      "id": "decision:D17",
+      "kind": "decision",
+      "occurrences": [
+        {
+          "end_line": 381,
+          "line": 381,
+          "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+        }
+      ],
+      "shape": "table-row",
+      "source": {
+        "end_line": 61,
+        "line": 61,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "The full ~55-document register is written before Phase 0 code"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "18",
+        "rationale": "A role has no input/output contract, therefore no golden tasks and no measurable merge rate. Role-based agents structurally break the Phase 4 autonomy mechanism. Agents also must justify themselves against a deterministic alternative: open input space and checkable output, or it is a node."
+      },
+      "body": "**Agents are capability-scoped, never role-scoped.** An agent is `(input contract, output contract, tools, permissions, criteria, escalation)` — never a job title.",
+      "extractor": "decisions",
+      "id": "decision:D18",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 62,
+        "line": 62,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Agents are capability-scoped, never role-scoped"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "19",
+        "rationale": "Every measurement describes a specific system. Model deprecation is scheduled by the provider, not by you — without standing re-qualification, every grant eventually rests on a model that can no longer be run. Fingerprint tracking must therefore exist from Phase 2, not Phase 4."
+      },
+      "body": "**Autonomy grants are keyed to a fingerprint** — `(capability, model_version, prompt_version, tool_version, context_strategy_version)`. Any change suspends the grant until re-measured, tiered: smoke subset for prompt/context changes, full golden set for model or tool changes.",
+      "extractor": "decisions",
+      "id": "decision:D19",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 63,
+        "line": 63,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Autonomy grants are keyed to a fingerprint"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "2",
+        "rationale": "Correctness must be machine-checkable. UI-led products have no automated verdict, making evaluation and self-improvement structurally impossible."
+      },
+      "body": "Product is **backend/data-heavy** with thin UI.",
+      "extractor": "decisions",
+      "id": "decision:D2",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 46,
+        "line": 46,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Product is **backend/data-heavy** with thin UI"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "20",
+        "rationale": "Every safeguard here assumes the judge is independent of the worker. An agent editing the judge collapses all of them at once, silently, with tests green — because the tests are downstream of the edit. This is ordinary optimization pressure, not malice: \"make the criterion runner faster\" that quietly loosens a tolerance looks like success at every layer of observation available."
+      },
+      "body": "**Agents may improve the factory, never the inspector.** Permanently protected: `CriterionRunner`, `EvidenceStore`, `PolicyEngine`, `AutonomyGate`, protected-path config, sandbox spec, fingerprint tracker.",
+      "extractor": "decisions",
+      "id": "decision:D20",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 64,
+        "line": 64,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Agents may improve the factory, never the inspector"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "21",
+        "rationale": "Forward-compatible at near-zero cost since the invariants already require tenancy. The gate is revenue, not readiness, because \"the platform is ready for a second product\" is a judgment the platform will always make in its own favour."
+      },
+      "body": "**Alfred designs multi-product, builds single-product.** Domain behind ports, real tenancy, per-product policy — but no second product until the first has paying users, and no platform sales.",
+      "extractor": "decisions",
+      "id": "decision:D21",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 65,
+        "line": 65,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Alfred designs multi-product, builds single-product"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "22",
+        "rationale": "If the harness verified correctness, a human reading the diff for bugs duplicates the harness — and that duplication is where review fatigue comes from. The human checks what the harness structurally cannot: whether the criterion was the right criterion, whether the agent solved the stated problem or a nearby easier one, future coupling cost, and whether a metric's validity envelope is honestly stated."
+      },
+      "body": "**Review is criterion-first, diff on signal.** Reviewer reads intent → criterion → evidence bundle → diff summary; full diff only when something looks wrong. Review time is recorded as a task-size signal.",
+      "extractor": "decisions",
+      "id": "decision:D22",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 66,
+        "line": 66,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Review is criterion-first, diff on signal"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "23",
+        "rationale": "Agents almost never stop — default behavior under an unsatisfiable task is a plausible partial solution, not an admission. Escalation therefore cannot depend on the agent recognizing it is stuck, since that is precisely the judgment the failure compromises. An agent that can declare itself blocked can also declare itself done."
+      },
+      "body": "**Escalation triggers are structural, not agent-judged.** Iteration cap, budget exhaustion, criterion red after N attempts, protected-path attempt, tool unavailable. Agent-initiated escalation is permitted as a budget optimization but never load-bearing. Agent cannot write `blocked` or `complete`. Every escalation carries a structured attempt bundle.",
+      "extractor": "decisions",
+      "id": "decision:D23",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 67,
+        "line": 67,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Escalation triggers are structural, not agent-judged"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "24",
+        "rationale": "Chosen for throughput and to let decomposition scale without human involvement. **Known exposure, accepted:** budget ceilings become advisory, since an agent approaching its cap can split into subtasks that each receive fresh budget. No malice is required — it is the locally rational move under a constraint. A global tree cap would have preserved the same agent freedom while bounding total spend; the absence of a stop is the deliberate trade. Logged in the Risk Register with revisit trigger: first observed decomposition tree exceeding expected spend by 5×."
+      },
+      "body": "**One criterion = one task.** Agents may create subtasks freely, each receiving its own budget allocation.",
+      "extractor": "decisions",
+      "id": "decision:D24",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 68,
+        "line": 68,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "One criterion = one task"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "25",
+        "rationale": "Cost as a bill is bookkeeping; cost-per-merged-task is what makes capabilities and models comparable. Merge rate alone ranks a 90%/$50 capability above a 60%/$3 one, which is backwards. An autonomy grant must therefore read \"X% merge, $Y per success, on fingerprint Z\" — all three. Attribution cannot be applied retroactively, so it must exist before it is needed."
+      },
+      "body": "**Org-level hard spend ceiling; cost-per-merged-task is a first-class metric.** No per-task ceiling. Dispatch halts at a monthly org limit, with real-time alarms. Cost recorded per run, per node, per capability from Phase 2.",
+      "extractor": "decisions",
+      "id": "decision:D25",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 69,
+        "line": 69,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Org-level hard spend ceiling; cost-per-merged-task is a first-class metric"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "26",
+        "rationale": "Agentic retrieval is why agents work, but it is nondeterministic — which appears to break decision 19's fingerprint. Recording resolves it: reproducibility comes from the evidence store, not from constraining retrieval. Runs replay against the exact file set they saw. Side benefits: context becomes measurable (which reads correlate with success), and the read log is a *partial* forensic trail after an injection incident — **downgraded 2026-08-15, and the downgrade is the honest form of the original claim.** Completeness is demonstrated only against the executor's own durable event count (containment assertion C1), which proves no event was lost between the executor and the store and **cannot prove an event was emitted for everything the agent did**; the log's granularity is the action, not the file read, so files opened inside a shell command are recorded as one command. The log is therefore **positive evidence** — content it records did enter context, which suffices to identify a payload that arrived through a recorded read and to compute retrieval miss rate — and **not negative evidence**: the absence of a read from the log is not evidence the read did not happen. What bounds the set of bytes that could have been read is the asserted mount set (C9, C12), not the log, and that bound is the stronger forensic object in the direction an incident actually asks about. An independent observation channel — filesystem-level read auditing inside the container — was considered and **rejected on containment cost rather than effort**: the kernel audit subsystem is not namespaced and fanotify/eBPF attachment requires capabilities the sandbox must not hold, so completing the trail would mean enlarging the privilege set of the thing the trail exists to bound. Revisit if runs ever execute on a Linux host Alfred owns, where a host-side watcher sits outside the container's capability set. Read-recording must be in the `Worker` port from Phase 1 regardless — the downgrade is to what the log proves, never to whether it is kept."
+      },
+      "body": "**Context = deterministic seed + free agent search + full read-recording.** Harness seeds (task, criterion, conventions, protected paths, prior artifacts); agent searches freely in the sandbox; every file read and search issued is recorded to the evidence store as the run's observed context.",
+      "extractor": "decisions",
+      "id": "decision:D26",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 70,
+        "line": 70,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Context = deterministic seed + free agent search + full read-recording"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "27",
+        "rationale": "A wrong risk number is not an outage: it does not throw, spike latency, or fail a healthcheck. Every observability mechanism in this plan detects a different class of failure. Remediation therefore has to carry the load, and remediation needs stamping that **cannot be retrofitted** — results computed before it exists are permanently unrecallable. The advisory model works without holding customer data, so it stays compatible with a customer-deployed product."
+      },
+      "body": "**Result provenance, recall protocol, and published validity envelopes — all in Phase 0.** Every emitted result carries metric version, code commit, assumption set, input hash, and tolerance. Defects trigger a versioned advisory naming affected versions and date ranges. Each metric ships a validity envelope in its model card.",
+      "extractor": "decisions",
+      "id": "decision:D27",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 71,
+        "line": 71,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "all in Phase 0"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "28",
+        "rationale": "Every forbidden-advancement condition in this plan is a promise made to a future self who will be under pressure and will want to proceed. A gate that can be waived silently is a note, not a gate — but an unwaivable gate gets bypassed entirely rather than adjusted honestly. Making the override expensive and permanent is the realistic control. Waiver count becomes its own health metric. Note this is the only control in the architecture aimed at the human rather than the agents, and it addresses the failure that actually occurred last time."
+      },
+      "body": "**Stage gates are executable where measurable; overriding one requires an immutable waiver ADR** recording gate, threshold, actual value, reason, and the condition that would reverse it.",
+      "extractor": "decisions",
+      "id": "decision:D28",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 72,
+        "line": 72,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Stage gates are executable where measurable; overriding one requires an immutable waiver ADR"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "29",
+        "rationale": "Three traps. (a) A set built from successes reads ~100% forever and goes green through changes that break everything else — the failures are the informative half. (b) Once a fix is merged the task is trivial, so tasks must run against the parent tree, not HEAD; this is why SWE-bench is constructed that way. (c) At n=20 and p≈0.6 the standard error is roughly 11pp, so an observed 10pp gain is noise; resolving ~5pp needs roughly 150–400 tasks. **The Phase 1 twenty and the regression set are therefore two different artifacts** — twenty is ample for a failure taxonomy and useless for comparing configurations. Decision 19's tiered re-qualification depends on this distinction."
+      },
+      "body": "**Golden tasks pin the parent commit; the set is stratified and accumulates continuously.** Successes, failures, near-misses and escalations all enter. Every comparison reports its detectable effect size.",
+      "extractor": "decisions",
+      "id": "decision:D29",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 73,
+        "line": 73,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Golden tasks pin the parent commit; the set is stratified and accumulates continuously"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "3",
+        "rationale": "Greenfield is where agents are weakest; every credible result is brownfield. This places the system on the part of the capability curve with evidence behind it."
+      },
+      "body": "**Human hand-builds the initial skeleton** — repo, schema, CI, deploy, first metrics, initial test suite.",
+      "extractor": "decisions",
+      "id": "decision:D3",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 47,
+        "line": 47,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Human hand-builds the initial skeleton"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "(a) by Phase 0 exit (2026-09-09) byte-identical replay cannot be achieved across environments, so \"independently re-derivable\" is not technically deliverable; or (b) by 2026-10-07, in ≥2 of the 3 recorded demand-gate conversations, the artifact the buyer names contains no provenance or reproduction element.",
+        "number": "30",
+        "rationale": "The product-shape argument never depended on regulation and is untouched. What K5 removed was the claim that someone is *compelled* to procure an independent opinion — a market claim fused into a product decision and therefore never separately tested. The word \"audit\" carried the fusion: re-derivability is a property of the artifact and needs no buyer's compulsion; attestation is a service needing both compulsion and an attester with standing. Alfred builds the first. Original rationale, still standing on its product half: incumbents already own coverage and dashboards — Applied Intuition sells the aggregation-and-validation layer to 18 of the top 20 OEMs; Foretellix authors the ASAM standard; Streetscope has a published method and an ISO 26262 application. Meanwhile the differentiator Alfred was counting on — absolute risk quantification — is exactly what surrogate metrics cannot deliver: TTC and PET produce contradictory conclusions on identical data, and no threshold standard exists. Reproducibility is ~~unclaimed, is the audit need behind \"independent evidence for the system safety case\", and~~ **[clause withdrawn 2026-08-14; replaced 2026-08-15 after research — reproducibility is not \"unclaimed\": SSP-LS-Traceability 1.0.0 already specifies the record (SHA3-256 checksum, generating tool, derivation chain) and prostep ivip is funded to pursue it. What is unclaimed is **shipping it at the metric level with re-derivation and a recall path** — every provenance attribute in that spec is marked Optional, no vendor implements it, and Ansys Minerva, the closest thing that exists, is file-level with no recall. Restated: *specified but not shipped, and not re-derivable or recallable by anyone*]** the one thing Alfred's provenance architecture is already built to do."
+      },
+      "body": "**The product is a re-derivability layer for computed criticality metrics** — not a risk oracle, and not an attestation service. It computes and reproduces *defined* metrics; every number carries formula, citation, code version, input hash, **upstream toolchain identity as declared** (tool, version, and a digest of the run configuration — tamper-evident and bound to the number, not attested by Alfred, which never observes the simulator) and tolerance, and is independently re-derivable by anyone holding the stamp, the inputs and the code. Risk classification ships only as a configurable overlay with visible provenance, never as a fact. **Amended 2026-08-14 (K5):** the rationale's go-to-market clause — that this is \"the audit need behind independent evidence for the system safety case\" — is **withdrawn as falsified**. The market position it assumed now lives separately in D48 and is separately falsifiable. **Falsifies if:** (a) by Phase 0 exit (2026-09-09) byte-identical replay cannot be achieved across environments, so \"independently re-derivable\" is not technically deliverable; or (b) by 2026-10-07, in ≥2 of the 3 recorded demand-gate conversations, the artifact the buyer names contains no provenance or reproduction element.",
+      "extractor": "decisions",
+      "id": "decision:D30",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 74,
+        "line": 74,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "The product is a re-derivability layer for computed criticality metrics"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "31",
+        "rationale": "EvilGenie found LLM judges outperformed held-out tests at reward-hack detection (0 FP / 0 FN across three models) with \"only minimal improvement from the use of held out test cases\" — so decision 7's original exclusion was a determinism preference presented as an efficacy claim. The evidence is real but weakly powered (27-problem accuracy set; false negatives are uncountable without exhaustive review), which is why the judge earns weight by measurement rather than receiving it. Advisory framing keeps decision 16 intact. Note it does **not** engage the SpecBench class — composed property tests remain load-bearing."
+      },
+      "body": "**LLM judge admitted as an advisory signal only.** It may raise escalation and flag suspected reward hacking; it is schema-forbidden from writing any verdict field. It is treated as a capability with golden tasks, a measured false-escalation rate, and its own fingerprint.",
+      "extractor": "decisions",
+      "id": "decision:D31",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 75,
+        "line": 75,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "LLM judge admitted as an advisory signal only"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "32",
+        "rationale": "Supersedes decision 17. No study exists on whether a pre-code register helps. The adjacent evidence is actively unfavourable: of 49 agent skills, 39 produced zero improvement, average +1.2%, up to 451% token overhead, and three **degraded** performance up to −10% from version-mismatched guidance — while the seven that gained (up to +30%) did so conditioned on domain alignment and **currency**. A document written before Phase 0 produces evidence cannot be current by construction, so the register's measured benefit depends on a property it cannot yet have, and the downside is negative rather than zero for anything wrong. Stubs preserve the complete map, the schema and the uniformity while keeping speculation out of agent context."
+      },
+      "body": "**All 55 documents written as stubs; full content only for the ~12–15 Phase 0 can falsify.** A stub is header contract, two-sentence purpose, enforcement mechanism, falsification condition, expiry.",
+      "extractor": "decisions",
+      "id": "decision:D32",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 76,
+        "line": 76,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "All 55 documents written as stubs; full content only for the ~12–15 Phase 0 can falsify"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "33",
+        "rationale": "Calibrating on visible-criterion pass rate would certify exactly the agents that reward-hack hardest, since hacking agents saturate the visible suite by definition — SpecBench shows validation scores near-identical across scaffolds while held-out scores diverge 43–48pp. The interface-signature component is required because SWE-bench Pro had to bolt human-authored interface specs onto every task: valid solutions were failing as false negatives against under-determined executable criteria. That component cannot fully graduate to agents, since it is the thing preventing those false negatives."
+      },
+      "body": "**Graduation calibrates on held-out pass rate only.** A criterion is redefined as *(assertion + interface signature + threshold provenance)*.",
+      "extractor": "decisions",
+      "id": "decision:D33",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 77,
+        "line": 77,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Graduation calibrates on held-out pass rate only"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "34",
+        "rationale": "Threshold *selection* is a contested judgment with no standard; only threshold *application* is checkable. Westhofen et al. exists precisely because selection is unresolved. Treating thresholds as cited configuration preserves schedulability under decision 4 and converts a contested parameter into ground truth the agent did not author."
+      },
+      "body": "**Thresholds are declared, cited, versioned configuration inputs** with explicit provenance — never agent-authored, never presented as facts.",
+      "extractor": "decisions",
+      "id": "decision:D34",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 78,
+        "line": 78,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Thresholds are declared, cited, versioned configuration inputs"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "35",
+        "rationale": "Chosen for sovereignty and zero marginal token cost, accepting a real capability ceiling: frontier models score 15–18% on private commercial codebases and open weights trail frontier on agentic coding. Structural win: **local weights never get deprecated** — fingerprints stay valid indefinitely and re-qualification becomes chosen, not imposed. Consequences absorbed elsewhere: binding resource becomes wall-clock per merged task, not dollars (amends 25); one resident ~60 GB model serializes agents, so Phase 3 parallelism needs smaller concurrent models or a revised throughput plan; decision 24's exposure converts from money to wall-clock + hack amplification. Fingerprint (19) gains mandatory fields: **quantization level, inference runtime version (mlx-lm), server version (LM Studio)** — a 4-bit and a 6-bit quant of the same weights are different models for grant purposes."
+      },
+      "body": "**Alfred's agents run on local open-weights models exclusively — hard constraint.** Hardware: Mac Studio M4 Max, 128 GB unified memory, 40-core GPU. Current candidate: gpt-oss-120b (MLX 4-bit, ~60–65 GB resident).",
+      "extractor": "decisions",
+      "id": "decision:D35",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 79,
+        "line": 79,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "hard constraint"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "36",
+        "rationale": "Free inference turns retry-until-green into a search process sampling the distribution of solutions that pass visible checks — some fraction of which fail held-out. Expensive inference accidentally capped that search via budget; local removes the accidental protection, which promotes A3 from hardening to load-bearing. Per-task-after-retries is the honest unit when attempts are free. The gate then constrains *scope* instead of being weakened: \"implement metric M per published spec, matching reference values\" is already a plausible starting class."
+      },
+      "body": "**Acceptance requires held-out pass; retries select only against visible criteria; the agent never sees held-out results.** Merge rate is measured **per task after a bounded retry budget**, not per attempt. Phase 1's ≥50% gate is kept and met by **narrowing the task class**, never by lowering the bar.",
+      "extractor": "decisions",
+      "id": "decision:D36",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 80,
+        "line": 80,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Acceptance requires held-out pass; retries select only against visible criteria; the agent never sees held-out results"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "37",
+        "rationale": "Honest answer to the memory arithmetic: one ~60 GB resident model is one worker. Throughput comes from uptime, not parallelism — tasks/day = f(prefill speed, turns, retries). The Postgres `SKIP LOCKED` queue is already multi-host-aware, so a second Mac Studio is a capital decision, not an architectural one."
+      },
+      "body": "**Single execution lane, 24/7 queue.** One agent at a time; the dispatcher feeds one inference lane from the Postgres queue around the clock. Phase 3's parallel-sandbox plan is amended to parallel *preparation* (checkout, seeding, criterion setup) with serialized inference. Horizontal scaling later = second machine, another lane on the same queue.",
+      "extractor": "decisions",
+      "id": "decision:D37",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 81,
+        "line": 81,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Single execution lane, 24/7 queue"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "38",
+        "rationale": "The SDK's loop is Anthropic-shaped: tool-calling formats, caching behavior, internal assumptions. Terminal-Bench showed harness identity moves scores as much as the spread between leading submissions — driving gpt-oss-120b through a Claude-tuned harness is a silent capability tax of unknown size. The `Worker` interface exists precisely to make this swap cheap."
+      },
+      "body": "**Decision 9's named harness (Claude Agent SDK) demoted to provisional.** Buy-the-loop stands; the candidate is reopened. Selection criteria for the worker harness: first-class local/OpenAI-compatible endpoint support, tool-calling format matching open-weights training, KV-cache-friendly context assembly, and ability to satisfy D5/D16/D26. Candidates under evaluation: devswarm, openclaw, opencode, plus SDK-via-proxy as a baseline.",
+      "extractor": "decisions",
+      "id": "decision:D38",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 83,
+        "line": 83,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Decision 9's named harness (Claude Agent SDK) demoted to provisional"
+    },
+    {
+      "attrs": {
+        "number": "39"
+      },
+      "body": "### Decision 39 — structural enforcement of D16/D20 (from gstack, the one idea that stands alone)",
+      "extractor": "decisions",
+      "id": "decision:D39",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 118,
+        "line": 118,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "structural enforcement of D16/D20 (from gstack, the one idea that stands alone)"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "4",
+        "rationale": "This is the mechanism behind SWE-bench-level performance. Remove it and measured performance collapses."
+      },
+      "body": "**A task is only schedulable if it carries an executable acceptance criterion.** Prose-only tasks are unschedulable and escalate.",
+      "extractor": "decisions",
+      "id": "decision:D4",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 48,
+        "line": 48,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "A task is only schedulable if it carries an executable acceptance criterion"
+    },
+    {
+      "attrs": {
+        "number": "40"
+      },
+      "body": "### Decision 40 — fingerprint extension (final form)",
+      "extractor": "decisions",
+      "id": "decision:D40",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 122,
+        "line": 122,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "fingerprint extension (final form)"
+    },
+    {
+      "attrs": {
+        "number": "41"
+      },
+      "body": "### Decision 41 RESOLVED — the lane is Qwen3-Next-80B-A3B-Instruct-4bit on MLX (2026-08-11)",
+      "extractor": "decisions",
+      "id": "decision:D41",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 599,
+        "line": 599,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "the lane is Qwen3-Next-80B-A3B-Instruct-4bit on MLX (2026-08-11)"
+    },
+    {
+      "attrs": {
+        "number": "42"
+      },
+      "body": "**Decision 42 — Demand gate (Phase 0.75) and company-level kill criteria.** The plan's self-declared largest risk — whether anyone buys a metric-reproduction audit layer — had no phase, no gate, no owner. Fix: a demand gate parallel to the licence gate, with executable exits: named buyer role at 3 AV organizations (safety-case/homologation vs simulation-QA — they buy different artifacts); the artifact they would pay for recorded **in their words** as immutable evidence; one signed LOI or documented refusal reasons **before Phase 2 investment**. Q18 (deployment model) is resolved by these conve",
+      "extractor": "decisions",
+      "id": "decision:D42",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "bold-paragraph",
+      "source": {
+        "end_line": 420,
+        "line": 420,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Demand gate (Phase 0.75) and company-level kill criteria"
+    },
+    {
+      "attrs": {
+        "number": "43"
+      },
+      "body": "**Decision 43 — Evidence durability and tamper evidence.** Append-only is an integrity property against the agent; it does nothing against SSD failure on a 24/7 consumer machine, kernel-panic corruption (a failure mode this plan itself documents), or a bad migration — and hardware loss and total evidence loss are currently the same event. Fix, added to cross-stage invariants: continuous WAL archiving + periodic base backups of Postgres and the artifact store to an **off-machine** target; a **restore drill** as an executable check, with \"restore verified\" a Phase 0 exit criterion beside \"deploy",
+      "extractor": "decisions",
+      "id": "decision:D43",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "bold-paragraph",
+      "source": {
+        "end_line": 422,
+        "line": 422,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Evidence durability and tamper evidence"
+    },
+    {
+      "attrs": {
+        "number": "44"
+      },
+      "body": "**Decision 44 — The evidence store IS the memory; typed views + gated promotion. No extraction pipeline.** Memory = SQL/typed views over the append-only evidence store (failure taxonomy by metric class, per-capability merge history, prior artifacts by content hash). Anything worth injecting into future agent context graduates through the D32 register — human-reviewed, versioned, evidence-based, expiring — and its version joins the D19 fingerprint. In-task retrieval stays agentic (grep/read, D26-recorded). Rationale: an LLM-extraction memory layer (Mem0/Letta/Zep class) is (a) an unfingerprinta",
+      "extractor": "decisions",
+      "id": "decision:D44",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "bold-paragraph",
+      "source": {
+        "end_line": 443,
+        "line": 443,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "The evidence store IS the memory; typed views + gated promotion. No extraction pipeline"
+    },
+    {
+      "attrs": {
+        "number": "45"
+      },
+      "body": "**Decision 45 — Caching: three layers, two adopted, one rejected.**",
+      "extractor": "decisions",
+      "id": "decision:D45",
+      "kind": "decision",
+      "occurrences": [
+        {
+          "end_line": 464,
+          "line": 464,
+          "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+        },
+        {
+          "end_line": 497,
+          "line": 497,
+          "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+        }
+      ],
+      "shape": "bold-paragraph",
+      "source": {
+        "end_line": 445,
+        "line": 445,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Caching: three layers, two adopted, one rejected"
+    },
+    {
+      "attrs": {
+        "number": "46"
+      },
+      "body": "**Decision 46 (revised) — A2A deferred to Phase 6; the handoff contract is the sole comms mechanism.** Initially adopted for future-proofing, then deferred once MAST supplied per-mode frequencies: the failure modes an inter-agent transport or shared-memory layer would address are **the two smallest of fourteen** — information withholding **1.66%**, ignored other agent's input **0.17%** — while the dominant modes are agent-internal reasoning defects no channel fixes (step repetition **17.14%**, reasoning-action mismatch **13.98%**, fail to ask for clarification **11.65%**). A protocol with no c",
+      "extractor": "decisions",
+      "id": "decision:D46",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "bold-paragraph",
+      "source": {
+        "end_line": 451,
+        "line": 451,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "A2A deferred to Phase 6; the handoff contract is the sole comms mechanism"
+    },
+    {
+      "attrs": {
+        "number": "47"
+      },
+      "body": "**Decision 47 — Read-only retrieval index, settled by measurement in Phase 2.** D44's invariants all hold: no extraction pipeline, no memory framework, no new authority over agent context. Added: an embedding + full-text index over the repo and evidence store, built **Postgres-native** (pgvector / tsvector, hybrid RRF) so single-source-of-truth survives, and strictly **derived and read-only** — the index is a materialized view of content that already exists, never a place anything is authored. Injected results are appended **after** the immutable seed (D45's hash-chain rule), so prefix caching",
+      "extractor": "decisions",
+      "id": "decision:D47",
+      "kind": "decision",
+      "occurrences": [
+        {
+          "end_line": 502,
+          "line": 502,
+          "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+        }
+      ],
+      "shape": "bold-paragraph",
+      "source": {
+        "end_line": 481,
+        "line": 481,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Read-only retrieval index, settled by measurement in Phase 2"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "by",
+        "number": "48",
+        "rationale": "K5 established that no instrument compels independent attestation. What survives is a duty on the *manufacturer*: EU 2022/1426 Annex III Part 4's binding \"shall\" obligations — Simulation Handbook, storage of every toolchain version used to release certification data, traceability from M&S output back to setup — which create a tooling need, not an attestation market. Against the assessors (TÜV SÜD, SGS, DEKRA, national technical services) Alfred is a **complement**: part of the toolchain being assessed, not a party to the assessment. Approach order is decided on **feedback latency**, which this plan names as the constraint that starves the calibration loop: a V&V engineer answers in days from a tooling budget; a homologation function answers in quarters through procurement. The two framings sell the *same artifact* in different words — \"traceability from M&S output back to setup\" and \"you can tell which change moved the number\" are the same feature — so this is a sequencing call, not a product fork, and nothing in Phase 0 or Phase 1 differs between them. **Recorded as the destination on falsification because two independent legs of the AV domain choice weakened in the same week:** K5 removed the market rationale, and the 2026-08-13 task enumeration measured the \"long, well-shaped task tail\" at **10 strong tasks**, not the ~20 the Phase 1 exit assumed. The plan recorded both and connected neither."
+      },
+      "body": "**Alfred's buyer is the AV developer's own simulation/V&V function, not a regulator and not an attester.** Alfred supplies provenance tooling the customer operates itself, delivered as a customer-run container on the customer's own data; Alfred never issues an opinion on anyone's evidence and never holds customer data. Approach order is fixed and load-bearing: **simulation/V&V tooling engineer first, homologation second.** **Falsifies if:** by **2026-10-07**, no Track-1 role at three organisations names an artifact, in their own words, containing a provenance or re-derivability element. *(Track 2's result does not rescue this — the V&V engineer is the declared primary buyer, so the primary framing falsifies on its own evidence. A Track-2 respondent reporting a completed or scheduled 2022/1426 approval determines only whether the homologation framing survives as a slower fallback.)* **Consequence on falsification — and it is not another AV wedge:** the D1/D2 product-selection logic is re-run against a named alternative domain, decided by **2026-10-21**. Domain-neutral assets carry (ACS-1 and its vector suite, result stamping, `MetricValue`/`MetricSeries` and the reason codebook, the evidence chain, the document register, the harness, the lane); AV-specific assets are written off (edge-case catalog, CriMe oracle, `phase1_tasks.json`).",
+      "extractor": "decisions",
+      "id": "decision:D48",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 85,
+        "line": 85,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Alfred's buyer is the AV developer's own simulation/V&V function, not a regulator and not an attester"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "49",
+        "rationale": "The 2026-08-13 enumeration graded task admissibility by counting pinned constants, which is a proxy for what A3/D33 actually need: **a visible/held-out split where passing the visible half does not imply passing the held-out half.** The proxy is wrong in both directions. **Too loose** — of the 10 \"strong\" measures only **7** hold two independent literals; three derive their second value relationally from the first *computed* value (`thw - 10*dt`, `wttr + 1.0`, `ttce2 - 10*dt`), so a stub that gets the first value wrong gets the second consistently wrong and the pair tests one thing. **Too strict, and this is the larger error** — invariance under rigid transforms and time shifts, and the 30 degeneracy cases, are held-out points **authored by mathematics**: external, unretrievable, and unmemorisable from any constant. The edge-case specification already names degenerate cases \"the highest-value held-out material in the product.\" The audit counted only P1 because it was auditing CriMe's test file rather than the space of available ground truth. Reclassifying yields a schedulable class of **29** and restores \"20+\" without lowering any bar — D36-compliant, since it narrows and labels rather than loosening. **Falsifies if:** by Phase 0 exit (2026-09-09) the seeded resampler plus pinned oracle does not yield a second non-degenerate value for ≥10 of the 19 borderline measures, in which case P3 does not carry the load and the exit degrades to \"exhaust what qualifies, state n and the strata.\""
+      },
+      "body": "**A grading point is admitted by the provenance of its authorship, not by whether the oracle happened to ship a second constant.** Five tiers: **P1** second pinned oracle constant · **P2** oracle-pinned equivariance relation · **P3** oracle recomputation on a seeded resampled slice (= A8's existing mechanism) · **P4** invariance property over inputs generated at verdict time · **P5** held-out degeneracy case from the edge-case catalog. Every schedulable task carries **≥2 grading points, ≥1 held out**, and **≥1 level-fixing point from P1–P3**. P4 alone is invalid — invariance fixes a result's *shape*, never its *level*, so a uniformly scaled wrong answer satisfies it. The held-out point's tier is recorded with every verdict and merge rate is reported stratified by it.",
+      "extractor": "decisions",
+      "id": "decision:D49",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 87,
+        "line": 87,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "A grading point is admitted by the provenance of its authorship, not by whether the oracle happened to ship a second constant"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "5",
+        "rationale": "If the agent self-reports results, the entire validation system is theatre."
+      },
+      "body": "**The harness executes checks, never the agent.** Agent output is a *claim*; the harness produces the *fact*, on a clean checkout, written to an append-only evidence store.",
+      "extractor": "decisions",
+      "id": "decision:D5",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 49,
+        "line": 49,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "The harness executes checks, never the agent"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "50",
+        "rationale": "A8's rule is ground truth the agent *did not author* **and cannot retrieve**. The retrieval half has an implemented enforcement (held-out values behind a separate DB role) and an **unimplemented** one: the oracle itself. Grep found no occurrence of the oracle in `sandbox-specification.md`, `protected-paths-policy.md` or `definition-of-done.md`, and Phase 0 is specified to use CriMe as its oracle — so the import is coming and nothing in the register stops it landing in the agent tree. If it is importable, a wrapper delegating to `commonroad_crime` passes the published constants, **every P3 resampled perturbation** (the same code produced them) and **every P4/P5 invariance and degeneracy property** — with a clean transcript and no dishonesty anywhere in the loop. Merge rate would then measure delegation. **This blocks every option equally**, including running the 10 strong tasks unchanged, so it is not downstream of the exit-criterion choice — it is upstream of it. **Consequence if the assertion cannot be made to execute: every merge-rate figure measured to that point is void, not suspect.** **Amended 2026-08-15 (see D54) — the assertion is bounded, and the bound is part of the decision.** D50 as written implies the assertion closes retrieval. It closes four paths and leaves five open, named so no merge-rate figure is read as stronger than it is. *Closed:* the oracle as a declared or transitive dependency; the oracle present but unimported; a vendored copy retaining the module name, a stray `.pth`/`sitecustomize`, or a wheel in a resolver cache; acquisition during the run. *Open, and unclosable by this mechanism:* (a) **reconstruction from model weights** — if the oracle's source or published values sit in the lane's training data the agent reproduces them without importing anything, and this probe cannot measure that; (b) a **renamed, reformatted vendored copy** — the checks are name- and hash-based, never semantic, and a semantic check that worked would itself be an unvalidatable judgment inside the evidence plane; (c) **non-Python paths** — a shared object reached through `ctypes`, a subprocess binary, a data file of constants; (d) a **non-enumerable interpreter** — the probe cannot prove its own enumeration was complete, only fail closed when enumeration errors; (e) a **compromised runtime or base image**, already out of scope in the Threat Model and inherited rather than closed. The visible half of every criterion is deliberately outside this control's scope — visible constants are legitimately in agent context, which is why D49 requires ≥1 held-out grading point per task. **The oracle-absence assertion protects the held-out half only.**"
+      },
+      "body": "**The oracle is absent from the execution plane by assertion, not by convention.** `commonroad-crime` and its transitive closure must be **unimportable inside the agent container**, asserted at sandbox boot beside the egress canary, and the assertion is fail-closed: a run that cannot demonstrate the oracle is absent does not start.",
+      "extractor": "decisions",
+      "id": "decision:D50",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 89,
+        "line": 89,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "The oracle is absent from the execution plane by assertion, not by convention"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "a Phase 1 merge is authorized without a corresponding operator-action row in the chain; or the capacity ledger cannot be computed because the recorded number is dominated by tab-open wall clock rather than attended time; or the full diff is opened on a majority of Phase 1 tasks carrying no anomaly flag, meaning criterion-first review is not what is happening.",
+        "number": "51",
+        "rationale": "Phase 1 places a human gate on every one of 20+ tasks and major-fix #10 makes *\"projected human-minutes ≤ capacity\"* an executable gate whose input is human minutes per task — a number the plan gave no instrument for. `run-instrumentation-specification.md` already specifies `task_end.human_review_ms` as *\"recorded from the review interaction, not estimated\"*, **a field with no producer anywhere in the register** — the document that most sharply argues instrumentation must precede measurement specified a field whose instrument it deferred to Phase 3, in the same sentence where it says the history must exist first. Separately, **T10 names the operator as a threat and as the failure that actually occurred**, and an approval surface that does not write to the evidence chain makes the single actor who can override every gate the only unaudited writer in the system. The stack choice is D13 applied unchanged; the split is D20 applied to a surface rather than a module; the recorded action is D43's hash chain applied to the one actor it did not yet cover. **Graph editor refused, near-permanently and not merely deferred:** the graph definition declares field ownership and verdict-node placement, so a GUI writing it is a second authoring path around the D16/D39 lint. Revisit requires two branch points **and** a weekly change cadence — both, not either. **Design pass closed 2026-08-15 (`docs/tier1/mission-control-design.md`). Three decisions the specification left open are now settled and are load-bearing. (a) Progressive disclosure is by navigation, never by disclosure widget** — each step down D22's ordering is a distinct URL, because a `<details>` toggle is invisible server-side and `full_diff_opened` could then only be reported by the party being measured; friction and recordability have the same mechanical answer. **(b) The browser talks to exactly one origin, the command surface**, which server-side fetches read-model fragments over loopback and treats them as untrusted content on the same footing as a commit message — the named attack being an agent-authored fragment that overlays the verdict and renders `fail` as `pass`. The split is made executable by the **dark-read-model test**: with the read model stopped, a `pass` review page must still render its decision-critical zones and permit approve; if it cannot, a fact an action depends on came from the read model. **(c) `attended_ms` is emitted as a bracket, not a point estimate.** Intervals are never extrapolated, so the number undercounts by up to one heartbeat period per interval — and undercount is the dangerous direction, since it tells the capacity gate there is more capacity than there is. `attended_ms_upper = attended_ms + interval_count × heartbeat_period_ms` is recorded alongside it, the same discipline the plan applied when it replaced a point merge rate with a Wilson interval. ADR-0008."
+      },
+      "body": "**Mission control exists, it is split, and every operator action is an evidence row.** Alfred has an operator surface — task queue, escalation inbox carrying the D23 attempt bundle, criterion-first evidence bundle, and a run record with a generated graph/loop viewer — built on FastAPI with server-rendered HTML (D13; no second toolchain, no build step, no JS dependency closure to hash-lock). **Boundary split:** the **command surface** (approve · decline · request-changes · waive · escalate-to-self · reopen, and later grant/revoke autonomy and drain) is **inspector**, permanently protected under D20, running under a DB role whose only INSERT grant anywhere is the operator-action evidence table. The **read model** (views, queries, rendering) is **factory** and agents may build it, under a **SELECT-only** role with no grant on `heldout` — and it **may not be the source of any fact an action depends on**, since an agent-authored view rendering a `fail` as a `pass` would defeat every control beneath it while leaving all of them intact. **Every operator action writes one `operator_action` evidence row into the hash chain** before its side effect is emitted, distinguished from a harness action three ways: ACS-1 domain separation by `record_type`, the writing process and its role, and `actor_kind`/`actor_id` on the row. **Review time is measured by the harness, never reported by the operator** — attended intervals from visibility/focus heartbeats, at most one open across the whole surface, `attended_ms` and `elapsed_ms` recorded separately and never conflated, and `null` rather than `0` when the instrument did not run. **Falsifies if:** a Phase 1 merge is authorized without a corresponding operator-action row in the chain; or the capacity ledger cannot be computed because the recorded number is dominated by tab-open wall clock rather than attended time; or the full diff is opened on a majority of Phase 1 tasks carrying no anomaly flag, meaning criterion-first review is not what is happening.",
+      "extractor": "decisions",
+      "id": "decision:D51",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 91,
+        "line": 91,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Mission control exists, it is split, and every operator action is an evidence row"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "52",
+        "rationale": "The architecture's central claim is that the harness produces facts and the agent produces claims; that survives only if a worker which could not be shown to have run says so instead of returning something verdict-shaped. **The most likely defect in any adaptor is reporting a killed executor as an agent failure**, which silently moves harness flakiness into the numerator of the only number the autonomy gates read — so origin is an explicit part of the return type rather than something the harness infers from an exception. The port names no executor concept anywhere, which is what makes D38's \"the `Worker` interface exists to make this swap cheap\" true rather than aspirational. Specified in `docs/tier1/worker-port-contract.md`; `provisional` not `frozen`, because every executor-specific obligation rests on research notes rather than a running executor."
+      },
+      "body": "**The `Worker` port returns a claim or raises; it never returns a verdict, and it never returns `indeterminate`.** Agent-attributed terminations (`agent_stopped`, `budget_exhausted`, `policy_violation`, `aborted`) are claim values; every executor- or harness-attributed termination is an exception (`ContainmentFailure`, `WorkerFault`, `ClaimIncomplete`) whose class determines the verdict. The claim type and its transitive closure are lint-forbidden from declaring any verdict-vocabulary field name. `dispatch` takes a `SandboxHandle` carrying an assertion report and refuses when any required assertion is absent or not `passed` — **`not_executed` is a failure, never a pass.** Read recording (D26) is an obligation on the adaptor, derived from the executor's event stream, with completeness demonstrated by the durable event count. An adaptor is admitted only on four demonstrations: assertion coverage, instrumentation completeness against a scripted-agent suite, fault fidelity under injected faults, and a declared epoch boundary.",
+      "extractor": "decisions",
+      "id": "decision:D52",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 93,
+        "line": 93,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "The `Worker` port returns a claim or raises; it never returns a verdict, and it never returns `indeterminate`"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "53",
+        "rationale": "An operator approving work inside the executor writes that approval into the executor's event stream — **inside the untrusted, disposable execution plane** — creating a second authorization path Alfred's evidence store and hash chain never see, which makes the most privileged actor (T10) the least audited one. Beneath the plumbing is a framing defect: the executor's surface is agent-conversation-centric, so approving inside it means judging the agent's own account of its work, which is what D22's criterion-first ordering exists to prevent. The persistence, compaction and confirmation-mode premises are **unverified first-hand** — the executor is not in the repository and was not fetched — so each assertion is written to pass harmlessly if the feature does not exist. **An assertion that harmlessly passes on an absent feature costs nothing; its absence would cost every measurement taken under it.**"
+      },
+      "body": "**Executor containment is fifteen numbered boot assertions, split by placement, and the `Worker` port refuses to dispatch without them.** An assertion whose subject is *what the container is* — import path, mount set, environment, listening sockets, loaded configuration — runs **inside** it, because those are properties of the running namespace and are invisible from the image manifest. An assertion whose subject is *the container's account of itself* — image digest, the configuration that was sent, durable event counts, patch content — runs **outside** it. Four hazards are asserted rather than configured: persistence verified by end-of-run event count and not by a flag; every condenser disabled and zero condensation events in the stream; **the executor's own frontend and confirmation mode not exposed, with zero approval-class events in the stream**; and configuration hoisting closed by asserting the loaded configuration hash equals the harness-supplied one with no user- or project-level file at any search path.",
+      "extractor": "decisions",
+      "id": "decision:D53",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 95,
+        "line": 95,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Executor containment is fifteen numbered boot assertions, split by placement, and the `Worker` port refuses to dispatch without them"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "54",
+        "rationale": "**Asserting absence only in the agent container leaves the delegation path open at verdict time** — which would have made the control look complete while the hole stayed open in the environment that actually decides the verdict. The denylist cannot be \"everything the oracle imports\" (that bans numpy) nor \"its own distribution name\" (that misses the packages shipping the same computation for the reachable-set measure), so the classification is a recorded human judgment re-run whenever the closure changes. `find_spec` rather than `import`, because importing a module to learn whether it is importable executes its module-level code inside the sandbox."
+      },
+      "body": "**D50 is enforced by an environment split, not by a check alone: the oracle's outputs cross the boundary as data, its code never crosses at all.** The oracle lives in one offline environment, pinned by commit SHA, that never executes agent-authored code; its values reach the `heldout` schema as data and reach `CriterionRunner` at verdict time. **The criterion environment runs the same absence probe as the agent container**, because it is agent-authored code that executes there. The denylist is versioned protected policy configuration whose version is a fingerprint field, splitting the oracle's closure by hand into *denied* (anything computing a measure in the schedulable class) and *permitted substrate* (anything carrying no measure implementation). The probe is four layers: closure check at image build (outside); `find_spec` import probe over every reachable interpreter at boot (inside, before the agent process starts, **never `import`**); path scan for module names, dist-info, `.pth`, archives and caches (inside); and acquisition closure from egress denial plus read-only interpreter paths plus an end-of-run re-assertion. Every failure path is fail-closed, the probe erroring included.",
+      "extractor": "decisions",
+      "id": "decision:D54",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 97,
+        "line": 97,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "D50 is enforced by an environment split, not by a check alone: the oracle's outputs cross the boundary as data, its code never crosses at all"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "a stamp is found persisted under any shape without `stamp_schema_version`; or a verifier is found reporting `MISMATCH` for an unrecognised schema version; or ≥2 of 3 Phase 0.75 conversations name a toolchain that reads SRMD, which reopens the export adapter.",
+        "number": "55",
+        "rationale": "The change is free today and hash-breaking tomorrow — **verified, not assumed:** all four `migrations/*/versions/` directories contain only `.gitkeep`, no Alembic revision exists, no table holds a stamp, and the only `ResultStamp` constructions in the tree are two test fixtures. Zero stamps have ever been persisted. Without a schema version, adding the upstream field later changes the digest of every re-derived stamp with no marker separating old shape from new, so a legitimate schema change presents as tampering — D27's own failure class inside D27's implementation. The decline rests on the canonical-form argument alone; the SHA-256/SHA3-256 tension **dissolves** rather than deciding anything, because SSP's checksum is over artifact bytes and Alfred's is over a structured record, which ADR-0003 already treats as two different problems."
+      },
+      "body": "**The result stamp stays ACS-1-native — SSP Layered Standard Traceability is declined — and its field set freezes at ten keys with a stamp schema version and a tagged upstream-toolchain field, before any stamp is written.** SSP-LS-Traceability 1.0.0 defines **no canonical form for the SRMD record itself** (its SHA3-256 is over \"the raw data of the data item\"; the three occurrences of \"canonical\" in the 253 KB document all refer to a *canonical master source* URI), so it cannot carry a digest a third party recomputes — which is the property Alfred sells. It also has **no field for a tool version or a tool configuration**: `generatingTool` is defined as *\"the name of the tool\"*, and `fileversion` versions the file, not the tool. So it does not supply the upstream field this decision exists to add. Every provenance field in its Table 62 is Optional against `version`/`name` Mandatory; Alfred inverts that and keeps the version. Dual emission is rejected now and specified as a deferred export adapter: exactly one Alfred field (`stamp_schema_version` → SSP `version`) has a true correspondence, `input_hash` → `checksum` is a semantic mismatch, and the remaining eight have no slot at all — they would land in an opaque `Annotation type=\"org.alfred.stamp\"`, so the SSP-shaped part of the export transmits none of the load-bearing information. **The stamp adds `stamp_schema_version: int` (=1, in the preimage, name and shape pinned for all time) and `upstream: Simulated | Corpus | Unknown` (no `null` arm; `unknown` carries a mandatory reason; \"not applicable\" is expressed as the positive `corpus` arm so the claim is checkable).** Verifier verdicts are three-valued — `VERIFIED` / `MISMATCH` / `UNVERIFIABLE`, the last mapping to `indeterminate` and never to either other — because \"I cannot check this schema version\" reported as \"tampering\" is an incident-grade misreport. ADR-0006. **One thing this does not buy, and it must not be overclaimed:** Alfred's container never observes the simulator, so `tool_name`, `tool_version` and `config_digest` are **declared by whoever ran the run**. The stamp makes the declaration tamper-evident and binds it to a specific number rather than to a file — a real difference from Ansys Minerva's user-declared solver field, whose unit of provenance is a file. It does not make the declaration true, and no assessment conversation may say otherwise. **Falsifies if:** a stamp is found persisted under any shape without `stamp_schema_version`; or a verifier is found reporting `MISMATCH` for an unrecognised schema version; or ≥2 of 3 Phase 0.75 conversations name a toolchain that reads SRMD, which reopens the export adapter.",
+      "extractor": "decisions",
+      "id": "decision:D55",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 99,
+        "line": 99,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "SSP Layered Standard Traceability is declined — and its field set freezes at ten keys with a stamp schema version and a tagged upstream-toolchain field, before any stamp is written"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "56",
+        "rationale": "Three of `AutonomyGate`'s four inputs are already emitted by the Phase 1 instrumentation; the defect-escape rate is not — and unlike the others it cannot be reconstructed from history, because nothing in a merged history distinguishes a clean merge from one nobody has looked at yet. A gate built in Phase 4 against a table that started in Phase 4 has no denominator."
+      },
+      "body": "**Defect-escape recording starts at the first merge, not at Phase 4.** `evidence.defect_escape` records, at *discovery* time, the task that introduced a defect, the fingerprint it was merged under, how it was found, and the basis of the attribution (`bisect` · `criterion_replay` · `operator_judgment`). Corollary, and the reason this is a decision rather than a schema note: **an empty defect-escape table is not a zero defect-escape rate.** The gate reads merged tasks under observation for **a stated window** as its denominator, because a grant issued on a count is a grant issued on how recently anyone looked. An attribution by `operator_judgment` and one by `bisect` are different measurements, and a rate that mixes them without saying so is not a rate. **The window is an operator input and is unstated as of 2026-08-17**, which leaves the 2026-12-31 anchor's pass condition unevaluable until it exists.",
+      "extractor": "decisions",
+      "id": "decision:D56",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 101,
+        "line": 101,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Defect-escape recording starts at the first merge, not at Phase 4"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "57",
+        "rationale": "A passing suite and a vacuous suite report the same thing, and this project has paid for that lesson twice: ADR-0004 recorded thin ACS-1 margins (3 checks, then 1) that only a mutation control surfaced, and the arity guard in `harness/lane/` rests on a **single** check today against salvage-disabled's 26. The hazard the two-sidedness answers is structural and previously unnamed: `testing-strategy.md` and `failure-semantics.md` both specify the seeded-defect suite entirely in terms of what must go red, and nothing in the register rules out a runner that reds everything. **The floor suite and the ladder are each other's vacuity control** — replace every criterion with `return 0.0` and the floor suite passes while the ladder's green rungs fail — so neither may be specified or owned without the other."
+      },
+      "body": "**The harness self-test suites are two-sided, and each carries a stated vacuity control.** A seeded-defect ladder asserts **green** inside the declared tolerance (δ = 0, τ/2, τ·(1−ε)) and **red** outside it (τ·(1+ε), 10τ, O(1)) — because a suite of red-expectations alone is passed by a `CriterionRunner` that fails unconditionally, and the rung just outside tolerance is the only one constraining the tolerance's *calibration*. ε is set from the criterion's **measured** noise floor, never chosen; a τ that cannot resolve ε is a finding about τ. The null-agent floor is `patch is None` with an unchanged tree, asserting **score zero and verdict `fail`, never `indeterminate`** — a do-nothing run belongs in the merge-rate denominator. Fault injection asserts by **disposition**: `indeterminate` for the seven rows disposed so, **no verdict row at all** for the fifteen disposed *run does not start*, and *the next side effect did not occur* for the five disposed *halt/reject*. Every injector carries a witness, and an uninvoked injector fails its own test. Every suite states how it would be shown vacuous, and the disable-all-injectors / always-pass / always-fail controls are committed alongside it.",
+      "extractor": "decisions",
+      "id": "decision:D57",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 103,
+        "line": 103,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "The harness self-test suites are two-sided, and each carries a stated vacuity control"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "6",
+        "rationale": "Human-authored tasks generate the evidence needed to prove agent-authored criteria are equivalent. There is no way to skip this and still have evidence."
+      },
+      "body": "Criteria start **human-authored**, graduating to **agent-authored** per task-class once calibrated against paired data.",
+      "extractor": "decisions",
+      "id": "decision:D6",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 50,
+        "line": 50,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Criteria start **human-authored**, graduating to **agent-authored** per task-class once calibrated against paired data"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "7",
+        "rationale": "Properties encode intent over generated inputs; the agent cannot special-case past inputs it never sees. Mutation score measures branch coverage only. An LLM adversary is reserved for what neither reaches: missing requirements."
+      },
+      "body": "The adversary is **deterministic tooling, not a second LLM**: Hypothesis property tests primary, mutmut secondary.",
+      "extractor": "decisions",
+      "id": "decision:D7",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 51,
+        "line": 51,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "The adversary is **deterministic tooling, not a second LLM**: Hypothesis property tests primary, mutmut secondary"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "8",
+        "rationale": "Enough for platform and product in parallel. Does not remove the obligation to build one capability at a time."
+      },
+      "body": "Capacity: **20+ hrs/week sustained.**",
+      "extractor": "decisions",
+      "id": "decision:D8",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 52,
+        "line": 52,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Capacity: **20+ hrs/week sustained.**"
+    },
+    {
+      "attrs": {
+        "falsifies_if": "",
+        "number": "9",
+        "rationale": "Rebuilding solved infrastructure is how the prior attempt consumed its hours."
+      },
+      "body": "**Buy the agent loop and sandbox; build the control and evidence planes.** Claude Agent SDK behind a `Worker` interface; Docker container per task.",
+      "extractor": "decisions",
+      "id": "decision:D9",
+      "kind": "decision",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 53,
+        "line": 53,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Buy the agent loop and sandbox; build the control and evidence planes"
+    },
     {
       "attrs": {
         "enforcement": "ci-gate",
@@ -2952,7 +4479,88 @@
       "title": "Tier 7 — Meta"
     }
   ],
-  "rejected": [],
+  "rejected": [
+    {
+      "extractor": "decisions",
+      "reason": "names a decision without titling it",
+      "source": {
+        "end_line": 83,
+        "line": 83,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "text": "Decision 9's named harness (Claude Agent SDK) demoted to provisional."
+    },
+    {
+      "extractor": "decisions",
+      "reason": "names a decision without titling it",
+      "source": {
+        "end_line": 181,
+        "line": 181,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "text": "Decision 12 becomes a machine-checkable criterion"
+    },
+    {
+      "extractor": "decisions",
+      "reason": "names a decision without titling it",
+      "source": {
+        "end_line": 183,
+        "line": 183,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "text": "Decision 23 extends to the read side"
+    },
+    {
+      "extractor": "decisions",
+      "reason": "names a decision without titling it",
+      "source": {
+        "end_line": 206,
+        "line": 206,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "text": "Decision 7's LLM exclusion"
+    },
+    {
+      "extractor": "decisions",
+      "reason": "names a decision without titling it",
+      "source": {
+        "end_line": 207,
+        "line": 207,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "text": "Decision 6's graduation metric"
+    },
+    {
+      "extractor": "decisions",
+      "reason": "names a decision without titling it",
+      "source": {
+        "end_line": 208,
+        "line": 208,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "text": "Decision 2's ceiling"
+    },
+    {
+      "extractor": "decisions",
+      "reason": "names a decision without titling it",
+      "source": {
+        "end_line": 209,
+        "line": 209,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "text": "Decision 17"
+    },
+    {
+      "extractor": "decisions",
+      "reason": "names a decision without titling it",
+      "source": {
+        "end_line": 466,
+        "line": 466,
+        "path": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md"
+      },
+      "text": "Decision 37 turns out to be a correctness safeguard, not just a constraint."
+    }
+  ],
   "schema_version": 1,
   "unparsed": []
 }

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "sources": [
+    {
+      "bytes": 242064,
+      "id": "handoff-plan",
+      "lines": 1155,
+      "mirror": "plan/handoff-autonomous-software-engineering-fizzy-dahl.md",
+      "origin": "~/.claude/plans/handoff-autonomous-software-engineering-fizzy-dahl.md",
+      "sha256": "4be206a52a4a3ac01b9c6ef68314865b9f6ed59222399c5d7e7702d798f05d5c"
+    }
+  ]
+}
