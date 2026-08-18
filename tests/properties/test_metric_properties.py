@@ -18,6 +18,7 @@ from metrics.series import MetricSeries
 from metrics.value import METRIC_VALUE_ADAPTER, Defined, Infinite, MetricValue, same_claim
 from provenance.encoding import canonicalize, parse_strict
 from provenance.stamp import AssumptionSet, ResultStamp, StampedResult, Tolerance, hash_inputs
+from provenance.upstream import CorpusUpstream
 
 _ALLOCATED = {int(member) for member in Reason}
 
@@ -118,6 +119,12 @@ def test_stamped_results_hash_deterministically_and_reparse(
         ),
         input_hash=hash_inputs({"scenario": "s1"}),
         tolerance=Tolerance(atol=1e-9, rtol=1e-6),
+        upstream=CorpusUpstream(
+            corpus_name="CommonRoad",
+            corpus_version="2020a",
+            scenario_id="ZAM_Urban-7_1_S-2",
+            corpus_digest="2" * 64,
+        ),
     )
     result = StampedResult(value=value, stamp=stamp)
     first = result.content_hash()

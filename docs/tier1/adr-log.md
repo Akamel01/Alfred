@@ -1507,3 +1507,101 @@ The floor suite, on its first run, before it had ever passed. Recorded because t
 S4 is not that the two suites pass — it is that they fail against a runner that should
 fail, and the first thing this one did was fail against a real defect in the code it
 measures.
+
+---
+
+## ADR-0016 — `StampedResult` takes its schema version from the stamp it contains
+
+**Date:** 2026-08-18 · **Status:** Accepted · **Supersedes:** none · **Amends:** ADR-0006 (which versions the stamp and is silent on the record that wraps it) · **See also:** ADR-0001 (the tagged `MetricValue` encoding is inside this record's preimage), ADR-0003 (`alfred.stamped_result` is the third domain-separation record type)
+
+### Context
+
+ADR-0006 gives `ResultStamp` a version for its own field set, and the argument it makes is
+general: a provenance record whose key set can change without a marker turns a legitimate
+schema change into something indistinguishable from tampering. It then versions exactly one
+record.
+
+`StampedResult` is a second structured record. It has its own domain-separation tag
+(`alfred.stamped_result`), its own digest (`content_hash()`), and its own key set —
+`{stamp, value}`. `value` is `MetricValue` in the ADR-0001 tagged form, and ADR-0001's whole
+design permits a fourth arm. **The document ADR-0006 calls "the only shape in which a number
+leaves the system" carried no version of its own**, so a new `MetricValue` arm, or any change
+to how an existing arm canonicalizes, would move every stored `StampedResult` digest with no
+marker distinguishing the old shape from the new. That is ADR-0006's defect, one level up,
+found while implementing ADR-0006.
+
+The window is the same window and it is still open. Re-verified 2026-08-18: four
+`migrations/*/versions/` directories containing only `.gitkeep`, no Alembic revision anywhere
+in the tree, no table holding a stamp or a stamped result. **Zero records of either kind have
+ever been persisted.**
+
+### Decision
+
+`StampedResult` gains **no version key of its own.** Its schema version is the
+`stamp_schema_version` of the stamp it contains, which is already inside its preimage, so a
+reader two-stage-reads straight through: parse as ACS-1, read `stamp.stamp_schema_version`,
+dispatch to that version's encoder for the whole record.
+
+| | Option | Outcome |
+|---|---|---|
+| A | Give `StampedResult` an independent `record_schema_version` | **Rejected.** |
+| B | Derive the version from the contained stamp | **Accepted.** |
+| C | Leave it unversioned and record the gap for later | **Rejected.** |
+
+**Why B rather than A.** The record has no independent shape axis. It is a stamp plus a
+value, and both of its two keys are things ADR-0006 already governs: the stamp by its own
+version, the value by an ADR-0001 arm set that cannot change without a hash-affecting
+change. An independent version would be a second number to bump for every change that
+already bumps the first — and ADR-0006 rejects versioning the *record type* on precisely
+this ground: a second place to bump is a second place to drift. Applying that argument here
+and not there would be inconsistent in the direction of more machinery.
+
+**What option A would have bought, weighed honestly.** Genuine independence: a future change
+confined to `MetricValue` could bump the wrapper without disturbing the stamp shape, and
+`ResultStampV1`'s frozen encoder would not need reissuing for a change that does not touch
+a stamp key. That is a real saving in one scenario. It is outweighed because the scenario is
+rare — `MetricValue` has had three arms since ADR-0001 and a fourth is speculative — and
+because the cost of A is permanent and paid on every change, while the cost of B is paid
+only in that one scenario.
+
+**The consequence accepted, stated rather than discovered later.** The two records' lifecycles
+are now coupled: **a change to `MetricValue`'s tagged encoding is a `stamp_schema_version`
+bump**, even though no stamp key changed. The bump is cheap by ADR-0006's own accounting —
+one new frozen encoder module and one new frozen vector set — and it is loud, which is the
+property being bought. Anyone tempted to avoid the bump by arguing "the stamp did not change"
+is reading this paragraph.
+
+**Why C was rejected.** Deferring spends the one free window. The migration cost of this
+decision is zero exactly once, and it is zero for the wrapper at the same moment it is zero
+for the stamp. A gap recorded in `## Open items` for later resolution would be resolved after
+the first persisted record, when the cost is a migration plus an advisory naming affected
+rows — the exact bill ADR-0006 exists to avoid.
+
+### Consequences and enforcement
+
+- `StampedResult.to_acs()` freezes at two keys, `{stamp, value}`. No version key is added.
+- The record type `alfred.stamped_result` stays unversioned, for ADR-0006's reason.
+- The vector suite gains `stamped-result-v1-defined` and `stamped-result-v1-undefined`, whose
+  notes state that the nested `stamp_schema_version` is inside this record's preimage.
+- CI asserts, via `tests/test_stamp_v1_vectors.py`, that the model reproduces both vectors
+  byte-for-byte and digest-for-digest.
+- A future `MetricValue` arm is a `stamp_schema_version` bump. Recorded here so that it is not
+  argued away at the time.
+
+### Why this is not an inspector patch
+
+`src/provenance/stamp.py` is product code. The accompanying vector extension in
+`harness/acs/gen_vectors.py` and the new `harness/stamp/verdict_map.py` **are** inspector
+machinery under D20, and are landed citing ADR-0006's own Consequences list as the authorizing
+record rather than a fresh ADR each: major-fix #8 exists to stop an agent changing the
+inspector on its own judgment, and there the judgment is already recorded and human. The
+line-by-line review is still owed. It is O9, it has not happened, and this ADR has not been
+reviewed either.
+
+### What found it
+
+Implementing ADR-0006. The ten-key stamp was written, and the record wrapping it still had
+eight characters of key set and no version. Recorded because the general argument was already
+in the log and had been applied once rather than exhaustively — which is the failure mode
+`## Open items` describes as the register discovering its own conditions unrunnable at their
+deadline rather than before it.

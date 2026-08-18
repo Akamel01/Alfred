@@ -171,7 +171,8 @@ Binding on implementation and easy to miss, since they live inside one document.
 | [ADR-0013](tier1/adr-log.md) | Containment probes, and the control that stops each one reading green | Accepted |
 | [ADR-0014](tier1/adr-log.md) | The chain is re-walked by the implementation that did not write it | Accepted |
 | [ADR-0015](tier1/adr-log.md) | A missing candidate file is the candidate's failure, not the harness's fault | accepted |
+| [ADR-0016](tier1/adr-log.md) | `StampedResult` takes its schema version from the stamp it contains | Accepted |
 
 ---
 
-**63 documents mapped** · 43 binding · 13 context · 7 record · 15 architecture decisions
+**63 documents mapped** · 43 binding · 13 context · 7 record · 16 architecture decisions

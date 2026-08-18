@@ -71,15 +71,16 @@ proceed with the control disabled, and it does not log a warning and continue.
 | F25 | Any containment assertion recorded as `not_executed` | run does not start; `not_executed` is never read as passed |
 | F26 | `Worker` returns a claim carrying a verdict-vocabulary field | contract violation; `indeterminate`; CI lint failure |
 | F27 | Off-machine backup target unreachable | alarm; dispatch continues, escalation raised |
+| F28 | A result's stamp cannot be verified — `UNVERIFIABLE` or `INVALID` — and the result is about to leave the system | the result does not ship as verified; the next side effect is rejected |
 
-**Row ids are stable and never reused.** `F1`…`F27` are permanent handles: a new condition
+**Row ids are stable and never reused.** `F1`…`F28` are permanent handles: a new condition
 takes the next free number, and a withdrawn one leaves a gap rather than letting a
 successor inherit its identity. Without stable ids the coverage lint below cannot be
 written at all — it would have to match on condition prose, which changes.
 
 **Three dispositions, not one, and the distinction is the point.** Classified mechanically
 from the disposition text: **14** rows mean *the run does not start*, **7** mean
-`indeterminate`, **5** mean *halt or reject the next side effect*, and **1** is the
+`indeterminate`, **6** mean *halt or reject the next side effect*, and **1** is the
 deliberate fail-open. Each demands a different assertion. *Run does not start* is a
 stronger claim than `indeterminate` — the test asserts **no verdict row exists at all**,
 not that one exists carrying `indeterminate`. *Halt/reject* asserts **the next side effect
@@ -89,6 +90,45 @@ property on more than half of it.
 The single fail-open entry is backup unreachability (`F27`), and it is deliberate: refusing
 to work because an off-machine target is down trades a durability risk for a total outage.
 It is the exception, it is named, and it escalates.
+
+## Stamp verification, and why "cannot check" is not "failed the check"
+
+ADR-0006. A result stamp carries its own `stamp_schema_version`, and reading one is
+two-stage: parse as ACS-1, read the version, *then* dispatch to that version's encoder. A
+verifier that skipped the dispatch and re-encoded under its own build would compute a
+mismatch on any newer shape and report it as tampering — which relocates the very defect
+the stamp exists to prevent from the writer into the reader.
+
+The verifier therefore returns its own vocabulary, and this table is the only place it is
+mapped onto the three verdicts. `provenance/verify.py` never returns a verdict word: D16/D39
+forbid it from `src/`, and the mapping lives in `harness/stamp/verdict_map.py`.
+
+| Condition | Verification | Verdict |
+|---|---|---|
+| Version known and implemented, digest matches | `VERIFIED` | `pass` |
+| Version known and implemented, digest differs | `MISMATCH` | `fail` |
+| `stamp_schema_version` above the verifier's highest known | `UNVERIFIABLE_SCHEMA_TOO_NEW` | `indeterminate` |
+| At or below the highest known but not implemented | `UNVERIFIABLE_SCHEMA_RETIRED` | `indeterminate` |
+| Version missing, non-integer, below 1, or the document does not fit the version it claims | `INVALID` | `fail` |
+
+- **`UNVERIFIABLE` is never `MISMATCH`.** The difference is between *upgrade your verifier*
+  and *you have been tampered with*, and reporting the second when the first is true is
+  incident-grade. It is also the default behaviour of every naive hash comparison.
+- **`UNVERIFIABLE` is never `VERIFIED`, and is fail-closed at the product boundary** (`F28`).
+  A result whose stamp cannot be verified does not ship as verified.
+- **A missing version is `INVALID`, not `UNVERIFIABLE`.** A document without the pinned field
+  is not an old stamp — zero stamps were ever persisted under the unversioned eight-key
+  shape — so treating it as one would resurrect that shape as a permanent implicit version
+  zero.
+- **`SCHEMA_RETIRED` should be unreachable**, since no schema version is retired while any
+  stamp under it exists. It is specified so that reaching it is loud.
+- **Every `UNVERIFIABLE` carries the verifier's own highest known version**, or the operator
+  is told a check failed without being told what this verifier can read, and cannot act.
+
+An `unknown` upstream arm is a different finding and not a verification outcome: the digest
+verifies, and the stamp still does not discharge the buyer's storage duty.
+`ResultStampV1.discharges_storage_duty` is `False` for it, which is what makes the state
+countable rather than silent.
 
 ## Error taxonomy
 
@@ -232,7 +272,7 @@ evidence migrations are additive-only; no verdict field is assigned outside the 
 module.
 
 **Every row of the fail-closed table above is an injected fault with a test.** CI asserts
-a one-to-one mapping between the row ids `F1`…`F27` and the injection ids; a row with no
+a one-to-one mapping between the row ids `F1`…`F28` and the injection ids; a row with no
 injection fails the build, because a table that grows faster than the suite that exercises
 it describes a system nobody has checked. The assertion each injection makes is set by the
 row's **disposition class**, not by a single shared expectation — see the three-disposition
