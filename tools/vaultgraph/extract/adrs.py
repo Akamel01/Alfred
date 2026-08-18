@@ -1,4 +1,4 @@
-"""ADR-0001 to ADR-0014, and the relations stated on each entry's metadata line.
+"""Every ADR in the log, and the relations stated on each entry's metadata line.
 
 The log is append-only in one file, and each entry opens with a heading followed by a single
 line of `**Key:** value` fields joined by ` · `. `scripts/gen_reading_map.py:163-176` already

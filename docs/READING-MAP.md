@@ -170,7 +170,8 @@ Binding on implementation and easy to miss, since they live inside one document.
 | [ADR-0012](tier1/adr-log.md) | The verdict boundary is a lint, and the lint fails when it has nothing to check | Accepted |
 | [ADR-0013](tier1/adr-log.md) | Containment probes, and the control that stops each one reading green | Accepted |
 | [ADR-0014](tier1/adr-log.md) | The chain is re-walked by the implementation that did not write it | Accepted |
+| [ADR-0015](tier1/adr-log.md) | An agent edited the inspector, and this record was drafted by the same agent | Accepted |
 
 ---
 
-**63 documents mapped** · 43 binding · 13 context · 7 record · 14 architecture decisions
+**63 documents mapped** · 43 binding · 13 context · 7 record · 15 architecture decisions

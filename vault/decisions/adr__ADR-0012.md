@@ -30,6 +30,10 @@ generated: true
 |---|---|
 | `status_raw` | Accepted |
 
+## Binds
+
+- [[adr__ADR-0015|An agent edited the inspector, and this record was drafted by the same agent]] **see_also** → this
+
 ## Enforced by (code)
 
 - **enforced_by** → [[module___github_workflows_gates_yml|.github/workflows/gates.yml]] — would pass. That is the failure this project has paid for four times (ADR-0012,

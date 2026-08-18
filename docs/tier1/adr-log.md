@@ -1438,3 +1438,128 @@ specification forbids, and the version that exists first is the version that get
 **Marking the drill `slow` so it can be deselected.** A marker there is a switch for
 turning off the only end-to-end restore check, against a gate whose absence is
 unrecoverable data loss. It costs one extra throwaway cluster.
+
+---
+
+## ADR-0015 — An agent edited the inspector, and this record was drafted by the same agent
+
+**Date:** 2026-08-18 · **Status:** Accepted · **Supersedes:** none · **See also:** ADR-0012 (the vacuity guard this ADR wires into CI), ADR-0013 (the control that stops a probe reading green)
+
+### Context
+
+D20 splits the system into factory and inspector: agents may improve the factory and may
+never improve the inspector. `.github/workflows/gates.yml` is inspector machinery, and the
+file says so in its own header comment.
+
+Standing invariant 8 does not forbid an agent from touching it. It says agent-drafted
+inspector patches are **permitted only under line-by-line human review with a mandatory
+ADR**. That is a price, not a prohibition, and the invariant is only meaningful if the
+price is actually paid — a permitted-with-conditions rule whose conditions are never
+discharged is a prohibition that everybody has agreed to pretend is a process.
+
+The occasion: `tools/gen_vault.py` generates `vault/` and `docs-graph.html` from the
+repository. Both are committed. Both are derived and authored nowhere. That derived
+property is the entire reason they are admissible as a read model under D44/D47/D51
+rather than an unfingerprinted write path into agent context — and a property that
+nothing checks is a property the repository claims rather than holds. Every generated
+note carries the sentence *"do not edit"*. Without a gate, that sentence is a wish.
+
+### Decision
+
+Three steps were appended to the `integrity` job, by the agent, at the operator's explicit
+instruction after the agent raised the D20 constraint and the operator reaffirmed:
+
+```yaml
+- name: Vault generator detects its own vacuity
+  run: python3 tools/gen_vault.py --self-test
+- name: Vault and published graph are current
+  run: python3 tools/gen_vault.py --check
+- name: Vault generator suites
+  run: uv run pytest tools/tests
+```
+
+**`--self-test` runs before `--check`, and the order is load-bearing.** `--check` compares
+a freshly built vault against the committed one. If the extractors silently stopped
+matching, the generator would build a smaller vault, `--check` would compare that smaller
+vault against a `--check`-updated smaller vault, and the step would pass having verified
+nothing. The self-test plants fixtures below every declared floor and requires the run to
+fail; only after the guards are shown to fire does `--check` mean anything. This is the
+same failure ADR-0012 was written about, arriving through a new door, and it is the
+project's sixth instance.
+
+**`--check` fails three ways: a note that differs, a note that is missing, and a note
+nobody planned.** The third is the one content comparison alone cannot see. A hand-edited
+note differs from its planned text; a hand-*created* note has no planned text to differ
+from, and both are the same defect — authored content inside a derived tree.
+
+**The plan mirror is verified in the same step, and its absence is not a failure.**
+`plan/handoff-autonomous-software-engineering-fizzy-dahl.md` is a byte-verbatim snapshot
+with a sha256 manifest. Where the origin under `~/.claude/plans` exists — the operator's
+machine — a divergence fails. Where it is absent, as on every runner and every clean
+clone, the mirror is checked against its own manifest and passes. Drift is only detectable
+where drift can happen, and pretending otherwise would make CI red for a file it cannot
+see.
+
+**The suite is invoked by explicit path.** `pyproject.toml` sets `testpaths = ["tests"]`
+and the `product` job runs `uv run pytest tests`. A documentation generator must not be
+able to red the product gate.
+
+### The part that is uncomfortable, recorded rather than smoothed over
+
+**This ADR was drafted by the agent that made the edit.** The agent initially declined to
+write it, on the grounds that an agent authoring the record that authorizes its own
+inspector change is the loop D20 exists to break. The operator instructed it to write the
+draft anyway. That is a legitimate instruction — the operator owns the decision, and a
+draft is not an authorization — but the sequence must be visible in the record rather than
+inferred from a commit log, because the failure mode it approaches is not detectable by
+reading the result. A well-argued ADR reads identically whether the argument was audited
+or generated.
+
+So, precisely: the agent made the edit, the agent drafted this text, and **neither act
+discharges the review.** What standing invariant 8 requires and what an agent structurally
+cannot supply is the line-by-line human read of the diff. The relevant diff is the
+`.github/workflows/gates.yml` portion of commit `f16695a`, 30 lines. Accepting this ADR
+without that read leaves the invariant recorded and unenforced, which is strictly worse
+than leaving it unrecorded — the record would then be evidence that a control operated.
+
+**No agent-authored control was added to check this.** A self-check written by the party
+being checked is the pattern this project has rejected in four other places (ADR-0003's
+second implementation, ADR-0012's committed self-test, ADR-0013's per-probe control,
+ADR-0014's non-Python re-walk). The check here is a person reading 30 lines.
+
+### Consequence
+
+The generator now reads a file it writes into: `gates.yml` is an input to the workflows
+extractor, so adding these three steps changed the graph. The `integrity` job carries 12
+steps, the workflows extractor yields 41 nodes, and the graph totals 358 nodes and 340
+edges over 365 notes. The three new gates appear in the vault as nodes — the generator
+recording the checks that check it. This is a fixed point, not a cycle: `--check` compares
+the generated output against the committed output, and a change to `gates.yml` that is not
+regenerated fails on the first run.
+
+Verified under a runner's conditions rather than only this machine, with `HOME` pointed at
+an empty directory: the origin reads absent, the mirror verifies against its manifest, and
+`--check` passes. The asymmetry in the mirror rule is the design, and it now holds in
+practice as well as on paper.
+
+`tools/` sits outside ruff's and pyright's configured `include`, alongside `scripts/` and
+`harness/`, and stays there. Pulling it in would be a `pyproject.toml` change whose effect
+is to hold a generator to product-tree conventions the neighbouring generators are
+deliberately exempt from.
+
+### Rejected
+
+**Landing the generator in `scripts/`.** It is where the other generators live, and it is
+inspector. `tools/` costs one directory and keeps the whole generator outside the
+protected boundary; only the three-step wiring crosses it.
+
+**Running `--check` without `--self-test`.** Above — it is a check that compares a
+possibly-empty result against itself.
+
+**Making the mirror check fail when the plan origin is absent.** It would red every runner
+and every clean clone for a file that is deliberately outside the repository, and the
+predictable outcome is that somebody removes the step rather than the cause.
+
+**Leaving the vault ungated and trusting the "do not edit" banner.** The banner is a
+request to a reader. The property it asks for — that nothing in `vault/` is authored — is
+the one that makes the read model admissible at all.

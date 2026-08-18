@@ -18,7 +18,7 @@
     }
   ],
   "counts": {
-    "adr": 14,
+    "adr": 15,
     "amendment": 12,
     "decision": 57,
     "document": 63,
@@ -41,7 +41,7 @@
     "declares_absent": 1,
     "enforced_by": 142,
     "needs": 4,
-    "see_also": 4,
+    "see_also": 6,
     "supersedes": 1
   },
   "edges": [
@@ -4453,6 +4453,32 @@
       "src": "adr:ADR-0006"
     },
     {
+      "confidence": "structural",
+      "dst": "adr:ADR-0012",
+      "evidence": "**See also:** ADR-0012 (the vacuity guard this ADR wires into CI), ADR-0013 (the control that stops a probe reading green)",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 1444,
+        "line": 1444,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0015"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0013",
+      "evidence": "**See also:** ADR-0012 (the vacuity guard this ADR wires into CI), ADR-0013 (the control that stops a probe reading green)",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 1444,
+        "line": 1444,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0015"
+    },
+    {
       "confidence": "prose",
       "dst": "decision:D17",
       "evidence": "Supersedes decision 17",
@@ -4468,14 +4494,14 @@
   ],
   "extractors": [
     {
-      "edges": 8,
+      "edges": 10,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 4,
       "min_nodes": 14,
       "name": "adrs",
-      "nodes": 14,
+      "nodes": 15,
       "rejected": 0,
       "scanned": 1,
       "unparsed": 0
@@ -4884,6 +4910,27 @@
       "status": "accepted",
       "tags": [],
       "title": "The chain is re-walked by the implementation that did not write it"
+    },
+    {
+      "attrs": {
+        "date": "2026-08-18",
+        "status": "accepted",
+        "status_raw": "Accepted"
+      },
+      "body": "**Date:** 2026-08-18 · **Status:** Accepted · **Supersedes:** none · **See also:** ADR-0012 (the vacuity guard this ADR wires into CI), ADR-0013 (the control that stops a probe reading green)",
+      "extractor": "adrs",
+      "id": "adr:ADR-0015",
+      "kind": "adr",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 1444,
+        "line": 1444,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "accepted",
+      "tags": [],
+      "title": "An agent edited the inspector, and this record was drafted by the same agent"
     },
     {
       "attrs": {
