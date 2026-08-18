@@ -48,7 +48,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from tools.vaultgraph import mirror                              # noqa: E402
 from tools.vaultgraph.render import html as render_html          # noqa: E402
-from tools.vaultgraph.runner import run                          # noqa: E402
+from tools.vaultgraph.runner import AuditFailed, build             # noqa: E402
 from tools.vaultgraph.serialize import build_payload, dumps      # noqa: E402
 from tools.vaultgraph.textio import ROOT                         # noqa: E402
 
@@ -98,13 +98,33 @@ class Handler(BaseHTTPRequestHandler):
 
     # ---- routes --------------------------------------------------------
 
+    def _build(self):
+        """The graph, or None having already answered with why there is none.
+
+        The same two gates the CLI applies, in the same order and for the same reasons: a
+        graph built from a drifted snapshot carries source pointers that still look like
+        they resolve, and a graph that failed its floors is the vacuous result every
+        extractor declares a floor to prevent. Serving either at 200 makes this surface a
+        way to read output the committed surface would refuse to write."""
+        code, messages = mirror.check()
+        if code:
+            self._refuse(503, "plan mirror integrity failed:\n  " + "\n  ".join(messages))
+            return None
+        try:
+            return build(ROOT)
+        except AuditFailed as failed:
+            self._refuse(503, "extraction failed its floors:\n  " + "\n  ".join(failed.failures))
+            return None
+
     def do_GET(self) -> None:  # noqa: N802 - the base class names it
         if not self._origin_is_local():
             self._refuse(403, "this surface answers loopback requests only")
             return
         path = self.path.split("?", 1)[0]
         if path in ("/", "/index.html"):
-            result = run(ROOT)
+            result = self._build()
+            if result is None:
+                return
             page = render_html.render(
                 result.nodes, result.edges, result.anomalies, result.unparsed,
                 live_token=TOKEN,
@@ -112,7 +132,9 @@ class Handler(BaseHTTPRequestHandler):
             self._send(200, page.encode("utf-8"), "text/html; charset=utf-8")
             return
         if path == "/graph.json":
-            result = run(ROOT)
+            result = self._build()
+            if result is None:
+                return
             body = dumps(build_payload(result, mirror.graph_inputs())).encode("utf-8")
             self._send(200, body, "application/json")
             return

@@ -39,7 +39,7 @@ def _tree():
 
 def test_the_committed_vault_matches_a_fresh_build() -> None:
     _result_, tree = _tree()
-    assert compare_tree(ROOT, tree) == []
+    assert compare_tree(ROOT, tree, managed=("vault",)) == []
 
 
 def test_every_node_gets_exactly_one_note() -> None:

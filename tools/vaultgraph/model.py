@@ -19,7 +19,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, field
 from enum import StrEnum
-from typing import Mapping
+from typing import Iterable, Mapping
 
 
 class NodeKind(StrEnum):
@@ -62,7 +62,6 @@ class EdgeKind(StrEnum):
     REFERENCES = "references"
     RESTATES = "restates"
     PROTECTED = "protected"
-    DECLARES_ABSENT = "declares_absent"
 
 
 class Confidence(StrEnum):
@@ -106,6 +105,10 @@ class Node:
     extractor: str = ""
 
 
+class EdgeError(Exception):
+    """An edge was built that no view could draw."""
+
+
 @dataclass(frozen=True, slots=True)
 class Edge:
     src: str
@@ -117,6 +120,14 @@ class Edge:
     #: unreviewable, and prose edges are exactly the ones that need reviewing.
     evidence: str = ""
     extractor: str = ""
+
+    def __post_init__(self) -> None:
+        if self.src == self.dst:
+            # A relation from a node to itself states nothing a node attribute does not state
+            # better, and it splits the renderers: three of them dropped it and the payload
+            # shipped it, so the page reported one more edge than it drew. Refusing it here
+            # is cheaper than agreeing about it in four places.
+            raise EdgeError(f"{self.src!r} at {self.source} is related to itself")
 
 
 class MintError(Exception):
@@ -149,3 +160,14 @@ class Minter:
         self._seen[node_id] = str(source)
         self._folded[folded] = node_id
         return node_id
+
+
+def resolvable(nodes: Iterable[Node], edges: Iterable[Edge]) -> list[Edge]:
+    """The edges a view may draw: both endpoints are nodes this graph defines.
+
+    One rule, called by every renderer and by the gauges that count them. Four independent
+    copies of it disagreed -- and a summary computed from unfiltered edges over a payload
+    that was filtered is a page contradicting itself in the same screen.
+    """
+    known = {node.id for node in nodes}
+    return [edge for edge in edges if edge.src in known and edge.dst in known]

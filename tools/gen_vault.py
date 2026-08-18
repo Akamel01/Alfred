@@ -28,9 +28,6 @@ from tools.vaultgraph.serialize import (                       # noqa: E402
 )
 from tools.vaultgraph.textio import ROOT                      # noqa: E402
 
-GRAPH = ROOT / "graph.json"
-ARTIFACT = ROOT / "docs-graph.html"
-
 
 def _report(result, *, verbose: bool) -> None:
     for report in sorted(result.reports, key=lambda r: r.name):
@@ -88,45 +85,48 @@ def main(argv: list[str] | None = None) -> int:
         print(f"\n{len(result.failures)} extraction failure(s) — no output written")
         return 1
 
-    content = dumps(build_payload(result, mirror.graph_inputs()))
-
-    tree = (
-        {} if args.graph_only
-        else render_vault.build(result.nodes, result.edges, result.anomalies, result.unparsed)
-    )
+    # One planned tree, holding every path this build claims to author. graph.json used to be
+    # compared and written beside the tree rather than inside it, which is how the file the
+    # tool is named after ended up with its own four-line copy of compare_tree.
+    tree = {"graph.json": dumps(build_payload(result, mirror.graph_inputs()))}
+    #: Directories this build owns, and therefore may call a file in them an orphan of. A
+    #: --graph-only build owns none: it planned no notes, so the committed vault is not its
+    #: business. Deriving this from a fixed `vault/` walk instead reported all 365 notes as
+    #: orphans on a check, and deleted all 365 on a write.
+    managed: tuple[str, ...] = ()
     if not args.graph_only:
+        tree.update(
+            render_vault.build(result.nodes, result.edges, result.anomalies, result.unparsed)
+        )
         tree["docs-graph.html"] = render_vault.artifact(
             result.nodes, result.edges, result.anomalies, result.unparsed
         )
+        managed = ("vault",)
+
+    notes = sum(1 for path in tree if path.startswith("vault/"))
 
     if args.check:
-        problems: list[str] = []
-        if not GRAPH.exists():
-            problems.append("missing: graph.json")
-        elif GRAPH.read_text(encoding="utf-8") != content:
-            problems.append("differs: graph.json")
-        problems.extend(compare_tree(ROOT, tree))
+        problems = compare_tree(ROOT, tree, managed=managed)
         if problems:
             for problem in problems[:20]:
                 print(f"  {problem}")
             if len(problems) > 20:
                 print(f"  ... and {len(problems) - 20} more")
             print(
-                f"ERROR the vault is stale or hand-edited ({len(problems)} problem(s)) — "
+                f"ERROR the output is stale or hand-edited ({len(problems)} problem(s)) — "
                 "run python3 tools/gen_vault.py"
             )
             return 1
         print(
             f"OK vault current ({len(result.nodes)} nodes, {len(result.edges)} edges, "
-            f"{len(tree)} notes)"
+            f"{notes} notes)"
         )
         return 0
 
-    GRAPH.write_text(content, encoding="utf-8", newline="\n")
-    written, removed = write_tree(ROOT, tree)
+    written, removed = write_tree(ROOT, tree, managed=managed)
     print(
         f"OK wrote graph.json ({len(result.nodes)} nodes, {len(result.edges)} edges) "
-        f"and {len(tree)} vault notes ({written} changed, {removed} orphan(s) removed)"
+        f"and {notes} vault notes ({written} changed, {removed} orphan(s) removed)"
     )
     return 0
 

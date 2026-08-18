@@ -38,7 +38,6 @@
     "amends": 5,
     "blocks": 35,
     "contains": 146,
-    "declares_absent": 1,
     "enforced_by": 142,
     "needs": 4,
     "see_also": 6,
@@ -2490,19 +2489,6 @@
       "src": "tier:tier7"
     },
     {
-      "confidence": "structural",
-      "dst": "module:src.thresholds.absent",
-      "evidence": "pyproject.toml declares src/thresholds; the directory does not exist",
-      "extractor": "code",
-      "kind": "declares_absent",
-      "source": {
-        "end_line": 36,
-        "line": 36,
-        "path": "pyproject.toml"
-      },
-      "src": "module:src.thresholds.absent"
-    },
-    {
       "confidence": "derived",
       "dst": "module:harness.acs.acs1",
       "evidence": "\"\"\"ACS-1 float grammar: normalized scientific, shortest round-tripping digits.\n\n        sign? digit \".\" digit+ \"e\" \"-\"? exponent\n\n    Always exactly one digit before the point, alw",
@@ -4533,7 +4519,7 @@
       "unparsed": 0
     },
     {
-      "edges": 48,
+      "edges": 47,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,

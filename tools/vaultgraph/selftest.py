@@ -20,11 +20,18 @@ from pathlib import Path
 
 from .extract import EXTRACTORS, code, decisions, documents, references
 from .fixtures import _plant, _plant_code, _plant_plan
-from .model import Minter, MintError, Node, NodeKind, SourceRef
+from .model import (
+    Confidence, Edge, EdgeError, EdgeKind, Minter, MintError, Node, NodeKind, SourceRef,
+)
 from .protocol import Context, ExtractorSpec, Harvest, Rejected, Unparsed
 from .render import vault as render_vault
 from .runner import _audit, run
 from .serialize import build_payload, compare_tree, dumps, write_tree
+
+#: The scope a full build owns. Passed explicitly at every call so a build that plans no
+#: notes cannot be handed the vault to sweep.
+VAULT_TREE = ("vault",)
+
 
 def _imports(path: Path) -> set[str]:
     """Module names a file imports, absolute and relative alike."""
@@ -311,18 +318,21 @@ def self_test() -> int:
         _plant(root)
         result = run(root)
         tree = render_vault.build(result.nodes, result.edges, result.anomalies, result.unparsed)
-        write_tree(root, tree)
-        expect(not compare_tree(root, tree), "a freshly written vault did not compare clean")
+        write_tree(root, tree, managed=VAULT_TREE)
+        expect(
+            not compare_tree(root, tree, managed=VAULT_TREE),
+            "a freshly written vault did not compare clean",
+        )
 
         edited = root / sorted(tree)[0]
         edited.write_text(edited.read_text(encoding="utf-8") + "\nhand edit\n", encoding="utf-8")
-        problems = compare_tree(root, tree)
+        problems = compare_tree(root, tree, managed=VAULT_TREE)
         expect(any(p.startswith("differs:") for p in problems), "a hand edit was not detected")
         edited.write_text(tree[sorted(tree)[0]], encoding="utf-8")
 
         stray = root / "vault" / "documents" / "authored-by-hand.md"
         stray.write_text("a fact that exists only here\n", encoding="utf-8")
-        problems = compare_tree(root, tree)
+        problems = compare_tree(root, tree, managed=VAULT_TREE)
         expect(
             any(p.startswith("orphan:") for p in problems),
             "a hand-created note was not detected as an orphan",
@@ -332,9 +342,34 @@ def self_test() -> int:
         missing = root / sorted(tree)[0]
         missing.unlink()
         expect(
-            any(p.startswith("missing:") for p in compare_tree(root, tree)),
+            any(p.startswith("missing:") for p in compare_tree(root, tree, managed=VAULT_TREE)),
             "a deleted note was not detected",
         )
+
+        # A build that planned no notes owns no notes. Sweeping a fixed `vault/` instead
+        # made --graph-only call every committed note an orphan and delete it on a write.
+        graph_only = {"graph.json": "{}\n"}
+        expect(
+            not [p for p in compare_tree(root, graph_only, managed=()) if p.startswith("orphan:")],
+            "a build that planned no notes reported the vault as orphaned",
+        )
+        expect(
+            any(p.startswith("orphan:") for p in compare_tree(root, graph_only,
+                                                              managed=VAULT_TREE)),
+            "a build that claims the vault and plans nothing in it saw no orphans",
+        )
+
+    # ---- 13b. An edge from a node to itself is refused at construction. Three renderers
+    #           dropped it and the payload shipped it, so the page counted one more edge
+    #           than it drew; agreeing about it in four places is more expensive than this.
+    try:
+        Edge(
+            src="module:a", dst="module:a", kind=EdgeKind.CONTAINS,
+            confidence=Confidence.STRUCTURAL, source=SourceRef("x.md", 1),
+        )
+        expect(False, "an edge from a node to itself was accepted")
+    except EdgeError:
+        pass
 
     # ---- 14. Every note carries the banner and a source pointer that resolves.
     with tempfile.TemporaryDirectory() as tmp:
@@ -370,7 +405,8 @@ def self_test() -> int:
         f"commentary spans refused, escaped pipes and orphan rows survive, code ids read "
         f"from comment spans and not from hex literals, floors exact at the boundary, "
         f"{len(EXTRACTORS)} extractors declare floors, renderers cannot reach extractors, "
-        f"and --check catches an edit, an orphan and a deletion"
+        f"--check catches an edit, an orphan and a deletion, a build that plans no notes "
+        f"owns none, and a self-edge is refused at construction"
     )
     return 0
 

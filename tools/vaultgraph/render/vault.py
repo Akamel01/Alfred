@@ -14,7 +14,7 @@ one extraction rather than growing their own.
 
 from __future__ import annotations
 
-from ..model import Edge, Node, NodeKind
+from ..model import Edge, Node, NodeKind, resolvable
 from . import canvas, dataview, html, note
 
 VAULT = "vault"
@@ -42,10 +42,9 @@ def build(nodes: list[Node], edges: list[Edge], anomalies: list, unparsed: list)
     by_id = {n.id: n for n in nodes}
     out: dict[str, list[tuple[Edge, Node]]] = {n.id: [] for n in nodes}
     inc: dict[str, list[tuple[Edge, Node]]] = {n.id: [] for n in nodes}
-    for edge in edges:
-        if edge.src in by_id and edge.dst in by_id and edge.src != edge.dst:
-            out[edge.src].append((edge, by_id[edge.dst]))
-            inc[edge.dst].append((edge, by_id[edge.src]))
+    for edge in resolvable(nodes, edges):
+        out[edge.src].append((edge, by_id[edge.dst]))
+        inc[edge.dst].append((edge, by_id[edge.src]))
 
     tree: dict[str, str] = {}
     for node in sorted(nodes, key=lambda n: n.id):

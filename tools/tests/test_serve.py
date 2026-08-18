@@ -150,3 +150,66 @@ def test_the_served_graph_matches_the_committed_one(server) -> None:
     status, body = _request("GET", "/graph.json")
     assert status == 200
     assert json.loads(body) == json.loads((ROOT / "graph.json").read_text(encoding="utf-8"))
+
+
+# ---- the audit, on this surface --------------------------------------------------
+
+def test_a_graph_that_failed_its_floors_is_never_served() -> None:
+    """The defect this replaces: `do_GET` called `run`, whose verdict is a field, and never
+    read it. A vacuous extraction -- the failure every floor in the package exists to
+    prevent -- came back at HTTP 200. `build` raises instead, so the handler cannot forget."""
+    import tempfile
+
+    from tools.vaultgraph.runner import AuditFailed, build
+
+    with tempfile.TemporaryDirectory() as empty:
+        with pytest.raises(AuditFailed):
+            build(Path(empty))
+
+
+def test_both_routes_refuse_rather_than_render_when_the_audit_fails() -> None:
+    import tools.serve_vault as serve
+    from tools.vaultgraph.runner import AuditFailed
+
+    for route in ("/", "/graph.json"):
+        handler = object.__new__(serve.Handler)
+        answers: list[tuple[int, bytes]] = []
+        handler.path = route
+        handler._origin_is_local = lambda: True                     # noqa: SLF001
+        handler._send = lambda status, body, ctype: answers.append((status, body))  # noqa: SLF001
+        handler._refuse = serve.Handler._refuse.__get__(handler)    # noqa: SLF001
+
+        original = serve.build
+        serve.build = lambda _root: (_ for _ in ()).throw(AuditFailed(["floor: 0 < 63"]))
+        try:
+            handler.do_GET()
+        finally:
+            serve.build = original
+
+        assert answers, f"{route} answered nothing"
+        status, body = answers[0]
+        assert status == 503, f"{route} served {status} on a failed audit"
+        assert b"floor" in body
+
+
+def test_a_drifted_plan_mirror_is_never_served() -> None:
+    import tools.serve_vault as serve
+
+    handler = object.__new__(serve.Handler)
+    answers: list[tuple[int, bytes]] = []
+    handler.path = "/"
+    handler._origin_is_local = lambda: True                         # noqa: SLF001
+    handler._send = lambda status, body, ctype: answers.append((status, body))  # noqa: SLF001
+    handler._refuse = serve.Handler._refuse.__get__(handler)        # noqa: SLF001
+
+    original = serve.mirror.check
+    serve.mirror.check = lambda **_kwargs: (1, ["mirror drifted from its origin"])
+    try:
+        handler.do_GET()
+    finally:
+        serve.mirror.check = original
+
+    assert answers
+    status, body = answers[0]
+    assert status == 503
+    assert b"drifted" in body

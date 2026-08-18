@@ -5,7 +5,9 @@ Three things this extractor is careful about.
 **`src/thresholds` is declared and absent.** `pyproject.toml` names it in the wheel's package
 list and in ruff's first-party set; the directory does not exist. Dropping it would hide
 exactly the class of gap this graph is being built to show, so it is minted as a node with
-`present: false` and a `declares_absent` edge from the file that declares it.
+`present: false`, an `absent` tag and an anomaly naming the file that declares it. It carries
+no edge: there is no node for `pyproject.toml` to point from, and the self-loop this once
+emitted stated nothing the `present` attribute does not state better.
 
 **D20 protection is a property of a path, recorded on the node.** `scripts/`,
 `.github/workflows/`, `policy/`, `migrations/roles/` and `harness/` are inspector machinery
@@ -210,12 +212,6 @@ def extract(ctx: Context) -> Harvest:
                 source=src, shape="declared-absent",
                 attrs={"present": "false", "declared_in": "pyproject.toml", "path": name},
                 tags=("absent",), extractor=NAME,
-            ))
-            harvest.edges.append(Edge(
-                src=absent_id, dst=absent_id, kind=EdgeKind.DECLARES_ABSENT,
-                confidence=Confidence.STRUCTURAL, source=src,
-                evidence=f"pyproject.toml declares {name}; the directory does not exist",
-                extractor=NAME,
             ))
             harvest.anomalies.append(Anomaly(
                 kind="declared-absent-package",

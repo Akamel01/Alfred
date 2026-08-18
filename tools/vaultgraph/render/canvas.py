@@ -16,7 +16,7 @@ from __future__ import annotations
 import hashlib
 import json
 
-from ..model import Confidence, Edge, Node, NodeKind
+from ..model import Confidence, Edge, Node, NodeKind, resolvable
 
 VAULT = "vault"
 
@@ -84,7 +84,9 @@ def boards(nodes: list[Node], edges: list[Edge]) -> dict[str, str]:
 
     drawn: list[dict[str, object]] = []
     for index, edge in enumerate(sorted(
-        (e for e in edges if e.src in by_id and e.dst in by_id and e.src != e.dst),
+        # `board_nodes`, not every node: this board is a subset view, and an edge it may
+        # draw is one whose endpoints are both on the board.
+        resolvable(board_nodes, edges),
         key=lambda e: (e.src, e.dst, e.kind.value, e.evidence),
     )):
         drawn.append(_edge(edge, index))

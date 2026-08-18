@@ -129,3 +129,27 @@ def run(root: Path, specs: tuple[ExtractorSpec, ...] = EXTRACTORS) -> RunResult:
             )
         )
     return result
+
+
+class AuditFailed(Exception):
+    """A build produced a graph no surface may render."""
+
+    def __init__(self, failures: list[str]) -> None:
+        super().__init__("; ".join(failures))
+        self.failures = failures
+
+
+def build(root: Path, specs: tuple[ExtractorSpec, ...] = EXTRACTORS) -> RunResult:
+    """`run` for callers that render the result.
+
+    `run` returns the verdict as a field, and a field can be forgotten: the local surface
+    forgot it, so a vacuous extraction -- the failure every floor in this package exists to
+    prevent -- was served at HTTP 200 with the guards reduced to advice. A caller that
+    renders should not be able to spell the mistake, so this one refuses to hand back a
+    graph that failed its audit. `run` stays, for the CLI, which reports every failure
+    rather than the first and therefore needs the result either way.
+    """
+    result = run(root, specs)
+    if not result.ok:
+        raise AuditFailed(result.failures)
+    return result

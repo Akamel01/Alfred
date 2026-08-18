@@ -20,7 +20,7 @@ from __future__ import annotations
 import json
 import re
 
-from ..model import Edge, Node, NodeKind
+from ..model import Edge, Node, NodeKind, resolvable
 from .assets import CSS
 from .script import JS
 
@@ -78,7 +78,7 @@ def _short(node: Node) -> str:
 
 
 def _payload(nodes: list[Node], edges: list[Edge], anomalies: list, unparsed: list) -> dict:
-    known = {n.id for n in nodes}
+    drawn = resolvable(nodes, edges)
     return {
         "nodes": [
             {
@@ -102,7 +102,7 @@ def _payload(nodes: list[Node], edges: list[Edge], anomalies: list, unparsed: li
                 "evidence": _plain(e.evidence)[:EVIDENCE_LIMIT],
             }
             for e in sorted(
-                (e for e in edges if e.src in known and e.dst in known),
+                drawn,
                 key=lambda e: (e.kind.value, e.src, e.dst, e.evidence),
             )
         ],
@@ -127,6 +127,9 @@ def _escape(text: str) -> str:
 
 
 def _gauges(nodes: list[Node], edges: list[Edge], anomalies: list, unparsed: list) -> str:
+    # Every gauge counts the edges the page actually draws. Counting the raw list here while
+    # the payload was filtered made the summary disagree with the drawing beneath it.
+    edges = resolvable(nodes, edges)
     falsifiable = sum(1 for n in nodes if n.attrs.get("falsifies_if"))
     related: set[str] = set()
     for edge in edges:
