@@ -1,37 +1,38 @@
 ---
 kind: gate-step
 id: "gate-step:integrity.11"
-title: "Vault and published graph are current"
+title: "Stage gate register integrity"
 shape: "step"
 job: "integrity"
-source: ".github/workflows/gates.yml:134"
+source: ".github/workflows/gates.yml:113"
 extractor: "workflows"
 tags: [protected]
 aliases:
-  - "Vault and published graph are current"
+  - "Stage gate register integrity"
   - "integrity.11"
 generated: true
 ---
 
-# Vault and published graph are current
+# Stage gate register integrity
 
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `.github/workflows/gates.yml:134`
+**Source** · `.github/workflows/gates.yml:113`
 
 ## Statement
 
-python3 tools/gen_vault.py --check
+python3 scripts/lint_stage_gates.py
 
 ## Fields
 
 | Field | Value |
 |---|---|
-| `command` | python3 tools/gen_vault.py --check |
+| `command` | python3 scripts/lint_stage_gates.py |
 | `kind` | run |
 | `ordinal` | 11 |
 
 ## Binds
 
+- **runs** → [[module__scripts_lint_stage_gates|The stage gate, as a check rather than as a sentence somebody reads.]]
 - [[gate__integrity|integrity (fixtures and register)]] **contains** → this

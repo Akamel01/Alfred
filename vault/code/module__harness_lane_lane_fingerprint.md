@@ -32,7 +32,10 @@ generated: true
 
 ## Binds
 
+- **imports** → [[module__harness_fingerprint_record|The run fingerprint record: what a run was measured on, stated once and hashed.]]
 - [[module__harness_lane|harness.lane]] **contains** → this
+- [[module__harness_containment_lane|C11 — the serving lane is the lane the run was dispatched against.]] **imports** → this
+- [[module__harness_containment_test_image_and_lane|C4 and C11 — the two rows that were blocked on a fingerprint record, and their controls.]] **imports** → this
 
 ## Enforced by (code)
 

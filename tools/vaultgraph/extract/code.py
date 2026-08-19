@@ -2,12 +2,17 @@
 
 Three things this extractor is careful about.
 
-**`src/thresholds` is declared and absent.** `pyproject.toml` names it in the wheel's package
-list and in ruff's first-party set; the directory does not exist. Dropping it would hide
-exactly the class of gap this graph is being built to show, so it is minted as a node with
-`present: false`, an `absent` tag and an anomaly naming the file that declares it. It carries
+**A package `pyproject.toml` declares and disk does not have is minted anyway.** It gets
+`present: false`, an `absent` tag and an anomaly naming the file that declares it, because
+dropping it would hide exactly the class of gap this graph is being built to show. It carries
 no edge: there is no node for `pyproject.toml` to point from, and the self-loop this once
 emitted stated nothing the `present` attribute does not state better.
+
+`src/thresholds` was that gap for the whole of this extractor's life, and it is now on disk, so
+the guard currently fires on nothing. That is the guard working, not the guard being unused --
+which is why the proof it still fires lives in `selftest.py` case 11, against a planted pair of
+one present and one absent package, rather than resting on the repository happening to have a
+hole in it.
 
 **D20 protection is a property of a path, recorded on the node.** `scripts/`,
 `.github/workflows/`, `policy/`, `migrations/roles/` and `harness/` are inspector machinery
@@ -139,9 +144,16 @@ def extract(ctx: Context) -> Harvest:
                 extractor=NAME,
             ))
 
+            # The same suffix set the flat trees mint, and for the same reason. `.py` and
+            # `.mjs` alone left `harness/oracle/normalization_vectors.json` unminted while the
+            # references extractor read a decision id out of it and pointed an edge at the node
+            # that was never made -- an edge every renderer then dropped in silence. Two
+            # extractors disagreeing about what a module is has to be settled in one place, and
+            # this is the place that mints them.
             sources = sorted(
                 p for p in package_dir.rglob("*")
-                if p.is_file() and p.suffix in {".py", ".mjs"} and "__pycache__" not in p.parts
+                if p.is_file() and p.suffix in FLAT_SUFFIXES
+                and "__pycache__" not in p.parts and not is_data(rel(p, root))
             )
             for path in sources:
                 harvest.scanned += 1

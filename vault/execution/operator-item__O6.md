@@ -5,7 +5,7 @@ title: "Company formation — entity, liability-capped pilot template, insurance
 shape: "table-row"
 due: "2026-09-09"
 number: "O6"
-source: "docs/tier2/execution-order.md:218"
+source: "docs/tier2/execution-order.md:395"
 extractor: "stages"
 aliases:
   - "Company formation — entity, liability-capped pilot template, insurance quote"
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `docs/tier2/execution-order.md:218`
+**Source** · `docs/tier2/execution-order.md:395`
 
 ## Statement
 

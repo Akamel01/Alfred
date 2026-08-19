@@ -5,7 +5,7 @@ title: "Durability"
 status: "partial"
 shape: "heading"
 number: "S7"
-source: "docs/tier2/execution-order.md:165"
+source: "docs/tier2/execution-order.md:227"
 extractor: "stages"
 aliases:
   - "Durability"
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `docs/tier2/execution-order.md:165`
+**Source** · `docs/tier2/execution-order.md:227`
 
 ## Statement
 

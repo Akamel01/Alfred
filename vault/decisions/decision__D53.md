@@ -28,3 +28,10 @@ generated: true
 **rationale**
 
 > An operator approving work inside the executor writes that approval into the executor's event stream — **inside the untrusted, disposable execution plane** — creating a second authorization path Alfred's evidence store and hash chain never see, which makes the most privileged actor (T10) the least audited one. Beneath the plumbing is a framing defect: the executor's surface is agent-conversation-centric, so approving inside it means judging the agent's own account of its work, which is what D22's criterion-first ordering exists to prevent. The persistence, compaction and confirmation-mode premises are **unverified first-hand** — the executor is not in the repository and was not fetched — so each assertion is written to pass harmlessly if the feature does not exist. **An assertion that harmlessly passes on an absent feature costs nothing; its absence would cost every measurement taken under it.**
+
+## Enforced by (code)
+
+- **enforced_by** → [[module__harness_containment_shells|The executor-premise assertions, and the source read that filled their holes (O5).]] — """Persistence configured, and every observed event durable at end of run.
+
+    **The premise inverted at O5.** The rese
+- **enforced_by** → [[module__harness_containment_test_c_assertions|C1–C15 beyond the two probes, each paired with the control that stops it reading green.]] — """The count half, which D53 insists on because a flag says only what was intended."""

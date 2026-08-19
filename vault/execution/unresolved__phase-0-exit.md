@@ -3,7 +3,7 @@ kind: unresolved
 id: "unresolved:phase-0-exit"
 title: "Phase 0 exit"
 shape: "stub"
-source: "docs/tier2/execution-order.md:123"
+source: "docs/tier2/execution-order.md:155"
 extractor: "stages"
 tags: [unresolved]
 aliases:
@@ -17,7 +17,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `docs/tier2/execution-order.md:123`
+**Source** · `docs/tier2/execution-order.md:155`
 
 ## Fields
 

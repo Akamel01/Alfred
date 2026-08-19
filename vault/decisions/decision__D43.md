@@ -25,6 +25,9 @@ generated: true
 
 ## Enforced by (code)
 
+- **enforced_by** → [[module__harness_deploy_ledger|What has been released, append-only. Rollback needs a past to roll back to.]] — """What has been released, append-only. Rollback needs a past to roll back to.
+
+A rollback is only meaningful against a 
 - **enforced_by** → [[module__harness_evidence_anchor|The chain head, recorded off-machine, and derived by the implementation that is not Python]] — """The chain head, recorded off-machine, and derived by the implementation that is not Python.
 
 D43 anchors the chain he

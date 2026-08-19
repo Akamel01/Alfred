@@ -31,6 +31,12 @@ generated: true
 
 ## Enforced by (code)
 
+- **enforced_by** → [[module__harness_deploy_driver|Build, deploy, roll back. Through `docker compose`, because that is the claim.]] — """Content address of what is being released.
+
+    `git rev-parse HEAD` is deliberately not used on its own: a dirty tre
+- **enforced_by** → [[module__harness_deploy_ledger|What has been released, append-only. Rollback needs a past to roll back to.]] — """What has been released, append-only. Rollback needs a past to roll back to.
+
+A rollback is only meaningful against a 
 - **enforced_by** → [[module__migrations_product_versions_0001_product_base|product: scenarios, trajectories, metric results, result stamps.]] — """product: scenarios, trajectories, metric results, result stamps.
 
 Revision ID: 0001_product_base

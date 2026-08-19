@@ -37,3 +37,6 @@ Measures the three things that decide Alfred's inference lane:
   1. prefill through
 - **enforced_by** → [[module__bench_bench_infer|Phase -1 local-model benchmark.]] — """Same prefix twice. If the serving stack reuses KV across separate
     requests, the second call is dramatically cheap
+- **enforced_by** → [[module__harness_worker_port|The `Worker` port. A claim crosses it, or an exception does — never a verdict.]] — """One layer of the context seed, ordered most-stable-first (D45).
+
+    Prefix order is architecture rather than tuning:

@@ -28,3 +28,10 @@ generated: true
 **rationale**
 
 > The SDK's loop is Anthropic-shaped: tool-calling formats, caching behavior, internal assumptions. Terminal-Bench showed harness identity moves scores as much as the spread between leading submissions — driving gpt-oss-120b through a Claude-tuned harness is a silent capability tax of unknown size. The `Worker` interface exists precisely to make this swap cheap.
+
+## Enforced by (code)
+
+- **enforced_by** → [[module__harness_containment_shells|The executor-premise assertions, and the source read that filled their holes (O5).]] — # Pinned here only so that a future reader who finds this name in D38 can see it was checked
+- **enforced_by** → [[module__harness_containment_shells|The executor-premise assertions, and the source read that filled their holes (O5).]] — "D38 names OpenHands/OpenHands. At 1916c904 that repository is 'Agent Canvas', "
+- **enforced_by** → [[module__harness_containment_test_c_assertions|C1–C15 beyond the two probes, each paired with the control that stops it reading green.]] — """ADR-0018. D38 names the repository that is now Agent Canvas, which is not the executor."""
+- **enforced_by** → [[module__harness_containment_test_c_assertions|C1–C15 beyond the two probes, each paired with the control that stops it reading green.]] — """D38 names this repository. At its HEAD it is Agent Canvas and holds no executor."""

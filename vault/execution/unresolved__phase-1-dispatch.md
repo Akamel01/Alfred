@@ -3,7 +3,7 @@ kind: unresolved
 id: "unresolved:phase-1-dispatch"
 title: "Phase 1 dispatch"
 shape: "stub"
-source: "docs/tier2/execution-order.md:145"
+source: "docs/tier2/execution-order.md:207"
 extractor: "stages"
 tags: [unresolved]
 aliases:
@@ -17,7 +17,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `docs/tier2/execution-order.md:145`
+**Source** · `docs/tier2/execution-order.md:207`
 
 ## Fields
 

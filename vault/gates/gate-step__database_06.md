@@ -4,7 +4,7 @@ id: "gate-step:database.06"
 title: "CriterionRunner — materialization, execution, verdict composition"
 shape: "step"
 job: "database"
-source: ".github/workflows/gates.yml:280"
+source: ".github/workflows/gates.yml:347"
 extractor: "workflows"
 tags: [protected]
 aliases:
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `.github/workflows/gates.yml:280`
+**Source** · `.github/workflows/gates.yml:347`
 
 ## Statement
 

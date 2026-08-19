@@ -32,3 +32,9 @@ generated: true
 **rationale**
 
 > K5 established that no instrument compels independent attestation. What survives is a duty on the *manufacturer*: EU 2022/1426 Annex III Part 4's binding "shall" obligations — Simulation Handbook, storage of every toolchain version used to release certification data, traceability from M&S output back to setup — which create a tooling need, not an attestation market. Against the assessors (TÜV SÜD, SGS, DEKRA, national technical services) Alfred is a **complement**: part of the toolchain being assessed, not a party to the assessment. Approach order is decided on **feedback latency**, which this plan names as the constraint that starves the calibration loop: a V&V engineer answers in days from a tooling budget; a homologation function answers in quarters through procurement. The two framings sell the *same artifact* in different words — "traceability from M&S output back to setup" and "you can tell which change moved the number" are the same feature — so this is a sequencing call, not a product fork, and nothing in Phase 0 or Phase 1 differs between them. **Recorded as the destination on falsification because two independent legs of the AV domain choice weakened in the same week:** K5 removed the market rationale, and the 2026-08-13 task enumeration measured the "long, well-shaped task tail" at **10 strong tasks**, not the ~20 the Phase 1 exit assumed. The plan recorded both and connected neither.
+
+## Enforced by (code)
+
+- **enforced_by** → [[module__src_provenance_upstream|`UpstreamToolchain` — who produced the trajectory, and under what setup (ADR-0006).]] — """`UpstreamToolchain` — who produced the trajectory, and under what setup (ADR-0006).
+
+The stamp names *Alfred's* `metr

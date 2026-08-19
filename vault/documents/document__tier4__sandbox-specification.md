@@ -38,7 +38,7 @@ generated: true
 
 **evidence**
 
-> Deny-by-default is asserted by a boot-time canary because a major lab's own evaluation harness was found to have left machines with live internet access despite intended isolation. Allowlisted hosts have been used for exfiltration at CVSS 9.6. The executor-specific assertions (C1–C3, C12) rest on the plan's research notes about OpenHands and are **unverified first-hand** — the executor is not present in this repository and was not fetched; each is written to pass harmlessly if the feature it disables does not exist.
+> Deny-by-default is asserted by a boot-time canary because a major lab's own evaluation harness was found to have left machines with live internet access despite intended isolation. Allowlisted hosts have been used for exfiltration at CVSS 9.6. The executor-specific assertions (C1–C3, C5, C10) were **read first-hand 2026-08-18** at `OpenHands/software-agent-sdk` `d460d1a0…` and every answer cites a `path:line` (ADR-0018, discharging O5). The read corrected eleven of thirteen recorded premises, including one — C3's approval-event count — that could not have been implemented at all. Each assertion remains a shell whose unread holes yield `not_executed`, never `passed` (ADR-0017); the earlier "written to pass harmlessly" position is withdrawn, because it holds for an absent feature and fails for a misnamed one.
 
 ## Binds
 

@@ -5,7 +5,7 @@ title: "Product path to a reproduced number"
 status: "not-started"
 shape: "heading"
 number: "S5"
-source: "docs/tier2/execution-order.md:137"
+source: "docs/tier2/execution-order.md:199"
 extractor: "stages"
 aliases:
   - "Product path to a reproduced number"
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `docs/tier2/execution-order.md:137`
+**Source** · `docs/tier2/execution-order.md:199`
 
 ## Statement
 

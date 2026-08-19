@@ -214,18 +214,62 @@ def test_absolute_declaration_is_refused(trees: tuple[Path, Path, Path]) -> None
         )
 
 
-def test_missing_declaration_is_refused(trees: tuple[Path, Path, Path]) -> None:
-    """Fail closed on a typo.
+def test_missing_trusted_declaration_is_refused(trees: tuple[Path, Path, Path]) -> None:
+    """Fail closed on a typo in the harness's own declaration.
 
-    A declaration naming a path that is not there would otherwise materialize nothing,
-    and the criterion would fail for a reason unrelated to the work — or pass vacuously.
+    A trusted declaration naming a path that is not there materializes no criterion, and
+    the run would fail for a reason unrelated to the work — or pass vacuously. That is a
+    broken harness and it raises.
+
+    Split from the candidate case by ADR-0015: the two halves have different owners, and
+    only one of them is a harness fault.
     """
     candidate, trusted, destination = trees
     with pytest.raises(MaterializationError, match="does not exist"):
         materialize(
             candidate_root=candidate,
             trusted_root=trusted,
-            spec=MaterializationSpec(candidate_paths=("src/metrics/typo.py",), trusted_paths=()),
+            spec=MaterializationSpec(candidate_paths=(), trusted_paths=("harness/typo.py",)),
+            destination=destination,
+        )
+
+
+def test_missing_candidate_declaration_is_recorded_not_raised(
+    trees: tuple[Path, Path, Path],
+) -> None:
+    """The candidate did not write it. That is an outcome, not a harness fault.
+
+    Raising here surfaces to the caller as a harness fault, which maps to `indeterminate`,
+    which is excluded from the merge rate on both sides — so a null-agent run would leave
+    the denominator rather than scoring at the floor. The criterion still fails, because
+    the file genuinely is not there; what changes is who the failure is attributed to.
+    ADR-0015.
+    """
+    candidate, trusted, destination = trees
+    built = materialize(
+        candidate_root=candidate,
+        trusted_root=trusted,
+        spec=MaterializationSpec(candidate_paths=("src/metrics/typo.py",), trusted_paths=()),
+        destination=destination,
+    )
+    assert built.missing_candidate_paths == ("src/metrics/typo.py",)
+    assert built.manifest == {}
+
+
+def test_an_absent_candidate_path_is_still_refused_when_it_would_escape(
+    trees: tuple[Path, Path, Path],
+) -> None:
+    """Absence is reported only after every refusal has run.
+
+    Otherwise `allow_absent` becomes a way to smuggle a declaration past the symlink and
+    absolute-path checks by pointing it at something that does not exist yet.
+    """
+    candidate, trusted, destination = trees
+    with pytest.raises(MaterializationError, match="absolute"):
+        materialize(
+            candidate_root=candidate,
+            trusted_root=trusted,
+            spec=MaterializationSpec(candidate_paths=("/nonexistent/typo.py",), trusted_paths=()),
             destination=destination,
         )
 

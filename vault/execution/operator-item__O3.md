@@ -5,7 +5,7 @@ title: "D49 P3: validate, or take the stated degradation to the 10 strong P1 mea
 shape: "table-row"
 due: "2026-09-09"
 number: "O3"
-source: "docs/tier2/execution-order.md:215"
+source: "docs/tier2/execution-order.md:392"
 extractor: "stages"
 aliases:
   - "D49 P3: validate, or take the stated degradation to the 10 strong P1 measures"
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `docs/tier2/execution-order.md:215`
+**Source** · `docs/tier2/execution-order.md:392`
 
 ## Statement
 

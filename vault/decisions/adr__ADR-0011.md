@@ -29,3 +29,11 @@ generated: true
 | Field | Value |
 |---|---|
 | `status_raw` | Accepted |
+
+## Binds
+
+- [[adr__ADR-0015|A missing candidate file is the candidate's failure, not the harness's fault]] **amends** → this
+
+## Enforced by (code)
+
+- **enforced_by** → [[module__harness_selftest_synthetic|A criterion with no domain in it, and a defect that can be dialled.]] — # beside the code under test is D50's delegation failure (ADR-0011).

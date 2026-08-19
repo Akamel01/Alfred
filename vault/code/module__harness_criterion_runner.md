@@ -37,6 +37,7 @@ generated: true
 - **imports** → [[module__harness_evidence_store|Append-only, hash-chained evidence writes.]]
 - [[module__harness_criterion|harness.criterion]] **contains** → this
 - [[module__harness_criterion_test_runner|Verdict composition, with the two collapses that would make the number meaningless.]] **imports** → this
+- [[module__harness_selftest_suites|The two suites. They are one module because they are each other's vacuity control.]] **imports** → this
 
 ## Enforced by (code)
 

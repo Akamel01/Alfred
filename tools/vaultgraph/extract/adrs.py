@@ -30,7 +30,7 @@ _HEADING = re.compile(r"^## (ADR-\d{4}) — (.+)$")
 _FIELD = re.compile(r"\*\*([A-Za-z ]+):\*\*\s*([^·]*)")
 _ADR_REF = re.compile(r"ADR-\d{4}")
 
-#: Field name -> the edge it states. `Date` and `Status` are attributes, not edges.
+#: Field name -> the ADR-to-ADR edge it states. `Date` and `Status` are attributes, not edges.
 RELATIONS = {
     "Supersedes": EdgeKind.SUPERSEDES,
     "Amends": EdgeKind.AMENDS,
@@ -38,6 +38,18 @@ RELATIONS = {
     "See also": EdgeKind.SEE_ALSO,
     "Forward pointers": EdgeKind.SEE_ALSO,
 }
+
+#: Fields whose value names something that is not an ADR. `**Discharges:** O5` says this record
+#: closes an operator item, which is the only hand-written edge in the log that leaves the ADR
+#: log entirely -- and the reason it needs its own table rather than a sixth row above: the
+#: `RELATIONS` pass resolves values with `_ADR_REF`, so listing `Discharges` there would find no
+#: ADR in `O5`, mint nothing, and stop reporting the field. The unparsed line would go quiet
+#: while the edge stayed missing, which is the failure every floor in this package exists to
+#: prevent wearing the costume of a fix.
+FOREIGN_RELATIONS = {
+    "Discharges": (EdgeKind.DISCHARGES, NodeKind.OPERATOR_ITEM, re.compile(r"\bO\d{1,2}\b")),
+}
+
 ATTRIBUTES = ("Date", "Status")
 
 
@@ -79,7 +91,7 @@ def extract(ctx: Context) -> Harvest:
             status=attrs["status"], body=meta, attrs=attrs, extractor=NAME,
         ))
         for key in fields:
-            if key not in RELATIONS and key not in ATTRIBUTES:
+            if key not in RELATIONS and key not in FOREIGN_RELATIONS and key not in ATTRIBUTES:
                 harvest.unparsed.append(Unparsed(
                     NAME, src, key, "metadata field outside the observed vocabulary"
                 ))
@@ -95,6 +107,33 @@ def extract(ctx: Context) -> Harvest:
                     continue
                 harvest.edges.append(Edge(
                     src=minted[adr_id], dst=minted[target], kind=edge_kind,
+                    confidence=Confidence.STRUCTURAL, source=SourceRef(LOG, line_no),
+                    evidence=f"**{key}:** {value}"[:200], extractor=NAME,
+                ))
+
+    for adr_id, _title, line_no, meta in entries:
+        fields = {key.strip(): value.strip() for key, value in _FIELD.findall(meta)}
+        for key, (edge_kind, kind, pattern) in FOREIGN_RELATIONS.items():
+            value = fields.get(key, "")
+            if not value or value.lower().startswith("none"):
+                continue
+            for local in pattern.findall(value):
+                # Resolved against what exists, never assumed. This extractor runs after
+                # `stages` precisely so it can ask: an ADR claiming to discharge an operator
+                # item the execution order no longer declares is drift worth saying out loud,
+                # and an edge to a node nothing defines is drift every renderer drops in
+                # silence. ADR-0018 discharges O5, and O5 left the execution order.
+                target = f"{kind.value}:{local}"
+                if not ctx.minter.knows(target):
+                    harvest.anomalies.append(Anomaly(
+                        kind="discharge-target-absent",
+                        detail=f"{adr_id} declares **{key}:** {local}, and no {kind.value} "
+                               f"by that name is declared",
+                        refs=(SourceRef(LOG, line_no),),
+                    ))
+                    continue
+                harvest.edges.append(Edge(
+                    src=minted[adr_id], dst=target, kind=edge_kind,
                     confidence=Confidence.STRUCTURAL, source=SourceRef(LOG, line_no),
                     evidence=f"**{key}:** {value}"[:200], extractor=NAME,
                 ))

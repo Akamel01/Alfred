@@ -15,7 +15,8 @@ Discrepancies the generator found and deliberately did not resolve. A generator 
 
 | Kind | Detail |
 |---|---|
-| `declared-absent-package` | pyproject.toml declares src/thresholds in the wheel packages; it is not on disk |
+| `discharge-target-absent` | ADR-0018 declares **Discharges:** O5, and no operator-item by that name is declared |
+| `operator-item-count` | 8 operator items found, 9 declared in the execution order |
 | `risk-register-order` | the risk register is not in numeric order: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R12, R11 |
 
 ## Not parsed
@@ -24,4 +25,4 @@ Constructs matched by an extractor and left unresolved. The budget for these is 
 
 | Source | Text | Reason |
 |---|---|---|
-| `docs/tier2/execution-order.md:100` | every verdict ever recorded | dependency names no target this graph can resolve |
+| `docs/tier2/execution-order.md:132` | every verdict ever recorded | dependency names no target this graph can resolve |

@@ -32,6 +32,6 @@ generated: true
 
 ## Enforced by (code)
 
-- [[adr__ADR-0007|Executor-premise assertions may pass vacuously, and that is a third outcome]] **enforced_by** → this — "vacuity ADR-0007 named."
+- [[adr__ADR-0007|Executor-premise assertions may pass vacuously, and that is a third outcome]] **enforced_by** → this — "the vacuity ADR-0007 named. They are now read from importlib.metadata inside the pinned",
 - [[decision__D50|The oracle is absent from the execution plane by assertion, not by convention]] **enforced_by** → this — "D50/D54. Versioned protected policy configuration; the version is a fingerprint field.",
 - [[decision__D54|D50 is enforced by an environment split, not by a check alone: the oracle's outputs cross ]] **enforced_by** → this — "D50/D54. Versioned protected policy configuration; the version is a fingerprint field.",

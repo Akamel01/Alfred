@@ -29,6 +29,10 @@ generated: true
 
 ## Binds
 
-- **contains** → [[module__src_provenance___init__|Result stamping and the one ACS-1 door (ADR-0003, ADR-0004).]]
+- **contains** → [[module__src_provenance___init__|Result stamping and the one ACS-1 door (ADR-0003, ADR-0004, ADR-0006).]]
 - **contains** → [[module__src_provenance_encoding|The single door to ACS-1 (ADR-0003, ADR-0004).]]
-- **contains** → [[module__src_provenance_stamp|Result stamping — metric version, code commit, assumption set, input hash, tolerance.]]
+- **contains** → [[module__src_provenance_stamp|Result stamping — the shape in which a number leaves the system.]]
+- **contains** → [[module__src_provenance_stamp_types|Shared stamp vocabulary: record types, tolerance, assumption set, the input hash.]]
+- **contains** → [[module__src_provenance_stamp_v1|Result stamp, schema version 1 — the ten-key shape (ADR-0006).]]
+- **contains** → [[module__src_provenance_upstream|`UpstreamToolchain` — who produced the trajectory, and under what setup (ADR-0006).]]
+- **contains** → [[module__src_provenance_verify|The two-stage stamp read, and what a verifier says about a version it does not know.]]

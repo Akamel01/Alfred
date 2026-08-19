@@ -35,5 +35,6 @@ generated: true
 - **contains** → [[module__harness_acs_gen_vectors|Generate the ACS-1 test-vector suite (ADR-0003).]]
 - **contains** → [[module__harness_acs_mutate|Mutation control for the ACS-1 conformance suite.]]
 - **contains** → [[module__harness_acs_test_acs1|Conformance tests for ACS-1 against the published vector suite.]]
+- **contains** → [[module__harness_acs_vectors_json|harness/acs/vectors.json]]
 - **contains** → [[module__harness_acs_verify_js_mjs|Verify the JavaScript implementation against the published ACS-1 vector suite.]]
 - [[gate-step__inspector_04|ACS-1 — Python conformance]] **runs** → this

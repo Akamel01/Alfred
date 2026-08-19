@@ -25,8 +25,9 @@ from __future__ import annotations
 import json
 import urllib.error
 import urllib.request
-from dataclasses import dataclass
 from typing import Any, Callable, Mapping
+
+from harness.fingerprint.record import FieldDiff
 
 DEFAULT_BASE = "http://127.0.0.1:1234"
 DEFAULT_TIMEOUT_S = 30
@@ -70,16 +71,6 @@ class FingerprintIncomplete(LaneControlError):
 
     Contract violation: an assertion that cannot compare a field is not an assertion.
     """
-
-
-@dataclass(frozen=True)
-class FieldDiff:
-    field: str
-    expected: Any
-    observed: Any
-
-    def __str__(self) -> str:
-        return f"{self.field}: expected {self.expected!r}, serving {self.observed!r}"
 
 
 class FingerprintDrift(LaneControlError):

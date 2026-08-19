@@ -30,6 +30,7 @@ generated: true
 ## Binds
 
 - **contains** → [[module__src_metrics___init__|Metric representation types (ADR-0001, ADR-0002).]]
+- **contains** → [[module__src_metrics_port|The `Metric` port — what a measure is, and the one shape it may return in.]]
 - **contains** → [[module__src_metrics_reasons|The global reason codebook (ADR-0001 consequences, ADR-0002).]]
 - **contains** → [[module__src_metrics_series|`MetricSeries` — the internal, vectorized form (ADR-0001).]]
 - **contains** → [[module__src_metrics_value|`MetricValue` — the tagged form every metric result takes on every boundary (ADR-0001).]]

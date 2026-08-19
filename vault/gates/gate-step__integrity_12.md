@@ -1,38 +1,38 @@
 ---
 kind: gate-step
 id: "gate-step:integrity.12"
-title: "Vault generator suites"
+title: "Stage gate lint detects planted violations"
 shape: "step"
 job: "integrity"
-source: ".github/workflows/gates.yml:137"
+source: ".github/workflows/gates.yml:116"
 extractor: "workflows"
 tags: [protected]
 aliases:
-  - "Vault generator suites"
+  - "Stage gate lint detects planted violations"
   - "integrity.12"
 generated: true
 ---
 
-# Vault generator suites
+# Stage gate lint detects planted violations
 
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `.github/workflows/gates.yml:137`
+**Source** · `.github/workflows/gates.yml:116`
 
 ## Statement
 
-uv run pytest tools/tests
+python3 scripts/lint_stage_gates.py --self-test
 
 ## Fields
 
 | Field | Value |
 |---|---|
-| `command` | uv run pytest tools/tests |
+| `command` | python3 scripts/lint_stage_gates.py --self-test |
 | `kind` | run |
 | `ordinal` | 12 |
 
 ## Binds
 
-- **runs** → [[module__tools_tests|tools.tests]]
+- **runs** → [[module__scripts_lint_stage_gates|The stage gate, as a check rather than as a sentence somebody reads.]]
 - [[gate__integrity|integrity (fixtures and register)]] **contains** → this

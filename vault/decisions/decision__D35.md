@@ -28,3 +28,7 @@ generated: true
 **rationale**
 
 > Chosen for sovereignty and zero marginal token cost, accepting a real capability ceiling: frontier models score 15–18% on private commercial codebases and open weights trail frontier on agentic coding. Structural win: **local weights never get deprecated** — fingerprints stay valid indefinitely and re-qualification becomes chosen, not imposed. Consequences absorbed elsewhere: binding resource becomes wall-clock per merged task, not dollars (amends 25); one resident ~60 GB model serializes agents, so Phase 3 parallelism needs smaller concurrent models or a revised throughput plan; decision 24's exposure converts from money to wall-clock + hack amplification. Fingerprint (19) gains mandatory fields: **quantization level, inference runtime version (mlx-lm), server version (LM Studio)** — a 4-bit and a 6-bit quant of the same weights are different models for grant purposes.
+
+## Enforced by (code)
+
+- **enforced_by** → [[module__harness_containment_shells|The executor-premise assertions, and the source read that filled their holes (O5).]] — "put the run on somebody else's machine, which D35 forbids outright. "

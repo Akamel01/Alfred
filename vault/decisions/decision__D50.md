@@ -40,4 +40,8 @@ If `commonroad_crime` is importable where agent-authored co
 - **enforced_by** → [[module__harness_criterion_test_runner|Verdict composition, with the two collapses that would make the number meaningless.]] — """The structural decision, asserted rather than described.
 
     The harvest command reads every file in its own directo
+- **enforced_by** → [[module__harness_oracle_run|Runs the oracle image. Outside the container, and it never imports the oracle.]] — """Runs the oracle image. Outside the container, and it never imports the oracle.
+
+D54's split is that the oracle's outp
+- **enforced_by** → [[module__harness_selftest_synthetic|A criterion with no domain in it, and a defect that can be dialled.]] — # beside the code under test is D50's delegation failure (ADR-0011).
 - **enforced_by** → [[module__policy_oracle-denylist_json|policy/oracle-denylist.json]] — "D50/D54. Versioned protected policy configuration; the version is a fingerprint field.",

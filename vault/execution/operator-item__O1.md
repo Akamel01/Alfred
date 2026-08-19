@@ -5,7 +5,7 @@ title: "`F` (fixed weekly obligations, min/week) and target `n` (tasks/day, **st
 shape: "table-row"
 due: "Before Phase 1"
 number: "O1"
-source: "docs/tier2/execution-order.md:213"
+source: "docs/tier2/execution-order.md:390"
 extractor: "stages"
 aliases:
   - "O1"
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `docs/tier2/execution-order.md:213`
+**Source** · `docs/tier2/execution-order.md:390`
 
 ## Statement
 

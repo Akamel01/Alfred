@@ -1,0 +1,35 @@
+---
+kind: module
+id: "module:policy.oracle-source-hashes.json"
+title: "policy/oracle-source-hashes.json"
+shape: "file"
+present: "true"
+protected: "true"
+lint_gated: "false"
+source: "policy/oracle-source-hashes.json:1"
+extractor: "code"
+tags: [protected]
+aliases:
+  - "policy.oracle-source-hashes.json"
+  - "policy/oracle-source-hashes.json"
+generated: true
+---
+
+# policy/oracle-source-hashes.json
+
+> [!warning] Generated — do not edit
+> This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
+
+**Source** · `policy/oracle-source-hashes.json:1`
+
+## Fields
+
+| Field | Value |
+|---|---|
+| `is_test` | false |
+| `path` | policy/oracle-source-hashes.json |
+| `tree` | policy |
+
+## Enforced by (code)
+
+- [[decision__D54|D50 is enforced by an environment split, not by a check alone: the oracle's outputs cross ]] **enforced_by** → this — "Only digests cross the boundary. D54 says the oracle's outputs cross as data and its code",

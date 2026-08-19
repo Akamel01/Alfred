@@ -33,6 +33,32 @@ class Doc:
     review_after: str
 
 
+# Documents that exist on disk and are deliberately NOT in the register above.
+#
+# The register is a generator input, not a completeness register, and until 2026-08-19
+# nothing checked the difference: 55 entries stood against 63 documents and the gap read as
+# a full register. `scripts/lint_docs.py --check` now asserts that the register and this set
+# together account for every document on disk, in both directions.
+#
+# Tier 0 is here because a stub generator must not claim it generates the constitution.
+# `main()` never overwrites an existing file, so listing them would be harmless in effect
+# and wrong in meaning -- it would record that these documents have a machine-authored
+# origin, and Tier 0 authorship is permanently outside the agent boundary.
+NOT_GENERATED: frozenset[str] = frozenset({
+    # Tier 0 — hand-authored constitution, never stubbed.
+    "tier0/autonomy-boundaries",
+    "tier0/charter-and-non-goals",
+    "tier0/glossary",
+    "tier0/operating-principles",
+    "tier0/risk-register",
+    # Written directly at full content, past the phase where a stub would have been honest.
+    "tier1/mission-control-design",
+    "tier1/worker-port-contract",
+    # The standard the generator implements. A stub of it would be circular.
+    "tier7/documentation-standard",
+})
+
+
 REGISTER: list[Doc] = [
     # ---------------------------------------------------------------- Tier 1
     Doc(1, "system-blueprint", "System Blueprint", "human", "review-cadence", "provisional",

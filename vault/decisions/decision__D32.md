@@ -31,6 +31,7 @@ generated: true
 
 ## Enforced by (code)
 
+- **enforced_by** → [[module__harness_patch_validate|Validates a patch before anything touches a tree. Runs outside the container.]] — "content here is read as instructions by a later agent; it is the D32 "
 - **enforced_by** → [[module__scripts_gen_doc_stubs|Generate the Alfred documentation register as stubs (D32).]] — """Generate the Alfred documentation register as stubs (D32).
 
 A stub is header contract + two-sentence purpose + enforc

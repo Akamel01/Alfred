@@ -53,8 +53,16 @@ One enum for the whole system. Codes enumerate *kinds
 
     Not a Pydantic model: this type never crosses a
 - **enforced_by** → [[module__src_metrics_series|`MetricSeries` — the internal, vectorized form (ADR-0001).]] — "reasons must be uint8 (ADR-0002)"
+- **enforced_by** → [[module__src_provenance_stamp_v1|Result stamp, schema version 1 — the ten-key shape (ADR-0006).]] — # The reason travels as its **name**, never its ordinal (ADR-0002).
+- **enforced_by** → [[module__src_provenance_upstream|`UpstreamToolchain` — who produced the trajectory, and under what setup (ADR-0006).]] — """Why the upstream toolchain could not be determined.
+
+    A small closed set of **names**. ADR-0002's discipline: name
+- **enforced_by** → [[module__src_replay_harness|The replay harness: load, evaluate, stamp, and produce a digest two runs are compared on.]] — """The replay harness: load, evaluate, stamp, and produce a digest two runs are compared on.
+
+Domain-neutral throughout.
 - **enforced_by** → [[module__tests_properties_test_metric_properties|Property tests over the representation types.]] — """The invariant ADR-0002 exists for: no integer decodes to DEFINED unless it is 0."""
 - **enforced_by** → [[module__tests_test_reasons|The reason codebook invariants (ADR-0002).]] — """The reason codebook invariants (ADR-0002).
 
 Each test here corresponds to a clause the ADR says CI asserts. Every one
 - **enforced_by** → [[module__tests_test_reasons|The reason codebook invariants (ADR-0002).]] — # The point of ADR-0002: the failure lands at 80%, well before 254, so the
+- **enforced_by** → [[module__tests_test_stamp_schema_contract|ADR-0006's enforcement clauses, as executable checks with their own controls.]] — """Names on the wire, never integers, never reused, never repurposed (ADR-0002)."""

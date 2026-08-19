@@ -5,7 +5,7 @@ title: "Line-by-line review of inspector patches — ACS-1 `operator_action` vec
 shape: "table-row"
 due: "Rolling"
 number: "O9"
-source: "docs/tier2/execution-order.md:221"
+source: "docs/tier2/execution-order.md:398"
 extractor: "stages"
 aliases:
   - "Line-by-line review of inspector patches — ACS-1 `operator_action` vector, `lint_tier0_adr"
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `docs/tier2/execution-order.md:221`
+**Source** · `docs/tier2/execution-order.md:398`
 
 ## Statement
 

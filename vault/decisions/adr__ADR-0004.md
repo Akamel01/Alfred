@@ -43,6 +43,7 @@ generated: true
 The canonical byte form of any structure who
 - **enforced_by** → [[module__harness_acs_acs1_mjs|ACS-1 — independent JavaScript implementation (ADR-0003, ADR-0004).]] — ACS-1 — independent JavaScript implementation (ADR-0003, ADR-0004).
 - **enforced_by** → [[module__harness_acs_acs1_mjs|ACS-1 — independent JavaScript implementation (ADR-0003, ADR-0004).]] — ADR-0004 pins that.
+- **enforced_by** → [[module__harness_acs_gen_vectors|Generate the ACS-1 test-vector suite (ADR-0003).]] — # against (ADR-0004), and a specification generated from the implementation it
 - **enforced_by** → [[module__harness_acs_mutate|Mutation control for the ACS-1 conformance suite.]] — """Mutation control for the ACS-1 conformance suite.
 
     python3 harness/acs/mutate.py            # every mutant, both 
@@ -50,10 +51,16 @@ The canonical byte form of any structure who
 - **enforced_by** → [[module__harness_acs_mutate|Mutation control for the ACS-1 conformance suite.]] — # ---------------------------------------------------------------- ADR-0004 five
 - **enforced_by** → [[module__harness_acs_mutate|Mutation control for the ACS-1 conformance suite.]] — "the exponent keeps the host's '+' sign, which ADR-0004 forbids"
 - **enforced_by** → [[module__harness_acs_mutate|Mutation control for the ACS-1 conformance suite.]] — "the host's repr used directly, which is precisely what ADR-0004 exists to "
-- **enforced_by** → [[module__src_provenance___init__|Result stamping and the one ACS-1 door (ADR-0003, ADR-0004).]] — """Result stamping and the one ACS-1 door (ADR-0003, ADR-0004).
+- **enforced_by** → [[module__src_provenance___init__|Result stamping and the one ACS-1 door (ADR-0003, ADR-0004, ADR-0006).]] — """Result stamping and the one ACS-1 door (ADR-0003, ADR-0004, ADR-0006).
 
-Cannot be retrofitted: results computed before stamping
+Cannot be retrofitted: results computed befor
 - **enforced_by** → [[module__src_provenance_encoding|The single door to ACS-1 (ADR-0003, ADR-0004).]] — """The single door to ACS-1 (ADR-0003, ADR-0004).
 
 Product code hashes structures through this module and nowhere else. 
+- **enforced_by** → [[module__src_provenance_stamp_v1|Result stamp, schema version 1 — the ten-key shape (ADR-0006).]] — """Result stamp, schema version 1 — the ten-key shape (ADR-0006).
+
+**This file is frozen.** Once any stamp has been pers
 - **enforced_by** → [[module__tests_test_provenance|Result stamping and its ACS-1 hashing (ADR-0003, ADR-0004).]] — """Result stamping and its ACS-1 hashing (ADR-0003, ADR-0004)."""
+- **enforced_by** → [[module__tests_test_stamp_v1_vectors|The bridge between `ResultStampV1` and its published vector (ADR-0004, ADR-0006).]] — """The bridge between `ResultStampV1` and its published vector (ADR-0004, ADR-0006).
+
+`harness/acs/gen_vectors.py` write

@@ -40,6 +40,13 @@ generated: true
 **The structural decision in this 
 - **enforced_by** → [[module__harness_criterion_runner|Compose one verdict, and keep the held-out half out of the environment that runs.]] — # D49: every schedulable task carries at least one held-out grading point. A task
 - **enforced_by** → [[module__harness_criterion_test_runner|Verdict composition, with the two collapses that would make the number meaningless.]] — """D49: a task the visible half alone would accept is not schedulable."""
+- **enforced_by** → [[module__harness_oracle_load|Carries oracle values across the boundary as data, and refuses when they are not clean.]] — # D49. Every point produced by this stage is a constant pinned by the oracle itself, which
+- **enforced_by** → [[module__harness_oracle_load|Carries oracle values across the boundary as data, and refuses when they are not clean.]] — # Measures holding at least two non-degenerate points. D49's admissibility test: a
+- **enforced_by** → [[module__harness_oracle_points|The questions put to the oracle, and where each one came from.]] — """The questions put to the oracle, and where each one came from.
+
+Every point here was transcribed from CriMe's own tes
+- **enforced_by** → [[module__harness_oracle_points|The questions put to the oracle, and where each one came from.]] — # computation is D49's "too loose" case. Recorded, and tiered P2 rather than P1.
+- **enforced_by** → [[module__harness_oracle_test_oracle|Tests for the oracle boundary. Most run without the image; the slow one needs it.]] — # --------------------------------------------------------------- D49 admissibility
 - **enforced_by** → [[module__migrations_harness_control_versions_0001_control_base|control: work items, fingerprints, protected paths, thresholds.]] — # Set at authoring time, on the criterion rather than on the run. P1…P5 per D49.
 - **enforced_by** → [[module__migrations_harness_heldout_versions_0001_heldout_base|heldout: reference values and perturbations.]] — # D49. Every schedulable task carries at least two grading points, at least one held
 - **enforced_by** → [[module__migrations_harness_heldout_versions_0001_heldout_base|heldout: reference values and perturbations.]] — # clears a whole bucket, which is a two-sided squeeze D49 never states. Recording the

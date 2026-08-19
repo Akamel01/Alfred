@@ -1439,9 +1439,1276 @@ specification forbids, and the version that exists first is the version that get
 turning off the only end-to-end restore check, against a gate whose absence is
 unrecoverable data loss. It costs one extra throwaway cluster.
 
+## ADR-0015 — A missing candidate file is the candidate's failure, not the harness's fault
+
+**Date:** 2026-08-18 · **Status:** accepted · **Supersedes:** nothing · **Amends:** ADR-0011
+
+### Context
+
+S4's null-agent floor suite is specified to assert that a run taking no actions scores
+**zero and verdict `fail`, never `indeterminate`** — because `indeterminate` is excluded
+from the merge rate on both sides, so a do-nothing run recorded that way leaves the
+denominator instead of landing in it at the floor.
+
+On its first execution the floor suite did not produce a verdict at all. `materialize`
+raised `MaterializationError: candidate path 'solution.py' does not exist`. A caller
+receiving an exception from the materializer has been handed a harness fault, and a
+harness fault is exactly what maps to `indeterminate`. So the null agent — the cheapest
+and most likely degenerate case in the whole system — would have been scored as harness
+flakiness and dropped from the measurement, silently, in the direction that flatters the
+merge rate.
+
+The original refusal was not wrong for no reason. Its test carried one: *"a declaration
+naming a path that is not there would otherwise materialize nothing, and the criterion
+would fail for a reason unrelated to the work — or pass vacuously."* That reasoning is
+sound for the **trusted** half and does not transfer to the **candidate** half, and the
+single check conflated them.
+
+### Decision
+
+The two halves of a declaration have different owners and now fail differently.
+
+A missing **trusted** path still raises. The harness declared its own criterion and the
+criterion is not there; that is a broken inspector and it must stop.
+
+A missing **candidate** path is recorded in `Materialization.missing_candidate_paths` and
+materialization continues. The criterion then fails on its own, because the file genuinely
+is not present — what changes is that the failure is attributed to the candidate rather
+than to the harness.
+
+Absence is reported **only after every other refusal has run**. The absolute-path and
+symlink-traversal checks execute first, so `allow_absent` cannot become a way to smuggle a
+declaration past them by naming something that does not exist yet. That has its own test.
+
+### Consequences
+
+The floor suite now returns `fail` with score `0.0` and no indeterminate reason, which is
+what it was specified to assert.
+
+`Materialization` gains a field, so the manifest an auditor recomputes is unchanged while
+the record of what the candidate did not produce becomes available to the evidence row.
+Nothing downstream reads it yet; it is recorded because "the candidate declared a file and
+wrote none" is not reconstructible afterwards from a tree that does not contain it.
+
+The vacuous-pass hazard the original test named is not reintroduced: a candidate that
+produces nothing materializes nothing, and the visible criterion fails at import. It was
+never the raise that prevented the vacuous pass — it was the criterion.
+
+### Why this is an inspector patch
+
+`harness/criterion/materialize.py` is inspector machinery under D20. Major-fix #8 permits
+an agent-drafted inspector patch only under line-by-line human review with a mandatory
+ADR. This is that ADR; the review is O9 and has not happened. Until it does, the change is
+landed but unreviewed, and that is the honest state to record.
+
+### What found it
+
+The floor suite, on its first run, before it had ever passed. Recorded because the value of
+S4 is not that the two suites pass — it is that they fail against a runner that should
+fail, and the first thing this one did was fail against a real defect in the code it
+measures.
+
 ---
 
-## ADR-0015 — An agent edited the inspector, and this record was drafted by the same agent
+## ADR-0016 — `StampedResult` takes its schema version from the stamp it contains
+
+**Date:** 2026-08-18 · **Status:** Accepted · **Supersedes:** none · **Amends:** ADR-0006 (which versions the stamp and is silent on the record that wraps it) · **See also:** ADR-0001 (the tagged `MetricValue` encoding is inside this record's preimage), ADR-0003 (`alfred.stamped_result` is the third domain-separation record type)
+
+### Context
+
+ADR-0006 gives `ResultStamp` a version for its own field set, and the argument it makes is
+general: a provenance record whose key set can change without a marker turns a legitimate
+schema change into something indistinguishable from tampering. It then versions exactly one
+record.
+
+`StampedResult` is a second structured record. It has its own domain-separation tag
+(`alfred.stamped_result`), its own digest (`content_hash()`), and its own key set —
+`{stamp, value}`. `value` is `MetricValue` in the ADR-0001 tagged form, and ADR-0001's whole
+design permits a fourth arm. **The document ADR-0006 calls "the only shape in which a number
+leaves the system" carried no version of its own**, so a new `MetricValue` arm, or any change
+to how an existing arm canonicalizes, would move every stored `StampedResult` digest with no
+marker distinguishing the old shape from the new. That is ADR-0006's defect, one level up,
+found while implementing ADR-0006.
+
+The window is the same window and it is still open. Re-verified 2026-08-18: four
+`migrations/*/versions/` directories containing only `.gitkeep`, no Alembic revision anywhere
+in the tree, no table holding a stamp or a stamped result. **Zero records of either kind have
+ever been persisted.**
+
+### Decision
+
+`StampedResult` gains **no version key of its own.** Its schema version is the
+`stamp_schema_version` of the stamp it contains, which is already inside its preimage, so a
+reader two-stage-reads straight through: parse as ACS-1, read `stamp.stamp_schema_version`,
+dispatch to that version's encoder for the whole record.
+
+| | Option | Outcome |
+|---|---|---|
+| A | Give `StampedResult` an independent `record_schema_version` | **Rejected.** |
+| B | Derive the version from the contained stamp | **Accepted.** |
+| C | Leave it unversioned and record the gap for later | **Rejected.** |
+
+**Why B rather than A.** The record has no independent shape axis. It is a stamp plus a
+value, and both of its two keys are things ADR-0006 already governs: the stamp by its own
+version, the value by an ADR-0001 arm set that cannot change without a hash-affecting
+change. An independent version would be a second number to bump for every change that
+already bumps the first — and ADR-0006 rejects versioning the *record type* on precisely
+this ground: a second place to bump is a second place to drift. Applying that argument here
+and not there would be inconsistent in the direction of more machinery.
+
+**What option A would have bought, weighed honestly.** Genuine independence: a future change
+confined to `MetricValue` could bump the wrapper without disturbing the stamp shape, and
+`ResultStampV1`'s frozen encoder would not need reissuing for a change that does not touch
+a stamp key. That is a real saving in one scenario. It is outweighed because the scenario is
+rare — `MetricValue` has had three arms since ADR-0001 and a fourth is speculative — and
+because the cost of A is permanent and paid on every change, while the cost of B is paid
+only in that one scenario.
+
+**The consequence accepted, stated rather than discovered later.** The two records' lifecycles
+are now coupled: **a change to `MetricValue`'s tagged encoding is a `stamp_schema_version`
+bump**, even though no stamp key changed. The bump is cheap by ADR-0006's own accounting —
+one new frozen encoder module and one new frozen vector set — and it is loud, which is the
+property being bought. Anyone tempted to avoid the bump by arguing "the stamp did not change"
+is reading this paragraph.
+
+**Why C was rejected.** Deferring spends the one free window. The migration cost of this
+decision is zero exactly once, and it is zero for the wrapper at the same moment it is zero
+for the stamp. A gap recorded in `## Open items` for later resolution would be resolved after
+the first persisted record, when the cost is a migration plus an advisory naming affected
+rows — the exact bill ADR-0006 exists to avoid.
+
+### Consequences and enforcement
+
+- `StampedResult.to_acs()` freezes at two keys, `{stamp, value}`. No version key is added.
+- The record type `alfred.stamped_result` stays unversioned, for ADR-0006's reason.
+- The vector suite gains `stamped-result-v1-defined` and `stamped-result-v1-undefined`, whose
+  notes state that the nested `stamp_schema_version` is inside this record's preimage.
+- CI asserts, via `tests/test_stamp_v1_vectors.py`, that the model reproduces both vectors
+  byte-for-byte and digest-for-digest.
+- A future `MetricValue` arm is a `stamp_schema_version` bump. Recorded here so that it is not
+  argued away at the time.
+
+### Why this is not an inspector patch
+
+`src/provenance/stamp.py` is product code. The accompanying vector extension in
+`harness/acs/gen_vectors.py` and the new `harness/stamp/verdict_map.py` **are** inspector
+machinery under D20, and are landed citing ADR-0006's own Consequences list as the authorizing
+record rather than a fresh ADR each: major-fix #8 exists to stop an agent changing the
+inspector on its own judgment, and there the judgment is already recorded and human. The
+line-by-line review is still owed. It is O9, it has not happened, and this ADR has not been
+reviewed either.
+
+### What found it
+
+Implementing ADR-0006. The ten-key stamp was written, and the record wrapping it still had
+eight characters of key set and no version. Recorded because the general argument was already
+in the log and had been applied once rather than exhaustively — which is the failure mode
+`## Open items` describes as the register discovering its own conditions unrunnable at their
+deadline rather than before it.
+
+---
+
+## ADR-0017 — A containment assertion with an unread premise is a hole, and a hole never passes
+
+**Date:** 2026-08-18 · **Status:** Accepted · **Supersedes:** none · **Amends:** ADR-0007 (which names the third outcome and does not say how it is represented or acted on) · **See also:** the Sandbox Specification's containment table, whose C1–C3 paragraph this contradicts and which is amended by this record
+
+### Context
+
+ADR-0007 established that C1–C3, C5 and C10 can be **executed, passed and vacuous**: each
+rests on the selected executor's own vocabulary — configuration keys, event class names,
+configuration search paths — none of which is in this repository and none of which has been
+read first-hand. It recorded the state and prescribed a label: such assertions are recorded
+as `passed (unverified vocabulary)` and a run under them is admissible for build work and
+not as a measurement.
+
+Two things were missing, and both were found while implementing the assertions.
+
+**First, the state could not reach the thing that acts on it.** `premise_verified` existed on
+`harness/containment/assertions.py`'s `Assertion`. The shape that travels on `SandboxHandle`
+and that `Worker.check_handle` reads — `harness/worker/port.py`'s `AssertionResult` — had no
+such field, and no converter between the two vocabularies existed at all. So ADR-0007's third
+state was recorded on a report nobody consulted and invisible at the only gate that refuses a
+dispatch. A distinction that cannot reach a decision is a comment.
+
+**Second, ADR-0007 says nothing about an assertion that has no key name at all.** It presumes
+a name exists and is unverified — taken from a research note. An assertion written before
+anybody reads the executor has something weaker: a *hole*. The Sandbox Specification's own
+answer to that case is at `sandbox-specification.md:125` and is the position this ADR
+rejects: *"an assertion that harmlessly passes on a feature that does not exist costs
+nothing."* True for an absent feature. False for a misnamed one, and false in the direction
+that matters, because fifteen green assertions that mean nothing are worse than fifteen
+absent ones — the green ones stop anybody looking.
+
+### Decision
+
+**1. A hole is a first-class object, and an assertion with an unread hole reports
+`not_executed`.**
+
+`harness/containment/shells.py` carries a register of `PremiseShell`s. Each names its claim,
+its holes, and the check that runs once the holes are filled. `evaluate` refuses to call the
+check while any hole is unread and returns `NOT_EXECUTED` with `premise_verified=False`.
+
+`NOT_EXECUTED` rather than `FAILED`: nothing was checked, and reporting a failure would claim
+the control ran and found a problem. F25 already makes `not_executed` a failure at every gate,
+so the refusal is inherited rather than reimplemented — `check_handle` needed no change to
+refuse a shell.
+
+**Never `PASSED`, under any observation.** The suite asserts this against the *most
+favourable* observation available — empty configuration, empty stream, empty everything,
+which is precisely what a check would read as "nothing enabled, nothing emitted" and pass on.
+
+**2. `UNREAD` is a sentinel and is not `None`, and an empty answer is an answer.**
+
+A hole holding `()` means *the executor was read and has no such event class*. A hole holding
+`UNREAD` means *nobody looked*. These are different findings and the first is a legitimate,
+useful result. `None` was rejected because some executor configuration could legitimately hold
+it, and a hole whose unread state collides with a legal value can be filled by accident. The
+sentinel is falsy so that `if hole.value:` cannot misread it as present, and `.read` is the
+only correct test.
+
+This is the same distinction ADR-0006 draws between an absent optional field and a declared
+blank, arriving independently in a different subsystem. Recorded as such because the pattern
+recurring twice in one week is evidence it will recur again.
+
+**3. `premise_verified` crosses to the handle, and `check_handle` gains an admissibility
+argument.**
+
+`AssertionResult` gains `premise_verified: bool = True`. `harness/containment/handle.py` is
+the single crossing from probe vocabulary to handle vocabulary, one-way by design: there is no
+`from_result`, because reconstructing a probe result from adaptor-supplied data is the shape
+of every control that ends up checking a copy of its own input.
+
+`check_handle` takes `admissibility: Admissibility`, and **the default is `MEASUREMENT`** —
+the strict end. Under `MEASUREMENT` a required assertion with `premise_verified=False` refuses
+the dispatch; under `BUILD` it is admitted. A default of `BUILD` would mean every caller that
+forgot the argument admitted a vacuous control into the merge rate, and the whole point of the
+flag is that the permissive case is the one somebody has to ask for.
+
+**4. The outcome mapping between the two vocabularies is written out, not derived.**
+
+The two enums have identical members and values today. A mapping that relied on that would
+misroute silently the first time either grew a member — which is how `not_executed` ends up
+collapsed into a neighbour, the single defect this whole layer exists to prevent.
+
+### What this changes about the Sandbox Specification
+
+`sandbox-specification.md:125` and its `evidence:` header both argue C1–C3 are written to pass
+harmlessly. **That paragraph is superseded by this record.** The assertions are written; they
+do not pass; they name what has to be read. The specification's table is unchanged — every
+claim in it still stands — and only the argument for writing them as harmless passes is
+withdrawn.
+
+### Consequences and enforcement
+
+- Five shells are registered: C1, C2, C3, C5, C10. `open_holes()` is O5's worklist and its
+  count reaching zero is what discharges O5.
+- CI asserts the worklist is **non-empty** while the executor is unread. Deleting a hole is
+  the cheapest way to make O5 look finished, and it is the one thing this check catches.
+- C8, C9, C12, C13 are implemented for real, since none rests on executor vocabulary. C14
+  folds the end-of-run re-assertion; C15 checks the patch. Each carries a control that fails
+  on an empty scan.
+- C4 and C11 are **not** written: both compare against a run fingerprint record that does not
+  exist in this repository. They are blocked on that, not on O5, and saying so is more useful
+  than a shell whose hole is "the fingerprint".
+- `Admissibility` is a two-member enum with no third member and no default of convenience.
+
+### Why this is an inspector patch
+
+All of it is `harness/`, which is inspector machinery under D20. Major-fix #8 permits an
+agent-drafted inspector patch only under line-by-line human review with a mandatory ADR. This
+is that ADR. The review is O9 and has not happened, so the change is landed and unreviewed,
+and that is the honest state to record.
+
+### What found it
+
+Implementing the shells. `premise_verified` was already written, already tested, and already
+unable to affect anything — the flag existed, the converter did not, and nothing had ever
+carried a probe result to a handle because no adaptor exists yet. A field that is correct and
+unreachable reads exactly like a field that works.
+
+---
+
+## ADR-0018 — The executor moved, and eleven of thirteen premises were wrong
+
+**Date:** 2026-08-18 · **Status:** Accepted · **Supersedes:** none · **Amends:** D38's selection target; the Sandbox Specification's C1, C2, C3, C5 and C10 rows · **Discharges:** O5 · **See also:** ADR-0007 (the vacuity this prevented), ADR-0017 (the shells that held the holes)
+
+### Context
+
+O5 was "read OpenHands at the pinned SHA". Two things were wrong with that sentence.
+
+**There was no pinned SHA.** "Pinned by commit SHA" appears as an instruction in five places
+— plan:114, plan:878, `execution-order.md:302`, the C5 row, D53 — and nowhere as a value. The
+pin was an intention that had been restated often enough to read as a decision.
+
+**And the repository named by D38 no longer contains an executor.** Read 2026-08-18:
+`github.com/OpenHands/OpenHands` at `1916c9046c4e6a1e081be1ba06e278d182a40133` is **Agent
+Canvas**, a TypeScript/React/Electron "developer control center". It holds eight Python
+files: five CI scripts and three test mocks. The agent moved to
+`github.com/OpenHands/software-agent-sdk`, whose `openhands-agent-server` is the REST API
+Agent Canvas itself connects to.
+
+### Decision
+
+**1. The executor is `OpenHands/software-agent-sdk`, pinned at
+`d460d1a0b6bd35e054ad146c6078205df4686387`** (default-branch HEAD at read time, 2026-08-18).
+`OpenHands/OpenHands` at `1916c904…` is recorded as **checked and not adopted**, so a future
+reader meeting that URL in D38 can see it was rejected rather than overlooked.
+
+Both pins are constants in `harness/containment/shells.py` and C5 asserts against them.
+
+**2. D38's selection rationale must be re-verified, not inherited.** It selected OpenHands
+for "a real Docker sandbox (ActionExecutor inside the container, action/observation event
+stream over REST)" and "documented durable per-event persistence". Those properties were
+asserted of a repository that no longer holds the code. The persistence property **is**
+confirmed against the SDK below; the sandbox property is not re-checked here and is recorded
+as outstanding.
+
+**3. Two corrections to recorded facts about the repository itself.** The canonical-path
+redirect is real and worse than one hop: `OpenDevin/OpenDevin` and `All-Hands-AI/OpenHands`
+both 301 to `OpenHands/OpenHands`, which is not the executor — so following the redirect
+faithfully still lands somewhere wrong. And the C5 row's "a repository with no tags to pin
+to" is false: `v1.14.0` was the most recent tag at read time. HEAD was pinned deliberately,
+so that the vocabulary read is the vocabulary pinned; not because nothing else existed.
+
+### What the read found — eleven corrections in thirteen answers
+
+| # | Premise as recorded | What the source says |
+|---|---|---|
+| C1 | Persistence is **opt-in**; assert enabled at startup | `persistence_dir: str \| None` **defaults to `"workspace/conversations"`** — on unless explicitly `None`. The assertion is *not disabled*, not *enabled*, and the two differ on every default configuration. A path, not a flag. |
+| C2 | `CondensationSummaryEvent` is the compaction event | **Three** classes: `Condensation`, `CondensationRequest`, `CondensationSummaryEvent`. The note named the third. |
+| C2 | Assert the condenser disabled | `Agent.condenser: CondenserBase \| None = None`. **Two** ways to be off — `None`, or the explicit `NoOpCondenser` — and `PipelineCondenser` composes others, so a non-null value is never safe from the field name. |
+| C3 | A confirmation/approval **mode** key | `confirmation_policy: ConfirmationPolicyBase = NeverConfirm()`, a polymorphic object with arms `AlwaysConfirm` / `NeverConfirm` / `ConfirmRisky`. Not a boolean. |
+| C3 | Assert **zero approval-class events** in the stream | **No such event exists.** Rejection emits `UserRejectObservation` (`rejection_source` `"user"` or `"hook"`); acceptance is *implicit* — `run()`'s second call executes the pending actions and emits nothing. |
+| C3 | The executor's own **frontend** is the surface to close | `enable_vscode: bool = True`. **A full VS Code server runs inside the agent container by default**, on port 8001. `enable_vnc` exists too, defaulting False. |
+| C5 | The repository has no tags | It has tags; `v1.14.0` was latest at read time. |
+| C5 | The canonical path is a redirect — pin by SHA | True, and insufficient: the redirect target is the frontend, not the executor. |
+| C10 | Configuration hoists through **files** at search paths | `load_config` reads one file — `OPENHANDS_AGENT_SERVER_CONFIG_PATH`, else `workspace/openhands_agent_server_config.json` — and then **merges `OH_*` environment variables over it**. |
+
+Two answers needed no correction: the `persistence_dir` and `confirmation_policy` key names
+themselves, which is to say the research notes got the two easiest facts right and were
+wrong or incomplete about everything that mattered.
+
+### The one that could not be implemented as specified
+
+C3's third conjunct — "zero approval-class events appear in the stream" — **is not
+implementable, and would have passed over the exact hazard it names.** Approval leaves no
+trace in the event stream, so a human could confirm every action in a run and the stream
+would carry zero approval-class events. This is worse than ADR-0007's misnamed key: no name
+would have made it work.
+
+It is replaced by three observables, which together are stronger than what was asked:
+
+- `confirmation_policy` is `NeverConfirm` on the loaded configuration;
+- the conversation never entered `WAITING_FOR_CONFIRMATION`, which is **persisted** in
+  conversation state and is the only durable trace that a human was asked;
+- no `UserRejectObservation` carries `rejection_source="user"` — a human *rejecting* proves a
+  human was being asked, whatever the configuration claims. `"hook"` is Alfred's own
+  PreToolUse block and is deliberately not a finding.
+
+A fourth clause is added that the specification never contemplated: `enable_vscode` and
+`enable_vnc` false, and nothing listening on the surface ports. C3 was written against a chat
+frontend with an approval button. A VS Code server is an arbitrary file-edit and
+code-execution surface for a human, it is **on by default**, and anything done through it
+lands in no event stream at any layer — not Alfred's, and not the executor's either.
+
+### Consequences and enforcement
+
+- All thirteen holes are answered and each cites a `path:line` in the pinned tree. **A hole
+  cannot be filled without a source**: after O5 the failure mode is no longer an unread hole
+  but an answered one nobody can re-verify. `unsourced_holes()` is CI-asserted empty.
+- `open_holes()` is empty and CI asserts it. Any hole reset to `UNREAD` by a future executor
+  change reopens O5 and returns that assertion to `not_executed`; the suite tests the refusal
+  by blinding one hole per shell rather than by trusting that it still works.
+- Corrections travel *with* the values, in `Hole.correction`. A research note that quietly
+  becomes a constant is how a premise stops being rechecked.
+- **Outstanding, and not closed by this ADR:** D38's sandbox rationale against the SDK; C4 and
+  C11, still blocked on a run fingerprint record that does not exist; and whether Agent Canvas
+  being the project's headline product changes the executor's trajectory for Alfred's purposes.
+
+### Why this vindicates writing the shells first
+
+Eleven corrections in thirteen answers. Every one would have been a green assertion: a
+`persistence_dir` check asserting `True` against a path, two unnamed condensation event
+classes, a boolean test against a policy object, an event count that can never be non-zero, a
+VS Code server nobody looked for, and a configuration channel nobody enumerated. That is what
+`sandbox-specification.md:125`'s "an assertion that harmlessly passes on a feature that does
+not exist costs nothing" would have bought.
+
+### Why this is an inspector patch
+
+`harness/containment/` is inspector machinery under D20. This is the mandatory ADR under
+major-fix #8; the line-by-line review is O9 and has not happened.
+
+---
+
+## ADR-0019 — D38's sandbox rationale, verified: true of one configuration, false of the default
+
+**Date:** 2026-08-18 · **Status:** Accepted · **Supersedes:** none · **Amends:** D38's sandbox rationale; ADR-0018's outstanding list · **See also:** ADR-0018 (which recorded this as unverified), ADR-0017 (the shells), ADR-0007 (the vacuity being avoided)
+
+### Context
+
+D38 selected OpenHands for two properties. ADR-0018 confirmed the second — durable
+per-event persistence — against `OpenHands/software-agent-sdk` at
+`d460d1a0b6bd35e054ad146c6078205df4686387`, and recorded the first as **not re-checked**:
+
+> a real Docker sandbox (ActionExecutor inside the container, action/observation event
+> stream over REST)
+
+That sentence was written about a repository that no longer holds the code. This ADR checks
+it against the pinned tree. Every citation below is a `path:line` in that tree.
+
+### Decision
+
+**The rationale is upheld in substance, wrong in every proper noun, and — decisively — it
+describes one configuration of the SDK rather than the SDK.** D38 stays as the selection;
+what changes is that the sandbox is now a thing Alfred must *configure and assert*, not a
+property it inherits by choosing this dependency.
+
+### Clause by clause
+
+| D38's words | Verdict | What the pinned tree says |
+|---|---|---|
+| "a real Docker sandbox" | **True, and opt-in** | `DockerWorkspace(RemoteWorkspace)` runs `docker run -d` on `ghcr.io/openhands/agent-server:latest-python` and health-checks it (`openhands-workspace/openhands/workspace/docker/workspace.py:53,171`). It is one of five workspace kinds; `docker`, `apptainer`, `remote_api` and `cloud` all exist. |
+| "ActionExecutor" | **False as a name** | Zero occurrences repository-wide. The executor is the `agent-server` FastAPI app; the loop is `EventService` / `LocalConversation`. |
+| "inside the container" | **True** | The server constructs its own `LocalWorkspace` for tool execution (`openhands-agent-server/openhands/agent_server/conversation_service.py:244`, `event_service.py:972`), so under `DockerWorkspace` the tools run in the container and the client holds only an HTTP handle. |
+| "action/observation event stream" | **True** | `ActionEvent` (`openhands-sdk/openhands/sdk/event/llm_convertible/action.py:24`) and `ObservationEvent` (`observation.py:32`). |
+| "over REST" | **True, and incomplete** | REST at `/conversations/{id}/events` (`event_router.py:30,195,206`), but the live stream the client actually consumes is a **WebSocket**, `/sockets/events/{conversation_id}` (`openhands-sdk/openhands/sdk/conversation/impl/remote_conversation.py:217`). A containment control written against REST alone would watch the wrong socket. |
+
+### The finding that matters more than any of those
+
+**The sandbox is not the default, and the type system does not say so.**
+`Workspace(working_dir=...)` with no `host` returns a `LocalWorkspace`
+(`openhands-sdk/openhands/sdk/workspace/workspace.py:36-49`), which "operates on the host
+filesystem" and is "suitable for development and testing" (`local.py:17-29`). Meanwhile
+`BaseWorkspace`'s own docstring says workspaces "provide a **sandboxed** environment"
+(`base.py:27-33`) — a claim that is false of the class the factory returns by default.
+
+The consequence for Alfred is precise: **no C-assertion in the specification currently
+checks which workspace kind is in use.** Every containment control is written as though the
+container is a given. An adaptor constructed against the default would run the agent on the
+host, and C1, C2, C3 and C10 would all still pass, because each reads configuration and
+event streams that exist identically in the local case. That is ADR-0007's third outcome
+again — executed, passed, vacuous — at a layer above the one the shells were built to guard.
+
+### Four properties the rationale asserted by implication and the tree does not provide
+
+None of these is a defect in the SDK; each is a default that "a real Docker sandbox" was
+read as excluding, and does not.
+
+1. **The agent server is unauthenticated by default.** `session_api_keys` defaults empty and
+   "empty list implies the server will be unsecured" (`config.py:223-232`, `33-44`);
+   `DockerWorkspace` then sets `api_key = None` outright (`docker/workspace.py:278`). The
+   server is told to bind `0.0.0.0` (`workspace.py:255-257`) and published with
+   `-p {host_port}:8000` (`:222`), which Docker binds on **all host interfaces**. An
+   unauthenticated remote-code-execution endpoint is reachable off-box unless the operator
+   sets `SESSION_API_KEY` or firewalls the port.
+2. **The container is unhardened.** The `docker run` argument list (`:238-260`) carries no
+   `--cap-drop`, no `--read-only`, no `--security-opt`, no user namespace and no
+   `--network none`; egress is the default bridge, i.e. open. Inside, the agent user has
+   `NOPASSWD:ALL` sudo (`openhands-agent-server/openhands/agent_server/docker/Dockerfile:149`),
+   so any assertion about in-container privilege is defeated by one command.
+3. **Two egress channels exist that the specification never enumerated:** `webhooks`
+   (`config.py:300`) POSTs events out of the container, and `telemetry` (`:396`) ships to
+   PostHog or an arbitrary HTTP endpoint. C6's deny-by-default network policy is what stops
+   them; nothing in the executor's own configuration does.
+4. **The evidence is deleted by default at the end of the run.** `Conversation(...)` defaults
+   `delete_on_close=True` (`openhands-sdk/openhands/sdk/conversation/conversation.py:84,113,142`);
+   on close the client issues `DELETE /conversations/{id}`
+   (`impl/remote_conversation.py:1729-1739`), and the server `safe_rmtree`s the conversation
+   directory (`conversation_service.py:1725-1731`). The workspace survives; the event log does
+   not.
+
+Point 4 falsifies **C1 as written**. C1 claims "every event the adaptor observed is present
+on disk at end of run", and its check reads the persisted directory — a directory the default
+configuration removes before that read. C1 needs `delete_on_close` as a hole and a fourth
+clause; that amendment is **required and is not made here**, because `harness/containment/`
+is inspector machinery whose current patch is still unreviewed on O9.
+
+### One confusable pair, recorded so it is not collapsed
+
+`persistence_dir` exists at two layers with **opposite** requirements. Client-side, passing it
+with a `RemoteWorkspace` raises `ValueError`
+(`openhands-sdk/openhands/sdk/conversation/conversation.py:155-160`). Server-side it is
+`StartConversationRequest.persistence_dir`, defaulting to `"workspace/conversations"`
+(`openhands-agent-server/openhands/agent_server/models.py:134`). C1 cites the server-side
+field and is therefore at the correct layer. A future reader unifying the two names would
+break C1 in the direction that still reads green.
+
+### Consequences
+
+- D38's sandbox rationale is **verified, with the qualification that it describes
+  `DockerWorkspace` and not the SDK's default**. ADR-0018's outstanding item is discharged.
+- **Opened, and not closed here:** a C-assertion that the workspace kind in use is the
+  container one — the missing control that makes the other four vacuous when it is absent;
+  C1's `delete_on_close` clause; and whether points 1 and 2 are Alfred's to assert
+  (`--cap-drop`, `--network`, sudo) or S6's host-level `nftables` work already covering them.
+- **Still outstanding from ADR-0018:** C4 and C11, blocked on a run fingerprint record that
+  does not exist; and whether Agent Canvas being the headline product changes the executor's
+  trajectory.
+
+---
+
+## ADR-0020 — The run fingerprint record, and the two assertions that were waiting on it
+
+**Date:** 2026-08-19 · **Status:** Accepted · **Supersedes:** none · **Amends:** the Sandbox Specification's C4 and C11 rows; the `Worker` port's fingerprint obligations · **See also:** ADR-0018 and ADR-0019 (which both recorded C4 and C11 as blocked on this), ADR-0017 (shells and why a green assertion can be worse than an absent one), ADR-0007 (the vacuity class), D19 and D40 (the field set)
+
+### Context
+
+C4 and C11 have never been written. Both compare a live reading against a declared value —
+the runtime image digest, and the serving lane's configuration — and there was no declared
+value anywhere in the repository to compare against. `runtime_image_digest` appeared in no
+Python file at all: not in a column, not in a constant, not in a type. `control.fingerprint`
+stored D19's and D40's components in the clear but had no column for the image digest, the
+model id, the quantization, the denylist version, or the executor's identity.
+
+ADR-0018 recorded the block and declined to write shells for the two rows, on the grounds
+that a shell whose only hole is "the fingerprint" belongs on no worklist. ADR-0019 restated
+it as still outstanding. Neither closed it, and the handoff that followed listed it as the
+one piece of unblocked agent work that unblocks something else.
+
+### Decision
+
+**One typed, frozen record — `harness/fingerprint/record.py` — carrying the full field set,
+whose digest is computed from the fields rather than supplied beside them.**
+
+Four properties, each answering a way a fingerprint stops being one:
+
+1. **The hash is a function of the fields, not a claim about them.** `fingerprint_sha256` is
+   a property computed through ACS-1 (`harness/acs/acs1.py`) with record type
+   `run_fingerprint`. ACS-1 is already the one encoder — the result stamp and the evidence
+   chain use it, it has a published vector suite and a JavaScript cross-check — so a second
+   canonicalization would be a second thing to keep in agreement. A test perturbs **every
+   field in turn** and requires the digest to move; a digest over a subset passes every
+   other test in the file while leaving the omitted fields free to change under a
+   measurement.
+2. **A missing field is a construction error.** No defaults, no `None` for "not known yet".
+   A record that cannot state a field cannot assert on it, and a defaulted field is one that
+   silently stops discriminating. This generalizes `lane_fingerprint.FingerprintIncomplete`,
+   which has enforced the same rule for the lane since it was written.
+3. **Comparison runs in both directions.** A declared field the observation omits, and an
+   observed field the record never declared, are both differences — the second because an
+   executor reporting a field nobody declared is an executor whose configuration surface grew
+   under the measurement, which the `Worker` port contract already requires raising on.
+4. **The record reads nothing.** It holds the declared value and compares. Reading the live
+   world is C4's and C11's job, which is what lets every branch of the comparison be tested
+   without a container or a serving layer.
+
+**`spec.fingerprint` becomes `RunFingerprint`** and the separate `fingerprint_sha256` field
+is removed: two fields that can disagree eventually will. **`observed_fingerprint` on the
+claim stays a `Mapping`**, deliberately — a dataclass cannot represent a field the record
+never declared, so typing it would delete property 3 by making its subject unrepresentable.
+It moves from `Mapping[str, str]` to `Mapping[str, object]`, because a context length is an
+integer and stringifying it at the boundary is where a comparison starts passing on the
+wrong thing.
+
+### The two limits, written down rather than papered over
+
+**C11 asserts three of its four conjuncts from the serving layer.** The parallel slot count
+is a launch-time property of the server and is not in `/api/v0/models`. It therefore arrives
+as an explicit argument, and its absence is `not_executed` rather than a quiet pass on the
+other three. Naming a plausible key for it would have produced a green assertion over a field
+nobody read — the misnamed-key vacuity ADR-0007 names, and the case ADR-0017 withdrew the
+"an assertion that harmlessly passes costs nothing" defence for. The slot count is not
+optional information: prefix reuse is 140x at one slot and 1.0x above it, so a lane at four
+slots is a different lane wearing the same model id.
+
+**C4 treats an unread pull location the same way.** `pulled_in_sandbox_netns` is
+`bool | None`, and `None` is `not_executed`. A `bool` with a `False` default would have
+turned every inspection that forgot to answer into a pass.
+
+### Vacuity controls
+
+- **C4** — the image count. An inspection that enumerated zero images is `not_executed`,
+  because an empty local store and a store that agreed are otherwise indistinguishable, and
+  "the image was not found, so nothing contradicted the digest" is the shape of a control
+  that stopped running. D57.
+- **C11** — inherited from `lane_fingerprint`, where an unreadable fingerprint has always
+  been treated exactly as a mismatched one. Both of its raising paths land on
+  `not_executed`, which F25 makes a failure.
+- **The record** — every field is perturbed and the digest must move; the field groups are
+  asserted to account for every field, so the grouping cannot drift into decoration.
+- **The register** — a test reads the control migrations' column names from source and
+  requires every record field to have one. Read from the AST rather than from a live schema
+  on purpose: a drift guard that only runs where Postgres does is a drift guard that stops
+  running.
+
+### Migration
+
+`migrations/harness/control/versions/0002_fingerprint_run_fields.py` adds the eight columns
+the register had no home for: `model_id`, `quantization`, `executor_name`,
+`executor_commit_sha`, `adaptor_version`, `runtime_image_digest`, `oracle_denylist_version`,
+`seed_layer_order_sha256`. All `NOT NULL` with no server default — the table starts empty in
+every environment, and a nullable fingerprint field is a field an assertion cannot be written
+against, which is the state this migration exists to end. `control` is configuration rather
+than evidence and sits outside `lint_migrations.py`'s additive-only guard by design; the
+`downgrade` still raises, because dropping a column rewrites what past rows claim.
+
+### Consequences and enforcement
+
+- C4 and C11 are written: `harness/containment/image.py` and `harness/containment/lane.py`.
+  The Sandbox Specification's rows and the containment package docstring are amended to match.
+- C11 wraps `harness/lane/lane_fingerprint.assert_fingerprint` rather than reimplementing it.
+  That module was written against an observed defect — a model loaded at 262,144 found serving
+  at 28,672 after an idle gap, turning 10/10 tool calling into 0/10 with nothing erroring — and
+  a second implementation of the same control is a second place for that defect to be missed.
+- `FieldDiff` has exactly one definition, in the record module; the lane module imports it.
+- **One conjunct of C11 remains unread**, and the assertion says so on every run rather than
+  reporting three-of-four as green.
+- **Not addressed here:** `ExecutorObservation.config` is still `Mapping[str, object]`,
+  adaptor-supplied and unvalidated. Typing the fingerprint does not type the adaptor contract,
+  and the two are separate reviews.
+- **Stale and operator-owned:** `docs/tier2/execution-order.md` is `owner: human`. Its O9 row
+  names two items and the queue is now eleven; its boot-assertion count says fifteen in three
+  places, the table held sixteen before this change and holds eighteen after. Neither is
+  corrected here.
+
+### Why this is an inspector patch
+
+`harness/` is inspector machinery under D20, and so is the migration tree. Major-fix #8
+permits an agent-drafted inspector patch only under line-by-line human review with a mandatory
+ADR. This is that ADR. The review is O9, it has not happened, and this change joins the queue
+rather than clearing it — landed and unreviewed, which is the honest state to record.
+
+---
+
+## ADR-0021 — Enumeration drift, and the two claims of CI coverage that were false
+
+**Date** 2026-08-19 · **Status** Accepted · **Supersedes** nothing
+
+### Context
+
+`.github/workflows/gates.yml` states a rule at the top of the file: *"If a check a document
+names is not in this file, that document's enforcement value is a wish and the document is
+falsified by its own frontmatter."* The rule is right and it was not applied to the file
+itself. Two things covered by enumeration had drifted, and both drifted in the direction that
+reads green.
+
+**`harness/stamp` and `harness/fingerprint` ran in no CI job.** Every other test directory
+under `harness/` is named in an explicit `pytest` step. These two were not — `harness/stamp`
+since `c1ca0b4`, `harness/fingerprint` since `cff67cc`. Nothing reported it, because the
+verification command everybody actually runs is `uv run pytest tests bench harness`, which
+walks the tree. The local run and CI disagreed about what was being checked, and only the
+local one was ever looked at. `harness/stamp` holds `verdict_map.py`, which sits under the
+evidence chain and is itself an unreviewed O9 item.
+
+**`failure-semantics.md` claimed a check that did not exist.** Its Enforcement section said
+CI asserted a one-to-one mapping between the row ids `F1`…`F28` and injection ids, and that a
+row with no injection failed the build. Nothing enumerated F ids at all. Four rows were named
+somewhere in a test file; twenty-four were named nowhere; and every row added — `F28` most
+recently — made an already-false claim falser. The document is `owner: executable` and
+`enforcement: ci-gate`, so softening the sentence alone would have left the frontmatter
+falsified in the same way `stage-gate-definitions.md` still is.
+
+**And `gen_doc_stubs.py`'s register stood at 55 entries against 63 documents**, with nothing
+comparing them.
+
+Three instances, one mechanism: an enumeration missing an entry is indistinguishable from a
+complete one. This is the third time this project has paid for it — the first was a document
+added without an index entry on 2026-08-13, which is the only evidence anywhere that the
+register's completeness check works.
+
+### Decision
+
+**Build the check, not just the fix.** `scripts/lint_ci_coverage.py` carries two checks, each
+with a vacuity guard and a committed `--self-test`:
+
+- **T** — every directory holding `test_*.py` under `harness/` and `tests/` is named in a
+  `pytest` step of `gates.yml`. A step naming a parent covers its children, so `pytest harness`
+  is not reported as thirteen violations. A scan finding zero directories fails.
+- **F** — every row id in the fail-closed table has exactly one entry in
+  `harness/selftest/failure_register.json`, every entry names a live row, and every entry
+  claiming coverage names a file that exists **and mentions the id**. That last clause is what
+  stops the register becoming a second unverified claim in place of the first.
+
+`gates.yml` gains the two missing `pytest` steps and runs the new lint in the integrity job,
+before any suite reports a number.
+
+`scripts/lint_docs.py --check` gains the register comparison, reading `gen_doc_stubs.py` by
+**AST rather than by import**: the lint that guards the register must not execute the
+generator to learn what is in it, which is the same reason its frontmatter parser is
+hand-written instead of a YAML dependency.
+
+### Why the F check does not require an injection per row
+
+Requiring one today would report twenty-four failures and hold CI red, and a lint that cannot
+be landed green enforces nothing. So `not-yet-injected` is a legal status: recorded and
+counted, never hidden. What the lint forbids is **drift** — a row with no entry, an entry for
+no row, evidence that is absent or that never mentions the row it claims to cover. The two
+covered statuses are kept apart: `injected` means a fault is injected, `referenced` means a
+test names the row and asserts part of its disposition without injecting anything. Collapsing
+them would let the covered count rise without a single fault being injected. **All four
+covered rows today are `referenced`, not `injected`.**
+
+### The hole this leaves, stated rather than closed
+
+A register declaring every row `not-yet-injected` would pass. What stops that being silent is
+that the covered count is written in the document, asserted against the register on every run,
+and printed by the lint — so it falling is a change a reader sees rather than an absence
+nobody notices. The stronger check is the one to write when injections exist to check.
+
+### `NOT_GENERATED`, and why the eight missing documents were not simply added
+
+Five of the eight are Tier 0. `gen_doc_stubs.py` is a stub *generator*, and adding the
+constitution to its register would record that those documents have a machine-authored origin.
+`main()` never overwrites an existing file, so it would have been harmless in effect and wrong
+in meaning — Tier 0 authorship is permanently outside the agent boundary. They are declared in
+an explicit `NOT_GENERATED` set with the reason, and the lint asserts that the register and
+that set together account for every document on disk, in both directions.
+
+### Consequences and enforcement
+
+- The false sentence in `failure-semantics.md` is replaced by what the check actually does,
+  with an amendment block recording that the stronger claim was false the whole time it stood.
+- The covered count lives in a machine-readable marker rather than in prose. Parsing the
+  sentence would tie the lint to wording, which is what the document itself warns against when
+  it explains why the row ids are stable.
+- **Not addressed here:** `stage-gate-definitions.md` remains `enforcement: ci-gate` while
+  naming no check in `gates.yml`, and is falsified by its own frontmatter. That is the subject
+  of the next change, not this one.
+
+### Why this is an inspector patch
+
+`scripts/` and `.github/workflows/` are inspector machinery under D20 — `gates.yml` says so
+in its own header. Major-fix #8 permits an agent-drafted inspector patch only under
+line-by-line human review with a mandatory ADR. This is that ADR. The review is O9, it has not
+happened, and this change joins the queue rather than clearing it.
+
+---
+
+## ADR-0022 — Phase 0's exit, narrowed along the ownership seam, with the residue dated
+
+**Date** 2026-08-19 · **Status** Accepted · **Supersedes** nothing · **D28 waiver:** yes
+
+### Context
+
+Phase 0 exit is **2026-09-09**, twenty-one days from this record. The calendar finding in
+`execution-order.md` has been on the board since the inventory and says the honest options are
+to move the date under a waiver ADR or to narrow the exit the way D36 narrows a task class.
+Neither had been taken.
+
+Counted against the criteria rather than against the stages, four of the seven are met: the
+null-agent floor test, the seeded-defect suite reddening correctly, deploy and rollback
+verified, and the egress canary — as a probe. Three are not: byte-identical deterministic
+replay, CriMe's asserted values reproduced on the six named scenarios, and an off-machine
+backup with a verified restore.
+
+**Two of the three unmet criteria are S5, and S5's exit is domain content.** The ownership rule
+is the operator's, stated verbatim: the factory is Alfred, and AV-project work belongs to the
+local models. Reproducing CriMe's numbers is that work. Phase 0 as written therefore gates the
+factory on work the factory does not own and cannot honestly schedule — which is a defect in
+the criterion, not a shortfall in the effort, and it is the reason narrowing is available here
+without lowering a bar.
+
+The remaining two have a different shape. `nftables` default-drop and a recorded D-production
+restore are the operator's to execute and are not code in this repository. They are also the
+only two criteria that test whether the containment and durability claims are true of anything
+outside CI. Narrowing those out would remove the half of Phase 0 most worth keeping.
+
+### Decision
+
+Both halves of the option, not one. **Narrow along the ownership seam, and date the residue.**
+
+**The narrowed Phase 0 exit:**
+
+1. The null-agent floor test (met).
+2. The seeded-defect suite reddening correctly (met).
+3. Deploy and rollback verified against what is serving (met).
+4. The egress canary firing against real enforcement — `nftables` default-drop in the host
+   network namespace, not the probe alone.
+5. Byte-identical deterministic replay, demonstrated end-to-end on a synthetic trajectory the
+   factory owns.
+6. A recorded **D-production** restore: the actual off-machine backup restored and compared
+   against the live anchor. A green CI run is D-synthetic and proves the mechanism only.
+7. **No unreviewed inspector patch enforces any of the above.**
+
+**The residue, dated 2026-10-07:** CriMe's asserted values reproduced on the six named
+scenarios, and everything downstream of D49's P3 rung — which is O3, already carrying
+2026-09-09 and moved here with it.
+
+### Why 2026-10-07, and why not a fresh date
+
+The residue is domain work by the local models, which is exactly what Phase 1 dispatches and
+what K3 measures. Pinning it to an existing milestone rather than inventing one makes it
+self-measuring: if the six scenarios are not reproduced by Phase 1 exit, K3's per-task merge
+rate on that task class is the evidence for why, and no separate post-mortem is needed. A
+fresh date would have to come from an estimate of the domain work, and the last such estimate
+is the sixty-six-hour figure that produced this problem.
+
+### Criterion 7, and why the review is a criterion rather than a note
+
+Every criterion above is enforced by inspector machinery, and eleven inspector patches stand
+unreviewed on O9 before this plan adds to them. A gate nobody has reviewed is not a gate — it
+is ADR-0007's vacuity class one level up, where the thing executed and passed and the reader
+concluded more than the check performed. Making the review a criterion makes the debt dated
+and countable instead of "Rolling". Review is batched by subsystem — the containment patch as
+one change, the lint family as one, the stamp and fingerprint pair as one — because sixteen
+separate reviews is the shape most likely to be skimmed.
+
+### The O1 derivation, recorded here because it closes half of an operator item
+
+`O1` asks for `F` and a target `n`, with `n` **stated as dispatched or merged**. The
+dispatched-or-merged half does not need an operator preference; it follows from the formula.
+The capacity ledger is `5·n·m + F ≤ C` with `m` defined as per-task human minutes **across
+authorship, review and escalation**. All three are paid on every task the operator dispatches,
+whether or not it merges. A merged `n` would therefore silently drop the minutes spent on
+rejected tasks, so **the capacity gate's `n` is dispatched**. The risk register's own
+arithmetic already reads it that way — "2–3 dispatched tasks/day is 80–120 dispatched and
+roughly 40–60 merged".
+
+K3's denominator stays **merged**, and the two are different quantities that happen to share a
+letter. That is where the factor of two the board flags actually lands.
+
+`F` remains open and is the one term nobody can derive. Either it is supplied, or 300 min/week
+stands as a declared assumption whose falsification condition is a measured `F` above it,
+invalidating every `m` budget in `mission-control-design.md`.
+
+### Consequences and enforcement
+
+- This is a **D28 waiver** and counts toward the waiver total the operating principles use as
+  a health metric. It is the first.
+- The narrowed criteria become the content of `docs/tier2/stage-gate-definitions.md`, which is
+  `owner: executable` and `enforcement: ci-gate` and has named no check since it was written —
+  falsified by its own frontmatter until the next change lands the check.
+- **Criterion 6 cannot be evaluated yet.** No Tier 0 recovery objective exists (D43), so a
+  restore drill produces a duration and nothing to compare it to. The gate reports that as a
+  failure rather than skipping it, per F25. Tier 0 authorship is permanently outside the agent
+  boundary, so this is owed by the operator and by nobody else.
+- **Operator-owned and not done here:** the `ttc_1`/`ttc_4` labelling defect in the plan's
+  exit-criterion prose — `ttc_1≈2.4` is `TTCStar` and `ttc_4≈1.25` is `TTR` on
+  `ZAM_Urban-7_1_S-2`, with `bench/tasks/phase1_tasks.json` already correct. It sits in the
+  residue's half of the criteria, so this narrowing does not transcribe it, but it must be
+  fixed before the residue is judged or the reproduction target is a different measure.
+- `docs/tier2/execution-order.md` is `owner: human` and is not edited. It does not yet carry
+  this narrowing, its O9 row names two items against a queue of twelve, and its
+  boot-assertion count is stale in three places.
+
+### What this decision does not do
+
+It does not lower a bar. Every criterion removed is moved, dated, and assigned to the party
+that owns the work; none is weakened in place. The failure this is written against is the one
+the plan names by name — arriving at 2026-09-09 and declaring exit on a subset without saying
+so — and the defence against it is that the subset and its remainder are both written down
+here, before the date rather than after it.
+
+---
+
+## ADR-0023 — Which of ADR-0019's unhardened defaults are Alfred's, and the two that are
+
+**Date** 2026-08-19 · **Status** Accepted · **Supersedes** nothing
+
+### Context
+
+ADR-0019 recorded four properties of the executor that D38's sandbox rationale asserted by
+implication and the tree does not provide, and closed none of them. Its Consequences section
+left three items open. **Two of those three were discharged before this record and the ADR had
+gone stale saying otherwise** — `69a09e9` wrote C16, the workspace-kind control ADR-0019 calls
+*"the missing control that makes the other four vacuous"*, and the same commit added C1's
+fourth clause for `delete_on_close`. ADRs are immutable and are corrected by successors rather
+than edited, so this is where that is written down.
+
+What genuinely remained open is the third: whether points 1 and 2 — the unauthenticated server
+and the unhardened container — are Alfred's to assert or already covered by S6's host-level
+`nftables` work.
+
+### Decision
+
+**The deciding property is direction, and it settles the question without a judgement call.**
+
+S6's `nftables` default-drop is **egress**. The stage names it precisely: the run refuses to
+start unless a known non-allowlisted connection *fails*, because environment-variable proxy
+configuration is advisory and bypassable. Everything it covers is the container reaching out.
+
+Point 1 is **ingress**. `session_api_keys` defaults empty and its own field documentation says
+an empty list means the server will be unsecured; `DockerWorkspace` then sets `api_key = None`
+outright; the server is told to bind `0.0.0.0` and is published with `-p {host_port}:8000`,
+which Docker binds on **all host interfaces**. That is an unauthenticated remote-code-execution
+endpoint reachable off-box, and no egress rule touches it, in either direction of the word. It
+is Alfred's.
+
+Point 2 is neither ingress nor egress: it is a property of the `docker run` argv — no
+`--cap-drop`, no `--read-only`, no `--security-opt`, no user namespace, no `--network`. Those
+are readable from **outside** the sandbox, which is exactly where Alfred's assertions already
+run, so they are assertable rather than merely regrettable. Also Alfred's.
+
+Both become **C17**, a new shell in `harness/containment/shells.py`, running outside at
+dispatch.
+
+### The one that is not Alfred's, and why the split is not arbitrary
+
+The agent user's `NOPASSWD:ALL` sudo is baked into the image, not chosen at launch. No runtime
+flag asserts it away and reading the launch argv would never see it — an assertion about it
+would have to inspect the image, which is S6's layer-1 build-closure check against a real
+resolved lockfile. Putting it in C17 would produce a clause that cannot fail for the right
+reason, which is worse than an absent one.
+
+The fourth property, `webhooks` and `telemetry` as unenumerated egress channels, stays with C6
+as ADR-0019 already recorded. It is egress, so the direction test assigns it there too.
+
+### C17's clauses, and why the ingress half is two of them
+
+1. **The server requires authentication** — `session_api_keys` present, non-`None`, non-empty.
+   Absent, `None`, empty and blank are four distinct findings and each is reported by name,
+   because the four arrive by different routes and the fix differs.
+2. **Every published port binding is loopback.** An unparseable binding is a finding rather
+   than loopback: a binding whose shape nobody recognizes is not one anybody checked.
+3. **`--cap-drop` present and the network off the default bridge.** `--network bridge` is
+   reported specifically, because naming the flag is not the same as leaving the default
+   network and an argv carrying it looks hardened at a glance.
+
+Clauses 1 and 2 are separate because either alone is insufficient. An authenticated endpoint on
+`0.0.0.0` is one credential away from the same outcome; a loopback binding with no credential
+trusts every process on the host.
+
+### Vacuity control
+
+An unread `container_launch_args` or an unread `published_port_bindings` reports
+`not_executed`, never a pass. An assertion over an argv nobody collected returns the same
+answer on a hardened launch and an unhardened one, which is the shape D57 rejects and which
+F25 turns into a refusal to start. Both are tested, parametrized over each field in turn.
+
+### Consequences and enforcement
+
+- `ExecutorObservation` gains `container_launch_args` and `published_port_bindings`. Both
+  default empty, and empty is the unread case rather than the benign one, matching every other
+  field on that record.
+- The Sandbox Specification gains a C17 row and an amendment block recording the direction
+  test and the stale Consequences section.
+- **Not done here:** C17 is not in C14's re-assertion set. A container relaunched mid-run with
+  different flags would not be caught, and the argv is recorded in `observed` precisely so that
+  it *could* be compared — the comparison is simply not wired. That is a smaller change than it
+  looks and is deliberately separate from this review.
+- **Not done here:** `--read-only`, `--security-opt` and the user namespace are named in the
+  ADR and not asserted. Two flags were chosen because they are the two whose absence has a
+  consequence this specification already argues about; widening the list is a policy decision
+  with no new evidence behind it.
+
+### Why this is an inspector patch
+
+`harness/` is inspector machinery under D20. Major-fix #8 permits an agent-drafted inspector
+patch only under line-by-line human review with a mandatory ADR. This is that ADR. The review
+is O9, it has not happened, and this change joins the queue.
+
+---
+
+## ADR-0024 — C15's third clause runs, the denylist's names are read, and a gate nobody had
+
+**Date** 2026-08-19 · **Status** Accepted · **Supersedes** nothing
+
+### Context
+
+Three things, found together because they share a cause: something that looked checked and was
+not.
+
+**C15 clause 3 had never run.** The clause catches the vendoring case the other two miss
+entirely — a copied measure implementation under a new name declares no dependency and imports
+nothing denied — by comparing normalized content hashes against hashes of the oracle's source.
+`denied_source_hashes` was supplied in two test cases and by nothing else. There was no
+generator, no file in `policy/`, no production caller. So every real invocation of C15 reported
+`PASSED — 2 of 3 clauses (no denied source hashes supplied)`, and the module's own comment
+names the shape: *"a report that reads green over a check that did not run."*
+
+**The denylist's import names were `UNVERIFIED`** (D54), taken from this project's records
+rather than read from each distribution at a pinned version. A wrong import name is an
+assertion that passes while naming nothing.
+
+**And neither `ruff` nor `pyright` covers `harness/`.** Both declare `include = ["src",
+"tests"]`. A function in `harness/containment/` annotated `-> str` and returning an `int`
+passes both gates; this was verified by planting one. Every "ruff clean, pyright 0 errors"
+recorded in this log is true and says nothing about the inspector tree.
+
+### Decision — the hashes are produced inside the image, and only digests leave
+
+`harness/oracle/fingerprints.py` runs inside the pinned oracle image under the posture
+`run_oracle` already established — `--network none`, `--read-only`, non-root, no repository
+mount — and emits normalized digests for CriMe's measure sources, the real top-level import
+names of each denied distribution, and its answers to a committed vector suite. Output is
+`policy/oracle-source-hashes.json`: **47 files at commit `60bebed8005610`**.
+
+The hashing happens *inside* because D54 says the oracle's outputs cross the boundary as data
+and its code never crosses at all. Hashing outside would mean extracting CriMe's source text
+into this repository, which is the thing D54 forbids in as many words.
+
+### The normalization therefore exists twice, and that is the interesting decision
+
+`normalized_source_hash` in `patch_side.py` runs outside on the diff. `_normalized` in
+`fingerprints.py` runs inside. They cannot share a module: `extract.py`'s stated property is
+that nothing baked into the oracle image imports Alfred code, and that property is worth more
+than the duplication costs.
+
+Two implementations of one canonical form is exactly the hazard ACS-1 met and answered —
+publish vectors, make both sides answer them. `harness/oracle/normalization_vectors.json`
+carries nine, chosen for the rules where plausible implementations differ rather than for
+coverage: comment stripping at end-of-line versus whole-line, both comment syntaxes, whitespace
+runs across newlines, trimming, case folding, and a `#` inside a string literal — which *is*
+stripped, and the vector records that rather than hiding it. `run_fingerprints` refuses the run
+on any disagreement. Without that check a drift would make every digest in the register a
+digest of something else, clause 3 would match nothing, and the result would be
+indistinguishable from a clean patch.
+
+**Measured 2026-08-19: nine of nine vectors agree.** One file, in the build context, so the two
+sides cannot drift by somebody updating a copy.
+
+### The default polarity is inverted, because the old one was the defect
+
+Omitting `denied_source_hashes` now **loads the register**. Passing an explicit empty mapping
+still disables clause 3 and still says so in the detail. The dangerous option has to be asked
+for by name. A register that exists but cannot be read is `not_executed`, never a quiet
+fallback to two clauses: an unreadable policy is not an absent one.
+
+### Finding 8, documented rather than closed
+
+Clause 3 hashes a path's **added lines** and compares them against digests of **complete
+files**, so only a whole-new-file diff can match. A vendored fragment pasted into an existing
+file adds a fragment, and a fragment's normalized hash is not the file's.
+
+Written into the module's existing *"The limit"* section beside the reformatting and renaming
+limits, into the register's own header, **and pinned as a test** carrying its own control: the
+same content added as a whole file must fail, or the miss proves nothing. Asserting the limit
+means a future change that closes it fails there and has to say so, instead of quietly widening
+what a green C15 means.
+
+Not closed, because closing it is a different check. Hashing post-application content would
+catch the fragment and would cost the *"runs on the diff, never on a working tree"* property
+this module is built around, whose failure mode is a dirty tree. Two checks, and the second one
+is not written.
+
+### The denylist, verified
+
+All four denied distributions' import names match the records exactly:
+`commonroad_crime`, `commonroad_reach`, `commonroad_dc`, `commonroad_clcs`. The `UNVERIFIED`
+note is rewritten as a verification record rather than deleted, because what it said was true
+when it was written.
+
+One thing the reading found that the records did not have: **`commonroad-crime` installs a
+second top-level name, `tests`.** It is deliberately not denied — nothing in the schedulable
+task class is delegated to it, and denying a name that generic would collide with Alfred's own
+tree and with most third-party packages, producing false positives in the one check whose
+findings are meant to be acted on. Recorded so a future reader comparing this file against the
+distribution's metadata does not have to re-derive why.
+
+The denylist's `version` stays `1`: the digest input is `version`, `denied` and
+`permitted_substrate`, and none of those changed. The entries were confirmed, not edited.
+
+### Recorded and not fixed: `harness/` has no type gate and no lint gate
+
+`uv run pyright harness` reports **300 errors** under the strict settings the product tree is
+held to, and `uv run ruff check harness` reports *"No Python files found"* — the `include` list
+excludes it even against an explicit path.
+
+The exclusion is deliberate and its reason is sound: a product gate that fails for
+inspector reasons is a gate no product change can fix. What is not sound is the consequence,
+which is that the tree everything else is verified *by* is the one tree nothing verifies. This
+compounds with ADR-0022's criterion 7 — the unreviewed inspector patches on O9 are also
+untyped and unlinted, so "unreviewed" is a stronger statement than it reads.
+
+Not fixed here. Three hundred strict-mode errors in inspector code is its own piece of work
+with its own review, and folding it into this change would bury both. It is recorded so that
+the next reader does not have to plant a broken function to discover it, as this one did.
+
+### Consequences and enforcement
+
+- `harness/containment/source_hashes.py` loads the register and fails closed four ways:
+  absent, unparseable, zero hashes, or no oracle commit recorded. A register that parsed to
+  nothing is a generation failure, not an empty policy.
+- The oracle image gains `fingerprints.py` and the vectors by `COPY`, never a mount — the same
+  discipline and the same reason as `extract.py`. It is not the entrypoint; the driver
+  overrides it, so the image's default path stays the extractor.
+- **Not done:** no production code calls C15 yet. The register makes clause 3 work whenever
+  something does; it does not create the caller. The patch gate is where that lands.
+
+### Why this is an inspector patch
+
+`harness/` and `policy/` are inspector machinery under D20. Major-fix #8 permits an
+agent-drafted inspector patch only under line-by-line human review with a mandatory ADR. This
+is that ADR. The review is O9, it has not happened, and this change joins the queue.
+
+---
+
+## ADR-0025 — Byte-identical replay, with the domain left out of it
+
+**Date** 2026-08-19 · **Status** Accepted · **Supersedes** nothing
+
+### Context
+
+P0-5 of the narrowed Phase 0 exit is byte-identical deterministic replay. `src/replay/`
+carried the port and no implementation; nothing in the tree had ever replayed anything twice
+and compared the results.
+
+The criterion is the **harness's** determinism, not any measure's correctness. Building a
+CommonRoad adapter and a TTC implementation to test it would test exactly the same property
+and would also be domain content the ownership rule assigns to the local models.
+
+### Decision
+
+**Real harness in `src/`, synthetic plugs in `harness/`.** `src/replay/harness.py` holds
+`DeterministicReplay`: load through a `TrajectorySource`, evaluate through a `Metric`, stamp,
+and return the stamped record's own content hash. It names no dataset and no measure. The
+`SyntheticSource` and `SyntheticMetric` that exercise it live in `harness/selftest/`, beside
+the synthetic criterion S4 built for the stated reason that *"a factory gate does not depend
+on a domain that may be written off."*
+
+When the local models land a CommonRoad source it plugs into a harness that already carries a
+byte-identical proof.
+
+### The input hash is taken over what was loaded, not over what was asked for
+
+`input_hash` covers the tracks the source actually returned — every sample of `t`, `x`, `y`,
+plus the geometry — and not merely the `ScenarioRef`. A hash over the request would be stable
+across a source that silently returned different data, which is precisely the failure a
+determinism check exists to catch. Arrays go in whole rather than by length or summary: a
+digest over shapes is identical for two scenarios with the same sample count.
+
+Tracks are hashed in the dataset's own identifier order rather than in load order. A source
+free to return them in any order would otherwise produce a different digest per run and fail
+the criterion for a reason that is not about determinism. That is asserted by a test with a
+deliberately order-reversing source.
+
+**Tenancy and track ids are deliberately excluded** from the preimage. `org_id`, `project_id`
+and `track_id` are not properties of the measurement, and including them would make the same
+scenario measured by two tenants two different numbers.
+
+### Non-derivable stamp fields are supplied, not discovered
+
+`code_commit`, `upstream`, `tolerance`, `assumption_set` and `metric_version` arrive through
+`StampContext`. The harness could shell out to `git` or read an environment variable; D40's
+argument against that is the one S8 made about release identity — a fact read from outside the
+artifact describes the reader's situation and not the artifact's. The caller knows these and
+the harness does not, so guessing would produce a stamp that is confidently wrong rather than
+one that is absent.
+
+### Two refusals, and both produce no number at all
+
+- **A source returning zero tracks raises.** A metric over nothing still returns something,
+  and that something would be stamped and stored as a measurement of a scenario nobody loaded.
+  D57 at the product boundary.
+- **A metric whose declared `arity` disagrees with its result raises.** A declaration nobody
+  checks is a comment.
+
+Both are `ReplayContractViolation`, never a partial `ReplayResult`. A result meaning "some of
+it worked" is a result nothing downstream could refuse.
+
+Degeneracies remain values: a single-track scenario is E24, stamped as `Undefined`, not raised.
+ADR-0001's split, asserted rather than assumed.
+
+### How this would be shown vacuous
+
+Every determinism test here would pass against a harness returning a constant digest. The
+control is `test_a_changed_input_moves_the_digest`, parametrized over the loaded data, the
+sample count, the metric version, the tolerance and the harness version, so a hash taken over
+a subset of the inputs fails at least one case. A determinism test that never watches the
+digest change is one a constant satisfies.
+
+### Consequences and enforcement
+
+- **P0-5 moves to `met`** in the stage-gate register. The Phase 0 gate now reports 4 of 7.
+- The metric fixture is not a measure and says so in its own citation: `separation` has no
+  safety semantics, no paper behind it and no threshold. It reads all of its input on purpose
+  — a constant-returning metric would replay identically no matter what the source did.
+- **Not done:** no `ReplayHarness` runs against real data, because no real source exists.
+  That is R0-1, dated 2026-10-07, and it is the local models' work.
+
+### Why this is partly an inspector patch
+
+`src/replay/harness.py` is product tree and ordinary agent territory. `harness/selftest/` is
+inspector machinery under D20, so Major-fix #8 applies to the fixtures and this ADR authorizes
+them. The review is O9 and has not happened.
+
+---
+
+## ADR-0026 — The adaptor configuration contract, typed at the boundary
+
+**Date** 2026-08-19 · **Status** Accepted · **Supersedes** nothing
+
+### Context
+
+`ExecutorObservation.config` was `Mapping[str, object]`: adaptor-supplied, unvalidated, with
+no agreed serialization. **Six of the seven findings in the containment self-review were that
+one root cause.** `1a631f0` made the *reading* consistent — `_read`, `_as_flag`,
+`_flag_problem`, and the one-sentence discipline that absent is unknown, uninterpretable is a
+finding, and neither is a pass. It did not make the contract typed.
+
+Every existing test passed before those fixes. The suite was thorough about the paths the
+checks were written for and silent about the shapes an adaptor might send.
+
+### Decision
+
+`ConfigValue` is a closed, recursive union — `str | int | float | bool | None`, sequences of
+them, and mappings of string to them — and `validated_config` refuses anything outside it.
+`ExecutorObservation.__post_init__` calls it, so the refusal happens **at construction**
+rather than inside a check.
+
+That placement is the decision. A check reading an arbitrary Python object renders it with
+`str()` and compares a repr: a comparison that can only fail, and that fails for a reason no
+report can explain. An adaptor sending something unserializable should be told so where it
+sent it.
+
+`None` is in the union deliberately. The SDK uses it meaningfully — `persistence_dir: None` is
+how persistence is switched off — and C1 already distinguishes it from absent.
+
+### Why a union and not a model
+
+The keys are not knowable in advance. Every one of them is a hole, answered by reading the
+executor, and a different executor answers differently. A model enumerating today's keys would
+have to be edited by anyone adding a hole, and the check would then be typed against the
+harness's expectations rather than against what an adaptor may legally send — which would
+convert an honest "uninterpretable value" finding into a validation error at the wrong layer.
+
+Typing the **values** removes `object` without pretending the key set is closed.
+
+### What this does not do, asserted rather than promised
+
+It does not make a wrong value right. A string where a boolean belongs is legal JSON, still
+reaches `_as_flag`, and is still reported as uninterpretable — there is a test that asserts
+exactly that, so a green C-assertion is not over-quoted as meaning the configuration was
+semantically checked. This closes the **serialization** half of the finding. The semantic half
+is what the holes and their citations are for.
+
+### Two details that are defects in waiting
+
+- **Booleans are checked before integers.** `bool` subclasses `int`, so an `isinstance(value,
+  int)` test accepts `True`, and that is how a flag becomes the number 1 somewhere downstream.
+  Asserted by a test rather than left to ordering.
+- **NaN and the infinities are refused.** They have no JSON spelling, so admitting them would
+  put a value in the configuration that cannot survive being written down while every check
+  downstream reads it anyway. The same argument ADR-0001 makes about metric values, one layer
+  out.
+
+Violations name the path — `outer.inner[1]` — because a nested violation reported as "the
+configuration is invalid" is a bug report nobody can act on.
+
+### Consequences and enforcement
+
+- `_read` returns `ConfigValue | Absent` instead of `object | Absent`, so every reader is now
+  typed against the union rather than against anything at all.
+- **The finding is now closed for this record and open for one more:** `WorkerClaim`'s
+  `observed_fingerprint` remains `Mapping[str, object]`, deliberately and for a reason ADR-0020
+  states — a dataclass cannot represent a field the record never declared, which is exactly the
+  direction the contract raises on. That mapping is compared, not read, so the hazard this ADR
+  closes does not apply to it in the same way.
+- **Not done:** nothing validates that an adaptor sent a key the holes actually name. An
+  unknown key is legal and ignored, which is correct — the executor's configuration is larger
+  than the set Alfred reads — but it means a *typo'd* key on the adaptor side reads as absent
+  rather than as a mistake. Absent is already a finding, so it fails closed; it fails with the
+  wrong reason.
+
+### Why this is an inspector patch
+
+`harness/` is inspector machinery under D20. Major-fix #8 permits an agent-drafted inspector
+patch only under line-by-line human review with a mandatory ADR. This is that ADR. The review
+is O9 and has not happened.
+
+---
+
+
+> **Renumbering note.** These two records were written as ADR-0015 and ADR-0016 on the
+> `claude/vault-graph-planning-fc5e15` branch, before `main` had independently issued those
+> numbers to unrelated decisions. Numbering is sequential and never reused, so they take the
+> next free pair on landing. Three commit messages — `e8c99ea`, `f16695a` and `117b882` —
+> still name the old numbers and cannot be rewritten; a reader following a commit message to
+> "ADR-0015" will land on a different decision. That mismatch is recorded here rather than
+> left to be discovered, and it is the whole cost of the collision.
+
+## ADR-0027 — An agent edited the inspector, and this record was drafted by the same agent
 
 **Date:** 2026-08-18 · **Status:** Accepted · **Supersedes:** none · **See also:** ADR-0012 (the vacuity guard this ADR wires into CI), ADR-0013 (the control that stops a probe reading green)
 
@@ -1566,15 +2833,15 @@ the one that makes the read model admissible at all.
 
 ---
 
-## ADR-0016 — The review ADR-0015 said was owed has been done
+## ADR-0028 — The review ADR-0027 said was owed has been done
 
-**Date:** 2026-08-19 · **Status:** Accepted · **Supersedes:** none · **See also:** ADR-0015 (the inspector edit this discharges the review of)
+**Date:** 2026-08-19 · **Status:** Accepted · **Supersedes:** none · **See also:** ADR-0027 (the inspector edit this discharges the review of)
 
 ### Context
 
-ADR-0015 recorded an agent-made edit to `.github/workflows/gates.yml` — inspector machinery
+ADR-0027 recorded an agent-made edit to `.github/workflows/gates.yml` — inspector machinery
 under D20 — made at the operator's explicit instruction. Standing invariant 8 prices that
-edit at line-by-line human review plus a mandatory ADR. ADR-0015 supplied the ADR and was
+edit at line-by-line human review plus a mandatory ADR. ADR-0027 supplied the ADR and was
 explicit that it supplied nothing else:
 
 > neither act discharges the review. What standing invariant 8 requires and what an agent
@@ -1582,7 +2849,7 @@ explicit that it supplied nothing else:
 
 It also named exactly what was outstanding: the `.github/workflows/gates.yml` portion of
 commit `f16695a`, 30 lines. And it named the cost of leaving it that way — that accepting
-ADR-0015 without the read would leave the invariant *recorded and unenforced*, which is
+ADR-0027 without the read would leave the invariant *recorded and unenforced*, which is
 worse than leaving it unrecorded, because the record would then be evidence that a control
 operated when it had not.
 
@@ -1598,10 +2865,10 @@ The scope is that commit and nothing else. A later edit to `gates.yml`, by an ag
 otherwise, owes its own review and its own record; this ADR is not a standing permission and
 must not be read as one.
 
-### Why this is a separate record rather than an edit to ADR-0015
+### Why this is a separate record rather than an edit to ADR-0027
 
 The ADR log is append-only: an ADR that turns out to be incomplete gets a successor, never a
-revision. Amending ADR-0015 to say "and the review happened" would be the cheaper gesture and
+revision. Amending ADR-0027 to say "and the review happened" would be the cheaper gesture and
 the wrong one twice over. It would edit a published record, which this file's own
 falsification condition forbids. And it would erase the interval — the period during which
 the invariant was recorded and not yet enforced — which is the only part of this sequence a
@@ -1618,11 +2885,11 @@ Nothing in the repository changes. This is the only kind of ADR that is purely a
 human act: no code, no gate and no generated artifact moves, and there is deliberately no
 check that this ADR is telling the truth.
 
-That absence is the point, and it is the same position ADR-0015 took about itself. A control
+That absence is the point, and it is the same position ADR-0027 took about itself. A control
 verifying that a human read 30 lines would have to be written by the party the control exists
 to constrain, which is the pattern this project has rejected in five other places (ADR-0003's
 second implementation, ADR-0012's committed self-test, ADR-0013's per-probe control,
-ADR-0014's non-Python re-walk, and ADR-0015's refusal to add one for itself). The check here
+ADR-0014's non-Python re-walk, and ADR-0027's refusal to add one for itself). The check here
 was a person reading 30 lines. The evidence that it happened is this record and the operator's
 name on the commit that carries it.
 
@@ -1633,7 +2900,7 @@ or a lint asserting one — each is a thing an agent can write, and an agent wri
 evidence that a human checked its work is the loop D20 exists to break. The invariant is
 enforced by a person or it is not enforced.
 
-**Leaving the discharge implicit in the commit log.** ADR-0015 is a published document
+**Leaving the discharge implicit in the commit log.** ADR-0027 is a published document
 stating that a review is outstanding. Someone reading the register a year from now finds that
 sentence and has no way to learn it stopped being true, because a commit message is not part
 of the register. The claim was made in the register and it has to be closed there.

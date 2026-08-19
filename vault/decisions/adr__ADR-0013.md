@@ -32,7 +32,7 @@ generated: true
 
 ## Binds
 
-- [[adr__ADR-0015|An agent edited the inspector, and this record was drafted by the same agent]] **see_also** → this
+- [[adr__ADR-0027|An agent edited the inspector, and this record was drafted by the same agent]] **see_also** → this
 
 ## Enforced by (code)
 

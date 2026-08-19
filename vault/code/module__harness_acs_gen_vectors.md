@@ -33,7 +33,7 @@ generated: true
 ## Binds
 
 - [[module__harness_acs|harness.acs]] **contains** → this
-- [[gate-step__integrity_09|ACS-1 vectors regenerate byte-identically]] **runs** → this
+- [[gate-step__integrity_13|ACS-1 vectors regenerate byte-identically]] **runs** → this
 
 ## Enforced by (code)
 
@@ -43,3 +43,6 @@ generated: true
 
 The vectors are the specification. ACS-1 is deliberately not a publ
 - [[adr__ADR-0003|Canonical serialization for hashed structures (ACS-1)]] **enforced_by** → this — "reason ADR-0003 does not adopt it"
+- [[adr__ADR-0004|The ACS-1 float presentation grammar]] **enforced_by** → this — # against (ADR-0004), and a specification generated from the implementation it
+- [[adr__ADR-0006|The result stamp field set, its own version, and upstream toolchain provenance]] **enforced_by** → this — # ================================================ ADR-0006: the v1 result stamp
+- [[adr__ADR-0016|`StampedResult` takes its schema version from the stamp it contains]] **enforced_by** → this — "stamp_schema_version is inside this preimage (ADR-0016)"

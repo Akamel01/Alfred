@@ -2,10 +2,10 @@
 kind: stage
 id: "stage:S8"
 title: "Deploy and rollback"
-status: "not-started"
+status: "done"
 shape: "heading"
 number: "S8"
-source: "docs/tier2/execution-order.md:190"
+source: "docs/tier2/execution-order.md:252"
 extractor: "stages"
 aliases:
   - "Deploy and rollback"
@@ -18,17 +18,18 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `docs/tier2/execution-order.md:190`
+**Source** · `docs/tier2/execution-order.md:252`
 
 ## Statement
 
-Deploy and rollback · *blocks Phase 0 exit*
+Deploy and rollback · *blocks Phase 0 exit* · **DONE 2026-08-18**
 
 ## Fields
 
 | Field | Value |
 |---|---|
 | `clause` | blocks Phase 0 exit |
+| `completion` | DONE 2026-08-18 |
 
 ## Stated in prose — unverified
 

@@ -33,17 +33,9 @@
       "toSide": "left"
     },
     {
-      "fromNode": "dfe15253c92976c9",
-      "fromSide": "right",
-      "id": "c4af4752a904be77",
-      "label": "O5 blocks S9",
-      "toNode": "c6ba452e6a2d0e1c",
-      "toSide": "left"
-    },
-    {
       "fromNode": "25c4d1e303c8e65c",
       "fromSide": "right",
-      "id": "d6c5b0475b447032",
+      "id": "288bfd131d29660b",
       "label": "S1 blocks S3",
       "toNode": "fe1e453aa0344b57",
       "toSide": "left"
@@ -51,7 +43,7 @@
     {
       "fromNode": "25c4d1e303c8e65c",
       "fromSide": "right",
-      "id": "28d17fdb286d6f8b",
+      "id": "7d1e290be8c71a2c",
       "label": "S1 blocks S4",
       "toNode": "060abb0710a90da6",
       "toSide": "left"
@@ -59,7 +51,7 @@
     {
       "fromNode": "25c4d1e303c8e65c",
       "fromSide": "right",
-      "id": "7b894a8eee51e20c",
+      "id": "28d17fdb286d6f8b",
       "label": "S4 blocked by S1",
       "toNode": "060abb0710a90da6",
       "toSide": "left"
@@ -67,7 +59,7 @@
     {
       "fromNode": "25c4d1e303c8e65c",
       "fromSide": "right",
-      "id": "f52102fab7a6d5f9",
+      "id": "c59051e74a8581b4",
       "label": "S5 blocked by S1",
       "toNode": "fa5e99c4d8e47eec",
       "toSide": "left"
@@ -75,7 +67,7 @@
     {
       "fromNode": "25c4d1e303c8e65c",
       "fromSide": "right",
-      "id": "5b8b78c58312f060",
+      "id": "82b4e5f05d83675a",
       "label": "S1 blocks S6",
       "toNode": "aade385e88436ad6",
       "toSide": "left"
@@ -83,7 +75,7 @@
     {
       "fromNode": "25c4d1e303c8e65c",
       "fromSide": "right",
-      "id": "8c052e5c210070aa",
+      "id": "5b8b78c58312f060",
       "label": "S6 blocked by S1",
       "toNode": "aade385e88436ad6",
       "toSide": "left"
@@ -91,7 +83,7 @@
     {
       "fromNode": "25c4d1e303c8e65c",
       "fromSide": "right",
-      "id": "320a2d20d4c17930",
+      "id": "92d15f7d7e9b633d",
       "label": "S7 blocked by S1",
       "toNode": "a8493ff5c5e670c4",
       "toSide": "left"
@@ -99,7 +91,7 @@
     {
       "fromNode": "25c4d1e303c8e65c",
       "fromSide": "right",
-      "id": "0224ffa082262ca2",
+      "id": "df0bd9d77a12a7c0",
       "label": "S9 blocked by S1",
       "toNode": "c6ba452e6a2d0e1c",
       "toSide": "left"
@@ -107,7 +99,7 @@
     {
       "fromNode": "25c4d1e303c8e65c",
       "fromSide": "right",
-      "id": "e336ccd6db96ecb9",
+      "id": "620cacca62e101a1",
       "label": "S1 blocks Phase 1",
       "toNode": "02157bb979b9392c",
       "toSide": "left"
@@ -115,23 +107,7 @@
     {
       "fromNode": "b2840c5b12be8a38",
       "fromSide": "right",
-      "id": "c6f1963bb2e5c74d",
-      "label": "S2 blocks S4",
-      "toNode": "060abb0710a90da6",
-      "toSide": "left"
-    },
-    {
-      "fromNode": "b2840c5b12be8a38",
-      "fromSide": "right",
-      "id": "727095c3b283d59e",
-      "label": "S4 blocked by S2",
-      "toNode": "060abb0710a90da6",
-      "toSide": "left"
-    },
-    {
-      "fromNode": "b2840c5b12be8a38",
-      "fromSide": "right",
-      "id": "88f01904379589e6",
+      "id": "08597956c6ac391a",
       "label": "S2 blocks S5",
       "toNode": "fa5e99c4d8e47eec",
       "toSide": "left"
@@ -139,7 +115,7 @@
     {
       "fromNode": "b2840c5b12be8a38",
       "fromSide": "right",
-      "id": "5859ac925e4a718f",
+      "id": "bb64d3c1a32b3ad4",
       "label": "S5 blocked by S2",
       "toNode": "fa5e99c4d8e47eec",
       "toSide": "left"
@@ -147,7 +123,7 @@
     {
       "fromNode": "b2840c5b12be8a38",
       "fromSide": "right",
-      "id": "5afe01288ef03f1c",
+      "id": "c0b31989b09643a5",
       "label": "S9 blocked by S2",
       "toNode": "c6ba452e6a2d0e1c",
       "toSide": "left"
@@ -155,7 +131,7 @@
     {
       "fromNode": "fe1e453aa0344b57",
       "fromSide": "right",
-      "id": "2789bd3a1e730dbc",
+      "id": "e2e8167b251d25a6",
       "label": "S3 blocks S4",
       "toNode": "060abb0710a90da6",
       "toSide": "left"
@@ -163,7 +139,7 @@
     {
       "fromNode": "fe1e453aa0344b57",
       "fromSide": "right",
-      "id": "74ea4ba3575991b1",
+      "id": "c0ded361c62a89de",
       "label": "S4 blocked by S3",
       "toNode": "060abb0710a90da6",
       "toSide": "left"
@@ -171,7 +147,7 @@
     {
       "fromNode": "fe1e453aa0344b57",
       "fromSide": "right",
-      "id": "9ec3e48200ab6a3f",
+      "id": "0a0072b5fb3353b5",
       "label": "S9 blocked by S3",
       "toNode": "c6ba452e6a2d0e1c",
       "toSide": "left"
@@ -179,7 +155,7 @@
     {
       "fromNode": "060abb0710a90da6",
       "fromSide": "right",
-      "id": "01b249071d2f139f",
+      "id": "5b1672515edfa004",
       "label": "S9 blocked by S4",
       "toNode": "c6ba452e6a2d0e1c",
       "toSide": "left"
@@ -187,7 +163,7 @@
     {
       "fromNode": "060abb0710a90da6",
       "fromSide": "right",
-      "id": "8b31608423a44892",
+      "id": "7d6117afdcf27a25",
       "label": "S4 blocks Phase 0 exit",
       "toNode": "3b242ea83a8167e6",
       "toSide": "left"
@@ -195,7 +171,7 @@
     {
       "fromNode": "fa5e99c4d8e47eec",
       "fromSide": "right",
-      "id": "8fe41e036ba893f2",
+      "id": "da3a7df24ec85487",
       "label": "S9 blocked by S5",
       "toNode": "c6ba452e6a2d0e1c",
       "toSide": "left"
@@ -203,7 +179,7 @@
     {
       "fromNode": "fa5e99c4d8e47eec",
       "fromSide": "right",
-      "id": "be97849ba1c5befc",
+      "id": "193489180cc59bbf",
       "label": "S5 blocks Phase 0 exit",
       "toNode": "3b242ea83a8167e6",
       "toSide": "left"
@@ -211,7 +187,7 @@
     {
       "fromNode": "aade385e88436ad6",
       "fromSide": "right",
-      "id": "da914df7a2668203",
+      "id": "951a64f14f1c262d",
       "label": "S9 blocked by S6",
       "toNode": "c6ba452e6a2d0e1c",
       "toSide": "left"
@@ -219,7 +195,7 @@
     {
       "fromNode": "aade385e88436ad6",
       "fromSide": "right",
-      "id": "92f2e967fd91500e",
+      "id": "04a5f84470418494",
       "label": "S6 blocks Phase 1 dispatch",
       "toNode": "13d48fbdb0c0a459",
       "toSide": "left"
@@ -227,7 +203,7 @@
     {
       "fromNode": "a8493ff5c5e670c4",
       "fromSide": "right",
-      "id": "442ff6395b189f43",
+      "id": "593d82c4e5660e8f",
       "label": "S9 blocked by S7",
       "toNode": "c6ba452e6a2d0e1c",
       "toSide": "left"
@@ -235,7 +211,7 @@
     {
       "fromNode": "a8493ff5c5e670c4",
       "fromSide": "right",
-      "id": "ca3dd4c7d5064473",
+      "id": "a1d765d4fc73c2c7",
       "label": "S7 blocks Phase 0 exit",
       "toNode": "3b242ea83a8167e6",
       "toSide": "left"
@@ -243,7 +219,7 @@
     {
       "fromNode": "d2deb15efa0b8ec2",
       "fromSide": "right",
-      "id": "69326adef6a3776e",
+      "id": "4e2ba454c4619f33",
       "label": "S9 blocked by S8",
       "toNode": "c6ba452e6a2d0e1c",
       "toSide": "left"
@@ -251,7 +227,7 @@
     {
       "fromNode": "d2deb15efa0b8ec2",
       "fromSide": "right",
-      "id": "c92f340f85f1334a",
+      "id": "417940899abad266",
       "label": "S8 blocks Phase 0 exit",
       "toNode": "3b242ea83a8167e6",
       "toSide": "left"
@@ -300,23 +276,13 @@
     },
     {
       "color": "6",
-      "file": "vault/execution/operator-item__O5.md",
-      "height": 120,
-      "id": "dfe15253c92976c9",
-      "type": "file",
-      "width": 330,
-      "x": 0,
-      "y": 760
-    },
-    {
-      "color": "6",
       "file": "vault/execution/operator-item__O6.md",
       "height": 120,
       "id": "f4ebac9df2eecf6d",
       "type": "file",
       "width": 330,
       "x": 0,
-      "y": 950
+      "y": 760
     },
     {
       "color": "6",
@@ -326,7 +292,7 @@
       "type": "file",
       "width": 330,
       "x": 0,
-      "y": 1140
+      "y": 950
     },
     {
       "color": "6",
@@ -336,7 +302,7 @@
       "type": "file",
       "width": 330,
       "x": 0,
-      "y": 1330
+      "y": 1140
     },
     {
       "color": "6",
@@ -346,7 +312,7 @@
       "type": "file",
       "width": 330,
       "x": 0,
-      "y": 1520
+      "y": 1330
     },
     {
       "color": "4",
@@ -369,7 +335,7 @@
       "y": 190
     },
     {
-      "color": "1",
+      "color": "2",
       "file": "vault/execution/stage__S2.md",
       "height": 120,
       "id": "b2840c5b12be8a38",
@@ -389,7 +355,7 @@
       "y": 570
     },
     {
-      "color": "1",
+      "color": "4",
       "file": "vault/execution/stage__S4.md",
       "height": 120,
       "id": "060abb0710a90da6",
@@ -429,7 +395,7 @@
       "y": 1330
     },
     {
-      "color": "1",
+      "color": "4",
       "file": "vault/execution/stage__S8.md",
       "height": 120,
       "id": "d2deb15efa0b8ec2",
@@ -439,7 +405,7 @@
       "y": 1520
     },
     {
-      "color": "1",
+      "color": "2",
       "file": "vault/execution/stage__S9.md",
       "height": 120,
       "id": "c6ba452e6a2d0e1c",

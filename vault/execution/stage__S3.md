@@ -5,7 +5,7 @@ title: "Inspector core"
 status: "done"
 shape: "heading"
 number: "S3"
-source: "docs/tier2/execution-order.md:100"
+source: "docs/tier2/execution-order.md:132"
 extractor: "stages"
 aliases:
   - "Inspector core"
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `docs/tier2/execution-order.md:100`
+**Source** · `docs/tier2/execution-order.md:132`
 
 ## Statement
 

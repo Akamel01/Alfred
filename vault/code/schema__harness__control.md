@@ -23,5 +23,5 @@ generated: true
 | Field | Value |
 |---|---|
 | `additive_only_lint` | false |
-| `migrations` | 1 |
+| `migrations` | 2 |
 | `path` | migrations/harness/control |

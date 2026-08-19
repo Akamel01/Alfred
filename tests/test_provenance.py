@@ -29,8 +29,16 @@ from provenance.stamp import (
     Tolerance,
     hash_inputs,
 )
+from provenance.upstream import CorpusUpstream
 
 COMMIT = "0" * 39 + "a"
+
+CORPUS = CorpusUpstream(
+    corpus_name="CommonRoad",
+    corpus_version="2020a",
+    scenario_id="ZAM_Urban-7_1_S-2",
+    corpus_digest="2" * 64,
+)
 
 
 def make_stamp(**overrides: object) -> ResultStamp:
@@ -45,6 +53,11 @@ def make_stamp(**overrides: object) -> ResultStamp:
         ),
         "input_hash": hash_inputs({"scenario": "s1", "pair": ["a", "b"]}),
         "tolerance": Tolerance(atol=1e-9, rtol=1e-6),
+        # Required, with no default and no null arm (ADR-0006). The fixture uses the
+        # positive `corpus` arm rather than `unknown`: a test suite whose every stamp
+        # is defect-grade would make `discharges_storage_duty` untested in the True
+        # direction and would normalize the arm this design exists to make visible.
+        "upstream": CORPUS,
     }
     fields.update(overrides)
     return ResultStamp.model_validate(fields)
@@ -116,6 +129,17 @@ def test_stamp_digest_differs_from_the_stamped_result_digest() -> None:
             AssumptionSet(name="baseline", version="1.0.1", entries={"horizon_s": 10.0}),
         ),
         ("reason_codebook_version", 2),
+        # The two ADR-0006 additions. `stamp_schema_version` is pinned to 1 by the model,
+        # so its hash sensitivity is asserted separately against a hand-built document.
+        (
+            "upstream",
+            CorpusUpstream(
+                corpus_name="CommonRoad",
+                corpus_version="2020a",
+                scenario_id="ZAM_Urban-7_1_S-3",
+                corpus_digest="2" * 64,
+            ),
+        ),
     ],
 )
 def test_changing_any_stamped_field_changes_the_hash(field: str, value: object) -> None:

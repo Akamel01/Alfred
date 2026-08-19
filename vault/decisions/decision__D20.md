@@ -41,3 +41,17 @@ Inspector machinery (D20). Run
 - **enforced_by** → [[module__harness_evidence___init__|The evidence plane's writer.]] — """The evidence plane's writer.
 
 Inspector machinery (D20). Permanently outside what agents may modify, and outside the
+
+- **enforced_by** → [[module__harness_fingerprint___init__|The run fingerprint record — the declared configuration a run is measured on.]] — """The run fingerprint record — the declared configuration a run is measured on.
+
+Inspector machinery (D20). `record.py`
+- **enforced_by** → [[module__harness_patch_validate|Validates a patch before anything touches a tree. Runs outside the container.]] — """Validates a patch before anything touches a tree. Runs outside the container.
+
+A2: the container holds no VCS credent
+- **enforced_by** → [[module__harness_patch_validate|Validates a patch before anything touches a tree. Runs outside the container.]] — # Inspector machinery (D20). Prefix match on a repo-relative POSIX path.
+- **enforced_by** → [[module__scripts_lint_ci_coverage|Two claims of CI coverage, checked against what CI actually runs.]] — """Two claims of CI coverage, checked against what CI actually runs.
+
+`gates.yml` states the rule this file generalizes:
+- **enforced_by** → [[module__scripts_lint_stage_gates|The stage gate, as a check rather than as a sentence somebody reads.]] — """The stage gate, as a check rather than as a sentence somebody reads.
+
+`docs/tier2/stage-gate-definitions.md` carried 

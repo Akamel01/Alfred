@@ -65,6 +65,9 @@ class EdgeKind(StrEnum):
     #: One module imports another. The only relation in this graph that answers "what does
     #: this depend on"; every other module edge is containment, which is a tree.
     IMPORTS = "imports"
+    #: An ADR closes an operator item. The only hand-written relation in the ADR log that
+    #: points outside the log.
+    DISCHARGES = "discharges"
     #: A gate step executes a module. Closes the chain decision -> module <- gate step <- gate:
     #: what a decision claims, which code enforces it, and which CI step actually runs that code.
     RUNS = "runs"

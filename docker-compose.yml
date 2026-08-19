@@ -18,10 +18,7 @@
 #     deny-by-default network. Putting it here would make it long-lived and shared,
 #     which is the opposite of every property it needs (D10, D53).
 #
-#   - **The product API.** `src/api/` does not exist yet. A service stanza for it now
-#     would be a contract written before the thing it describes — the failure the
-#     fidelity ladder names. It arrives with the API, alongside the Phase 0 exit
-#     criterion "`docker compose up` serves the API; deploy and rollback verified".
+#   - ~~**The product API.**~~ Added 2026-08-18 with S8. The stanza is below.
 #
 # Development only. This file never runs in CI: the grant suite uses a throwaway
 # cluster created per run by `harness/db/cluster.py`, on a random loopback port with
@@ -103,6 +100,47 @@ services:
       - "log_statement=ddl"
       - "-c"
       - "log_connections=on"
+
+  # The deployable artifact. Selected by tag rather than built here, because a service
+  # compose rebuilds on `up` has no identity to roll back to: the image would be whatever
+  # the working tree said at the moment of the command, and "roll back" would rebuild the
+  # same thing. `harness/deploy/driver.py` builds and tags a release, then points this at
+  # it. Deploy and rollback are therefore the same operation with different targets.
+  #
+  # No default for the image, deliberately: `docker compose up api` with nothing selected
+  # fails rather than silently serving whatever `alfred-api:latest` happens to be — the
+  # floating tag being the thing the supply-chain policy exists to forbid.
+  api:
+    image: ${ALFRED_API_IMAGE:?set ALFRED_API_IMAGE to a built release tag, e.g. alfred-api:r1}
+
+    # Loopback only, matching postgres above and for the same reason.
+    ports:
+      - "127.0.0.1:${ALFRED_API_PORT:-58080}:8000"
+
+    # Phase 0 holds no database credential in the API (D10/major-fix #4): the service
+    # serves its own identity and nothing that needs a connection. When it does need one
+    # it arrives from the secret store, never from a committed file.
+    environment:
+      LANG: C
+      LC_ALL: C
+
+    # Asks the service which release it is, not merely whether it is listening. A
+    # healthcheck that cannot tell two releases apart reports "up" across a failed
+    # rollback, which is the one moment anybody consults it.
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request,json,sys; d=json.loads(urllib.request.urlopen('http://127.0.0.1:8000/health').read()); sys.exit(0 if d.get('release_id') else 1)\""]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 5s
+
+    # Not `unless-stopped`: a rollback recreates this service, and a restart policy that
+    # resurrects the previous container races the replacement.
+    restart: "no"
+
+    read_only: true
+    tmpfs:
+      - /tmp
 
 volumes:
   pgdata:

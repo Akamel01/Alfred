@@ -2,7 +2,7 @@
 kind: stage
 id: "stage:S2"
 title: "Oracle environment"
-status: "not-started"
+status: "partial"
 shape: "heading"
 number: "S2"
 source: "docs/tier2/execution-order.md:88"
@@ -22,19 +22,18 @@ generated: true
 
 ## Statement
 
-Oracle environment · *blocks S5's reference values, the S4 ladder's calibration, and the D49 P3 decision*
+Oracle environment · *blocks S5's reference values and the D49 P3 decision* · **ENVIRONMENT DONE 2026-08-18**
 
 ## Fields
 
 | Field | Value |
 |---|---|
-| `clause` | blocks S5's reference values, the S4 ladder's calibration, and the D49 P3 decision |
+| `clause` | blocks S5's reference values and the D49 P3 decision |
+| `completion` | ENVIRONMENT DONE 2026-08-18 |
 
 ## Stated in prose — unverified
 
 - **blocks** → [[decision__D49|A grading point is admitted by the provenance of its authorship, not by whether the oracle]] — S2 blocks D49
-- **blocks** → [[stage__S4|The two suites, together]] — S2 blocks S4
-- **blocks** → [[stage__S4|The two suites, together]] — S4 blocked by S2
 - **blocks** → [[stage__S5|Product path to a reproduced number]] — S2 blocks S5
 - **blocks** → [[stage__S5|Product path to a reproduced number]] — S5 blocked by S2
 - **blocks** → [[stage__S9|Phase 1 build]] — S9 blocked by S2

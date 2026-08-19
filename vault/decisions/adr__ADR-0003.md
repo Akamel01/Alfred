@@ -36,6 +36,7 @@ generated: true
 - **see_also** → [[adr__ADR-0006|The result stamp field set, its own version, and upstream toolchain provenance]]
 - [[adr__ADR-0004|The ACS-1 float presentation grammar]] **amends** → this
 - [[adr__ADR-0006|The result stamp field set, its own version, and upstream toolchain provenance]] **see_also** → this
+- [[adr__ADR-0016|`StampedResult` takes its schema version from the stamp it contains]] **see_also** → this
 
 ## Enforced by (code)
 
@@ -52,16 +53,16 @@ The vectors are the specification. ACS-1 is deliberately not a publ
 
 **The evidence plane is never written by the agent.** That single rule dr
 - **enforced_by** → [[module__migrations_harness_evidence_versions_0001_evidence_base|evidence: run records, verdicts, operator actions, artifacts, defect escapes.]] — # hash, over ACS-1, and ADR-0003 treats them as two different problems.
-- **enforced_by** → [[module__src_provenance___init__|Result stamping and the one ACS-1 door (ADR-0003, ADR-0004).]] — """Result stamping and the one ACS-1 door (ADR-0003, ADR-0004).
+- **enforced_by** → [[module__src_provenance___init__|Result stamping and the one ACS-1 door (ADR-0003, ADR-0004, ADR-0006).]] — """Result stamping and the one ACS-1 door (ADR-0003, ADR-0004, ADR-0006).
 
-Cannot be retrofitted: results computed before stamping
+Cannot be retrofitted: results computed befor
 - **enforced_by** → [[module__src_provenance_encoding|The single door to ACS-1 (ADR-0003, ADR-0004).]] — """The single door to ACS-1 (ADR-0003, ADR-0004).
 
 Product code hashes structures through this module and nowhere else. 
-- **enforced_by** → [[module__src_provenance_stamp|Result stamping — metric version, code commit, assumption set, input hash, tolerance.]] — """Result stamping — metric version, code commit, assumption set, input hash, tolerance.
+- **enforced_by** → [[module__src_provenance_stamp_types|Shared stamp vocabulary: record types, tolerance, assumption set, the input hash.]] — """Shared stamp vocabulary: record types, tolerance, assumption set, the input hash.
 
-Cannot be retrofitted. A resul
-- **enforced_by** → [[module__src_provenance_stamp|Result stamping — metric version, code commit, assumption set, input hash, tolerance.]] — """The input hash of a metric evaluation: ACS-1 over the declared inputs.
+These are **not** versioned, and n
+- **enforced_by** → [[module__src_provenance_stamp_types|Shared stamp vocabulary: record types, tolerance, assumption set, the input hash.]] — """The input hash of a metric evaluation: ACS-1 over the declared inputs.
 
     Trajectory arrays are *artifacts* and are
 - **enforced_by** → [[module__tests_test_one_encoder|ADR-0003: "A CI check asserts no code path hashes a structure through any encoder]] — """ADR-0003: "A CI check asserts no code path hashes a structure through any encoder

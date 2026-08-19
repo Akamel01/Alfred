@@ -1,24 +1,24 @@
 ---
 kind: gate-step
 id: "gate-step:inspector.08"
-title: "Containment probes (C6 egress canary, C7 oracle absence)"
+title: "Containment (C6, C7 probes; C8-C15; and the O5 shells that must not pass)"
 shape: "step"
 job: "inspector"
-source: ".github/workflows/gates.yml:218"
+source: ".github/workflows/gates.yml:246"
 extractor: "workflows"
 tags: [protected]
 aliases:
-  - "Containment probes (C6 egress canary, C7 oracle absence)"
+  - "Containment (C6, C7 probes; C8-C15; and the O5 shells that must not pass)"
   - "inspector.08"
 generated: true
 ---
 
-# Containment probes (C6 egress canary, C7 oracle absence)
+# Containment (C6, C7 probes; C8-C15; and the O5 shells that must not pass)
 
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `.github/workflows/gates.yml:218`
+**Source** · `.github/workflows/gates.yml:246`
 
 ## Statement
 

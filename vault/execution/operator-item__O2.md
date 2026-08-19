@@ -5,7 +5,7 @@ title: "Defect-escape **observation window**"
 shape: "table-row"
 due: "Before Phase 2 exit"
 number: "O2"
-source: "docs/tier2/execution-order.md:214"
+source: "docs/tier2/execution-order.md:391"
 extractor: "stages"
 aliases:
   - "Defect-escape **observation window**"
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `docs/tier2/execution-order.md:214`
+**Source** · `docs/tier2/execution-order.md:391`
 
 ## Statement
 

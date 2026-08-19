@@ -61,8 +61,8 @@ Product skeleton. The largest reading set, because Phase 0 builds what cannot be
 | 17 | [Threat Model](tier4/threat-model.md) | context | frozen | the ten threats the controls answer, and what is out of scope |
 | 18 | [Task Specification Standard](tier2/task-specification-standard.md) | binding | frozen | what makes a task schedulable; criterion structure |
 | 19 | [Model and Algorithm Cards](tier5/model-and-algorithm-cards.md) | binding | stub | validity envelopes ship with the product |
-| 20 | [Stage Gate Definitions](tier2/stage-gate-definitions.md) | binding | stub | the executable exits, and the waiver discipline for overriding one |
-| 21 | [Branch, Release and Deploy Protocol](tier2/branch-release-deploy-protocol.md) | binding | stub | deploy and rollback are Phase 0 exit criteria |
+| 20 | [Stage Gate Definitions](tier2/stage-gate-definitions.md) | binding | provisional | the executable exits, and the waiver discipline for overriding one |
+| 21 | [Branch, Release and Deploy Protocol](tier2/branch-release-deploy-protocol.md) | binding | provisional | deploy and rollback are Phase 0 exit criteria |
 | 22 | [Risk Register](tier0/risk-register.md) | context | provisional | open risks with revisit triggers; check before assuming something is handled |
 | 23 | [Criterion Authoring Guide](tier2/criterion-authoring-guide.md) | context | stub | stub — promote once real criteria have been authored |
 
@@ -170,9 +170,21 @@ Binding on implementation and easy to miss, since they live inside one document.
 | [ADR-0012](tier1/adr-log.md) | The verdict boundary is a lint, and the lint fails when it has nothing to check | Accepted |
 | [ADR-0013](tier1/adr-log.md) | Containment probes, and the control that stops each one reading green | Accepted |
 | [ADR-0014](tier1/adr-log.md) | The chain is re-walked by the implementation that did not write it | Accepted |
-| [ADR-0015](tier1/adr-log.md) | An agent edited the inspector, and this record was drafted by the same agent | Accepted |
-| [ADR-0016](tier1/adr-log.md) | The review ADR-0015 said was owed has been done | Accepted |
+| [ADR-0015](tier1/adr-log.md) | A missing candidate file is the candidate's failure, not the harness's fault | accepted |
+| [ADR-0016](tier1/adr-log.md) | `StampedResult` takes its schema version from the stamp it contains | Accepted |
+| [ADR-0017](tier1/adr-log.md) | A containment assertion with an unread premise is a hole, and a hole never passes | Accepted |
+| [ADR-0018](tier1/adr-log.md) | The executor moved, and eleven of thirteen premises were wrong | Accepted |
+| [ADR-0019](tier1/adr-log.md) | D38's sandbox rationale, verified: true of one configuration, false of the default | Accepted |
+| [ADR-0020](tier1/adr-log.md) | The run fingerprint record, and the two assertions that were waiting on it | Accepted |
+| [ADR-0021](tier1/adr-log.md) | Enumeration drift, and the two claims of CI coverage that were false |  |
+| [ADR-0022](tier1/adr-log.md) | Phase 0's exit, narrowed along the ownership seam, with the residue dated |  |
+| [ADR-0023](tier1/adr-log.md) | Which of ADR-0019's unhardened defaults are Alfred's, and the two that are |  |
+| [ADR-0024](tier1/adr-log.md) | C15's third clause runs, the denylist's names are read, and a gate nobody had |  |
+| [ADR-0025](tier1/adr-log.md) | Byte-identical replay, with the domain left out of it |  |
+| [ADR-0026](tier1/adr-log.md) | The adaptor configuration contract, typed at the boundary |  |
+| [ADR-0027](tier1/adr-log.md) | An agent edited the inspector, and this record was drafted by the same agent | Accepted |
+| [ADR-0028](tier1/adr-log.md) | The review ADR-0027 said was owed has been done | Accepted |
 
 ---
 
-**63 documents mapped** · 43 binding · 13 context · 7 record · 16 architecture decisions
+**63 documents mapped** · 43 binding · 13 context · 7 record · 28 architecture decisions

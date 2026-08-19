@@ -30,9 +30,9 @@ Checked against the filesystem. This is the honest starting position.
 | Area | State |
 |---|---|
 | Documentation register | **63 documents**, both gates green. The most complete asset. |
-| ACS-1 (encoder, JS second implementation, 343 vectors, 47 mutants) | **Built and mutation-controlled.** |
+| ACS-1 (encoder, JS second implementation, 350 vectors, 47 mutants) | **Built and mutation-controlled.** |
 | `MetricValue` / `MetricSeries` / reason codebook | **Built.** 98 tests, `pyright --strict` clean. |
-| Result stamping (`src/provenance/`) | **Built**, missing the schema version and upstream toolchain fields. |
+| Result stamping (`src/provenance/`) | **Built 2026-08-18.** Ten-key v1 stamp, upstream toolchain union, two-stage verifier. ADR-0006, ADR-0016. |
 | Lane controls (`harness/lane/`) | **Built**, no mutation harness, no parallel-slot fingerprint field. |
 | Throwaway DB cluster fixture (`harness/db/`) | **Built.** Roles and grants apply against a real cluster. |
 | CI (5 jobs) | **Built and green.** |
@@ -85,7 +85,7 @@ fails silently in the safe-looking direction.
 Nothing that stores a verdict, an evidence row, or a held-out value can be built before this.
 It is the widest blocker on the board.
 
-### S2 — Oracle environment · *blocks S5's reference values, the S4 ladder's calibration, and the D49 P3 decision*
+### S2 — Oracle environment · *blocks S5's reference values and the D49 P3 decision* · **ENVIRONMENT DONE 2026-08-18**
 
 One offline environment, pinned at CriMe commit `60bebed`, that never executes agent-authored
 code. Its outputs cross into `heldout` as data; its code never crosses at all (D54). Likely a
@@ -96,6 +96,38 @@ not after.
 This stage is gated by an operator decision (O3 below): validate D49's P3 rung, or take D49's
 stated degradation now. The environment is required either way, because Phase 0's exit
 criterion *is* reproducing oracle values.
+
+**The wheel question is answered, and it forced the answer rather than informing it.**
+Measured against the PyPI JSON API on 2026-08-18, not read from a classifier: no arm64
+wheel has ever been published for `commonroad-drivability-checker`, `commonroad-reach` or
+`commonroad-clcs`, on any operating system. The last two have never published a macOS wheel
+of any kind; the first has published sixteen, every one `macosx_10_13_x86_64`, Intel only,
+none since 2022 — while its classifiers declare `Operating System :: MacOS`. The classifier
+is a claim by the publisher; the wheel list is the fact, and the question was answerable
+either way from the metadata with only one of the two answers true. So the image is
+`linux/amd64` under emulation, and Python 3.11 because `commonroad-reach` declares
+`requires_python <3.12`. Both recorded in `harness/oracle/pins.py`.
+
+**Environment closed 2026-08-18.** `harness/oracle/` holds the pinned image, the
+in-container extractor, the driver and the loader. The run posture answers D50's
+acquisition hole directly: `--network none`, `--read-only`, non-root, no repository mount
+at all, and the pyximport build warmed into the image so the run compiles nothing. Two
+things the build discovered that a future attempt to slim the image will rediscover: the
+closure is **not wheels-only** (`polygon3` is sdist-only and needs a compiler), and
+`commonroad_reach` **compiles a Cython module at import time**.
+
+**What is done here is the mechanism, and the mechanism is the factory's.** The 28-point
+set that proved it out — 28 ok, 0 mismatch, 0 error, every point agreeing with CriMe's own
+pinned literal — is domain content and is a worked seed, not the deliverable. Extending it,
+and everything downstream of it, is agent work under the ownership rule below.
+
+**A labelling defect the extraction found in the plan's own exit criterion.** Read from
+`tests/test_time_domain.py` at the pinned SHA: the value 2.4 recorded as `ttc_1` is computed
+by **`TTCStar`**, and the value 1.25 recorded as `ttc_4` is returned by **`TTR`** on
+`ZAM_Urban-7_1_S-2`, in a test whose local variable is named after the lines above it.
+Phase 0's exit criterion quotes both as TTC values. Reproducing "TTC = 1.25" would be
+reproducing a different measure and calling it a pass. `bench/tasks/phase1_tasks.json` has
+both right; the prose does not.
 
 ### S3 — Inspector core · *blocks S4, and every verdict ever recorded* · **DONE 2026-08-17**
 
@@ -120,7 +152,7 @@ values are graded **outside** the criterion environment. Injecting them into it 
 the expected answer in the same directory as the code being measured, which a stub reads
 and returns — D50's delegation failure past the oracle-absence probe. ADR-0011.
 
-### S4 — The two suites, together · *blocks Phase 0 exit; blocked by S1, S2, S3*
+### S4 — The two suites, together · *blocks Phase 0 exit; blocked by S1, S3* · **DONE 2026-08-18**
 
 The null-agent floor suite and the seeded-defect ladder are **one stage because they are each
 other's vacuity control**. Replace every criterion with `return 0.0` and the floor suite passes
@@ -133,6 +165,36 @@ The ladder is two-sided: green inside tolerance at δ = 0, τ/2, τ·(1−ε); r
 calibration** — passing the far rungs with it absent means τ could be ten times looser and
 nothing would notice. ε is measured from the criterion's noise floor, never chosen; a τ that
 cannot resolve ε is a finding about τ.
+
+**Closed 2026-08-18, and the S2 dependency dissolved on inspection.** The ladder measures
+the *runner's* tolerance behaviour, not a metric's correctness, so calibrating it against a
+domain metric would confound the two and make a factory gate depend on a domain that may be
+written off. `harness/selftest/` uses a **synthetic** criterion instead: the sum of floats
+spanning many magnitudes, chosen because it has a genuine, measurable noise floor —
+summation is order-dependent, so two equally correct implementations disagree by a real
+amount. Measured spread **1.02e-2** over 64 seeded permutations; at τ = 0.05 that gives
+**ε = 0.203**, and `run_ladder` *refuses* a τ inside the noise floor rather than widening
+it, because a suite that silently corrected the tolerance would report a calibration it had
+just invented.
+
+Six rungs, six agreements, both calibrating rungs correct. The three controls are committed
+beside the suites and demonstrate the mutual claim rather than asserting it:
+
+| Control | ladder green rungs | ladder red rungs | floor suite |
+|---|---|---|---|
+| always-pass | miss | **catch 3/3** | **catches** |
+| always-fail | **catch 3/3** | miss | **fooled — passes** |
+| every criterion `return 0.0` | **catch 3/3** | miss | **fooled — passes** |
+
+That is the argument for one stage rather than two, on real data: a runner that fails
+unconditionally passes the floor suite cleanly and is caught only by the ladder's green
+rungs.
+
+**The floor suite found a defect before it had ever passed** — `materialize` raised on an
+absent candidate path, which a caller maps to a harness fault, which maps to
+`indeterminate`, which is excluded from the merge rate on both sides. The null agent would
+have left the denominator instead of scoring at the floor. Fixed and split by owner: a
+missing *trusted* path still raises. ADR-0015, and it is an inspector patch awaiting O9.
 
 ### S5 — Product path to a reproduced number · *blocks Phase 0 exit; blocked by S1, S2*
 
@@ -187,22 +249,137 @@ drill restoring only to latest cannot distinguish a working WAL archive from a w
 backup with a broken archive, and PITR is the capability that matters after the bad
 migration D43 names.
 
-### S8 — Deploy and rollback · *blocks Phase 0 exit*
+### S8 — Deploy and rollback · *blocks Phase 0 exit* · **DONE 2026-08-18**
 
 `docker compose up` serves the API; deploy and rollback both execute and are verified.
 
-### S9 — Phase 1 build · *blocked by S1–S8 and by O1*
+**Closed 2026-08-18.** `src/api/` is the deployable unit, `deploy/api.Dockerfile` builds
+it, the compose file carries the service, and `harness/deploy/` holds the ledger, the
+driver and the tests. Two releases were built, deployed and rolled back on this machine;
+each transition was confirmed by reading `/version` from the running service.
+
+**One decision carries the whole stage: the release identity is baked into the artifact.**
+`/version` reports what the running image says it is, from build arguments promoted to
+environment variables — never from the repository, a mount, or a `git` call at request
+time. Read the identity from outside the artifact and a rollback reports the old release
+while the new code keeps serving, with the verifier agreeing: the check passes in exactly
+the situation it exists to detect. An image built without an identity fails at import
+rather than serving anonymously.
+
+Deploy goes **through** `docker compose` rather than around it, because the exit criterion
+names that path and a mechanism verified on some other path has verified some other
+mechanism. Rollback is the same code with a different target — a rollback running code a
+deploy never exercises is a path first executed during an incident. The ledger is written
+only *after* the intended release is observed serving; recording first would leave a
+history claiming a deploy that never took, and the rollback target is chosen from that
+history.
+
+Three states are failures rather than no-ops, each with a test: rolling back with no
+recorded release, rolling back when every recorded release is the one serving, and a
+deploy whose service answers with a different release than the one intended. That last one
+is the control the stage rests on — verified by exit code it passes, because
+`docker compose up` succeeded.
+
+The rollback target is found by scanning for a different `release_id`, not by taking the
+second-to-last row. A positional rule oscillates: after deploy r1, deploy r2, rollback to
+r1, the second-to-last row is r2, so the next rollback returns to r2, then r1, forever,
+reporting success at every step.
+
+`docs/tier2/branch-release-deploy-protocol.md` is promoted from stub. Its branch and patch
+half remains unobserved and says so — no agent branch has ever been opened.
+
+**Two things this stage does not do.** There is no rollback of the *database*: evidence
+migrations are additive-only and their downgrade raises, so an application rollback across
+a migration is not symmetric. Phase 0 does not hit it because the API holds no database
+credential, and S7's point-in-time recovery is where it gets answered — still outstanding.
+And a **technology selection record is owed** for FastAPI and uvicorn:
+`docs/tier1/technology-selection-records.md` is `owner: human`, and its falsification
+condition — "a technology is adopted with no corresponding record" — is met until the
+operator writes one.
+
+### S9 — Phase 1 build · *blocked by S1–S8 and by O1* · **PORT AND PATCH GATE DONE 2026-08-18**
 
 `Worker` port and the OpenHands adaptor, pinned by commit SHA; the fifteen numbered boot
 assertions (D53); patch validation on the privileged side with the A10 unicode scan; and the
 mission-control command surface, which is inspector under D51 and therefore operator-built.
 
-**The OpenHands source read (O5) must precede the containment assertions.** Their premises are
-unverified first-hand, and an assertion resting on a *misnamed* config key or event class
-reports `passed` while the control it names does nothing — executed, passed, and vacuous. That
-is a third outcome the register does not currently name.
+**The executor source read (O5) had to precede the containment assertions, and it did —
+2026-08-18, ADR-0018.** The argument for the ordering was that an assertion resting on a
+*misnamed* config key or event class reports `passed` while the control it names does nothing.
+The read settled it empirically: **eleven of thirteen recorded premises were wrong**, including
+one conjunct that could not have been implemented at any name, and the repository the plan
+selected no longer contains an executor at all.
+
+**Domain-neutral half closed 2026-08-18, and the containment assertions followed it the same
+day once O5 was discharged.** C1-C3, C5, C10 read first-hand and filled; C8, C9, C12-C15
+written for real; C4 and C11 still absent, blocked on a run fingerprint record that does not
+exist in this repository.
+
+`harness/worker/port.py` is the contract as executable types: the value types, the
+`SandboxHandle` carrying its own proof, `WorkerOutcome` with members for agent-attributed
+terminations *only*, the three fault classes with their taxonomy classes, and the `Worker`
+protocol. Nothing in it names an executor concept, which is what makes D38's "the `Worker`
+interface exists to make this swap cheap" true rather than aspirational.
+
+Two refusals are implemented once, in the port, rather than per adaptor. `check_handle`
+raises `ContainmentFailure` when a required assertion is absent or carries any outcome
+other than `passed` — `not_executed` included, because an unproven control is a failed
+control. It also raises on an **empty required set**: a worker that requires nothing has
+been configured to check nothing, and from outside that is indistinguishable from every
+check passing. `verdict_vocabulary_violations` walks the claim's transitive closure and
+reports any field named with a verdict word, with `claim_closure_size` as its vacuity
+guard and a planted-violation control per word in the vocabulary.
+
+**`WorkerOutcome` has no member for the executor dying, and the gap is the design.** The
+most likely defect in any adaptor is reporting a killed executor as an agent failure,
+which moves harness flakiness into the numerator of the only number the autonomy gates
+read. It is unrepresentable here rather than discouraged.
+
+`harness/patch/validate.py` is the privileged-side gate (A2/A10). It **reads** the diff
+and never applies it: a check running after application has a dirty tree as its failure
+mode, and `git apply` following a symlink is the escape the path rules exist to prevent.
+Refusals: protected prefixes under D20, path traversal, absolute paths, symlink modes,
+import hooks (`conftest.py`, `sitecustomize.py`, `.pth`), instruction files, and the A10
+scan for zero-width, bidi and control characters on added lines only. Every finding is
+collected rather than raising on the first, because a reviewer handed one refusal at a
+time learns the rule set by exhaustion and starts treating a boundary as an obstacle.
+
+One refusal is there because a naive version would have missed it: git quotes unusual
+bytes as a C string, so `harness/` can be written `"a/harness/\150arm.py"`, which does not
+prefix-match in its raw form. Paths are decoded before any decision, and the bypass has
+its own test.
+
+**Closed 2026-08-18.** The fifteen boot assertions rested on premises nobody had checked
+first-hand. O5 read the executor at `OpenHands/software-agent-sdk` `d460d1a0…` and corrected
+eleven of thirteen: persistence is not opt-in, there are three condensation event classes
+rather than one, the confirmation policy is an object rather than a mode flag, a VS Code
+server runs inside the container by default, configuration hoists through `OH_*` environment
+variables, and C3's approval-event conjunct could not have worked at any name because approval
+emits no event. Guessing would have produced green assertions for every one of them.
+
+Also outstanding: the mission-control command surface, which is inspector under D51 and
+therefore operator-built.
 
 ---
+
+## The ownership rule
+
+Set by the operator on 2026-08-18, and it re-cuts several stages: **AV domain content —
+metrics, reference values, the product path — is agent work. What is built, verified,
+validated and tested here is the factory.**
+
+The split is by layer, not by stage. The oracle *environment* is factory and is inspector
+besides, since agents may never author their own ground truth; the *point set* is domain.
+The *ports* — `TrajectorySource`, `Metric`, `ReplayHarness` — are factory; every
+implementation behind them is domain. S4, S8 and the domain-neutral half of S9 are factory
+throughout.
+
+One dependency dissolved under the rule, and it had been recorded as real: S4 was listed as
+blocked by S2 for the ladder's calibration. Calibrating the inspector against domain content
+was the wrong instinct — see S4.
+
+Tier 0 carries the authorship boundary and is permanently operator-authored, so this rule is
+recorded here rather than there. Whether it belongs in Tier 0 is an operator edit.
 
 ## Operator-owned, non-delegable
 
@@ -214,7 +391,7 @@ These cannot be built by anyone else, and four of them block stages above.
 | O2 | Defect-escape **observation window** | The 2026-12-31 anchor's pass condition | Before Phase 2 exit |
 | O3 | D49 P3: validate, or take the stated degradation to the 10 strong P1 measures | S2's scope; Phase 1's exit shape | **2026-09-09** |
 | O4 | Phase 0 exit: move the date under a waiver ADR, or narrow the exit | Everything | **2026-09-09** |
-| O5 | Read OpenHands at the pinned SHA | S9's containment assertions | Before S9 |
+| ~~O5~~ | ~~Read OpenHands at the pinned SHA~~ | — | **DONE 2026-08-18.** ADR-0018. The executor had moved: `OpenHands/software-agent-sdk` at `d460d1a0…`, not the repository D38 names. Eleven of thirteen premises corrected. |
 | O6 | Company formation — entity, liability-capped pilot template, insurance quote | First prospect conversation | **2026-09-09** |
 | O7 | EU 2022/1426 approval-register lookup (~1 hr) | Should precede conversation one | Before O8 |
 | O8 | Three Track-1 discovery conversations | K1, K2 | **2026-10-07** |

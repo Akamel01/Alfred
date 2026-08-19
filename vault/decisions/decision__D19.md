@@ -41,11 +41,21 @@ Measures the three things that decide Alfred's inference lane:
 - **enforced_by** → [[module__harness_containment_denylist|Load the oracle denylist and give it a digest the fingerprint can carry.]] — """Load the oracle denylist and give it a digest the fingerprint can carry.
 
 The denylist is versioned protected policy 
+- **enforced_by** → [[module__harness_fingerprint_record|The run fingerprint record: what a run was measured on, stated once and hashed.]] — # D19: what tiered requalification reads to decide which component moved.
+- **enforced_by** → [[module__harness_fingerprint_record|The run fingerprint record: what a run was measured on, stated once and hashed.]] — "D19"
+- **enforced_by** → [[module__harness_fingerprint_record|The run fingerprint record: what a run was measured on, stated once and hashed.]] — # D19.
+- **enforced_by** → [[module__harness_fingerprint_test_record|The run fingerprint record, and the control that the hash covers every field.]] — """A record field with no column is a field the register cannot answer *what changed* on.
+
+    D19's tiered requalificat
 - **enforced_by** → [[module__harness_lane_lane_fingerprint|Fail-closed fingerprint assertion for the inference lane (D19/D40).]] — """Fail-closed fingerprint assertion for the inference lane (D19/D40).
 
 The serving stack auto-unloads an idle model and
 - **enforced_by** → [[module__migrations_harness_control_versions_0001_control_base|control: work items, fingerprints, protected paths, thresholds.]] — # changed*. D19's tiered requalification is a decision about which component moved,
 - **enforced_by** → [[module__migrations_harness_control_versions_0001_control_base|control: work items, fingerprints, protected paths, thresholds.]] — # D19.
+- **enforced_by** → [[module__migrations_harness_control_versions_0002_fingerprint_run_fields|control: the run-fingerprint fields the register had no column for.]] — """control: the run-fingerprint fields the register had no column for.
+
+Revision ID: 0002_fingerprint_run_fields
+Revises
 
 ## Stated in prose — unverified
 

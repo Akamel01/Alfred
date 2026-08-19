@@ -41,8 +41,23 @@ Per run: task, resolved context, prompt and its version, every file read and sea
 issued, tool-call trace, diff, check output, wall-clock, latency, turn count, token
 spend, verdict, and the full fingerprint.
 
-Per emitted product result: metric version, code commit, assumption set, input hash,
-tolerance.
+Per emitted product result: the ten-key result stamp (ADR-0006) — `stamp_schema_version`,
+metric id and version, code commit, assumption set, input hash, tolerance, reason-codebook
+version, ACS-1 version, and the `upstream` toolchain arm.
+
+**The upstream configuration is committed by digest and retrieved by reference, and both
+halves are obligations.** The `simulated` arm's `config_digest` proves the configuration was
+not altered; only `config_ref` lets anyone reproduce anything. So: **a `config_ref`'s
+preimage remains retrievable for as long as the stamp that names it is live.** A digest whose
+preimage has been garbage-collected is a stamp that verifies while discharging nothing, and
+the buyer's duty under EU 2022/1426 Annex III Part 4 is traceability from output back to
+setup, not a hash of a setup nobody can produce. `config_ref` is optional in the schema and
+**required by this policy wherever re-derivation is claimed**.
+
+An `upstream` arm of `unknown` is recorded, never suppressed. It means there *was* an
+upstream toolchain and Alfred could not determine it, so the stamp does not discharge the
+storage duty; `discharges_storage_duty` is `False` and a count of such stamps is a defect
+count rather than a rounding error.
 
 Per human action on a held-out artifact: who read it and when. Reading held-out material
 is legitimate and must be visible.
@@ -55,6 +70,13 @@ store, to an off-machine target.
 **The restore drill is an executable check.** "Restore verified" is a Phase 0 exit
 criterion sitting beside "deploy and rollback verified". A backup that has never been
 restored is a belief, not a control.
+
+**The drill includes a stamp case, and it is a two-part assertion.** For a restored result:
+its stamp verifies through the two-stage read — `verify_stamp` returns `VERIFIED`, not
+`UNVERIFIABLE` — **and** every `config_ref` it names is still retrievable from the restored
+target. Restoring the digest without the preimage restores the claim and loses the
+reproduction, which is the half a green exit code does not notice. A drill asserting only the
+first half passes on a backup that has quietly dropped every upstream configuration.
 
 Single-machine risk carries a recovery objective and a trigger in the Risk Register:
 first paying customer or first autonomy grant moves the control plane off the inference

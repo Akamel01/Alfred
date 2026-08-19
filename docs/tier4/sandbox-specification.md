@@ -2,7 +2,7 @@
 status:        frozen
 owner:         executable
 enforcement:   ci-gate
-evidence:      Deny-by-default is asserted by a boot-time canary because a major lab's own evaluation harness was found to have left machines with live internet access despite intended isolation. Allowlisted hosts have been used for exfiltration at CVSS 9.6. The executor-specific assertions (C1–C3, C12) rest on the plan's research notes about OpenHands and are **unverified first-hand** — the executor is not present in this repository and was not fetched; each is written to pass harmlessly if the feature it disables does not exist.
+evidence:      Deny-by-default is asserted by a boot-time canary because a major lab's own evaluation harness was found to have left machines with live internet access despite intended isolation. Allowlisted hosts have been used for exfiltration at CVSS 9.6. The executor-specific assertions (C1–C3, C5, C10) were **read first-hand 2026-08-18** at `OpenHands/software-agent-sdk` `d460d1a0…` and every answer cites a `path:line` (ADR-0018, discharging O5). The read corrected eleven of thirteen recorded premises, including one — C3's approval-event count — that could not have been implemented at all. Each assertion remains a shell whose unread holes yield `not_executed`, never `passed` (ADR-0017); the earlier "written to pass harmlessly" position is withdrawn, because it holds for an absent feature and fails for a misnamed one.
 falsifies_if:  A sandbox boots while a known non-allowlisted connection succeeds, or a credential is found reachable from inside the container, or a run reaches a verdict while any assertion in the containment table below was not executed.
 review_after:  Phase 2
 ---
@@ -66,8 +66,9 @@ in eight minutes, ending in four backdoored packages with millions of weekly dow
 
 ## Persistence and recording
 
-Per-event persistence is asserted enabled at startup and **verified by end-of-run event
-count**, not by trusting a flag. Every file read and every search issued is recorded to
+Per-event persistence is asserted **not disabled** at startup — it defaults on, and is
+switched off only by setting `persistence_dir` to `None` (ADR-0018) — and **verified by
+end-of-run event count**, not by trusting a flag. Every file read and every search issued is recorded to
 the evidence store as the run's observed context.
 
 Recording is what makes nondeterministic retrieval compatible with a fingerprint:
@@ -106,28 +107,135 @@ documented failures in this class actually were.
 
 | # | Assertion | Runs | Catches | On failure |
 |---|---|---|---|---|
-| C1 | Per-event persistence enabled, **and** the durable event count at end of run is ≥ the count the adaptor observed, with every observed event id present on disk | config outside; count outside, on the mounted volume | persistence silently off (it is opt-in), partial flush, a truncated read log | claim rejected, `indeterminate` |
-| C2 | No compaction: every condenser and summarizer disabled in configuration, **and** zero condensation-class events in the end-of-run stream | config outside; stream check outside | a summary upstream of a verdict, inherited from the executor rather than authored by Alfred (I16) | `indeterminate` |
-| C3 | No second approval surface: the executor's own frontend is not served, no listening socket exposes it, its confirmation/approval mode is disabled, **and** zero approval-class events appear in the stream | socket scan inside; config outside; stream check outside | an operator approving work inside the execution plane, where the approval lands in the executor's event stream and never in Alfred's evidence chain | run does not start; a stream-side hit rejects the claim |
-| C4 | Runtime image digest equals `runtime_image_digest` in the fingerprint; image mirrored locally; pulled outside the sandbox network namespace | outside | tag drift, silent rebuild, a registry appearing in the in-sandbox allowlist | run does not start |
+| C1 | Persistence **not disabled** — `persistence_dir` is a path and is switched off only by an explicit `None` (ADR-0018; it is not opt-in) — **`delete_on_close` is `False`** (ADR-0019; it defaults to `True` and the server removes the conversation directory on close) — **and** the durable event count is ≥ the count the adaptor observed, with every observed event id present on disk, **on a read taken after close** | config outside; count outside, on the mounted volume, after close | persistence explicitly disabled, the evidence deleted at close, partial flush, a truncated read log | claim rejected, `indeterminate` |
+| C2 | No compaction: `Agent.condenser` is `None` or the explicit no-op (ADR-0018 — two legitimate spellings), **and** zero events of class `Condensation`, `CondensationRequest` or `CondensationSummaryEvent` in the end-of-run stream (three classes, not one) | config outside; stream check outside | a summary upstream of a verdict, inherited from the executor rather than authored by Alfred (I16) | `indeterminate` |
+| C3 | No second approval surface **and no interactive surface**, read from the *loaded* configuration and not from any library default, with every channel's spelling of a boolean accepted and an unreadable value treated as a finding: `confirmation_policy` is `NeverConfirm`, the conversation never entered `WAITING_FOR_CONFIRMATION`, no rejection carries `rejection_source="user"`, **and** no VS Code or VNC server is enabled or listening (ADR-0018 — approval emits no event, so the original "zero approval-class events" conjunct is withdrawn as unimplementable) | socket scan inside; config outside; stream check outside | an operator approving work inside the execution plane, where the approval lands in the executor's event stream and never in Alfred's evidence chain | run does not start; a stream-side hit rejects the claim |
+| C4 | Runtime image digest equals `runtime_image_digest` in the run fingerprint record; image mirrored locally; pulled outside the sandbox network namespace — **and the pull location read rather than assumed**, since an unread conjunct is `not_executed` and never a satisfied one (ADR-0020) | outside | tag drift, silent rebuild, a registry appearing in the in-sandbox allowlist | run does not start |
 | C5 | Executor pinned by commit SHA resolved **through** the canonical-path redirect, not to it | build time, outside | a redirecting canonical path and a repository with no tags to pin to | build fails |
 | C6 | Egress canary fires; Postgres unreachable; no registry host in the allowlist | inside | live network, held-out reachability | run does not start |
 | C7 | Oracle absence — see below | inside probe + outside closure check | a run that measures delegation instead of implementation | run does not start |
 | C8 | No credential and no secret-bearing environment variable | inside | the deliverable channel becoming the exfiltration channel | run does not start |
 | C9 | Mount set enumerated inside the container equals the dispatch spec exactly, mode for mode | inside | agent-chosen read paths (A9), an over-broad harness mount | run does not start |
-| C10 | Loaded configuration hash equals the harness-supplied configuration; no user-level or project-level configuration file exists at any path the executor searches | inside | config hoisting — an SDK in this ecosystem silently treated an empty settings-source list as "unset" and loaded user configuration anyway | run does not start |
-| C11 | Lane fingerprint asserted: `loaded_context_length`, parallel slot count, model id, quantization | outside, against the serving layer | a lane that reconfigured itself unobserved | run does not start |
+| C10 | Loaded configuration hash equals the harness-supplied configuration; no configuration file exists at any searched path; **and no `OH_*` environment variable overrides it** (ADR-0018 — the loader merges the environment over the file, so a search-path check alone passes a fully hoisted container) | inside | config hoisting — an SDK in this ecosystem silently treated an empty settings-source list as "unset" and loaded user configuration anyway | run does not start |
+| C11 | Lane fingerprint asserted against the run fingerprint record: `loaded_context_length`, model id, quantization read from the serving layer, **and the parallel slot count supplied from outside it** — the serving API does not publish the count, and C11 reports `not_executed` rather than passing on three of four conjuncts (ADR-0020) | outside, against the serving layer | a lane that reconfigured itself unobserved | run does not start |
 | C12 | Writable set is exactly the repo tree and the patch output volume; every interpreter path outside the repo tree is mounted read-only | inside | a mid-run install into site-packages | run does not start |
 | C13 | No package archives or resolver caches: no `.whl`, `.tar.gz`, `.zip`, no `pip`/`uv` cache directory, under any mount | inside | an offline install of something egress control already blocks downloading | run does not start |
-| C14 | End-of-run re-assertion of C7, C9, C12, C13 | inside, after the agent stops, before the claim is accepted | anything that appeared during the run | claim rejected, `indeterminate` |
+| C14 | End-of-run re-assertion of C7, C9, C12, C13, C16, compared **by observed value and not only by outcome** — a mount whose mode moved, a writable root that grew, a container swapped for another of the same kind, **a denylist edited under the run**, and an observation a check stopped making | inside, after the agent stops, before the claim is accepted (C16's half outside) | anything that appeared during the run; **a container that exited under the measurement** — `docker run` carries `--rm`, so it leaves nothing behind | claim rejected, `indeterminate` |
 | C15 | Patch-side check: the diff adds no dependency, no import of a denied module, and no file whose normalized content hash matches a denied source file | outside, privileged, on the patch | the oracle arriving through the deliverable channel | patch rejected |
+| C16 | The agent executes inside the container at all: the workspace `kind` is `DockerWorkspace` (a closed set of names — `DockerDevWorkspace` builds its image on the fly, `APIRemoteWorkspace` and `OpenHandsCloudWorkspace` run off-machine against D35), the conversation is `RemoteConversation`, and a container id was recorded | outside, at dispatch **and again at end of run** (C14) | **a run with no container around it, on which C1, C2, C3 and C10 all still pass** (ADR-0019); at end of run, a container that died mid-task | run does not start; at end of run the claim is rejected, `indeterminate` |
+| C17 | The agent server requires authentication (`session_api_keys` non-empty; it defaults empty, which its own field documentation calls unsecured, and `DockerWorkspace` sets `api_key = None` outright), **every published port bound to loopback** (Docker publishes `-p {host_port}:8000` on all host interfaces), and the container launched with `--cap-drop` and off the default bridge (ADR-0019, ADR-0023) | outside, at dispatch | **an unauthenticated remote-code-execution endpoint reachable off-box**, and a container with every capability the image grants; neither is covered by S6's egress default-drop, which runs the other direction | run does not start |
 
-C1, C2 and C3 rest on an unverified premise about the selected executor's features. Each
-is written so that it passes harmlessly if the feature does not exist: a config key that
-is absent is set anyway, and a count of events that cannot occur is zero. **An assertion
-that harmlessly passes on a feature that does not exist costs nothing; its absence would
-cost a great deal**, which is the whole argument for writing them before the executor is
-inspected.
+C1, C2, C3, C5 and C10 rest on the selected executor's own vocabulary — configuration keys,
+event class names, configuration search paths — none of which is in this repository and
+none of which has been read first-hand.
+
+> **Amended by ADR-0017.** This paragraph previously argued that each was written to pass
+> harmlessly if the feature did not exist, on the grounds that *"an assertion that
+> harmlessly passes on a feature that does not exist costs nothing."* **That argument is
+> withdrawn.** It holds for an *absent* feature and fails for a *misnamed* one, and C2's two
+> conjuncts and C3's three are not independent — each rests on the same vocabulary, so one
+> wrong name defeats all of them at once while the assertion reports `passed` with
+> compaction running upstream of a verdict (ADR-0007). Fifteen green assertions that mean
+> nothing are worse than fifteen absent ones, because the green ones stop anybody looking.
+
+The five are implemented as **shells** in `harness/containment/shells.py`: each names its
+claim, the holes its check needs, and the check itself. An unread hole yields
+`not_executed`, which F25 makes a failure and which `Worker.check_handle` already refuses to
+dispatch on. **A shell never passes.**
+
+> **O5 was discharged 2026-08-18, and it corrected eleven of thirteen answers.** ADR-0018.
+> The executor is `OpenHands/software-agent-sdk` at `d460d1a0…`, **not** the repository D38
+> names: `OpenHands/OpenHands` is now Agent Canvas, a TypeScript frontend holding eight
+> Python files, all CI scripts and test mocks. Every hole now cites a `path:line` in the
+> pinned tree, and a hole cannot be answered without one — after O5 the failure mode is not
+> an unread hole but an answered one nobody can re-verify. The rows below are amended:
+>
+> - **C1.** Persistence is **not** opt-in. `persistence_dir` defaults to a path and is
+>   disabled only by an explicit `None`, so the assertion is *not disabled* rather than
+>   *enabled*, and it is a path rather than a flag.
+> - **C2.** Three condensation event classes, not one, and two legitimate spellings of
+>   "no condenser".
+> - **C3.** The third conjunct **cannot be implemented as worded** — approval emits no
+>   event, so "zero approval-class events" would pass over a run a human approved in full.
+>   It is replaced by three observables and one new clause; see below.
+> - **C5.** The redirect is real, and following it lands on the *frontend*. The repository
+>   does have tags, contrary to the row's note.
+> - **C10.** Configuration also hoists through `OH_*` environment variables, which are
+>   merged over the file. A search-path check alone passes a fully hoisted container.
+
+> **D38's sandbox rationale was verified 2026-08-18 against the same pinned tree.** ADR-0019.
+> It is upheld in substance and wrong in every proper noun — there is no `ActionExecutor`,
+> the executor is the `agent-server` FastAPI app, and the live event stream the client
+> consumes is a **WebSocket** (`/sockets/events/{conversation_id}`), not the REST route.
+> Two consequences bear on this table:
+>
+> - **The container is not the default.** `Workspace(working_dir=...)` with no `host`
+>   returns a `LocalWorkspace` that operates on the host filesystem, while `BaseWorkspace`'s
+>   own docstring calls every workspace "sandboxed". **No row below asserts which workspace
+>   kind is in use**, and C1, C2, C3 and C10 all read configuration and event streams that
+>   exist identically in the local case — so all four would pass on an agent running on the
+>   host. That control is now **C16**, written the same day.
+> - **C1 is falsified as written.** `Conversation(...)` defaults `delete_on_close=True`; on
+>   close the server removes the conversation directory. C1's end-of-run read is of a
+>   directory the default configuration deletes first. C1 now carries `delete_on_close` as a
+>   hole and a fourth clause: deletion off, **and** the durable read taken after close.
+>   Neither half alone is enough — deletion off with a read taken before close still proves
+>   nothing about what survives the run.
+>
+> ADR-0019 also records four unhardened defaults the rationale was read as excluding: the
+> agent server is unauthenticated by default and published on all host interfaces; the
+> container runs with no `--cap-drop`, no `--read-only`, open egress, and `NOPASSWD:ALL`
+> sudo inside; and `webhooks` and `telemetry` are two egress channels this specification
+> never enumerated, stopped only by C6's deny-by-default policy.
+
+C16 and C17 are shells too, in the same file. The rest of
+the table needs no executor vocabulary and is written for real: C8, C9, C12 and C13 in
+`harness/containment/inside.py`, C14 in `reassert.py`, C15 in `patch_side.py`, C6 and C7 as
+before. **C4 and C11 are now written** — `image.py` and `lane.py` — and the thing they were
+blocked on, which was never O5, is `harness/fingerprint/record.py`.
+
+> **Amended by ADR-0023.** The four unhardened defaults quoted above were recorded with the
+> question of ownership left open — whether they were Alfred's to assert or already covered
+> by S6's host-level `nftables` work. **Two of the four are Alfred's, and the deciding
+> property is direction.** S6's default-drop is egress; it stops the container reaching out.
+> The unauthenticated server bound on `0.0.0.0` and published with `-p {host_port}:8000` is
+> **ingress**, and no egress rule touches it. The missing launch flags are neither — they are
+> properties of the `docker run` argv, readable from outside the sandbox, which is where these
+> assertions already run. Both are now C17.
+>
+> The third, `NOPASSWD:ALL` sudo, is **not** Alfred's to assert at runtime. It is baked into
+> the image rather than chosen at launch, so no flag asserts it away and reading the argv
+> would never see it; it belongs to S6's layer-1 image-build closure check. The fourth,
+> `webhooks` and `telemetry`, stays with C6 as already recorded.
+>
+> Two of ADR-0019's three open items were already discharged before this amendment and its
+> Consequences section had gone stale: C16 answers the workspace-kind control and C1's fourth
+> clause answers `delete_on_close`, both landed in `69a09e9`. Only the ownership split
+> remained.
+
+> **Amended by ADR-0020.** This paragraph previously read *"C4 and C11 are not written, and
+> are blocked on something other than O5: both compare against a run fingerprint record that
+> does not exist in this repository yet."* That record now exists: one typed, frozen
+> `RunFingerprint` carrying the D19, D40, lane and worker-port field sets, whose
+> `fingerprint_sha256` is **computed** from the fields through ACS-1 rather than supplied
+> beside them. `spec.fingerprint` on the `Worker` port is that type rather than a
+> `Mapping[str, str]`; `observed_fingerprint` on the claim stays a mapping, because a
+> dataclass cannot represent a field the record never declared — and that is exactly the
+> direction the contract raises on.
+>
+> Two limits are written down rather than papered over. **C11 asserts three of its four
+> conjuncts from the serving layer**: the parallel slot count is a launch-time property the
+> API does not publish, so it arrives as an explicit argument and its absence is
+> `not_executed`. Naming a plausible key for it would have produced a green assertion over a
+> field nobody read, which is the vacuity class ADR-0007 names and the one ADR-0017 withdrew
+> the "harmless pass" defence for. **C4 treats an unread pull location the same way** —
+> `None` is not `False`, and an inspection that did not answer is not an inspection that
+> found nothing wrong.
+>
+> Each row carries its own vacuity control. C4's is the image count: an inspection that
+> enumerated zero images is `not_executed`, because an empty store and an agreeing one are
+> otherwise indistinguishable. C11's is inherited from `lane_fingerprint`, where an
+> unreadable fingerprint has always been treated exactly as a mismatched one.
 
 ## Oracle absence
 

@@ -37,6 +37,12 @@ generated: true
 
 ## Enforced by (code)
 
+- [[adr__ADR-0015|A missing candidate file is the candidate's failure, not the harness's fault]] **enforced_by** → this — """Fail closed on a typo in the harness's own declaration.
+
+    A trusted declaration naming a path that is not there ma
+- [[adr__ADR-0015|A missing candidate file is the candidate's failure, not the harness's fault]] **enforced_by** → this — """The candidate did not write it. That is an outcome, not a harness fault.
+
+    Raising here surfaces to the caller as 
 - [[decision__D57|The harness self-test suites are two-sided, and each carries a stated vacuity control]] **enforced_by** → this — """A1, asserted as an architectural claim rather than as a list of blocked filenames.
 
 **How this suite would be shown v

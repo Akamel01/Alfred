@@ -35,6 +35,9 @@ generated: true
 
 Inspector machinery (D20). Permanently outside what agents may modify, and outside the
 
+- **enforced_by** → [[module__harness_stamp_verdict_map|ADR-0006's verdict table, as data rather than as prose.]] — """ADR-0006's verdict table, as data rather than as prose.
+
+The table maps what a stamp verifier concluded onto Alfred's
 - **enforced_by** → [[module__migrations_harness_evidence_versions_0001_evidence_base|evidence: run records, verdicts, operator actions, artifacts, defect escapes.]] — # Sole author is CriterionRunner (D5, D39), and that is a grant, not a check in
 - **enforced_by** → [[module__migrations_roles_002_grants_sql|migrations/roles/002_grants.sql]] — Sole author of verdicts is CriterionRunner (D5, D39). The harness may
 - **enforced_by** → [[module__migrations_roles_002_grants_sql|migrations/roles/002_grants.sql]] — read them and may not write them, which is the separation D39 makes
@@ -42,3 +45,6 @@ Inspector machinery (D20). Permanently outside what agents may modify, and outsi
 - **enforced_by** → [[module__scripts_lint_verdict_boundary|D16/D39: the verdict boundary, enforced structurally rather than by convention.]] — """D16/D39: the verdict boundary, enforced structurally rather than by convention.
 
 **Why this exists as a lint and not 
+- **enforced_by** → [[module__src_provenance_verify|The two-stage stamp read, and what a verifier says about a version it does not know.]] — """The two-stage stamp read, and what a verifier says about a version it does not know.
+
+ADR-0006's central property: **

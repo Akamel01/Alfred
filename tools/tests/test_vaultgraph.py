@@ -279,13 +279,27 @@ def test_all_twelve_amendments_are_extracted() -> None:
 
 # ---- code, gates and references -----------------------------------------------------------
 
-def test_the_declared_but_absent_package_is_a_node() -> None:
-    # pyproject.toml names src/thresholds in the wheel packages and in ruff's first-party set;
-    # the directory does not exist. Dropping it would hide the class of gap this graph is for.
+def test_every_declared_package_is_on_disk_or_is_a_node() -> None:
+    """The rule, not the instance. This pinned `src/thresholds` by name until that directory was
+    created, at which point the test failed for the one reason that should never fail a test:
+    the gap it was watching had been closed.
+
+    What must hold is that a package `pyproject.toml` declares is either on disk or minted with
+    an anomaly beside it, and never neither. The mechanism is proved against planted fixtures in
+    `selftest.py` case 11, where both a present and an absent package are put there on purpose;
+    here it is checked against whatever the repository currently declares."""
+    from tools.vaultgraph.extract.code import _declared_packages
+
     result = _result()
-    absent = [n for n in result.nodes if n.shape == "declared-absent"]
-    assert [n.attrs["path"] for n in absent] == ["src/thresholds"]
-    assert any(a.kind == "declared-absent-package" for a in result.anomalies)
+    declared, _src = _declared_packages(ROOT)
+    assert declared, "pyproject declares no wheel packages — the check has nothing to check"
+    absent = {n.attrs["path"] for n in result.nodes if n.shape == "declared-absent"}
+    anomalies = sum(1 for a in result.anomalies if a.kind == "declared-absent-package")
+    for name in declared:
+        on_disk = (ROOT / name).is_dir()
+        assert on_disk or name in absent, f"{name} is declared, missing, and not surfaced"
+        assert not (on_disk and name in absent), f"{name} is on disk and also minted absent"
+    assert anomalies == len(absent), "a declared-absent node was minted with no anomaly"
 
 
 def test_the_two_acs1_implementations_are_two_nodes() -> None:
@@ -355,22 +369,42 @@ def test_no_edge_endpoint_is_dangling() -> None:
 
 # ---- stages, charter and the vault ---------------------------------------------------------
 
-def test_all_ten_stages_with_their_completion_state() -> None:
+def test_all_ten_stages_carry_a_status_the_parser_actually_read() -> None:
+    """Ten stages, each with a status from the declared vocabulary, and more than one distinct
+    value among them.
+
+    The last clause is the one doing work. A status parser that broke and returned the same
+    constant for every stage would satisfy "all ten have a status", and the vault would render
+    ten identical cards that nobody would read twice. Which stages are done is progress, and
+    pinning it here made the suite fail when S4 and S8 landed — a test that reds on the work
+    being done is measuring the wrong thing."""
     result = _result()
     stages = {n.attrs["number"]: n.status for n in result.nodes if n.kind is NodeKind.STAGE}
     assert len(stages) == 10
-    assert [s for s, st in stages.items() if st == "done"] == ["S0", "S1", "S3"]
-    assert [s for s, st in stages.items() if st == "partial"] == ["S6", "S7"]
+    assert set(stages) == {f"S{n}" for n in range(10)}
+    vocabulary = {"done", "partial", "not-started"}
+    assert set(stages.values()) <= vocabulary, f"unknown status: {set(stages.values())}"
+    assert len(set(stages.values())) > 1, "every stage reports the same status"
 
 
-def test_the_two_dependency_claims_the_board_turns_on() -> None:
-    # S2 blocks S4 and S5, and O3 blocks S2 — the acceptance criterion asks for both to be
-    # visible in one view, which requires both to be edges first.
+def test_the_board_carries_both_kinds_of_dependency() -> None:
+    """The acceptance criterion asks that a stage blocking a stage and an operator item blocking
+    a stage are visible in one view, which requires both to be edges first.
+
+    Named pairs were pinned here — `S2 blocks S4` among them — and the stage DAG on `main` no
+    longer states that one. The claim worth holding is that both *shapes* of dependency survive
+    extraction: an extractor that read only the stage table would drop every operator item and
+    still pass a check written as "S2 blocks S5"."""
     result = _result()
+    kinds = {n.id: n.kind for n in result.nodes}
     blocks = {(e.src, e.dst) for e in result.edges if e.kind.value == "blocks"}
-    assert ("stage:S2", "stage:S4") in blocks
-    assert ("stage:S2", "stage:S5") in blocks
-    assert ("operator-item:O3", "stage:S2") in blocks
+    stage_to_stage = {p for p in blocks
+                      if kinds.get(p[0]) is NodeKind.STAGE and kinds.get(p[1]) is NodeKind.STAGE}
+    item_to_stage = {p for p in blocks
+                     if kinds.get(p[0]) is NodeKind.OPERATOR_ITEM
+                     and kinds.get(p[1]) is NodeKind.STAGE}
+    assert stage_to_stage, "no stage blocks another stage"
+    assert item_to_stage, "no operator item blocks a stage"
 
 
 def test_the_stage_dag_has_no_cycle() -> None:

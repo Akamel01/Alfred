@@ -32,7 +32,13 @@ generated: true
 ## Enforced by (code)
 
 - **enforced_by** → [[module___github_workflows_gates_yml|.github/workflows/gates.yml]] — D16/D39. LangGraph raises only on *concurrent* unreducered writes, so a
+- **enforced_by** → [[module__harness_stamp_verdict_map|ADR-0006's verdict table, as data rather than as prose.]] — """ADR-0006's verdict table, as data rather than as prose.
+
+The table maps what a stamp verifier concluded onto Alfred's
 - **enforced_by** → [[module__scripts_lint_verdict_boundary|D16/D39: the verdict boundary, enforced structurally rather than by convention.]] — """D16/D39: the verdict boundary, enforced structurally rather than by convention.
 
 **Why this exists as a lint and not 
 - **enforced_by** → [[module__scripts_lint_verdict_boundary|D16/D39: the verdict boundary, enforced structurally rather than by convention.]] — # The vocabulary D16 forbids an agent-invoking node from naming. Deliberately short:
+- **enforced_by** → [[module__src_provenance_verify|The two-stage stamp read, and what a verifier says about a version it does not know.]] — """The two-stage stamp read, and what a verifier says about a version it does not know.
+
+ADR-0006's central property: **

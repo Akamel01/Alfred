@@ -251,6 +251,110 @@ def test_an_unrunnable_interpreter_is_not_a_pass(tmp_path: Path) -> None:
     assert result.outcome is AssertionOutcome.NOT_EXECUTED
 
 
+def test_c7_records_the_denylist_identity_on_every_outcome(tmp_path: Path) -> None:
+    """Two passes under two different denylists are not a re-assertion.
+
+    A policy edited mid-run — the oracle's name taken out of it — leaves both ends green and
+    the container unchanged. The denylist version and digest are therefore recorded on every
+    return, the fail-closed ones included, since that is where a weakened check most easily
+    hides.
+    """
+    denylist = load_denylist(_denylist_file(tmp_path))
+    clean = probe(
+        denylist=denylist,
+        interpreters=(sys.executable,),
+        extra_paths=(str(tmp_path),),
+        strict_import_hooks=False,
+    )
+    nothing_to_probe = probe(denylist=denylist, interpreters=())
+    unrunnable = probe(
+        denylist=denylist, interpreters=(str(tmp_path / "no-such-python"),)
+    )
+
+    assert clean.outcome is AssertionOutcome.PASSED
+    assert nothing_to_probe.outcome is AssertionOutcome.NOT_EXECUTED
+    assert unrunnable.outcome is AssertionOutcome.NOT_EXECUTED
+    for result in (clean, nothing_to_probe, unrunnable):
+        assert result.observed["denylist_sha256"] == denylist.sha256
+        assert result.observed["denylist_version"] == str(denylist.version)
+        assert result.observed["strict_import_hooks"] in {"true", "false"}
+
+
+def test_c7_records_the_interpreter_set_even_when_one_could_not_be_run(tmp_path: Path) -> None:
+    """Which interpreters were *found* is the fact that says whether the container changed.
+
+    It is known whether or not any of them can be probed, so it is recorded on the
+    fail-closed path too. An interpreter that appeared mid-run is an import path boot never
+    looked at, and the end-of-run probe would find it, probe it and pass.
+    """
+    missing = str(tmp_path / "no-such-python")
+    result = probe(denylist=load_denylist(_denylist_file(tmp_path)), interpreters=(missing,))
+    assert result.outcome is AssertionOutcome.NOT_EXECUTED
+    assert result.observed["interpreters"] == missing
+
+
+def test_c7_does_not_record_a_placeholder_for_what_it_has_not_reached(tmp_path: Path) -> None:
+    """A key standing in for "not reached yet" would diff against a real one as movement."""
+    result = probe(denylist=load_denylist(_denylist_file(tmp_path)), interpreters=())
+    assert "interpreters" not in result.observed
+    assert "import_paths" not in result.observed
+    assert "scanned_paths" not in result.observed
+
+
+def test_c7_records_the_import_paths_it_scanned(tmp_path: Path) -> None:
+    """`sys.path` grown mid-run by a `.pth`, an environment variable or a new site directory."""
+    mount = tmp_path / "mnt"
+    mount.mkdir()
+    result = probe(
+        denylist=load_denylist(_denylist_file(tmp_path)),
+        interpreters=(sys.executable,),
+        extra_paths=(str(mount),),
+        strict_import_hooks=False,
+    )
+    assert result.outcome is AssertionOutcome.PASSED
+    assert str(mount) in result.observed["import_paths"].split(",")
+    assert int(result.observed["scanned_paths"]) >= 1
+
+
+def test_c7_records_findings_as_counts_not_listings(tmp_path: Path) -> None:
+    """`detail` carries the names; a listing of every hit would drift on ordering alone."""
+    mount = tmp_path / "mnt"
+    (mount / "fakeoracle").mkdir(parents=True)
+    result = probe(
+        denylist=load_denylist(_denylist_file(tmp_path)),
+        interpreters=(sys.executable,),
+        extra_paths=(str(mount),),
+        strict_import_hooks=False,
+    )
+    assert result.outcome is AssertionOutcome.FAILED
+    assert int(result.observed["denied_findings"]) >= 1
+    assert "fakeoracle" not in result.observed["denied_findings"]
+    assert "fakeoracle" in result.detail
+
+
+def test_c7_strictness_is_recorded_because_it_changes_what_the_check_means(
+    tmp_path: Path,
+) -> None:
+    """Boot strict and end lenient is a weakened check with no observable container change."""
+    denylist = load_denylist(_denylist_file(tmp_path))
+    mount = tmp_path / "mnt"
+    mount.mkdir()
+    lenient = probe(
+        denylist=denylist,
+        interpreters=(sys.executable,),
+        extra_paths=(str(mount),),
+        strict_import_hooks=False,
+    )
+    strict = probe(
+        denylist=denylist,
+        interpreters=(sys.executable,),
+        extra_paths=(str(mount),),
+        strict_import_hooks=True,
+    )
+    assert lenient.observed["strict_import_hooks"] == "false"
+    assert strict.observed["strict_import_hooks"] == "true"
+
+
 def test_import_hooks_fail_only_under_strictness(tmp_path: Path) -> None:
     """C13 inside the container; noise on a developer virtualenv, which carries `.pth`."""
     mount = tmp_path / "mnt"

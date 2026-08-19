@@ -31,6 +31,7 @@ generated: true
 
 ## Binds
 
+- **imports** → [[module__tools_vaultgraph_extract_code|The engineered half of the graph: packages, modules, schemas, and what D20 protects.]]
 - **imports** → [[module__tools_vaultgraph_mirror|The plan file lives outside the repo. This mirrors it in, and makes drift mechanical.]]
 - **imports** → [[module__tools_vaultgraph_model|The graph's type vocabulary: what a node is, what an edge is, and how ids are minted.]]
 - **imports** → [[module__tools_vaultgraph_protocol|The extractor contract, shaped so a missing vacuity guard is impossible rather than unlike]]

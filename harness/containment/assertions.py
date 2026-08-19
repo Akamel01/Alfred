@@ -22,7 +22,8 @@ reader consults before quoting a green report as evidence.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from collections.abc import Mapping
+from dataclasses import dataclass, field
 from enum import Enum
 
 
@@ -53,6 +54,16 @@ class Assertion:
     outcome: AssertionOutcome
     detail: str
     premise_verified: bool = True
+    # The values the check actually read, as strings, keyed by what they are. `detail` is
+    # prose for a human; this is for `reassert.compare`, which needs to tell "the same
+    # container" from "a container of the same kind" — a distinction no outcome carries and
+    # no prose can be diffed for. Empty means the check reported none, which `value_blind`
+    # names rather than reading as "nothing changed".
+    #
+    # A dict on a frozen dataclass: `Assertion` is not hashable in practice and nothing in
+    # this tree hashes one. Kept as a Mapping rather than a tuple of pairs because it crosses
+    # to `AssertionResult.observed`, which is a Mapping, and one conversion is enough.
+    observed: Mapping[str, str] = field(default_factory=dict)
 
     @property
     def passed(self) -> bool:

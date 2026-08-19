@@ -5,7 +5,7 @@ title: "Three Track-1 discovery conversations"
 shape: "table-row"
 due: "2026-10-07"
 number: "O8"
-source: "docs/tier2/execution-order.md:220"
+source: "docs/tier2/execution-order.md:397"
 extractor: "stages"
 aliases:
   - "O8"
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `docs/tier2/execution-order.md:220`
+**Source** · `docs/tier2/execution-order.md:397`
 
 ## Statement
 

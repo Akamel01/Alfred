@@ -35,6 +35,8 @@ generated: true
 - **imports** → [[module__harness_acs_acs1|ACS-1 — Alfred Canonical Serialization, version 1 (ADR-0003, ADR-0004).]]
 - [[module__harness_containment|harness.containment]] **contains** → this
 - [[module__harness_containment_oracle_absence|C7 — the oracle is absent, asserted rather than assumed.]] **imports** → this
+- [[module__harness_containment_patch_side|C15 — the oracle arriving through the deliverable channel.]] **imports** → this
+- [[module__harness_containment_test_c_assertions|C1–C15 beyond the two probes, each paired with the control that stops it reading green.]] **imports** → this
 - [[module__harness_containment_test_containment|Containment assertions, each paired with the control that stops it reading green.]] **imports** → this
 
 ## Enforced by (code)

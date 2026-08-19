@@ -31,9 +31,37 @@ generated: true
 
 ## Enforced by (code)
 
+- **enforced_by** → [[module__harness_containment_image|C4 — the runtime image is the one the fingerprint declares, and it came from local disk.]] — """C4 — the runtime image is the one the fingerprint declares, and it came from local disk.
+
+Runs **outside** the contai
+- **enforced_by** → [[module__harness_containment_reassert|C14 — the end-of-run re-assertion, and why a boot-time pass is not enough.]] — """C14 — the end-of-run re-assertion, and why a boot-time pass is not enough.
+
+C7, C9, C12, C13 and C16 are asserted bef
+- **enforced_by** → [[module__harness_containment_reassert|C14 — the end-of-run re-assertion, and why a boot-time pass is not enough.]] — """Re-asserted ids present in both reports that **neither side gave any observation for**.
+
+    D57, aimed at this compa
+- **enforced_by** → [[module__harness_containment_shells|The executor-premise assertions, and the source read that filled their holes (O5).]] — """The ingress surface and the launch posture — the half of ADR-0019 nothing covered.
+
+    ADR-0019 recorded four unhard
+- **enforced_by** → [[module__harness_containment_source_hashes|The register C15 clause 3 compares against, and the reason it had nothing to compare.]] — # D57 at the loader rather than at the caller. A register that parsed to nothing is a
+- **enforced_by** → [[module__harness_containment_test_c_assertions|C1–C15 beyond the two probes, each paired with the control that stops it reading green.]] — """C1–C15 beyond the two probes, each paired with the control that stops it reading green.
+
+**How this suite would be sh
+- **enforced_by** → [[module__harness_containment_test_c_assertions|C1–C15 beyond the two probes, each paired with the control that stops it reading green.]] — """D57. The loop above would pass over an empty register."""
+- **enforced_by** → [[module__harness_containment_test_c_assertions|C1–C15 beyond the two probes, each paired with the control that stops it reading green.]] — """The set is closed and written down. D57: the loops below pass over an empty tuple.
+
+    Pinned as a literal rather th
+- **enforced_by** → [[module__harness_containment_test_c_assertions|C1–C15 beyond the two probes, each paired with the control that stops it reading green.]] — """D57 for this comparison. An empty `compare` over these ids is not evidence of stillness."""
+- **enforced_by** → [[module__harness_containment_test_c_assertions|C1–C15 beyond the two probes, each paired with the control that stops it reading green.]] — """The vacuity control (D57/F25).
+
+    An argv nobody collected reports the same thing on a hardened launch and an unhar
+- **enforced_by** → [[module__harness_containment_test_c_assertions|C1–C15 beyond the two probes, each paired with the control that stops it reading green.]] — """D57. A register of nothing disables clause 3 while looking built.
+
+    This is the test that would have failed on 202
 - **enforced_by** → [[module__harness_containment_test_containment|Containment assertions, each paired with the control that stops it reading green.]] — """Containment assertions, each paired with the control that stops it reading green.
 
 **How this suite would be shown va
+- **enforced_by** → [[module__harness_containment_test_image_and_lane|C4 and C11 — the two rows that were blocked on a fingerprint record, and their controls.]] — """D57. A scan that enumerated zero images is the observation a broken probe produces."""
 - **enforced_by** → [[module__harness_criterion_test_execute|Three outcomes, and the ways two of them get silently collapsed into one.]] — """Three outcomes, and the ways two of them get silently collapsed into one.
 
 **How this suite would be shown vacuous** 
@@ -52,3 +80,23 @@ generated: true
 - **enforced_by** → [[module__harness_evidence_test_store|The append-only chain, asserted from both sides.]] — """The append-only chain, asserted from both sides.
 
 **How this suite would be shown vacuous** (D57). Every positive tes
+- **enforced_by** → [[module__harness_oracle_fingerprints|Runs INSIDE the oracle image. Emits digests and names, and never the source itself.]] — # D57. A register built from zero files would disable clause 3 while looking built.
+- **enforced_by** → [[module__harness_oracle_run|Runs the oracle image. Outside the container, and it never imports the oracle.]] — # D57. Zero vectors answered is not agreement; it is a cross-check that did not run.
+- **enforced_by** → [[module__harness_selftest_test_replay|Byte-identical deterministic replay, and the control that stops it being trivial.]] — """Byte-identical deterministic replay, and the control that stops it being trivial.
+
+**P0-5 of the narrowed Phase 0 exi
+- **enforced_by** → [[module__harness_selftest_test_replay|Byte-identical deterministic replay, and the control that stops it being trivial.]] — """D57 at the product boundary.
+
+    A metric over zero tracks still returns something, and that something would be stam
+- **enforced_by** → [[module__harness_stamp_test_verdict_map|The verdict table's own tests, including its vacuity control.]] — """D57. A mapping with no rows would pass every row-wise test below for free."""
+- **enforced_by** → [[module__src_replay_harness|The replay harness: load, evaluate, stamp, and produce a digest two runs are compared on.]] — # D57 at the product boundary. A metric over zero tracks returns something, and
+- **enforced_by** → [[module__tests_test_stamp_schema_contract|ADR-0006's enforcement clauses, as executable checks with their own controls.]] — """ADR-0006's enforcement clauses, as executable checks with their own controls.
+
+The ADR's Consequences list names four
+- **enforced_by** → [[module__tests_test_stamp_schema_contract|ADR-0006's enforcement clauses, as executable checks with their own controls.]] — """D57. Every check below iterates the registry and would pass on an empty one."""
+- **enforced_by** → [[module__tests_test_stamp_schema_contract|ADR-0006's enforcement clauses, as executable checks with their own controls.]] — # D57: a scan of zero files is not a pass.
+- **enforced_by** → [[module__tests_test_stamp_v1_vectors|The bridge between `ResultStampV1` and its published vector (ADR-0004, ADR-0006).]] — """The bridge between `ResultStampV1` and its published vector (ADR-0004, ADR-0006).
+
+`harness/acs/gen_vectors.py` write
+- **enforced_by** → [[module__tests_test_stamp_verify|The two-stage read, its five outcomes, and the bridge to failure semantics (ADR-0006).]] — """D57. Both directions above are set comparisons and would agree on two empty sets."""
+- **enforced_by** → [[module__tests_test_stamp_verify|The two-stage read, its five outcomes, and the bridge to failure semantics (ADR-0006).]] — """D57. The parametrized check above would report nothing on an empty table."""

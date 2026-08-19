@@ -120,8 +120,7 @@ class WorkerSpec:
     task_id: TaskId
     attempt_id: AttemptId
     attempt_index: int
-    fingerprint_sha256: Sha256
-    fingerprint: Mapping[str, str]   # full D19/D40 field set — see Fingerprint obligations
+    fingerprint: RunFingerprint      # the typed record; its sha256 is a computed property
     seed: int
     seed_layers: tuple[SeedLayer, ...]
     read_mounts: tuple[MountSpec, ...]
@@ -150,7 +149,7 @@ class AssertionOutcome(Enum):
 
 @dataclass(frozen=True)
 class AssertionResult:
-    assertion_id: str        # "C1".."C15", see Sandbox Specification § Executor containment
+    assertion_id: str        # "C1".."C16", see Sandbox Specification § Executor containment
     outcome: AssertionOutcome
     executed_inside_container: bool
     observed: Mapping[str, str]
@@ -243,7 +242,7 @@ class WorkerClaim:
     turns: tuple["TurnRecord", ...]
     tool_calls: tuple["ToolCallRecord", ...]
     usage: Usage
-    observed_fingerprint: Mapping[str, str]
+    observed_fingerprint: Mapping[str, object]   # reported, not declared — stays a mapping
     containment: tuple[AssertionReport, ...]   # boot and end-of-run
     schema_version: int
 ```
@@ -404,8 +403,11 @@ set becomes available without granting the container anything.
 
 ## Fingerprint obligations
 
-`spec.fingerprint` carries the full D19/D40 field set. The worker's own contribution —
-and every one of these is a field something else can change without notice:
+`spec.fingerprint` is a `RunFingerprint` (`harness/fingerprint/record.py`, ADR-0020), not a
+mapping: one frozen record carrying the full D19/D40 field set, constructed complete or not
+at all, whose `fingerprint_sha256` is **computed** from the fields through ACS-1 rather than
+carried beside them. The worker's own contribution — and every one of these is a field
+something else can change without notice:
 
 | Field | Why it is here |
 |---|---|
@@ -416,10 +418,18 @@ and every one of these is a field something else can change without notice:
 | `tool_description_sha256[]` | Descriptions change behaviour without names changing. |
 | `seed_layer_order_sha256` | Reordering the seed invalidates every cached prefix and re-pays full prefill. |
 
-`dispatch` compares `observed_fingerprint` against `spec.fingerprint` field by field and
-raises `ClaimIncomplete` on any difference, including a field the executor reports and
-the spec does not declare. **An adaptor records what it verified, never what it hoped
-for** — the same rule the lane fingerprint assertion already implements.
+`dispatch` compares `observed_fingerprint` against `spec.fingerprint` field by field —
+through `RunFingerprint.compare`, so the comparison has one implementation — and raises
+`ClaimIncomplete` on any difference, including a field the executor reports and the spec
+does not declare. **An adaptor records what it verified, never what it hoped for** — the
+same rule the lane fingerprint assertion already implements.
+
+`observed_fingerprint` stays a `Mapping` and is not typed to `RunFingerprint`, deliberately.
+It is what the executor *reported*, and a dataclass cannot represent a field the record
+never declared — which is exactly the direction this paragraph requires raising on. Typing
+it would delete the check by making its subject unrepresentable. Its values are `object`
+rather than `str` because a context length is an integer, and stringifying at the boundary
+is where a comparison starts passing on the wrong thing.
 
 ## Replaceability, and what an adaptor must prove
 

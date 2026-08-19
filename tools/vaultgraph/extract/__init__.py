@@ -18,9 +18,11 @@ from . import (adrs, amendments, charter, code, decisions, documents, imports, r
 
 EXTRACTORS: Final[tuple[ExtractorSpec, ...]] = (
     documents.SPEC,
-    adrs.SPEC,
     charter.SPEC,
     stages.SPEC,
+    # After `stages`: an ADR's `Discharges:` field names an operator item, and the only way to
+    # tell "discharges O5" from "discharges an O5 nobody declares" is to ask what exists.
+    adrs.SPEC,
     decisions.SPEC,
     amendments.SPEC,
     code.SPEC,

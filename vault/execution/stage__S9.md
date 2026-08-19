@@ -2,10 +2,10 @@
 kind: stage
 id: "stage:S9"
 title: "Phase 1 build"
-status: "not-started"
+status: "partial"
 shape: "heading"
 number: "S9"
-source: "docs/tier2/execution-order.md:194"
+source: "docs/tier2/execution-order.md:300"
 extractor: "stages"
 aliases:
   - "Phase 1 build"
@@ -18,23 +18,23 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `docs/tier2/execution-order.md:194`
+**Source** · `docs/tier2/execution-order.md:300`
 
 ## Statement
 
-Phase 1 build · *blocked by S1–S8 and by O1*
+Phase 1 build · *blocked by S1–S8 and by O1* · **PORT AND PATCH GATE DONE 2026-08-18**
 
 ## Fields
 
 | Field | Value |
 |---|---|
 | `clause` | blocked by S1–S8 and by O1 |
+| `completion` | PORT AND PATCH GATE DONE 2026-08-18 |
 
 ## Stated in prose — unverified
 
 - [[operator-item__O1|`F` (fixed weekly obligations, min/week) and target `n` (tasks/day, **stated as dispatched]] **blocks** → this — S9 blocked by O1
 - [[operator-item__O1|`F` (fixed weekly obligations, min/week) and target `n` (tasks/day, **stated as dispatched]] **blocks** → this — O1 blocks S9
-- [[operator-item__O5|Read OpenHands at the pinned SHA]] **blocks** → this — O5 blocks S9
 - [[stage__S1|Database foundation]] **blocks** → this — S9 blocked by S1
 - [[stage__S2|Oracle environment]] **blocks** → this — S9 blocked by S2
 - [[stage__S3|Inspector core]] **blocks** → this — S9 blocked by S3

@@ -120,6 +120,7 @@ migrations/
 harness/         OUTSIDE the agent tree — CriterionRunner, egress canary, floor test
 scripts/
 docs/
+projects/        one nested git repository per product Alfred builds — git-ignored subdirectories
 ```
 
 `harness/` sits outside the agent tree deliberately and is in the protected set. No file

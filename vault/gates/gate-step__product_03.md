@@ -4,7 +4,7 @@ id: "gate-step:product.03"
 title: "Sync dependencies from the lockfile"
 shape: "step"
 job: "product"
-source: ".github/workflows/gates.yml:158"
+source: ".github/workflows/gates.yml:182"
 extractor: "workflows"
 tags: [protected]
 aliases:
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `.github/workflows/gates.yml:158`
+**Source** · `.github/workflows/gates.yml:182`
 
 ## Statement
 
