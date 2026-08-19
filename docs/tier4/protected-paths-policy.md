@@ -32,6 +32,16 @@ declared source paths.
 
 Protected paths are the second layer, and they are policy configuration, never code.
 
+Since ADR-0024 that sentence is literal. The set's machine-readable form is
+`policy/protected-paths.json` — versioned, and under `policy/` itself, so the gate's
+policy file is protected by the gate. `harness/patch/validate.py` loads it, failing
+closed on any load error, and `harness/patch/test_protected_set.py` asserts set
+equality between the file and this table in both directions: a row in this table with
+no entry in the file protects nothing, and an entry with no row protects something no
+one was told about. The `control.policy_protected_path` table carries the same policy
+per tenant for runtime enforcement; its writer is a later stage, and nothing here
+claims the sync.
+
 ## The protected set
 
 | Path | Contains |
@@ -41,7 +51,7 @@ Protected paths are the second layer, and they are policy configuration, never c
 | `src/thresholds/` | declared, cited, versioned threshold configuration |
 | `tests/heldout/` | composed and perturbed held-out criteria |
 | `migrations/harness/`, `migrations/roles/` | control, evidence, verdict, held-out and policy schema, and the role/grant definitions. **Corrected 2026-08-15:** this row previously named `migrations/evidence/` and `migrations/control/`, which do not exist and are not the layout — the split is product versus harness, one directory per schema beneath it (Data Architecture § Migration layout). A protected path that names a directory that will never exist protects nothing. `migrations/product/` is deliberately *not* protected: the product schema is factory. |
-| `scripts/lint_run_records.py` and any other CI gate entry point under `scripts/` | The run-record validator is inspector: it decides whether an evidence stream is well-formed enough to chain. `scripts/` is otherwise unprotected, and a validator an agent may edit validates nothing. The implementation lives under `harness/`; the entry point is protected with it. |
+| `scripts/` (the whole directory) | Register lints and generators — inspector machinery (D20). **Corrected 2026-08-19:** this row previously named only the gate entry points and called the rest "otherwise unprotected"; the patch gate protects the whole directory, and the machine-readable set states so. A validator an agent may edit validates nothing. |
 | `policy/` | protected paths, permissions, network allowlist, sandbox specification |
 | `.github/`, CI configuration, hooks | the gate that runs before any human sees a change |
 | fingerprint tracker | the identity every autonomy grant is keyed to |

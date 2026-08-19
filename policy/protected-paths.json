@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "authority": "docs/tier4/protected-paths-policy.md (frozen) and D20 — ADR-0024",
+  "prefixes": [
+    {
+      "path": "harness/",
+      "contains": "inspector machinery — CriterionRunner, egress canary, floor test, seeded-defect suite"
+    },
+    {
+      "path": "src/provenance/",
+      "contains": "result stamping — a stamp an agent may edit is a stamp nothing asserts on"
+    },
+    {
+      "path": "src/thresholds/",
+      "contains": "declared, cited, versioned threshold configuration — never agent-authored"
+    },
+    {
+      "path": "tests/heldout/",
+      "contains": "composed and perturbed held-out criteria — never in agent context"
+    },
+    {
+      "path": "migrations/harness/",
+      "contains": "control, evidence, verdict, held-out and policy schema"
+    },
+    {
+      "path": "migrations/roles/",
+      "contains": "the role and grant definitions"
+    },
+    {
+      "path": "scripts/",
+      "contains": "register lints and generators — inspector machinery (D20); a validator an agent may edit validates nothing"
+    },
+    {
+      "path": "policy/",
+      "contains": "machine-readable Tier 4 — allowlist, denylist, and this set"
+    },
+    {
+      "path": ".github/",
+      "contains": "CI configuration and hooks — the gate that runs before any human sees a change"
+    },
+    {
+      "path": "docs/tier0/",
+      "contains": "the constitution — permanently human-authored (ADR-0005)"
+    }
+  ],
+  "files": [
+    {
+      "path": "pyproject.toml",
+      "contains": "the dependency closure — a change here can make the oracle importable inside the container"
+    },
+    {
+      "path": "uv.lock",
+      "contains": "the dependency closure, pinned — a dependency addition is an escalation, not an edit"
+    }
+  ]
+}
