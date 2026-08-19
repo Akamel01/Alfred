@@ -1563,3 +1563,77 @@ predictable outcome is that somebody removes the step rather than the cause.
 **Leaving the vault ungated and trusting the "do not edit" banner.** The banner is a
 request to a reader. The property it asks for — that nothing in `vault/` is authored — is
 the one that makes the read model admissible at all.
+
+---
+
+## ADR-0016 — The review ADR-0015 said was owed has been done
+
+**Date:** 2026-08-19 · **Status:** Accepted · **Supersedes:** none · **See also:** ADR-0015 (the inspector edit this discharges the review of)
+
+### Context
+
+ADR-0015 recorded an agent-made edit to `.github/workflows/gates.yml` — inspector machinery
+under D20 — made at the operator's explicit instruction. Standing invariant 8 prices that
+edit at line-by-line human review plus a mandatory ADR. ADR-0015 supplied the ADR and was
+explicit that it supplied nothing else:
+
+> neither act discharges the review. What standing invariant 8 requires and what an agent
+> structurally cannot supply is the line-by-line human read of the diff.
+
+It also named exactly what was outstanding: the `.github/workflows/gates.yml` portion of
+commit `f16695a`, 30 lines. And it named the cost of leaving it that way — that accepting
+ADR-0015 without the read would leave the invariant *recorded and unenforced*, which is
+worse than leaving it unrecorded, because the record would then be evidence that a control
+operated when it had not.
+
+That review has now been carried out by the operator, and the diff accepted.
+
+### Decision
+
+**Standing invariant 8 is discharged for commit `f16695a`.** The three steps it added to the
+`integrity` job — `--self-test`, `--check`, and `pytest tools/tests` — stand as reviewed
+inspector machinery rather than as an agent-made edit awaiting a human read.
+
+The scope is that commit and nothing else. A later edit to `gates.yml`, by an agent or
+otherwise, owes its own review and its own record; this ADR is not a standing permission and
+must not be read as one.
+
+### Why this is a separate record rather than an edit to ADR-0015
+
+The ADR log is append-only: an ADR that turns out to be incomplete gets a successor, never a
+revision. Amending ADR-0015 to say "and the review happened" would be the cheaper gesture and
+the wrong one twice over. It would edit a published record, which this file's own
+falsification condition forbids. And it would erase the interval — the period during which
+the invariant was recorded and not yet enforced — which is the only part of this sequence a
+future reader needs to see, because that interval is where the failure would have lived if
+the review had never come.
+
+Read in order, the two records say what actually happened: the edit was made, the price was
+stated, the price went unpaid for a day, and then it was paid. A single amended ADR would
+say only that the price was paid, which is true and is not the same claim.
+
+### Consequence
+
+Nothing in the repository changes. This is the only kind of ADR that is purely a record of a
+human act: no code, no gate and no generated artifact moves, and there is deliberately no
+check that this ADR is telling the truth.
+
+That absence is the point, and it is the same position ADR-0015 took about itself. A control
+verifying that a human read 30 lines would have to be written by the party the control exists
+to constrain, which is the pattern this project has rejected in five other places (ADR-0003's
+second implementation, ADR-0012's committed self-test, ADR-0013's per-probe control,
+ADR-0014's non-Python re-walk, and ADR-0015's refusal to add one for itself). The check here
+was a person reading 30 lines. The evidence that it happened is this record and the operator's
+name on the commit that carries it.
+
+### Rejected
+
+**Adding a machine check that the review occurred.** A commit trailer, a review marker file,
+or a lint asserting one — each is a thing an agent can write, and an agent writing the
+evidence that a human checked its work is the loop D20 exists to break. The invariant is
+enforced by a person or it is not enforced.
+
+**Leaving the discharge implicit in the commit log.** ADR-0015 is a published document
+stating that a review is outstanding. Someone reading the register a year from now finds that
+sentence and has no way to learn it stopped being true, because a commit message is not part
+of the register. The claim was made in the register and it has to be closed there.
