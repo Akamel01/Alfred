@@ -184,7 +184,8 @@ Binding on implementation and easy to miss, since they live inside one document.
 | [ADR-0026](tier1/adr-log.md) | The adaptor configuration contract, typed at the boundary |  |
 | [ADR-0027](tier1/adr-log.md) | An agent edited the inspector, and this record was drafted by the same agent | Accepted |
 | [ADR-0028](tier1/adr-log.md) | The review ADR-0027 said was owed has been done | Accepted |
+| [ADR-0030](tier1/adr-log.md) | Two containment controls that existed and did not run, and two that still do not |  |
 
 ---
 
-**63 documents mapped** · 43 binding · 13 context · 7 record · 28 architecture decisions
+**63 documents mapped** · 43 binding · 13 context · 7 record · 29 architecture decisions

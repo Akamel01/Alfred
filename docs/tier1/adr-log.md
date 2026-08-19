@@ -2904,3 +2904,179 @@ enforced by a person or it is not enforced.
 stating that a review is outstanding. Someone reading the register a year from now finds that
 sentence and has no way to learn it stopped being true, because a commit message is not part
 of the register. The claim was made in the register and it has to be closed there.
+
+---
+
+## ADR-0030 — Two containment controls that existed and did not run, and two that still do not
+
+**Date** 2026-08-19 · **Status** Accepted · **Supersedes** nothing · **Amends** ADR-0023's
+"not done here" on C17 and C14; ADR-0026's "not done" on the adaptor key set; the Sandbox
+Specification's C14 and C17 rows · **See also:** ADR-0013 and F25 (`not_executed` is a
+failure), ADR-0017 (a hole never passes), ADR-0007 (executed, passed, vacuous), ADR-0019 and
+ADR-0023 (the ingress and launch posture), ADR-0020 (the run fingerprint and C11's unread
+conjunct), ADR-0024 (C15's register)
+
+### Context
+
+Four containment assertions were written, tested, and not running. Under F25 and ADR-0007
+that is worse than four absent ones: an absent control is visible, and a green one nobody
+called stops anybody looking. Each was recorded as open by the ADR that created it, in as
+many words, so none of this is a discovery — it is the deferred half of four earlier records
+being either paid or priced.
+
+Two are closed here. Two are investigated and deliberately left open, because both turn on a
+question this record is not the right place to settle.
+
+### 1. C17 joins C14's closed re-assertion set
+
+ADR-0023 wrote C17 — the ingress surface and the launch posture — and left it out of the
+end-of-run re-assertion, saying so: *"a container relaunched mid-run with different flags
+would not be caught, and the argv is recorded in `observed` precisely so that it **could** be
+compared — the comparison is simply not wired."*
+
+**It is wired.** `REASSERTED` becomes `("C7", "C9", "C12", "C13", "C16", "C17")`.
+
+C16's membership rests on `--rm`: a container that exits mid-run leaves nothing behind, so at
+the end the adaptor either still has a container id or it does not. **C17 covers the case that
+argument does not reach — a container that exits and is replaced.** A relaunch restores the
+container id's *presence* while changing the argv underneath it, and every boot-time C17 pass
+stays true of a container that no longer exists. A published binding that was loopback at boot
+and is `0.0.0.0` at the end is an unauthenticated remote-code-execution endpoint opened
+*after* the gate that would have refused it.
+
+Appended rather than inserted: `compare` orders findings by this tuple's own order, so
+appending is the only edit that leaves existing output's ordering alone.
+
+**The control is the drift kind, not the outcome.** A relaunch that reopens the ingress
+surface produces a boot pass and an end failure — and so would a check that stopped reading
+the argv at all. So the test requires `DriftKind.VALUE` on both `container_launch_args` and
+`published_port_bindings`, and `drifted_ids` to name C17, which is what goes red if C17 ever
+leaves the set. A second control covers the relaunch that keeps the posture and changes the
+argv: both ends `PASSED`, drift still reported. That case is the reason `_check_c17` records
+the **full** argv rather than a summary of the flags it happens to look at, and an
+outcome-level comparison cannot express it at all.
+
+D57 is inherited rather than reimplemented: `value_blind` would name C17 if it recorded no
+observations, and the coverage assertion over the real implementations now builds C17 the way
+the adaptor builds it.
+
+### 2. The key-set half of the adaptor configuration contract
+
+ADR-0026 typed the configuration *values* and wrote down what it did not do: *"nothing
+validates that an adaptor sent a key the holes actually name. An unknown key is legal and
+ignored, which is correct … but it means a typo'd key on the adaptor side reads as absent
+rather than as a mistake. Absent is already a finding, so it fails closed; it fails with the
+wrong reason."*
+
+**The decision is that this is confusability, not unknown-key rejection.** Rejecting unknown
+keys would be a different and false claim — the executor's configuration surface is larger
+than the set Alfred reads, and every real observation carries keys no hole names. What is
+refused is a key that is *not* one the holes name whose case- and separator-normalized form
+collides with one that is: `sessionApiKeys` against `session_api_keys`. Two spellings of one
+name cannot both be real keys of one executor, so the collision is a fact rather than a guess
+at what the adaptor meant.
+
+**Refused at construction**, beside `validated_config`, on ADR-0026's own argument: an adaptor
+sending a key nobody can read should be told so where it sent it, not three checks later in
+the shape of a field that reads as unset.
+
+The reference set is **derived from the register** (`named_config_keys`), never typed out, so
+a hole added later is covered without anybody remembering a list. C10's `config_env_prefix`
+holds `OH` — an environment-variable prefix rather than a configuration key — and it is
+included rather than special-cased. It is still a name read out of the executor, a re-spelling
+of it is still an adaptor defect, and a hand-maintained exception list is the shape this file
+avoids everywhere else.
+
+**Vacuity controls.** An empty reference set would find nothing on every input and report
+clean, so the suite asserts it is non-empty and names four keys it must contain (D57). And the
+check must **not** fire on a key Alfred does not read — without that test the check could
+refuse everything and every other test would still pass. The defect itself is pinned: an
+observation built past the guard with `sessionApiKeys` makes C17 report `session_api_keys`
+absent, which is the wrong-reason failure this closes.
+
+**The limit, stated rather than left to be discovered.** A genuine misspelling —
+`sesion_api_keys` — normalizes to itself and is not caught. What is caught is
+spelling-convention drift: camelCase, hyphens, casing, dropped separators, which is the class
+an adaptor written against JSON documentation actually produces. Edit-distance matching would
+catch more and would produce false positives in a check whose finding refuses a configuration
+outright. Pinned by a test, so a change that widens the rule fails there and has to say so.
+Only top-level keys are checked, because every check reads `config[key]` at the top level and
+a nested key is not one any hole names at all.
+
+### 3. C11's parallel slot count — the field is readable, and from a channel nothing reads
+
+Not changed here. Reported because what was found contradicts the reason the conjunct is
+unread.
+
+ADR-0020 recorded that the slot count *"is a launch-time property of the server and is not in
+`/api/v0/models`"*, so it arrives as an explicit argument and its absence is `not_executed`.
+**The first half of that sentence is confirmed and the second half is narrower than it reads.**
+`harness/lane/lane_fingerprint.py:105-134` reads `/api/v0/models` and the entries carry `id`,
+`state`, `compatibility_type`, `quantization`, `arch`, `loaded_context_length` and
+`max_context_length` — no slot count, exactly as recorded.
+
+But the lane's own CLI publishes it. Read first-hand on the development host, 2026-08-19:
+
+- `lms load --parallel <count>` is a documented load-time option — *"maximum number of
+  predictions the model can run at a given time"*.
+- `lms ps --json` reports, per loaded model, `"parallel": 4` alongside `contextLength`,
+  `maxContextLength`, `quantization`, `status` and `queued`.
+
+So the count is **not** unreadable. It is unread, from a channel — a vendor CLI over a
+subprocess — that no inspector module currently uses, though `bench/bench_infer.py` shells out
+to `lms version` and `lms runtime ls` and so the pattern exists outside `harness/`. A third
+route exists and is behavioural: `bench/probe_prefix_cache.py` already infers the slot count
+from a timing signature (hypothesis H2 — a cold run of exactly P), which measures the property
+that actually matters rather than the setting that implies it.
+
+This is left open **as an OBSERVER decision**, and the decision it needs is not the one
+ADR-0020 anticipated. It is not "a permanent `UNREAD` hole or a deleted conjunct"; neither is
+warranted now. It is whether an inspector control may read a live value out of an unpinned
+vendor CLI over a subprocess. `lms` has no pin anywhere in this repository, the observed key
+is a fact about the version on one machine on one day, and `harness/` has no precedent for a
+subprocess read. Wiring it unasked would put a control on a channel nobody agreed to, which is
+the same class of act as naming a plausible key — the thing ADR-0020 refused. So it is
+reported with its evidence and not built.
+
+### 4. C15's missing production caller — and the honest shape of the question
+
+Not changed here, for the reason ADR-0024 gave when it declined the same thing: *"the patch
+gate is where that lands."*
+
+Confirmed: `assert_patch_carries_no_oracle` is called from `test_c_assertions.py` and nowhere
+else. **The finding is larger than C15.** `harness/patch/validate.py`'s `require_clean`,
+`harness/worker/port.py`'s `require_all_passed`, `harness/containment/handle.py`'s crossing,
+C4, C11 and the whole dispatch chain have no production caller either, because no adaptor
+exists. C15 is not uniquely orphaned; it is one member of a port whose implementation is not
+written. Saying that plainly matters, because "wire C15 up" reads like a missing line and is
+in fact a question about where the claim-acceptance path lives when somebody writes one.
+
+The site is an OBSERVER decision and the candidates are set out in the module report. What
+this record fixes is the constraint on any of them: **C15 runs on the diff and never on a
+working tree**, and `WorkerClaim.patch` is an `ArtifactRef` — a content address, not a path —
+so any caller resolves bytes through the artifact store rather than reading a checkout.
+
+**Finding 8 stays open**, as ADR-0024 left it. Added lines are hashed against whole-file
+digests, so only a whole-new-file diff can match. Closing it means hashing post-application
+content, which is a second and different check and costs the runs-on-the-diff property. Not
+closed here, and the test that pins the limit is untouched.
+
+### Consequences and enforcement
+
+- `REASSERTED` has six members. An end-of-run report missing C17 is `not_executed`, which F25
+  makes a failure, so the adaptor's obligations grow by exactly one assertion.
+- `ConfigKeyConfusion` is raised at `ExecutorObservation` construction. It subclasses
+  `ConfigContractViolation` so the boundary refusals stay one family.
+- The Sandbox Specification's C14 row, C17's disposition column and a new amendment block are
+  updated to match.
+- **Not done, deliberately:** C11's slot count is still supplied from outside and still
+  `not_executed` when it is not; C15 still has no production caller; Finding 8 is still open;
+  `--read-only`, `--security-opt` and the user namespace are still named and not asserted, as
+  ADR-0023 left them.
+
+### Why this is an inspector patch
+
+`harness/` is inspector machinery under D20. Major-fix #8 permits an agent-drafted inspector
+patch only under line-by-line human review with a mandatory ADR. This is that ADR. The review
+is O9, it has not happened, and this change joins the containment batch already named in
+P0-7's register entry — which is `unmet`, and which this makes no smaller.
