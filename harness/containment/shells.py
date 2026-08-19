@@ -34,6 +34,8 @@ from harness.containment.assertions import Assertion, AssertionOutcome
 
 __all__ = [
     "C17",
+    "ConfigContractViolation",
+    "ConfigValue",
     "CANVAS_COMMIT",
     "CANVAS_REPO",
     "EXECUTOR_COMMIT",
@@ -48,6 +50,7 @@ __all__ = [
     "Unread",
     "evaluate",
     "evaluate_all",
+    "validated_config",
     "open_holes",
     "unsourced_holes",
 ]
@@ -157,7 +160,7 @@ class ExecutorObservation:
     says a count of zero is the assertion.
     """
 
-    config: Mapping[str, object] = field(default_factory=dict)
+    config: Mapping[str, ConfigValue] = field(default_factory=dict)
     config_hash: str | None = None
     harness_config_hash: str | None = None
     config_files_found: tuple[str, ...] = ()
@@ -189,6 +192,7 @@ class ExecutorObservation:
     executor_repo: str | None = None
     executor_commit_sha: str | None = None
     executor_resolved_through_redirect: bool | None = None
+
     # The argv the container was actually started with, read from outside. C17's subject.
     # Empty means the adaptor did not read it, which C17 reports as `not_executed` rather
     # than as an unhardened launch: an argv nobody read says nothing about the flags on it.
@@ -196,6 +200,12 @@ class ExecutorObservation:
     # Host-side bindings for every published port, as `docker` reports them -- for example
     # `0.0.0.0:8010->8000/tcp`. The direction S6's egress work does not cover.
     published_port_bindings: tuple[str, ...] = ()
+
+    def __post_init__(self) -> None:
+        # Refuse at the boundary, not inside a check. An adaptor sending an arbitrary object
+        # would otherwise reach a reader that renders it with `str()` and compares a repr --
+        # a comparison that can only fail, for a reason no report can explain.
+        validated_config(self.config)
 
 
 @dataclass(frozen=True)
@@ -297,14 +307,82 @@ def _as_key(value: HoleValue) -> str:
 
 # ------------------------------------------------- reading the adaptor's configuration
 #
-# `ExecutorObservation.config` is `Mapping[str, object]`: adaptor-supplied, unvalidated, and
+# `ExecutorObservation.config` was `Mapping[str, object]`: adaptor-supplied, unvalidated, and
 # with no agreed serialization. Before these helpers each check invented its own reading and
 # they disagreed — C1 refused to assume a library default, C2 assumed one; C3 compared with
 # `is True` while C2 compared with `str(...)`. Three green assertions over live hazards came
 # out of that, and none of them was a mistake anyone could see by reading one check alone.
+# Six of the seven findings in the containment self-review were that one root cause.
 #
 # The discipline is one sentence: **absent is unknown, uninterpretable is a finding, and
 # neither is a pass.**
+#
+# The reading was made consistent first; the *contract* is typed here. `ConfigValue` is the
+# closed JSON-shaped union an adaptor may send, and `validated_config` refuses anything
+# outside it at the boundary rather than letting it reach a check that will read it with
+# `str()` and get a repr.
+#
+# **Why a union and not a model.** The keys are not knowable in advance: every one of them is
+# a hole, answered by reading the executor, and a different executor answers differently. A
+# model enumerating today's keys would have to be edited by anyone adding a hole, and the
+# check would then be typed against the harness's expectations rather than against what the
+# adaptor may legally send. Typing the *values* removes `object` without pretending the key
+# set is closed.
+#
+# **What this does not do.** It does not make a wrong value right, and it does not validate
+# that a key means what the hole says it means. A string where a boolean belongs still reaches
+# `_as_flag`, which still reports it as uninterpretable. This closes the serialization half of
+# the finding: a value that could not survive a round trip through JSON cannot enter.
+
+
+# A value an adaptor may legally send. Recursive, so nested configuration is covered; closed,
+# so an arbitrary Python object is not a configuration value. `None` is in the union because
+# the SDK uses it meaningfully — `persistence_dir: None` is how persistence is switched off,
+# and C1 distinguishes it from absent.
+type ConfigValue = str | int | float | bool | None | Sequence["ConfigValue"] | Mapping[str, "ConfigValue"]
+
+
+class ConfigContractViolation(TypeError):
+    """The adaptor sent a configuration value with no agreed serialization.
+
+    A refusal at the boundary rather than a finding inside a check. A check reading an
+    arbitrary object would render it with `str()` and compare a repr — which is a comparison
+    that can only ever fail, and fails for a reason the report cannot explain.
+    """
+
+
+def validated_config(raw: Mapping[str, object], *, _path: str = "") -> dict[str, ConfigValue]:
+    """Every value in the closed union, or raise naming the path that is not.
+
+    Booleans are checked before integers throughout: `bool` is a subclass of `int` in Python
+    and an `isinstance(value, int)` test accepts `True`, which is how a flag becomes the
+    number 1 somewhere downstream.
+    """
+    out: dict[str, ConfigValue] = {}
+    for key, value in raw.items():
+        if not isinstance(key, str):
+            raise ConfigContractViolation(f"configuration key {key!r} is not a string")
+        out[key] = _validated_value(value, f"{_path}{key}")
+    return out
+
+
+def _validated_value(value: object, path: str) -> ConfigValue:
+    if value is None or isinstance(value, (str, bool, int, float)):
+        if isinstance(value, float) and (value != value or value in (float("inf"), float("-inf"))):
+            # NaN and the infinities have no JSON spelling. Admitting them here would put a
+            # value in the configuration that cannot survive being written down.
+            raise ConfigContractViolation(f"{path}: {value!r} has no serialization")
+        return value
+    if isinstance(value, Mapping):
+        return validated_config({str(k): v for k, v in value.items()}, _path=f"{path}.")  # pyright: ignore[reportUnknownArgumentType]
+    if isinstance(value, (str, bytes)):
+        raise ConfigContractViolation(f"{path}: bytes are not a configuration value")
+    if isinstance(value, Sequence):
+        return [_validated_value(item, f"{path}[{i}]") for i, item in enumerate(value)]  # pyright: ignore[reportUnknownArgumentType, reportUnknownVariableType]
+    raise ConfigContractViolation(
+        f"{path}: {type(value).__name__} is not a configuration value; the adaptor must send "
+        "something that survives a round trip through JSON"
+    )
 
 
 class Absent:
@@ -340,7 +418,7 @@ _TRUE_SPELLINGS: Final[frozenset[str]] = frozenset({"true", "1", "yes", "on"})
 _FALSE_SPELLINGS: Final[frozenset[str]] = frozenset({"false", "0", "no", "off"})
 
 
-def _read(obs: ExecutorObservation, key: str) -> object | Absent:
+def _read(obs: ExecutorObservation, key: str) -> ConfigValue | Absent:
     """One configuration value, or `ABSENT`. Never conflates absent with any real value."""
     return obs.config.get(key, ABSENT)
 

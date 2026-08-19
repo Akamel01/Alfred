@@ -53,8 +53,10 @@ from harness.containment.reassert import (
     value_blind,
 )
 from harness.containment.shells import (
+    C1,
     C17,
     CANVAS_COMMIT,
+    ConfigContractViolation,
     CANVAS_REPO,
     EXECUTOR_COMMIT,
     EXECUTOR_REPO,
@@ -68,6 +70,7 @@ from harness.containment.shells import (
     evaluate,
     open_holes,
     unsourced_holes,
+    validated_config,
 )
 from harness.worker.port import (
     Admissibility,
@@ -1418,3 +1421,72 @@ def test_the_normalization_vectors_agree_with_patch_sides_implementation() -> No
     assert len(vectors) >= 8
     for vector in vectors:
         assert normalized_source_hash(vector["input"]) == vector["normalized_sha256"], vector["name"]
+
+
+# ==================================================== the adaptor configuration contract
+
+
+def test_a_legal_configuration_survives_validation_unchanged() -> None:
+    """The positive control. Without it every refusal below could come from a broken reader."""
+    legal = {"a": 1, "b": "x", "c": True, "d": None, "e": 1.5, "f": [1, "y"], "g": {"h": False}}
+    assert validated_config(legal) == legal
+    assert ExecutorObservation(config=legal).config == legal
+
+
+@pytest.mark.parametrize(
+    ("label", "config"),
+    [
+        ("an arbitrary object", {"k": object()}),
+        ("a nested arbitrary object", {"k": {"n": object()}}),
+        ("an arbitrary object inside a list", {"k": [1, object()]}),
+        # No JSON spelling. Admitting them puts a value in the configuration that cannot
+        # survive being written down, and every check downstream would read it anyway.
+        ("NaN", {"k": float("nan")}),
+        ("positive infinity", {"k": float("inf")}),
+        ("negative infinity", {"k": float("-inf")}),
+        ("bytes", {"k": b"x"}),
+    ],
+)
+def test_the_configuration_contract_refuses_what_has_no_serialization(
+    label: str, config: dict[str, object]
+) -> None:
+    with pytest.raises(ConfigContractViolation):
+        validated_config(config)
+
+
+def test_the_refusal_happens_at_construction_not_inside_a_check() -> None:
+    """A check reading an arbitrary object renders it with `str()` and compares a repr.
+
+    That comparison can only fail, and it fails for a reason the report cannot explain. The
+    boundary is where this belongs.
+    """
+    with pytest.raises(ConfigContractViolation):
+        ExecutorObservation(config={"k": object()})
+
+
+def test_the_refusal_names_the_path_that_is_wrong() -> None:
+    """A nested violation reported as "the configuration is invalid" is a bug report nobody
+    can act on. The path is what makes it actionable."""
+    with pytest.raises(ConfigContractViolation, match=r"outer\.inner\[1\]"):
+        validated_config({"outer": {"inner": [1, object()]}})
+
+
+def test_a_boolean_is_not_narrowed_to_an_integer() -> None:
+    """`bool` subclasses `int`, so an isinstance check ordered the other way accepts True as
+    a number — which is how a flag becomes the integer 1 somewhere downstream."""
+    validated = validated_config({"flag": True})
+    assert validated["flag"] is True
+
+
+def test_typing_the_contract_does_not_make_a_wrong_value_right() -> None:
+    """The limit, asserted so a green C-assertion is not over-quoted.
+
+    A string where a boolean belongs is legal JSON and still reaches `_as_flag`, which still
+    reports it as uninterpretable. This change closes the serialization half of the finding
+    and not the semantic half.
+    """
+    observation = ExecutorObservation(config={"delete_on_close": "perhaps"})
+    result = evaluate(C1.with_holes(persistence_dir_key="p", delete_on_close_key="delete_on_close"),
+                      observation)
+    assert result.outcome is AssertionOutcome.FAILED
+    assert "does not spell a boolean" in result.detail

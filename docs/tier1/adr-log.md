@@ -2612,3 +2612,87 @@ digest change is one a constant satisfies.
 `src/replay/harness.py` is product tree and ordinary agent territory. `harness/selftest/` is
 inspector machinery under D20, so Major-fix #8 applies to the fixtures and this ADR authorizes
 them. The review is O9 and has not happened.
+
+---
+
+## ADR-0026 — The adaptor configuration contract, typed at the boundary
+
+**Date** 2026-08-19 · **Status** Accepted · **Supersedes** nothing
+
+### Context
+
+`ExecutorObservation.config` was `Mapping[str, object]`: adaptor-supplied, unvalidated, with
+no agreed serialization. **Six of the seven findings in the containment self-review were that
+one root cause.** `1a631f0` made the *reading* consistent — `_read`, `_as_flag`,
+`_flag_problem`, and the one-sentence discipline that absent is unknown, uninterpretable is a
+finding, and neither is a pass. It did not make the contract typed.
+
+Every existing test passed before those fixes. The suite was thorough about the paths the
+checks were written for and silent about the shapes an adaptor might send.
+
+### Decision
+
+`ConfigValue` is a closed, recursive union — `str | int | float | bool | None`, sequences of
+them, and mappings of string to them — and `validated_config` refuses anything outside it.
+`ExecutorObservation.__post_init__` calls it, so the refusal happens **at construction**
+rather than inside a check.
+
+That placement is the decision. A check reading an arbitrary Python object renders it with
+`str()` and compares a repr: a comparison that can only fail, and that fails for a reason no
+report can explain. An adaptor sending something unserializable should be told so where it
+sent it.
+
+`None` is in the union deliberately. The SDK uses it meaningfully — `persistence_dir: None` is
+how persistence is switched off — and C1 already distinguishes it from absent.
+
+### Why a union and not a model
+
+The keys are not knowable in advance. Every one of them is a hole, answered by reading the
+executor, and a different executor answers differently. A model enumerating today's keys would
+have to be edited by anyone adding a hole, and the check would then be typed against the
+harness's expectations rather than against what an adaptor may legally send — which would
+convert an honest "uninterpretable value" finding into a validation error at the wrong layer.
+
+Typing the **values** removes `object` without pretending the key set is closed.
+
+### What this does not do, asserted rather than promised
+
+It does not make a wrong value right. A string where a boolean belongs is legal JSON, still
+reaches `_as_flag`, and is still reported as uninterpretable — there is a test that asserts
+exactly that, so a green C-assertion is not over-quoted as meaning the configuration was
+semantically checked. This closes the **serialization** half of the finding. The semantic half
+is what the holes and their citations are for.
+
+### Two details that are defects in waiting
+
+- **Booleans are checked before integers.** `bool` subclasses `int`, so an `isinstance(value,
+  int)` test accepts `True`, and that is how a flag becomes the number 1 somewhere downstream.
+  Asserted by a test rather than left to ordering.
+- **NaN and the infinities are refused.** They have no JSON spelling, so admitting them would
+  put a value in the configuration that cannot survive being written down while every check
+  downstream reads it anyway. The same argument ADR-0001 makes about metric values, one layer
+  out.
+
+Violations name the path — `outer.inner[1]` — because a nested violation reported as "the
+configuration is invalid" is a bug report nobody can act on.
+
+### Consequences and enforcement
+
+- `_read` returns `ConfigValue | Absent` instead of `object | Absent`, so every reader is now
+  typed against the union rather than against anything at all.
+- **The finding is now closed for this record and open for one more:** `WorkerClaim`'s
+  `observed_fingerprint` remains `Mapping[str, object]`, deliberately and for a reason ADR-0020
+  states — a dataclass cannot represent a field the record never declared, which is exactly the
+  direction the contract raises on. That mapping is compared, not read, so the hazard this ADR
+  closes does not apply to it in the same way.
+- **Not done:** nothing validates that an adaptor sent a key the holes actually name. An
+  unknown key is legal and ignored, which is correct — the executor's configuration is larger
+  than the set Alfred reads — but it means a *typo'd* key on the adaptor side reads as absent
+  rather than as a mistake. Absent is already a finding, so it fails closed; it fails with the
+  wrong reason.
+
+### Why this is an inspector patch
+
+`harness/` is inspector machinery under D20. Major-fix #8 permits an agent-drafted inspector
+patch only under line-by-line human review with a mandatory ADR. This is that ADR. The review
+is O9 and has not happened.

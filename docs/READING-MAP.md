@@ -181,7 +181,8 @@ Binding on implementation and easy to miss, since they live inside one document.
 | [ADR-0023](tier1/adr-log.md) | Which of ADR-0019's unhardened defaults are Alfred's, and the two that are |  |
 | [ADR-0024](tier1/adr-log.md) | C15's third clause runs, the denylist's names are read, and a gate nobody had |  |
 | [ADR-0025](tier1/adr-log.md) | Byte-identical replay, with the domain left out of it |  |
+| [ADR-0026](tier1/adr-log.md) | The adaptor configuration contract, typed at the boundary |  |
 
 ---
 
-**63 documents mapped** · 43 binding · 13 context · 7 record · 25 architecture decisions
+**63 documents mapped** · 43 binding · 13 context · 7 record · 26 architecture decisions
