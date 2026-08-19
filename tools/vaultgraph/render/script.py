@@ -46,6 +46,11 @@ const inspector = document.getElementById('inspector');
 const state = {
   kinds: new Set(NODES.map(n => n.kind)),
   confidences: new Set(CONFIDENCE.map(c => c[0])),
+  //: Which colouring the canvas is using, and which clusters are hidden. `clusters` holds the
+  //: hidden ones rather than the shown ones, so a cluster appearing in a later build is
+  //: visible by default instead of silently absent.
+  colourBy: 'kind',
+  clusters: new Set(),
   query: '',
   selected: null,
   hover: null,
@@ -148,6 +153,7 @@ relax(420);
 
 function matches(node) {
   if (!state.kinds.has(node.kind)) return false;
+  if (state.colourBy === 'cluster' && state.clusters.has(node.cluster)) return false;
   if (!state.query) return true;
   const q = state.query.toLowerCase();
   return node.title.toLowerCase().includes(q) || node.id.toLowerCase().includes(q);
@@ -162,6 +168,21 @@ function visibleLinks() {
 // ---- drawing -----------------------------------------------------------
 
 function radiusOf(node) { return 3 + Math.min(6, Math.sqrt(node.degree)); }
+
+// Cluster hues walk the golden angle, so adjacent ordinals are never adjacent colours and no
+// palette has to be authored or maintained. Singletons -- the 113 nodes with no relation --
+// share one muted colour: giving each its own hue would spend the whole spectrum on the part
+// of the graph that has no structure to show.
+function clusterColour(ordinal) {
+  const group = CLUSTERS[ordinal];
+  if (!group || group.size < 2) return 'var(--ink-faint)';
+  return 'hsl(' + ((ordinal * 137.508) % 360).toFixed(1) + ' 58% 58%)';
+}
+
+function colourOf(node) {
+  if (state.colourBy === 'cluster') return clusterColour(node.cluster);
+  return KIND_COLOURS[node.kind] || 'var(--ink-faint)';
+}
 
 function fit() {
   const shown = visibleNodes();
@@ -234,7 +255,7 @@ function draw() {
     ctx.globalAlpha = lit ? 1 : 0.12;
     ctx.beginPath();
     ctx.arc(n.x, n.y, radiusOf(n), 0, Math.PI * 2);
-    ctx.fillStyle = KIND_COLOURS[n.kind] || inkFaint;
+    ctx.fillStyle = colourOf(n);
     ctx.fill();
     if (state.selected && state.selected.id === n.id) {
       ctx.lineWidth = 2 / state.scale;
@@ -436,6 +457,61 @@ function buildRail() {
     });
     rail.append(button);
   });
+
+  const grouped = CLUSTERS.filter(c => c.size > 1);
+  const loose = CLUSTERS.length - grouped.length;
+  rail.append(text('p', 'Clusters', 'rail-heading'));
+
+  const mode = document.createElement('button');
+  mode.className = 'toggle';
+  mode.type = 'button';
+  mode.setAttribute('aria-pressed', 'false');
+  mode.title = 'Colour by what a node sits with, rather than by what it is';
+  const modeLabel = text('span', 'colour by cluster');
+  mode.append(text('span', '', 'swatch'), modeLabel,
+              text('span', String(grouped.length), 'count'));
+  mode.addEventListener('click', () => {
+    state.colourBy = state.colourBy === 'cluster' ? 'kind' : 'cluster';
+    mode.setAttribute('aria-pressed', state.colourBy === 'cluster' ? 'true' : 'false');
+    modeLabel.textContent = state.colourBy === 'cluster' ? 'colour by kind' : 'colour by cluster';
+    buildClusterList();
+    draw();
+  });
+  rail.append(mode);
+
+  const list = document.createElement('div');
+  rail.append(list);
+
+  // The cluster names are node titles -- repository prose -- so every one goes on the page
+  // through textContent, like every other value from the read model (ADR-0008).
+  function buildClusterList() {
+    list.textContent = '';
+    if (state.colourBy !== 'cluster') return;
+    grouped.slice(0, 12).forEach((group, ordinal) => {
+      const row = document.createElement('button');
+      row.className = 'toggle';
+      row.type = 'button';
+      row.setAttribute('aria-pressed', 'true');
+      row.title = group.name;
+      const swatch = document.createElement('span');
+      swatch.className = 'swatch';
+      swatch.style.background = clusterColour(ordinal);
+      row.append(swatch, text('span', group.name),
+                 text('span', String(group.size), 'count'));
+      row.addEventListener('click', () => {
+        const on = row.getAttribute('aria-pressed') === 'true';
+        row.setAttribute('aria-pressed', on ? 'false' : 'true');
+        if (on) state.clusters.add(ordinal); else state.clusters.delete(ordinal);
+        draw();
+      });
+      list.append(row);
+    });
+    if (loose) {
+      list.append(text('p', loose + ' nodes sit in no cluster \u2014 they have no relation at all',
+                       'rail-note'));
+    }
+  }
+  buildClusterList();
 
   rail.append(text('p', 'Edge confidence', 'rail-heading'));
   const edgeCounts = {};

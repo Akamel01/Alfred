@@ -292,3 +292,68 @@ def test_the_artifact_reports_the_same_counts_as_the_graph() -> None:
     assert f"<dd>{len(result.edges)}</dd>" in page
     # 68 falsification conditions is the headline number and the reason the graph exists.
     assert "<dd>68</dd>" in page
+
+
+# ---- clustering -----------------------------------------------------------------
+
+from tools.vaultgraph.model import resolvable  # noqa: E402
+from tools.vaultgraph.render import cluster  # noqa: E402
+
+
+def _clustered():
+    result = run(ROOT)
+    drawn = resolvable(result.nodes, result.edges)
+    partition = cluster.partition(result.nodes, drawn)
+    return result, drawn, partition
+
+
+def test_the_partition_is_a_function_of_the_graph_and_nothing_else() -> None:
+    """docs-graph.html is byte-compared by --check, so a clustering that moved when nothing
+    changed would red the build on a whim. The usual implementations iterate in arbitrary
+    order and break ties by coin flip; this one is ordered by node id throughout."""
+    result, drawn, first = _clustered()
+    for _ in range(3):
+        again = cluster.partition(result.nodes, drawn)
+        assert again.labels == first.labels
+    shuffled = list(reversed(result.nodes))
+    assert cluster.partition(shuffled, list(reversed(drawn))).labels == first.labels, (
+        "the partition depends on the order the nodes arrived in"
+    )
+
+
+def test_the_partition_settles_rather_than_hitting_the_cap() -> None:
+    _result, _drawn, partition = _clustered()
+    assert partition.settled, (
+        f"label propagation ran out at {partition.sweeps} sweeps without converging; the "
+        "partition is a truncation, not a result"
+    )
+
+
+def test_every_node_lands_in_exactly_one_cluster() -> None:
+    result, drawn, partition = _clustered()
+    of_node, groups = cluster.summarise(result.nodes, drawn, partition)
+    assert set(of_node) == {n.id for n in result.nodes}
+    assert sum(int(g["size"]) for g in groups) == len(result.nodes)
+
+
+def test_a_node_with_no_relation_is_its_own_cluster() -> None:
+    """The 113 isolates are the loudest signal in this graph. A clustering that folded them
+    into a neighbour would be inventing a relation the extractors did not find."""
+    result, drawn, partition = _clustered()
+    of_node, groups = cluster.summarise(result.nodes, drawn, partition)
+    related = {e.src for e in drawn} | {e.dst for e in drawn}
+    for node in result.nodes:
+        if node.id not in related:
+            assert groups[of_node[node.id]]["size"] == 1, f"{node.id} has no edges but was grouped"
+
+
+def test_a_cluster_is_named_after_a_real_node() -> None:
+    """Named after its busiest member rather than `Community 45`, which is the point at which
+    a local deterministic tool would otherwise need a language model to become readable."""
+    result, drawn, partition = _clustered()
+    _of_node, groups = cluster.summarise(result.nodes, drawn, partition)
+    titles = {n.title for n in result.nodes}
+    ids = {n.id for n in result.nodes}
+    for group in groups:
+        assert group["name"] in titles
+        assert group["head"] in ids

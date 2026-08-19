@@ -166,6 +166,23 @@ aside {
 }
 .rail-heading:first-child { margin-top: 0; }
 
+/* How to refresh is a fact about the page, not a key to the drawing. On its own row, after
+   the legend: wedged in beside the legend keys at 548px it read as a fourth key. */
+.footer-status {
+  flex-basis: 100%;
+  padding-top: 8px;
+  border-top: 1px solid var(--rule);
+  color: var(--ink-faint);
+}
+.footer-status code { color: var(--ink-soft); }
+
+.rail-note {
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--ink-faint);
+  padding: 8px 16px 0;
+}
+
 .toggle {
   display: flex;
   align-items: center;
@@ -178,6 +195,15 @@ aside {
   font: inherit;
   text-align: left;
   cursor: pointer;
+}
+/* A cluster is named after its busiest member, and a document title is a sentence. One line
+   each, elided: a rail whose rows are three lines tall stops being scannable, which is the
+   only thing a rail is for. The full name is on the row's title attribute. */
+.toggle > span:not(.swatch):not(.count) {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
 .toggle:hover { background: var(--sunk); }
 .toggle:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }

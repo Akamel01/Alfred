@@ -21,6 +21,7 @@ import json
 import re
 
 from ..model import Edge, Node, NodeKind, resolvable
+from . import cluster
 from .assets import CSS
 from .script import JS
 
@@ -84,6 +85,7 @@ def _short(node: Node) -> str:
 
 def _payload(nodes: list[Node], edges: list[Edge], anomalies: list, unparsed: list) -> dict:
     drawn = resolvable(nodes, edges)
+    of_node, _groups = cluster.summarise(nodes, drawn, cluster.partition(nodes, drawn))
     return {
         "nodes": [
             {
@@ -95,6 +97,7 @@ def _payload(nodes: list[Node], edges: list[Edge], anomalies: list, unparsed: li
                 "status": n.status,
                 "body": _plain(n.body)[:BODY_LIMIT],
                 "falsifies": _plain(n.attrs.get("falsifies_if", "")),
+                "cluster": of_node[n.id],
             }
             for n in sorted(nodes, key=lambda n: n.id)
         ],
@@ -175,8 +178,9 @@ LIVE_CONTROL = """
 #: reader with a stale graph and no way to tell it is stale or what to do about it. The URL is
 #: loopback and appears as text: the page names where the button is, it does not go there.
 STATIC_REFRESH = (
-    '<span class="kicker">Snapshot · rebuild with '
-    "<code>python3 tools/serve_vault.py</code> at "
+    '<span class="footer-status">Snapshot · rebuild with '
+    "<code>python3 tools/serve_vault.py</code> and press "
+    "<em>Regenerate from repository</em> at "
     f'<code>{LOCAL_SURFACE}</code></span>'
 )
 
@@ -228,11 +232,15 @@ def render(
             ("prose", ' stroke-dasharray="1.5 3"', "prose — read from free text, unverified"),
         )
     )
-    live_control = LIVE_CONTROL if live_token else STATIC_REFRESH
+    drawn = resolvable(nodes, edges)
+    _of_node, groups = cluster.summarise(nodes, drawn, cluster.partition(nodes, drawn))
+    clusters = _embed(groups)
+    live_control = LIVE_CONTROL if live_token else ""
     live_script = (
         f"const REFRESH_TOKEN = {json.dumps(live_token)};{LIVE_SCRIPT}" if live_token else ""
     )
-    return f"""<title>{_escape(TITLE)}</title>
+    return f"""<meta charset="utf-8">
+<title>{_escape(TITLE)}</title>
 <style>{CSS}</style>
 
 <header>
@@ -261,8 +269,9 @@ def render(
 <footer>
   {legend}
   <span>Click a node to inspect · scroll to zoom · drag to pan · Esc to close</span>
+  {"" if live_token else STATIC_REFRESH}
 </footer>
 
 <script type="application/json" id="graph-data">{_embed(payload)}</script>
-<script>const KIND_COLOURS = {colours};{JS}{live_script}</script>
+<script>const KIND_COLOURS = {colours};const CLUSTERS = {clusters};{JS}{live_script}</script>
 """
