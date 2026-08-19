@@ -13,6 +13,7 @@ finds — an index maintained by hand is a drift generator.
 from __future__ import annotations
 
 import argparse
+import ast
 import sys
 from pathlib import Path
 
@@ -159,6 +160,66 @@ def build_index(entries: list[tuple[Path, dict[str, str]]]) -> str:
     return "\n".join(lines)
 
 
+def stub_register() -> tuple[set[str], set[str]]:
+    """`gen_doc_stubs.py`'s register and its declared not-generated set, read by AST.
+
+    Read rather than imported: the lint that guards the register must not execute the
+    generator to learn what is in it, for the same reason the frontmatter parser above is
+    hand-written rather than a YAML dependency.
+    """
+    source = Path(__file__).resolve().parent / "gen_doc_stubs.py"
+    tree = ast.parse(source.read_text())
+
+    registered = {
+        f"tier{ast.literal_eval(node.args[0])}/{ast.literal_eval(node.args[1])}"
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Call) and getattr(node.func, "id", "") == "Doc" and len(node.args) >= 2
+    }
+
+    not_generated: set[str] = set()
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.AnnAssign) or getattr(node.target, "id", "") != "NOT_GENERATED":
+            continue
+        value = node.value
+        # `frozenset({...})` is a call, which literal_eval refuses. Unwrap to the set literal
+        # inside it rather than loosening the evaluation.
+        if isinstance(value, ast.Call) and getattr(value.func, "id", "") == "frozenset" and value.args:
+            value = value.args[0]
+        not_generated = set(ast.literal_eval(value)) if value is not None else set()
+
+    return registered, not_generated
+
+
+def check_register(paths: list[Path]) -> list[str]:
+    """Every document on disk is either in the register or declared not-generated, and back.
+
+    The drift this catches is silent and one-directional: a document added without a register
+    entry changes nothing observable, so the register sat at 55 entries against 63 documents
+    with nothing reporting it. The reverse direction matters too -- an entry naming a document
+    that was deleted or renamed makes the generator create it again on the next run.
+    """
+    registered, not_generated = stub_register()
+    if not registered:
+        # Fail closed. An AST walk that found no Doc calls has stopped working, and reporting
+        # "every document is accounted for" would be the exact vacuity this check is for.
+        return ["gen_doc_stubs.py register parsed to zero entries — the reader is broken"]
+
+    on_disk = {f"{path.parent.name}/{path.stem}" for path in paths}
+    accounted = registered | not_generated
+
+    errors = [
+        f"{slug}.md is on disk and is in neither gen_doc_stubs.py's REGISTER nor its NOT_GENERATED"
+        for slug in sorted(on_disk - accounted)
+    ]
+    errors += [
+        f"gen_doc_stubs.py names {slug} which is not on disk"
+        for slug in sorted(accounted - on_disk)
+    ]
+    overlap = registered & not_generated
+    errors += [f"gen_doc_stubs.py lists {slug} in both REGISTER and NOT_GENERATED" for slug in sorted(overlap)]
+    return errors
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true", help="fail if the index is stale")
@@ -181,6 +242,8 @@ def main() -> None:
         if fields:
             entries.append((path, fields))
 
+    all_errors.extend(check_register(paths))
+
     index = build_index(entries)
     if args.check:
         current = INDEX.read_text() if INDEX.exists() else ""
@@ -195,7 +258,12 @@ def main() -> None:
         print(f"\n{len(all_errors)} problem(s) across {len(paths)} document(s)")
         raise SystemExit(1)
 
-    print(f"OK {len(paths)} documents, header contract satisfied")
+    registered, not_generated = stub_register()
+    print(
+        f"OK {len(paths)} documents, header contract satisfied; "
+        f"stub register accounts for all of them ({len(registered)} generated, "
+        f"{len(not_generated)} declared not-generated)"
+    )
 
 
 if __name__ == "__main__":

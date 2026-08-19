@@ -2068,3 +2068,107 @@ than evidence and sits outside `lint_migrations.py`'s additive-only guard by des
 permits an agent-drafted inspector patch only under line-by-line human review with a mandatory
 ADR. This is that ADR. The review is O9, it has not happened, and this change joins the queue
 rather than clearing it — landed and unreviewed, which is the honest state to record.
+
+---
+
+## ADR-0021 — Enumeration drift, and the two claims of CI coverage that were false
+
+**Date** 2026-08-19 · **Status** Accepted · **Supersedes** nothing
+
+### Context
+
+`.github/workflows/gates.yml` states a rule at the top of the file: *"If a check a document
+names is not in this file, that document's enforcement value is a wish and the document is
+falsified by its own frontmatter."* The rule is right and it was not applied to the file
+itself. Two things covered by enumeration had drifted, and both drifted in the direction that
+reads green.
+
+**`harness/stamp` and `harness/fingerprint` ran in no CI job.** Every other test directory
+under `harness/` is named in an explicit `pytest` step. These two were not — `harness/stamp`
+since `c1ca0b4`, `harness/fingerprint` since `cff67cc`. Nothing reported it, because the
+verification command everybody actually runs is `uv run pytest tests bench harness`, which
+walks the tree. The local run and CI disagreed about what was being checked, and only the
+local one was ever looked at. `harness/stamp` holds `verdict_map.py`, which sits under the
+evidence chain and is itself an unreviewed O9 item.
+
+**`failure-semantics.md` claimed a check that did not exist.** Its Enforcement section said
+CI asserted a one-to-one mapping between the row ids `F1`…`F28` and injection ids, and that a
+row with no injection failed the build. Nothing enumerated F ids at all. Four rows were named
+somewhere in a test file; twenty-four were named nowhere; and every row added — `F28` most
+recently — made an already-false claim falser. The document is `owner: executable` and
+`enforcement: ci-gate`, so softening the sentence alone would have left the frontmatter
+falsified in the same way `stage-gate-definitions.md` still is.
+
+**And `gen_doc_stubs.py`'s register stood at 55 entries against 63 documents**, with nothing
+comparing them.
+
+Three instances, one mechanism: an enumeration missing an entry is indistinguishable from a
+complete one. This is the third time this project has paid for it — the first was a document
+added without an index entry on 2026-08-13, which is the only evidence anywhere that the
+register's completeness check works.
+
+### Decision
+
+**Build the check, not just the fix.** `scripts/lint_ci_coverage.py` carries two checks, each
+with a vacuity guard and a committed `--self-test`:
+
+- **T** — every directory holding `test_*.py` under `harness/` and `tests/` is named in a
+  `pytest` step of `gates.yml`. A step naming a parent covers its children, so `pytest harness`
+  is not reported as thirteen violations. A scan finding zero directories fails.
+- **F** — every row id in the fail-closed table has exactly one entry in
+  `harness/selftest/failure_register.json`, every entry names a live row, and every entry
+  claiming coverage names a file that exists **and mentions the id**. That last clause is what
+  stops the register becoming a second unverified claim in place of the first.
+
+`gates.yml` gains the two missing `pytest` steps and runs the new lint in the integrity job,
+before any suite reports a number.
+
+`scripts/lint_docs.py --check` gains the register comparison, reading `gen_doc_stubs.py` by
+**AST rather than by import**: the lint that guards the register must not execute the
+generator to learn what is in it, which is the same reason its frontmatter parser is
+hand-written instead of a YAML dependency.
+
+### Why the F check does not require an injection per row
+
+Requiring one today would report twenty-four failures and hold CI red, and a lint that cannot
+be landed green enforces nothing. So `not-yet-injected` is a legal status: recorded and
+counted, never hidden. What the lint forbids is **drift** — a row with no entry, an entry for
+no row, evidence that is absent or that never mentions the row it claims to cover. The two
+covered statuses are kept apart: `injected` means a fault is injected, `referenced` means a
+test names the row and asserts part of its disposition without injecting anything. Collapsing
+them would let the covered count rise without a single fault being injected. **All four
+covered rows today are `referenced`, not `injected`.**
+
+### The hole this leaves, stated rather than closed
+
+A register declaring every row `not-yet-injected` would pass. What stops that being silent is
+that the covered count is written in the document, asserted against the register on every run,
+and printed by the lint — so it falling is a change a reader sees rather than an absence
+nobody notices. The stronger check is the one to write when injections exist to check.
+
+### `NOT_GENERATED`, and why the eight missing documents were not simply added
+
+Five of the eight are Tier 0. `gen_doc_stubs.py` is a stub *generator*, and adding the
+constitution to its register would record that those documents have a machine-authored origin.
+`main()` never overwrites an existing file, so it would have been harmless in effect and wrong
+in meaning — Tier 0 authorship is permanently outside the agent boundary. They are declared in
+an explicit `NOT_GENERATED` set with the reason, and the lint asserts that the register and
+that set together account for every document on disk, in both directions.
+
+### Consequences and enforcement
+
+- The false sentence in `failure-semantics.md` is replaced by what the check actually does,
+  with an amendment block recording that the stronger claim was false the whole time it stood.
+- The covered count lives in a machine-readable marker rather than in prose. Parsing the
+  sentence would tie the lint to wording, which is what the document itself warns against when
+  it explains why the row ids are stable.
+- **Not addressed here:** `stage-gate-definitions.md` remains `enforcement: ci-gate` while
+  naming no check in `gates.yml`, and is falsified by its own frontmatter. That is the subject
+  of the next change, not this one.
+
+### Why this is an inspector patch
+
+`scripts/` and `.github/workflows/` are inspector machinery under D20 — `gates.yml` says so
+in its own header. Major-fix #8 permits an agent-drafted inspector patch only under
+line-by-line human review with a mandatory ADR. This is that ADR. The review is O9, it has not
+happened, and this change joins the queue rather than clearing it.

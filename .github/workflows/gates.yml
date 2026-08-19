@@ -92,6 +92,18 @@ jobs:
       # snapshot, regenerate, and compare. Running the generator and then running the
       # suite would pass on a tampered committed file — the suite would be checking
       # the freshly written bytes, not the committed ones.
+      # Enumeration drift, in the two places this repository has it: test directories that
+      # no step names, and the F1-F28 fail-closed rows against their register. Both read
+      # green while broken, because an enumeration that is missing an entry looks exactly
+      # like one that is complete.
+      - name: CI coverage (test directories, failure register)
+        run: python3 scripts/lint_ci_coverage.py
+
+      # Its own negative control, run first-class rather than trusted, for the same reason
+      # the verdict-boundary lint's is.
+      - name: CI coverage lint detects planted violations
+        run: python3 scripts/lint_ci_coverage.py --self-test
+
       - name: ACS-1 vectors regenerate byte-identically
         run: |
           set -euo pipefail
@@ -218,6 +230,17 @@ jobs:
 
       - name: Patch gate (protected paths, A10 invisibles, import hooks)
         run: uv run pytest harness/patch
+
+      # The stamp and the run fingerprint. Both were absent from this file until
+      # `lint_ci_coverage.py` was written to look: `harness/stamp` since c1ca0b4 and
+      # `harness/fingerprint` since cff67cc, each passing locally the whole time because the
+      # baseline command walks the tree while this file enumerates. The lint is the reason
+      # a third omission gets caught before it is a commit old.
+      - name: Stamp (version, upstream union, total verifier)
+        run: uv run pytest harness/stamp
+
+      - name: Run fingerprint record (field set, derived digest, register agreement)
+        run: uv run pytest harness/fingerprint
 
   # ---------------------------------------------------------------- database
   database:

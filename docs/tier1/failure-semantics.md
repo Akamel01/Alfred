@@ -271,10 +271,31 @@ CI asserts: every port method declares its timeout; no bare `except:` or
 evidence migrations are additive-only; no verdict field is assigned outside the verdict
 module.
 
-**Every row of the fail-closed table above is an injected fault with a test.** CI asserts
-a one-to-one mapping between the row ids `F1`…`F28` and the injection ids; a row with no
-injection fails the build, because a table that grows faster than the suite that exercises
-it describes a system nobody has checked. The assertion each injection makes is set by the
+**Every row of the fail-closed table above is registered, and the register is checked.**
+The register is `harness/selftest/failure_register.json`; `scripts/lint_ci_coverage.py`
+asserts that every row id has exactly one entry, that every entry names a live row, and that
+every entry claiming coverage names a file that exists and mentions the id. A row with no
+entry fails the build, because a table that grows faster than the register that tracks it
+describes a system nobody has checked.
+
+<!-- failure-register: covered=4 total=28 -->
+
+**Amended 2026-08-19. The stronger claim this paragraph used to make was false the whole
+time it stood.** It said CI asserted a one-to-one mapping between `F1`…`F28` and injection
+ids, and that a row with no injection failed the build. Nothing enumerated F ids anywhere;
+four rows were named in a test file and the rest were named nowhere, and each row added made
+the claim falser without anything reporting it. The sentence is now what the check does.
+**Four of twenty-eight rows are covered** — `F4`, `F15`, `F19` and `F25`, all with status
+`referenced` rather than `injected`: a test names the row and asserts part of its
+disposition, but no fault is injected. The remaining twenty-four are declared
+`not-yet-injected`, which is recorded and counted rather than excused. The count above is
+asserted against the register on every run, so the two cannot drift apart again.
+
+A hole this leaves, stated rather than closed: a register declaring every row
+`not-yet-injected` would pass the lint. What stops that being silent is that the covered
+count is written here and printed on every run, so it falling is a change a reader sees.
+Requiring an injection per row today would have reported twenty-four failures and held CI
+red, and a lint that cannot be landed green enforces nothing. The assertion each injection makes is set by the
 row's **disposition class**, not by a single shared expectation — see the three-disposition
 note beneath the table.
 

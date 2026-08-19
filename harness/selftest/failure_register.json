@@ -1,0 +1,39 @@
+{
+  "register_version": 1,
+  "note": "The map failure-semantics.md's Enforcement section claims CI asserts. It did not exist, so the claim was false and every F row added made it falser. This file makes the claim checkable: scripts/lint_ci_coverage.py requires every row id in the document to appear here exactly once, every id here to name a live row, and every entry claiming an injection to name a file that exists and mentions the id. An entry may declare `not-yet-injected`, which is recorded and counted rather than hidden -- a register that could silently declare everything uncovered would be the vacuity this file exists to prevent.",
+  "statuses": {
+    "injected": "A fault is injected and a test asserts the row's disposition class.",
+    "referenced": "A test names the row and asserts part of its disposition, but no fault is injected. Weaker than `injected` and counted separately.",
+    "not-yet-injected": "No test names this row. Declared, not excused."
+  },
+  "rows": {
+    "F1":  {"status": "not-yet-injected"},
+    "F2":  {"status": "not-yet-injected"},
+    "F3":  {"status": "not-yet-injected"},
+    "F4":  {"status": "referenced", "evidence": "harness/criterion/test_runner.py"},
+    "F5":  {"status": "not-yet-injected"},
+    "F6":  {"status": "not-yet-injected"},
+    "F7":  {"status": "not-yet-injected"},
+    "F8":  {"status": "not-yet-injected"},
+    "F9":  {"status": "not-yet-injected"},
+    "F10": {"status": "not-yet-injected"},
+    "F11": {"status": "not-yet-injected"},
+    "F12": {"status": "not-yet-injected"},
+    "F13": {"status": "not-yet-injected"},
+    "F14": {"status": "not-yet-injected"},
+    "F15": {"status": "referenced", "evidence": "harness/containment/test_containment.py"},
+    "F16": {"status": "not-yet-injected"},
+    "F17": {"status": "not-yet-injected"},
+    "F18": {"status": "not-yet-injected"},
+    "F19": {"status": "referenced", "evidence": "harness/containment/test_c_assertions.py"},
+    "F20": {"status": "not-yet-injected"},
+    "F21": {"status": "not-yet-injected"},
+    "F22": {"status": "not-yet-injected"},
+    "F23": {"status": "not-yet-injected"},
+    "F24": {"status": "not-yet-injected"},
+    "F25": {"status": "referenced", "evidence": "harness/containment/test_image_and_lane.py"},
+    "F26": {"status": "not-yet-injected"},
+    "F27": {"status": "not-yet-injected"},
+    "F28": {"status": "not-yet-injected"}
+  }
+}
