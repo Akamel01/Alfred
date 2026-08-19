@@ -1,23 +1,25 @@
-"""The script, inlined at build time.
+"""The script, composed at build time from four modules and inlined into one page.
 
 **The read model is untrusted in the browser (ADR-0008).** Every value that reaches the page
-goes through `textContent` or a created text node. There is no `innerHTML` anywhere in this
-file and no string concatenated into markup -- a generated note's body is repository text, and
-repository text is not markup.
+goes through `textContent` or a created text node. No markup-writing sink appears in any of the
+four fragments -- a generated note's body is repository text, and repository text is not markup.
+
+**Four fragments, in dependency order.** `camera` owns where the page is looking, `layout` owns
+where the nodes are, `view` owns which of them are drawn. This file keeps what is irreducibly
+wide: a canvas painter and a control panel, both of which touch every concept by nature. The
+order below is load-bearing -- `layout` reads the prelude's arrays, `view` reads `layout`.
 
 **Confidence is encoded twice**, in hue and in stroke style. A dashed line is a mechanical
 match inside a comment span; a dotted line is a guess from free prose. Colour alone would lose
 that distinction in greyscale and for a colourblind reader, and it is the most important thing
 this graph has to say.
-
-**The layout is computed once from a fixed seed, then frozen.** A live simulation would keep
-the page busy forever and settle somewhere different on every load. The graph is static data,
-so its layout is too.
 """
 
 from __future__ import annotations
 
-JS = r"""
+from . import camera, layout, view
+
+PRELUDE = r"""
 'use strict';
 
 // The read model is untrusted in the browser (ADR-0008). Every value that reaches the page
@@ -43,136 +45,24 @@ const canvas = document.getElementById('stage-canvas');
 const ctx = canvas.getContext('2d');
 const inspector = document.getElementById('inspector');
 
-const state = {
-  kinds: new Set(NODES.map(n => n.kind)),
-  confidences: new Set(CONFIDENCE.map(c => c[0])),
-  //: Which colouring the canvas is using, and which clusters are hidden. `clusters` holds the
-  //: hidden ones rather than the shown ones, so a cluster appearing in a later build is
-  //: visible by default instead of silently absent.
-  colourBy: 'kind',
-  clusters: new Set(),
-  query: '',
-  selected: null,
-  hover: null,
-  tx: 0, ty: 0, scale: 1,
-};
+const focusState = { selected: null, hover: null };
 
 function token(name) {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 }
+"""
 
-// ---- layout ------------------------------------------------------------
-// Seeded, deterministic placement then a fixed number of relaxation ticks. A live simulation
-// would keep the page busy forever and would settle somewhere different on every load; the
-// graph is static data, so the layout should be too.
-let seed = 20260818;
-function random() {
-  seed = (seed * 1664525 + 1013904223) % 4294967296;
-  return seed / 4294967296;
-}
 
-const KIND_ORDER = [...new Set(NODES.map(n => n.kind))].sort();
-NODES.forEach(n => {
-  const ring = KIND_ORDER.indexOf(n.kind);
-  const angle = random() * Math.PI * 2;
-  const radius = 140 + ring * 74 + random() * 60;
-  n.x = Math.cos(angle) * radius;
-  n.y = Math.sin(angle) * radius;
-  n.vx = 0; n.vy = 0;
-  n.degree = 0;
-});
-const links = EDGES
-  .map(e => ({ e, s: byId.get(e.src), t: byId.get(e.dst) }))
-  .filter(l => l.s && l.t && l.s !== l.t);
-links.forEach(l => { l.s.degree += 1; l.t.degree += 1; });
-
-// A third of this graph is connected to nothing: ADRs no code cites, amendments naming no
-// decision, risks and kill criteria that only prose refers to. Mixing them into the
-// simulation buries the observation in a hairball and lets one of them wander off and
-// collapse the view. They are parked on their own arc instead, which states the fact.
-const connected = NODES.filter(n => n.degree > 0);
-const isolated = NODES.filter(n => n.degree === 0);
-
-function relax(steps) {
-  for (let step = 0; step < steps; step += 1) {
-    const cooling = 1 - step / steps;
-    for (let i = 0; i < connected.length; i += 1) {
-      const a = connected[i];
-      for (let j = i + 1; j < connected.length; j += 1) {
-        const b = connected[j];
-        let dx = b.x - a.x, dy = b.y - a.y;
-        let d2 = dx * dx + dy * dy;
-        if (d2 < 0.01) { dx = 0.1; dy = 0.1; d2 = 0.02; }
-        if (d2 > 250000) continue;
-        const force = 2600 / d2;
-        const d = Math.sqrt(d2);
-        a.vx -= (dx / d) * force; a.vy -= (dy / d) * force;
-        b.vx += (dx / d) * force; b.vy += (dy / d) * force;
-      }
-    }
-    links.forEach(({ s, t }) => {
-      const dx = t.x - s.x, dy = t.y - s.y;
-      const d = Math.sqrt(dx * dx + dy * dy) || 1;
-      // Hubs get longer spokes: a module cited by twelve decisions should sit away from them,
-      // not inside the cloud they form.
-      const rest = 60 + Math.min(70, (s.degree + t.degree) * 1.6);
-      const force = (d - rest) * 0.05;
-      s.vx += (dx / d) * force; s.vy += (dy / d) * force;
-      t.vx -= (dx / d) * force; t.vy -= (dy / d) * force;
-    });
-    connected.forEach(n => {
-      // Gravity is weak: the links already hold these nodes, and a strong pull collapses
-      // low-degree ones into an unreadable core.
-      const pull = n.degree > 2 ? 0.0026 : 0.0045;
-      n.vx -= n.x * pull; n.vy -= n.y * pull;
-      const speed = Math.hypot(n.vx, n.vy);
-      if (speed > 60) { n.vx = (n.vx / speed) * 60; n.vy = (n.vy / speed) * 60; }
-      n.x += n.vx * cooling; n.y += n.vy * cooling;
-      n.vx *= 0.82; n.vy *= 0.82;
-    });
-  }
-}
-relax(420);
-
-// Park the unrelated on a ring outside whatever the simulation settled to, grouped by kind so
-// the arc reads as a margin rather than a scatter.
-(function parkIsolated() {
-  const reach = connected.length
-    ? Math.max(...connected.map(n => Math.hypot(n.x, n.y))) : 200;
-  const radius = reach + 130;
-  const ordered = [...isolated].sort((a, b) =>
-    (a.kind + a.id).localeCompare(b.kind + b.id));
-  ordered.forEach((n, index) => {
-    const angle = (index / Math.max(1, ordered.length)) * Math.PI * 2 - Math.PI / 2;
-    n.x = Math.cos(angle) * radius;
-    n.y = Math.sin(angle) * radius;
-  });
-})();
-
-// ---- filtering ---------------------------------------------------------
-
-function matches(node) {
-  if (!state.kinds.has(node.kind)) return false;
-  if (state.colourBy === 'cluster' && state.clusters.has(node.cluster)) return false;
-  if (!state.query) return true;
-  const q = state.query.toLowerCase();
-  return node.title.toLowerCase().includes(q) || node.id.toLowerCase().includes(q);
-}
-function visibleNodes() { return NODES.filter(matches); }
-function visibleLinks() {
-  const shown = new Set(visibleNodes().map(n => n.id));
-  return links.filter(l =>
-    state.confidences.has(l.e.confidence) && shown.has(l.s.id) && shown.has(l.t.id));
-}
-
+BODY = r"""
 // ---- drawing -----------------------------------------------------------
 
-function radiusOf(node) { return 3 + Math.min(6, Math.sqrt(node.degree)); }
+// Degree-scaled, and scaled wider than it was. A hub cited by twenty decisions and a leaf cited
+// by one were four pixels apart, which spent the whole size channel on nothing.
+function radiusOf(node) { return 4 + Math.min(13, Math.sqrt(node.degree) * 2.6); }
 
 // Cluster hues walk the golden angle, so adjacent ordinals are never adjacent colours and no
-// palette has to be authored or maintained. Singletons -- the 113 nodes with no relation --
-// share one muted colour: giving each its own hue would spend the whole spectrum on the part
-// of the graph that has no structure to show.
+// palette has to be authored or maintained. Singletons share one muted colour: giving each its
+// own hue would spend the whole spectrum on the part of the graph that has no structure.
 function clusterColour(ordinal) {
   const group = CLUSTERS[ordinal];
   if (!group || group.size < 2) return 'var(--ink-faint)';
@@ -180,29 +70,21 @@ function clusterColour(ordinal) {
 }
 
 function colourOf(node) {
-  if (state.colourBy === 'cluster') return clusterColour(node.cluster);
+  if (view.colourBy === 'cluster') return clusterColour(node.cluster);
   return KIND_COLOURS[node.kind] || 'var(--ink-faint)';
 }
 
 function fit() {
-  const shown = visibleNodes();
-  if (!shown.length) return;
-  // Trimmed extent, not min/max. A single outlier should cost a little clipping at the edge,
-  // never the readability of everything else.
-  const trim = values => {
-    const sorted = [...values].sort((a, b) => a - b);
-    const cut = Math.floor(sorted.length * 0.01);
-    return [sorted[cut], sorted[sorted.length - 1 - cut]];
-  };
-  const [minX, maxX] = trim(shown.map(n => n.x));
-  const [minY, maxY] = trim(shown.map(n => n.y));
-  const xs = [minX, maxX], ys = [minY, maxY];
-  const w = canvas.clientWidth, h = canvas.clientHeight;
-  const spanX = Math.max(...xs) - Math.min(...xs) || 1;
-  const spanY = Math.max(...ys) - Math.min(...ys) || 1;
-  state.scale = Math.min(w / (spanX + 90), h / (spanY + 90), 2.4);
-  state.tx = w / 2 - ((Math.max(...xs) + Math.min(...xs)) / 2) * state.scale;
-  state.ty = h / 2 - ((Math.max(...ys) + Math.min(...ys)) / 2) * state.scale;
+  camera.fit(view.nodes(), canvas.clientWidth, canvas.clientHeight);
+}
+
+function neighbourhood(node) {
+  const near = new Set([node.id]);
+  layout.links.forEach(l => {
+    if (l.s.id === node.id) near.add(l.t.id);
+    if (l.t.id === node.id) near.add(l.s.id);
+  });
+  return near;
 }
 
 function draw() {
@@ -214,18 +96,43 @@ function draw() {
   ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
   ctx.clearRect(0, 0, w, h);
   ctx.save();
-  ctx.translate(state.tx, state.ty);
-  ctx.scale(state.scale, state.scale);
+  camera.apply(ctx);
 
-  const focus = state.selected || state.hover;
-  const near = new Set();
-  if (focus) {
-    near.add(focus.id);
-    links.forEach(l => {
-      if (l.s.id === focus.id) near.add(l.t.id);
-      if (l.t.id === focus.id) near.add(l.s.id);
-    });
-  }
+  const scale = camera.scale;
+  const focus = focusState.selected || focusState.hover;
+  const near = focus ? neighbourhood(focus) : null;
+  const shown = view.nodes();
+  const onScreen = new Set(shown.map(n => n.id));
+
+  // Hulls first, beneath everything. Containment is stated once per container here, where it
+  // used to cost one line per member and 40% of the edges.
+  ctx.lineJoin = 'round';
+  layout.hulls(node => onScreen.has(node.id)).forEach(hull => {
+    if (hull.points.length < 3) return;
+    ctx.beginPath();
+    ctx.moveTo(hull.points[0][0], hull.points[0][1]);
+    for (let i = 1; i < hull.points.length; i += 1) {
+      const [px, py] = hull.points[i];
+      const [qx, qy] = hull.points[(i + 1) % hull.points.length];
+      ctx.quadraticCurveTo(px, py, (px + qx) / 2, (py + qy) / 2);
+    }
+    ctx.closePath();
+    ctx.globalAlpha = focus ? 0.04 : 0.09;
+    ctx.fillStyle = KIND_COLOURS[hull.parent.kind] || 'var(--ink-faint)';
+    ctx.fill();
+    ctx.globalAlpha = focus ? 0.10 : 0.24;
+    ctx.lineWidth = 1 / scale;
+    ctx.strokeStyle = KIND_COLOURS[hull.parent.kind] || 'var(--ink-faint)';
+    ctx.stroke();
+    if (scale > 0.5) {
+      ctx.globalAlpha = focus ? 0.25 : 0.62;
+      ctx.font = `${10 / scale}px ui-monospace, SFMono-Regular, Menlo, monospace`;
+      ctx.textAlign = 'left';
+      const top = hull.points.reduce((a, p) => (p[1] < a[1] ? p : a), hull.points[0]);
+      ctx.fillText((hull.parent.short || hull.parent.title).slice(0, 30),
+                   top[0], top[1] - 6 / scale);
+    }
+  });
 
   const palette = {
     structural: token('--structural'),
@@ -234,52 +141,48 @@ function draw() {
   };
   const dashes = Object.fromEntries(CONFIDENCE.map(c => [c[0], c[2]]));
 
-  visibleLinks().forEach(l => {
-    const lit = !focus || near.has(l.s.id) && near.has(l.t.id);
+  view.links().forEach(l => {
+    const lit = !focus || (near.has(l.s.id) && near.has(l.t.id));
     ctx.beginPath();
-    ctx.setLineDash(dashes[l.e.confidence].map(v => v / state.scale));
+    ctx.setLineDash(dashes[l.e.confidence].map(v => v / scale));
     ctx.strokeStyle = palette[l.e.confidence] || palette.structural;
-    ctx.globalAlpha = lit ? 0.62 : 0.07;
-    ctx.lineWidth = (lit && focus ? 1.5 : 0.8) / state.scale;
+    ctx.globalAlpha = lit ? 0.62 : 0.05;
+    ctx.lineWidth = (lit && focus ? 1.8 : 0.8) / scale;
     ctx.moveTo(l.s.x, l.s.y);
     ctx.lineTo(l.t.x, l.t.y);
     ctx.stroke();
   });
   ctx.setLineDash([]);
 
-  const inkFaint = token('--ink-faint');
   const ink = token('--ink');
   const ground = token('--ground');
-  visibleNodes().forEach(n => {
+  shown.forEach(n => {
     const lit = !focus || near.has(n.id);
-    ctx.globalAlpha = lit ? 1 : 0.12;
+    const chosen = focusState.selected && focusState.selected.id === n.id;
+    ctx.globalAlpha = lit ? 1 : 0.10;
     ctx.beginPath();
-    ctx.arc(n.x, n.y, radiusOf(n), 0, Math.PI * 2);
-    ctx.fillStyle = colourOf(n);
+    ctx.arc(n.x, n.y, radiusOf(n) + (chosen ? 2 : 0), 0, Math.PI * 2);
+    // The selected node inverts: ground fill inside its own kind's ring. It reads at any zoom
+    // and it costs no second colour channel, which a glow or a halo would.
+    ctx.fillStyle = chosen ? ground : colourOf(n);
     ctx.fill();
-    if (state.selected && state.selected.id === n.id) {
-      ctx.lineWidth = 2 / state.scale;
-      ctx.strokeStyle = ink;
-      ctx.stroke();
-    } else {
-      ctx.lineWidth = 1 / state.scale;
-      ctx.strokeStyle = ground;
-      ctx.stroke();
-    }
+    ctx.lineWidth = (chosen ? 2.4 : 1) / scale;
+    ctx.strokeStyle = chosen ? colourOf(n) : ground;
+    ctx.stroke();
   });
 
   // Labels only where they can be read: a zoomed-out hairball of overlapping text says less
   // than no text at all.
-  if (state.scale > 0.85 || focus) {
-    ctx.font = `${11 / state.scale}px ui-monospace, SFMono-Regular, Menlo, monospace`;
+  if (scale > 0.85 || focus) {
+    ctx.font = `${11 / scale}px ui-monospace, SFMono-Regular, Menlo, monospace`;
     ctx.textAlign = 'center';
-    visibleNodes().forEach(n => {
-      const lit = focus ? near.has(n.id) : state.scale > 1.3 || n.degree > 6;
+    shown.forEach(n => {
+      const lit = focus ? near.has(n.id) : scale > 1.3 || n.degree > 6;
       if (!lit) return;
       ctx.globalAlpha = 1;
       ctx.fillStyle = ink;
       const label = n.short || n.title;
-      ctx.fillText(label.slice(0, 26), n.x, n.y - radiusOf(n) - 4 / state.scale);
+      ctx.fillText(label.slice(0, 26), n.x, n.y - radiusOf(n) - 4 / scale);
     });
   }
   ctx.restore();
@@ -295,8 +198,13 @@ function text(tag, value, className) {
   return el;
 }
 
+function jumpTo(node) {
+  select(node);
+  camera.tween(node, Math.max(1.4, camera.scale), canvas.clientWidth, canvas.clientHeight, draw);
+}
+
 function select(node) {
-  state.selected = node;
+  focusState.selected = node;
   inspector.replaceChildren();
   if (!node) {
     inspector.dataset.open = 'false';
@@ -310,8 +218,7 @@ function select(node) {
   inspector.append(close);
 
   inspector.append(text('p', node.kind.replace(/-/g, ' '), 'kicker'));
-  const heading = text('h2', node.title, 'serif');
-  inspector.append(heading);
+  inspector.append(text('h2', node.title, 'serif'));
   inspector.append(text('p', node.source, 'source'));
 
   if (node.falsifies) {
@@ -323,13 +230,52 @@ function select(node) {
     inspector.append(text('p', node.body, 'statement serif'));
   }
 
-  const related = links
+  const related = layout.links
     .filter(l => l.s.id === node.id || l.t.id === node.id)
     .map(l => ({
       other: l.s.id === node.id ? l.t : l.s,
       outgoing: l.s.id === node.id,
       edge: l.e,
     }));
+
+  // Where it sits, and what sits in it. Containment left the canvas as an edge, so the address
+  // it carried has to be readable somewhere -- and a list is a better place for a tree than a
+  // drawing is.
+  const parent = node.parent ? byId.get(node.parent) : null;
+  const children = layout.holds.get(node.id) || [];
+  if (parent || children.length) {
+    inspector.append(text('h3', 'contains'));
+    if (parent) {
+      const row = document.createElement('div');
+      row.className = 'rel';
+      row.append(text('span', 'inside', 'verb'));
+      const body = document.createElement('span');
+      const jump = text('button', parent.title);
+      jump.addEventListener('click', () => jumpTo(parent));
+      body.append(jump);
+      row.append(body);
+      inspector.append(row);
+    }
+    if (children.length) {
+      const row = document.createElement('div');
+      row.className = 'rel';
+      row.append(text('span', 'holds', 'verb'));
+      const body = document.createElement('span');
+      body.className = 'chips';
+      children
+        .slice()
+        .sort((a, b) => a.title.localeCompare(b.title))
+        .forEach(child => {
+          const chip = text('button', child.short || child.title, 'chip-link');
+          chip.title = child.title;
+          chip.style.borderLeftColor = colourOf(child);
+          chip.addEventListener('click', () => jumpTo(child));
+          body.append(chip);
+        });
+      row.append(body);
+      inspector.append(row);
+    }
+  }
 
   CONFIDENCE.forEach(([level, blurb]) => {
     const group = related.filter(r => r.edge.confidence === level);
@@ -343,7 +289,7 @@ function select(node) {
         row.append(text('span', outgoing ? edge.kind + ' →' : '← ' + edge.kind, 'verb'));
         const body = document.createElement('span');
         const jump = text('button', other.title);
-        jump.addEventListener('click', () => { select(other); centre(other); });
+        jump.addEventListener('click', () => jumpTo(other));
         body.append(jump);
         // Evidence is shown for anything not parsed from a fixed grammar, so a reader can
         // check the claim against the clause that produced it rather than taking it on trust.
@@ -360,22 +306,14 @@ function select(node) {
   draw();
 }
 
-function centre(node) {
-  state.tx = canvas.clientWidth / 2 - node.x * state.scale;
-  state.ty = canvas.clientHeight / 2 - node.y * state.scale;
-  draw();
-}
-
 // ---- interaction -------------------------------------------------------
 
 function atPoint(event) {
-  const rect = canvas.getBoundingClientRect();
-  const x = (event.clientX - rect.left - state.tx) / state.scale;
-  const y = (event.clientY - rect.top - state.ty) / state.scale;
+  const { x, y } = camera.toWorld(event, canvas);
   let best = null, bestDistance = Infinity;
-  visibleNodes().forEach(n => {
+  view.nodes().forEach(n => {
     const d = (n.x - x) ** 2 + (n.y - y) ** 2;
-    const reach = (radiusOf(n) + 7 / state.scale) ** 2;
+    const reach = (radiusOf(n) + 7 / camera.scale) ** 2;
     if (d < reach && d < bestDistance) { best = n; bestDistance = d; }
   });
   return best;
@@ -390,13 +328,18 @@ canvas.addEventListener('pointermove', event => {
   if (dragging) {
     const dx = event.clientX - dragging.x, dy = event.clientY - dragging.y;
     if (Math.abs(dx) + Math.abs(dy) > 3) dragging.moved = true;
-    state.tx += dx; state.ty += dy;
+    camera.panBy(dx, dy);
     dragging.x = event.clientX; dragging.y = event.clientY;
     draw();
     return;
   }
   const found = atPoint(event);
-  if (found !== state.hover) { state.hover = found; canvas.title = found ? found.title : ''; draw(); }
+  if (found !== focusState.hover) {
+    focusState.hover = found;
+    canvas.title = found ? found.title : '';
+    canvas.style.cursor = found ? 'pointer' : 'default';
+    draw();
+  }
 });
 canvas.addEventListener('pointerup', event => {
   const wasDrag = dragging && dragging.moved;
@@ -405,17 +348,13 @@ canvas.addEventListener('pointerup', event => {
 });
 canvas.addEventListener('pointerleave', () => {
   dragging = null;
-  if (state.hover) { state.hover = null; draw(); }
+  if (focusState.hover) { focusState.hover = null; draw(); }
 });
 canvas.addEventListener('wheel', event => {
   event.preventDefault();
   const rect = canvas.getBoundingClientRect();
-  const px = event.clientX - rect.left, py = event.clientY - rect.top;
-  const factor = Math.exp(-event.deltaY * 0.0016);
-  const next = Math.min(6, Math.max(0.18, state.scale * factor));
-  state.tx = px - (px - state.tx) * (next / state.scale);
-  state.ty = py - (py - state.ty) * (next / state.scale);
-  state.scale = next;
+  camera.zoomAt(event.clientX - rect.left, event.clientY - rect.top,
+                Math.exp(-event.deltaY * 0.0016));
   draw();
 }, { passive: false });
 canvas.addEventListener('keydown', event => {
@@ -423,39 +362,105 @@ canvas.addEventListener('keydown', event => {
   const moves = { ArrowLeft: [step, 0], ArrowRight: [-step, 0], ArrowUp: [0, step], ArrowDown: [0, -step] };
   if (moves[event.key]) {
     event.preventDefault();
-    state.tx += moves[event.key][0]; state.ty += moves[event.key][1];
+    camera.panBy(moves[event.key][0], moves[event.key][1]);
     draw();
   }
   if (event.key === 'Escape') select(null);
 });
 document.addEventListener('keydown', event => {
-  if (event.key === 'Escape' && state.selected) select(null);
+  if (event.key === 'Escape' && focusState.selected) select(null);
 });
 
 // ---- rail --------------------------------------------------------------
+
+function toggleButton(label, count, colour, pressed, onChange) {
+  const button = document.createElement('button');
+  button.className = 'toggle';
+  button.type = 'button';
+  button.setAttribute('aria-pressed', pressed ? 'true' : 'false');
+  const swatch = document.createElement('span');
+  swatch.className = 'swatch';
+  if (colour) swatch.style.background = colour;
+  button.append(swatch, text('span', label));
+  if (count !== null) button.append(text('span', String(count), 'count'));
+  button.addEventListener('click', () => {
+    const on = button.getAttribute('aria-pressed') === 'true';
+    button.setAttribute('aria-pressed', on ? 'false' : 'true');
+    onChange(!on);
+  });
+  return button;
+}
 
 function buildRail() {
   const rail = document.getElementById('rail');
   const counts = {};
   NODES.forEach(n => { counts[n.kind] = (counts[n.kind] || 0) + 1; });
+  const KIND_ORDER = [...new Set(NODES.map(n => n.kind))].sort();
+
+  rail.append(text('p', 'What is drawn', 'rail-heading'));
+  const relationsToggle = toggleButton(
+    'relations only', view.relatedCount(), 'var(--structural)', view.relationsOnly,
+    on => { view.setRelationsOnly(on); fit(); draw(); refreshIsolates(); });
+  relationsToggle.title =
+    'Hide everything whose only relation is the thing that holds it, or that has none at all';
+  rail.append(relationsToggle);
+
+  const isolateNote = document.createElement('div');
+  rail.append(isolateNote);
+
+  // The nodes related to nothing are a fact about the register, not a picture. Stating the
+  // count and listing them beats drawing 84 unlabelled dots on a ring.
+  function refreshIsolates() {
+    isolateNote.textContent = '';
+    if (!layout.isolated.length) return;
+    const summary = document.createElement('button');
+    summary.className = 'toggle';
+    summary.type = 'button';
+    summary.setAttribute('aria-pressed', 'false');
+    summary.append(text('span', '', 'swatch'),
+                   text('span', 'no relation at all'),
+                   text('span', String(layout.isolated.length), 'count'));
+    const list = document.createElement('div');
+    list.className = 'isolate-list';
+    summary.addEventListener('click', () => {
+      const open = summary.getAttribute('aria-pressed') === 'true';
+      summary.setAttribute('aria-pressed', open ? 'false' : 'true');
+      list.textContent = '';
+      if (open) return;
+      const byKind = new Map();
+      layout.isolated.forEach(n => {
+        if (!byKind.has(n.kind)) byKind.set(n.kind, []);
+        byKind.get(n.kind).push(n);
+      });
+      [...byKind.keys()].sort().forEach(kind => {
+        list.append(text('p', kind.replace(/-/g, ' '), 'rail-note'));
+        byKind.get(kind)
+          .slice()
+          .sort((a, b) => a.title.localeCompare(b.title))
+          .forEach(node => {
+            const chip = text('button', node.short || node.title, 'chip-link');
+            chip.title = node.title;
+            chip.style.borderLeftColor = colourOf(node);
+            chip.addEventListener('click', () => {
+              if (view.relationsOnly) {
+                view.setRelationsOnly(false);
+                relationsToggle.setAttribute('aria-pressed', 'false');
+              }
+              jumpTo(node);
+            });
+            list.append(chip);
+          });
+      });
+    });
+    isolateNote.append(summary, list);
+  }
+  refreshIsolates();
 
   rail.append(text('p', 'Node kinds', 'rail-heading'));
   KIND_ORDER.forEach(kind => {
-    const button = document.createElement('button');
-    button.className = 'toggle';
-    button.type = 'button';
-    button.setAttribute('aria-pressed', 'true');
-    const swatch = document.createElement('span');
-    swatch.className = 'swatch';
-    swatch.style.background = KIND_COLOURS[kind] || 'var(--ink-faint)';
-    button.append(swatch, text('span', kind.replace(/-/g, ' ')), text('span', String(counts[kind]), 'count'));
-    button.addEventListener('click', () => {
-      const on = button.getAttribute('aria-pressed') === 'true';
-      button.setAttribute('aria-pressed', on ? 'false' : 'true');
-      if (on) state.kinds.delete(kind); else state.kinds.add(kind);
-      draw();
-    });
-    rail.append(button);
+    rail.append(toggleButton(
+      kind.replace(/-/g, ' '), counts[kind], KIND_COLOURS[kind] || 'var(--ink-faint)', true,
+      on => { view.toggleKind(kind, on); draw(); }));
   });
 
   const grouped = CLUSTERS.filter(c => c.size > 1);
@@ -468,12 +473,12 @@ function buildRail() {
   mode.setAttribute('aria-pressed', 'false');
   mode.title = 'Colour by what a node sits with, rather than by what it is';
   const modeLabel = text('span', 'colour by cluster');
-  mode.append(text('span', '', 'swatch'), modeLabel,
-              text('span', String(grouped.length), 'count'));
+  mode.append(text('span', '', 'swatch'), modeLabel, text('span', String(grouped.length), 'count'));
   mode.addEventListener('click', () => {
-    state.colourBy = state.colourBy === 'cluster' ? 'kind' : 'cluster';
-    mode.setAttribute('aria-pressed', state.colourBy === 'cluster' ? 'true' : 'false');
-    modeLabel.textContent = state.colourBy === 'cluster' ? 'colour by kind' : 'colour by cluster';
+    const next = view.colourBy === 'cluster' ? 'kind' : 'cluster';
+    view.setColourBy(next);
+    mode.setAttribute('aria-pressed', next === 'cluster' ? 'true' : 'false');
+    modeLabel.textContent = next === 'cluster' ? 'colour by kind' : 'colour by cluster';
     buildClusterList();
     draw();
   });
@@ -486,28 +491,15 @@ function buildRail() {
   // through textContent, like every other value from the read model (ADR-0008).
   function buildClusterList() {
     list.textContent = '';
-    if (state.colourBy !== 'cluster') return;
+    if (view.colourBy !== 'cluster') return;
     grouped.slice(0, 12).forEach((group, ordinal) => {
-      const row = document.createElement('button');
-      row.className = 'toggle';
-      row.type = 'button';
-      row.setAttribute('aria-pressed', 'true');
+      const row = toggleButton(group.name, group.size, clusterColour(ordinal), true,
+                               on => { view.toggleCluster(ordinal, on); draw(); });
       row.title = group.name;
-      const swatch = document.createElement('span');
-      swatch.className = 'swatch';
-      swatch.style.background = clusterColour(ordinal);
-      row.append(swatch, text('span', group.name),
-                 text('span', String(group.size), 'count'));
-      row.addEventListener('click', () => {
-        const on = row.getAttribute('aria-pressed') === 'true';
-        row.setAttribute('aria-pressed', on ? 'false' : 'true');
-        if (on) state.clusters.add(ordinal); else state.clusters.delete(ordinal);
-        draw();
-      });
       list.append(row);
     });
     if (loose) {
-      list.append(text('p', loose + ' nodes sit in no cluster \u2014 they have no relation at all',
+      list.append(text('p', loose + ' nodes sit in no cluster — they have no relation at all',
                        'rail-note'));
     }
   }
@@ -517,36 +509,32 @@ function buildRail() {
   const edgeCounts = {};
   EDGES.forEach(e => { edgeCounts[e.confidence] = (edgeCounts[e.confidence] || 0) + 1; });
   CONFIDENCE.forEach(([level, blurb]) => {
-    const button = document.createElement('button');
-    button.className = 'toggle';
-    button.type = 'button';
-    button.setAttribute('aria-pressed', 'true');
+    const button = toggleButton(level, edgeCounts[level] || 0, 'var(--' + level + ')', true,
+                                on => { view.toggleConfidence(level, on); draw(); });
     button.title = blurb;
-    const swatch = document.createElement('span');
-    swatch.className = 'swatch';
-    swatch.style.background = 'var(--' + level + ')';
-    button.append(swatch, text('span', level), text('span', String(edgeCounts[level] || 0), 'count'));
-    button.addEventListener('click', () => {
-      const on = button.getAttribute('aria-pressed') === 'true';
-      button.setAttribute('aria-pressed', on ? 'false' : 'true');
-      if (on) state.confidences.delete(level); else state.confidences.add(level);
-      draw();
-    });
     rail.append(button);
   });
 }
 
+// ---- wiring ------------------------------------------------------------
+
 document.getElementById('search').addEventListener('input', event => {
-  state.query = event.target.value.trim();
+  view.setQuery(event.target.value.trim());
   draw();
 });
 document.getElementById('refit').addEventListener('click', () => { fit(); draw(); });
 
 buildRail();
-fit();
-draw();
+// Watched rather than computed behind a frozen frame. The settling is the page explaining how
+// it arrived at the arrangement, and it costs nothing: the layout has never been stored, so
+// what the browser computes here can never reach a byte-compared file.
+layout.settle(
+  () => { fit(); draw(); },
+  () => { fit(); draw(); },
+);
 window.addEventListener('resize', () => { fit(); draw(); });
 const themeWatcher = window.matchMedia('(prefers-color-scheme: dark)');
 themeWatcher.addEventListener('change', draw);
-
 """
+
+JS = PRELUDE + layout.JS + view.JS + camera.JS + BODY

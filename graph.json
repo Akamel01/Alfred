@@ -25,7 +25,7 @@
     "gate": 5,
     "gate-step": 36,
     "kill-criterion": 6,
-    "module": 126,
+    "module": 129,
     "operator-item": 9,
     "risk": 12,
     "schema": 5,
@@ -37,9 +37,9 @@
     "amended_by": 2,
     "amends": 5,
     "blocks": 35,
-    "contains": 179,
+    "contains": 182,
     "enforced_by": 142,
-    "imports": 136,
+    "imports": 143,
     "needs": 4,
     "runs": 15,
     "see_also": 6,
@@ -1959,6 +1959,19 @@
     },
     {
       "confidence": "structural",
+      "dst": "module:tools.vaultgraph.render.camera",
+      "evidence": "tools/vaultgraph/render/camera.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/render/camera.py"
+      },
+      "src": "module:tools.vaultgraph"
+    },
+    {
+      "confidence": "structural",
       "dst": "module:tools.vaultgraph.render.canvas",
       "evidence": "tools/vaultgraph/render/canvas.py",
       "extractor": "code",
@@ -2011,6 +2024,19 @@
     },
     {
       "confidence": "structural",
+      "dst": "module:tools.vaultgraph.render.layout",
+      "evidence": "tools/vaultgraph/render/layout.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/render/layout.py"
+      },
+      "src": "module:tools.vaultgraph"
+    },
+    {
+      "confidence": "structural",
       "dst": "module:tools.vaultgraph.render.note",
       "evidence": "tools/vaultgraph/render/note.py",
       "extractor": "code",
@@ -2045,6 +2071,19 @@
         "end_line": 1,
         "line": 1,
         "path": "tools/vaultgraph/render/vault.py"
+      },
+      "src": "module:tools.vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.render.view",
+      "evidence": "tools/vaultgraph/render/view.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/render/view.py"
       },
       "src": "module:tools.vaultgraph"
     },
@@ -5261,6 +5300,19 @@
     },
     {
       "confidence": "structural",
+      "dst": "module:tools.vaultgraph.render.camera",
+      "evidence": "tools.vaultgraph.render.camera",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 364,
+        "line": 364,
+        "path": "tools/tests/test_render.py"
+      },
+      "src": "module:tools.tests.test_render"
+    },
+    {
+      "confidence": "structural",
       "dst": "module:tools.vaultgraph.render.cluster",
       "evidence": "tools.vaultgraph.render.cluster",
       "extractor": "imports",
@@ -5287,6 +5339,32 @@
     },
     {
       "confidence": "structural",
+      "dst": "module:tools.vaultgraph.render.layout",
+      "evidence": "tools.vaultgraph.render.layout",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 365,
+        "line": 365,
+        "path": "tools/tests/test_render.py"
+      },
+      "src": "module:tools.tests.test_render"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.render.script",
+      "evidence": "tools.vaultgraph.render.script",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 522,
+        "line": 522,
+        "path": "tools/tests/test_render.py"
+      },
+      "src": "module:tools.tests.test_render"
+    },
+    {
+      "confidence": "structural",
       "dst": "module:tools.vaultgraph.render.vault",
       "evidence": "tools.vaultgraph.render.vault",
       "extractor": "imports",
@@ -5294,6 +5372,19 @@
       "source": {
         "end_line": 31,
         "line": 31,
+        "path": "tools/tests/test_render.py"
+      },
+      "src": "module:tools.tests.test_render"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.render.view",
+      "evidence": "tools.vaultgraph.render.view",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 366,
+        "line": 366,
         "path": "tools/tests/test_render.py"
       },
       "src": "module:tools.tests.test_render"
@@ -6223,6 +6314,45 @@
     },
     {
       "confidence": "structural",
+      "dst": "module:tools.vaultgraph.render.camera",
+      "evidence": "tools.vaultgraph.render.camera",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 20,
+        "line": 20,
+        "path": "tools/vaultgraph/render/script.py"
+      },
+      "src": "module:tools.vaultgraph.render.script"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.render.layout",
+      "evidence": "tools.vaultgraph.render.layout",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 20,
+        "line": 20,
+        "path": "tools/vaultgraph/render/script.py"
+      },
+      "src": "module:tools.vaultgraph.render.script"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.render.view",
+      "evidence": "tools.vaultgraph.render.view",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 20,
+        "line": 20,
+        "path": "tools/vaultgraph/render/script.py"
+      },
+      "src": "module:tools.vaultgraph.render.script"
+    },
+    {
+      "confidence": "structural",
       "dst": "module:tools.vaultgraph.model",
       "evidence": "tools.vaultgraph.model.Edge",
       "extractor": "imports",
@@ -6913,16 +7043,16 @@
       "unparsed": 0
     },
     {
-      "edges": 80,
+      "edges": 83,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 45,
       "min_nodes": 90,
       "name": "code",
-      "nodes": 131,
+      "nodes": 134,
       "rejected": 0,
-      "scanned": 157,
+      "scanned": 160,
       "unparsed": 0
     },
     {
@@ -6952,7 +7082,7 @@
       "unparsed": 0
     },
     {
-      "edges": 136,
+      "edges": 143,
       "expect_rejected": null,
       "max_nodes": 0,
       "max_unparsed": 0,
@@ -6961,7 +7091,7 @@
       "name": "imports",
       "nodes": 0,
       "rejected": 0,
-      "scanned": 109,
+      "scanned": 112,
       "unparsed": 0
     },
     {
@@ -14676,6 +14806,30 @@
       "attrs": {
         "is_test": "false",
         "lint_gated": "false",
+        "path": "tools/vaultgraph/render/camera.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.vaultgraph.render.camera",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/render/camera.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Where the page is looking. The only thing that knows how world coordinates become pixels."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
         "path": "tools/vaultgraph/render/canvas.py",
         "present": "true",
         "protected": "false",
@@ -14772,6 +14926,30 @@
       "attrs": {
         "is_test": "false",
         "lint_gated": "false",
+        "path": "tools/vaultgraph/render/layout.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.vaultgraph.render.layout",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/render/layout.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Where the nodes go. The force simulation, the isolate margin, and the container hulls."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
         "path": "tools/vaultgraph/render/note.py",
         "present": "true",
         "protected": "false",
@@ -14814,7 +14992,7 @@
       },
       "status": "",
       "tags": [],
-      "title": "The script, inlined at build time."
+      "title": "The script, composed at build time from four modules and inlined into one page."
     },
     {
       "attrs": {
@@ -14839,6 +15017,30 @@
       "status": "",
       "tags": [],
       "title": "The whole vault as a dict of path to content, built in memory before anything is written."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "tools/vaultgraph/render/view.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.vaultgraph.render.view",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/render/view.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "What is on screen. Five filter dimensions behind one predicate."
     },
     {
       "attrs": {

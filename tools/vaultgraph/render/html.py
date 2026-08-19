@@ -20,7 +20,7 @@ from __future__ import annotations
 import json
 import re
 
-from ..model import Edge, Node, NodeKind, resolvable
+from ..model import Edge, EdgeKind, Node, NodeKind, resolvable
 from . import cluster
 from .assets import CSS
 from .script import JS
@@ -83,9 +83,18 @@ def _short(node: Node) -> str:
     return _plain(node.title)[:26]
 
 
+#: Containment is an address, not a relation. It is excluded here for the same reason the
+#: canvas stopped drawing it as an edge: `tier contains document` would put all 63 documents and
+#: their tier in one cluster and call that a finding, when it is only the directory they sit in.
+def _related(nodes: list[Node], edges: list[Edge]) -> list[Edge]:
+    """The edges every count and the clustering agree to treat as structure."""
+    return [e for e in resolvable(nodes, edges) if e.kind is not EdgeKind.CONTAINS]
+
+
 def _payload(nodes: list[Node], edges: list[Edge], anomalies: list, unparsed: list) -> dict:
     drawn = resolvable(nodes, edges)
-    of_node, _groups = cluster.summarise(nodes, drawn, cluster.partition(nodes, drawn))
+    grouped = _related(nodes, edges)
+    of_node, _groups = cluster.summarise(nodes, grouped, cluster.partition(nodes, grouped))
     return {
         "nodes": [
             {
@@ -140,7 +149,7 @@ def _gauges(nodes: list[Node], edges: list[Edge], anomalies: list, unparsed: lis
     edges = resolvable(nodes, edges)
     falsifiable = sum(1 for n in nodes if n.attrs.get("falsifies_if"))
     related: set[str] = set()
-    for edge in edges:
+    for edge in _related(nodes, edges):
         related.add(edge.src)
         related.add(edge.dst)
     isolated = sum(1 for n in nodes if n.id not in related)
@@ -151,6 +160,9 @@ def _gauges(nodes: list[Node], edges: list[Edge], anomalies: list, unparsed: lis
         ("Edges", str(len(edges)), ""),
         ("Falsification conditions", str(falsifiable), "good"),
         ("Edges read from prose", str(prose), ""),
+        # Containment does not count. A document whose only edge is the tier holding it has an
+        # address, not a relation, and counting it as related was the summary agreeing with the
+        # old drawing rather than with the register.
         ("Nodes with no relation", str(isolated), "alarm" if isolated else ""),
         ("Targets nothing defines", str(unresolved), "alarm" if unresolved else ""),
         ("Anomalies surfaced", str(len(anomalies)), "alarm" if anomalies else ""),
@@ -232,8 +244,8 @@ def render(
             ("prose", ' stroke-dasharray="1.5 3"', "prose — read from free text, unverified"),
         )
     )
-    drawn = resolvable(nodes, edges)
-    _of_node, groups = cluster.summarise(nodes, drawn, cluster.partition(nodes, drawn))
+    grouped = _related(nodes, edges)
+    _of_node, groups = cluster.summarise(nodes, grouped, cluster.partition(nodes, grouped))
     clusters = _embed(groups)
     live_control = LIVE_CONTROL if live_token else ""
     live_script = (

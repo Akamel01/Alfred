@@ -288,6 +288,31 @@ button.chip:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px
 .rel .evidence {
   display: block; color: var(--ink-soft); font-size: 11px; margin-top: 1px;
 }
+/* Neighbours and container members, as a wrapping strip of chips rather than one row each.
+   A tier holding 63 documents is a list nobody scrolls; the same 63 as chips is a shape.
+
+   Selectors are written to out-specify `.rel button`, which sets a borderless underlined link
+   and would otherwise win on specificity and leave these looking like the rows above them. */
+.chips { display: flex; flex-wrap: wrap; gap: 4px; min-width: 0; }
+.rel .chips button, .isolate-list button.chip-link {
+  border: 1px solid var(--rule); border-left-width: 3px; border-left-color: var(--ink-faint);
+  background: var(--panel); color: var(--ink); font: inherit; font-size: 11px;
+  padding: 2px 6px; cursor: pointer; max-width: 190px; text-decoration: none;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block;
+}
+.rel .chips button:hover, .isolate-list button.chip-link:hover { background: var(--sunk); }
+.rel .chips button:focus-visible, .isolate-list button.chip-link:focus-visible {
+  outline: 2px solid var(--focus); outline-offset: 1px;
+}
+/* A block, not a flex column. As a flex column the 188 chips inherited `flex-shrink: 1` and
+   every one of them was squeezed to 6px inside the scroll cap -- present, outlined, and
+   unreadable. */
+.isolate-list {
+  max-height: 240px; overflow-y: auto; padding: 0 16px 6px;
+}
+.isolate-list button.chip-link { margin: 0 0 3px; }
+.isolate-list .rail-note { margin: 6px 0 1px; }
+
 .close {
   position: absolute; top: 12px; right: 14px;
   border: 1px solid var(--rule-strong); background: var(--panel); color: var(--ink);

@@ -34,7 +34,7 @@ generated: true
 - **imports** → [[module__tools_vaultgraph_model|The graph's type vocabulary: what a node is, what an edge is, and how ids are minted.]]
 - **imports** → [[module__tools_vaultgraph_render_assets|The stylesheet, inlined at build time.]]
 - **imports** → [[module__tools_vaultgraph_render_cluster|What clumps together, computed rather than declared.]]
-- **imports** → [[module__tools_vaultgraph_render_script|The script, inlined at build time.]]
+- **imports** → [[module__tools_vaultgraph_render_script|The script, composed at build time from four modules and inlined into one page.]]
 - [[module__tools_vaultgraph|tools.vaultgraph]] **contains** → this
 - [[module__tools_tests_test_render|The renderers: the vault tree, and the published artifact.]] **imports** → this
 - [[module__tools_vaultgraph_render_dataview|Dataview boards. Queries, not materialized tables.]] **imports** → this

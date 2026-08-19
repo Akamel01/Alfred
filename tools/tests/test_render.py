@@ -357,3 +357,176 @@ def test_a_cluster_is_named_after_a_real_node() -> None:
     for group in groups:
         assert group["name"] in titles
         assert group["head"] in ids
+
+
+# ---- the three deep modules, exercised through their interfaces -----------------------------
+
+from tools.vaultgraph.render import camera as render_camera  # noqa: E402
+from tools.vaultgraph.render import layout as render_layout  # noqa: E402
+from tools.vaultgraph.render import view as render_view  # noqa: E402
+
+#: A graph small enough to reason about and shaped like the real one: a container holding three
+#: members, one of which has a relation of its own, plus a node related to nothing.
+FIXTURE_GRAPH = """
+const NODES = [
+  { id: 'tier:t', kind: 'tier', title: 'Tier', short: 't', cluster: 0 },
+  { id: 'document:a', kind: 'document', title: 'A', short: 'a', cluster: 0 },
+  { id: 'document:b', kind: 'document', title: 'B', short: 'b', cluster: 0 },
+  { id: 'document:c', kind: 'document', title: 'C', short: 'c', cluster: 0 },
+  { id: 'decision:D1', kind: 'decision', title: 'D1', short: 'D1', cluster: 0 },
+  { id: 'risk:R1', kind: 'risk', title: 'R1', short: 'R1', cluster: 1 },
+];
+const EDGES = [
+  { src: 'tier:t', dst: 'document:a', kind: 'contains', confidence: 'structural' },
+  { src: 'tier:t', dst: 'document:b', kind: 'contains', confidence: 'structural' },
+  { src: 'tier:t', dst: 'document:c', kind: 'contains', confidence: 'structural' },
+  { src: 'decision:D1', dst: 'document:a', kind: 'enforced_by', confidence: 'prose' },
+];
+const byId = new Map(NODES.map(n => [n.id, n]));
+"""
+
+
+def _node_eval(*fragments: str, probe: str) -> object:
+    """Run JS fragments plus a probe under node, and read back the probe's JSON.
+
+    The interfaces are exercised here rather than through a rendered page because that is what
+    made splitting them worth doing: a module whose behaviour can only be checked by looking at
+    a canvas is a module with no test surface.
+    """
+    assert shutil.which("node"), "node is required to exercise the renderer modules"
+    source = "\n".join(fragments) + f"\nconsole.log(JSON.stringify({probe}));\n"
+    with tempfile.TemporaryDirectory() as tmp:
+        target = Path(tmp) / "probe.mjs"
+        target.write_text(source, encoding="utf-8")
+        done = subprocess.run(
+            ["node", str(target)], capture_output=True, text=True, check=False
+        )
+    assert done.returncode == 0, done.stderr
+    return json.loads(done.stdout)
+
+
+def test_containment_never_reaches_the_simulation() -> None:
+    """The whole redesign in one assertion. `contains` was 40% of the edges and it is a tree;
+    feeding it to a force layout drew 179 spokes that say "is inside" over the graph that has
+    real structure."""
+    got = _node_eval(
+        FIXTURE_GRAPH, render_layout.JS,
+        probe="({links: layout.links.map(l => l.e.kind), "
+              "holds: [...layout.holds.keys()], "
+              "held: layout.holds.get('tier:t').map(n => n.id).sort()})",
+    )
+    assert got["links"] == ["enforced_by"], "a containment edge reached the link set"
+    assert got["holds"] == ["tier:t"]
+    assert got["held"] == ["document:a", "document:b", "document:c"]
+
+
+def test_a_node_held_by_something_still_counts_as_unrelated() -> None:
+    """"Inside a tier" is an address, not a relation. Counting it as one is what let the page
+    report 246 related nodes over a drawing that could only justify 113."""
+    got = _node_eval(
+        FIXTURE_GRAPH, render_layout.JS,
+        probe="layout.isolated.map(n => n.id).sort()",
+    )
+    assert got == ["document:b", "document:c", "risk:R1", "tier:t"]
+
+
+def test_a_hull_is_refused_when_it_would_enclose_what_it_does_not_hold() -> None:
+    """The compactness gate. An outline round members the simulation pushed apart encloses
+    everything between them, and a reader takes an enclosure at face value."""
+    tight = _node_eval(
+        FIXTURE_GRAPH, render_layout.JS,
+        probe="(function () {"
+              " byId.get('document:a').x = 0; byId.get('document:a').y = 0;"
+              " byId.get('document:b').x = 20; byId.get('document:b').y = 0;"
+              " byId.get('document:c').x = 0; byId.get('document:c').y = 20;"
+              " return layout.hulls(() => true).length; })()",
+    )
+    assert tight == 1, "a compact container was given no hull"
+    spread = _node_eval(
+        FIXTURE_GRAPH, render_layout.JS,
+        probe="(function () {"
+              " byId.get('document:a').x = -9000; byId.get('document:a').y = 0;"
+              " byId.get('document:b').x = 9000; byId.get('document:b').y = 0;"
+              " byId.get('document:c').x = 0; byId.get('document:c').y = 9000;"
+              " return layout.hulls(() => true).length; })()",
+    )
+    assert spread == 0, "a container whose members span the canvas was still given a hull"
+
+
+def test_relations_only_is_the_default_and_hides_exactly_the_unrelated() -> None:
+    got = _node_eval(
+        FIXTURE_GRAPH, render_layout.JS, render_view.JS,
+        probe="({on: view.relationsOnly, shown: view.nodes().map(n => n.id).sort(),"
+              " all: (view.setRelationsOnly(false), view.nodes().length)})",
+    )
+    assert got["on"] is True
+    assert got["shown"] == ["decision:D1", "document:a"]
+    assert got["all"] == 6
+
+
+def test_hiding_is_recorded_as_hidden_never_as_shown() -> None:
+    """A kind appearing in a later build must be visible by default. Recording the shown set
+    instead would make a new node kind silently absent, which is the failure mode this whole
+    package's floors exist to prevent, arriving through the renderer."""
+    got = _node_eval(
+        FIXTURE_GRAPH, render_layout.JS, render_view.JS,
+        probe="(function () {"
+              " view.setRelationsOnly(false);"
+              " view.toggleKind('risk', false);"
+              " const without = view.nodes().map(n => n.kind);"
+              " view.toggleKind('risk', true);"
+              " return {without, back: view.nodes().length}; })()",
+    )
+    assert "risk" not in got["without"]
+    assert got["back"] == 6
+
+
+def test_the_camera_round_trips_a_point_through_its_own_transform() -> None:
+    """`toWorld` and the transform `apply` writes are the same conversion in two directions.
+    They lived in six places before this module and had to agree six times."""
+    got = _node_eval(
+        render_camera.JS,
+        probe="(function () {"
+              " const element = { getBoundingClientRect: () => ({ left: 10, top: 20 }) };"
+              " camera.fit([{x: -100, y: -50}, {x: 100, y: 50}], 800, 400);"
+              " camera.zoomAt(400, 200, 1.7);"
+              " camera.panBy(-31, 17);"
+              " const world = camera.toWorld({clientX: 210, clientY: 140}, element);"
+              " const back = { x: 0, y: 0 };"
+              " const ctx = { translate: (x, y) => { back.x += x; back.y += y; },"
+              "               scale: s => { back.s = s; } };"
+              " camera.apply(ctx);"
+              " return { px: back.x + world.x * back.s, py: back.y + world.y * back.s }; })()",
+    )
+    assert abs(got["px"] - 200) < 1e-6, got
+    assert abs(got["py"] - 120) < 1e-6, got
+
+
+def test_the_camera_refuses_to_zoom_past_its_own_limits() -> None:
+    got = _node_eval(
+        render_camera.JS,
+        probe="(function () {"
+              " camera.fit([{x: 0, y: 0}, {x: 10, y: 10}], 800, 400);"
+              " for (let i = 0; i < 200; i += 1) camera.zoomAt(0, 0, 2);"
+              " const high = camera.scale;"
+              " for (let i = 0; i < 400; i += 1) camera.zoomAt(0, 0, 0.5);"
+              " return { high, low: camera.scale }; })()",
+    )
+    assert got["high"] == 6
+    assert got["low"] == 0.18
+
+
+def test_nothing_outside_the_camera_touches_the_transform() -> None:
+    """The seam, asserted rather than trusted. The point of the module is that a seventh place
+    needing the conversion asks for it instead of writing a seventh copy."""
+    from tools.vaultgraph.render import script as render_script
+
+    body = render_script.PRELUDE + render_script.BODY
+    # Writes only, and matched on word boundaries. `const scale = camera.scale` is a read
+    # through the interface and is exactly what this module is for; forbidding it would forbid
+    # the seam being used. A plain substring scan is also wrong in the other direction --
+    # `ctx = canvas.getContext(...)` contains `tx =`.
+    for leak in (r"state\.(tx|ty|scale)\b", r"\btx\s*[+*]?=", r"\bty\s*[+*]?=",
+                 r"\bscale\s*[+*]=", r"\bctx\.(translate|scale)\("):
+        found = re.search(leak, body)
+        assert not found, f"{found.group(0)!r} writes the transform outside camera.py"
