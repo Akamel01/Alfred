@@ -59,6 +59,12 @@ RUN python -m pip install --no-cache-dir --upgrade pip \
 COPY extract.py /oracle/extract.py
 COPY points.py /oracle/points.py
 
+# The fingerprint emitter and the vectors that cross-check its normalization. Same COPY
+# discipline and the same reason. It is not the entrypoint: the driver overrides it, so the
+# default path of this image stays the extractor and nothing gains a second way to run.
+COPY fingerprints.py /oracle/fingerprints.py
+COPY normalization_vectors.json /oracle/normalization_vectors.json
+
 # The output directory is the only writable path the run needs. Created here and owned by
 # the unprivileged user so the container never runs as root.
 # The clone is chowned to the unprivileged user because git refuses a repository whose

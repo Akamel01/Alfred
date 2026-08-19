@@ -31,6 +31,11 @@ from typing import Any
 
 from harness.oracle.pins import IMAGE_TAG, ORACLE_COMMIT_SHA, PLATFORM
 
+# The committed side of the normalization cross-check. Lives in the build context because
+# the Dockerfile COPYs it into the image; one file, so the two sides cannot drift apart by
+# somebody updating a copy.
+VECTORS_PATH = Path(__file__).resolve().parent / "normalization_vectors.json"
+
 
 class OracleRunFailed(RuntimeError):
     """The oracle did not produce a usable extract. Nothing is loaded."""
@@ -132,3 +137,72 @@ def run_oracle(*, tag: str = IMAGE_TAG, out_dir: Path | None = None) -> OracleRu
         )
 
     return OracleRun(report=report, exit_code=proc.returncode, image_id=_image_id(tag))
+
+
+def run_fingerprints(*, tag: str = IMAGE_TAG, out_dir: Path | None = None) -> dict[str, Any]:
+    """Run the fingerprint emitter and refuse a run whose normalization disagrees with ours.
+
+    Same posture as `run_oracle`, with the entrypoint overridden: the image's default path
+    stays the extractor, so nothing here gives the image a second way to be invoked by
+    accident. What differs is the check afterwards.
+
+    **The cross-check is the reason this is a function and not a documented command.** The
+    normalization C15 clause 3 compares against exists twice — inside the image, because D54
+    forbids the oracle's source crossing the boundary, and in `patch_side.py`, because that is
+    where the diff is. If they drift, every digest in the register is a digest of something
+    else, clause 3 matches nothing, and the result is indistinguishable from a clean patch.
+    So the emitter answers the committed vectors in its own output and this refuses the run on
+    any disagreement, rather than writing a register nobody could trust.
+    """
+    if not image_exists(tag):
+        raise OracleRunFailed(f"oracle image {tag} is not built; see build_image()")
+
+    with tempfile.TemporaryDirectory(prefix="alfred-fingerprints-") as tmp:
+        out = Path(out_dir) if out_dir else Path(tmp)
+        out.mkdir(parents=True, exist_ok=True)
+        proc = subprocess.run(
+            [
+                "docker", "run", "--rm",
+                "--platform", PLATFORM,
+                "--network", "none",
+                "--read-only",
+                "--user", "10001",
+                "--tmpfs", "/tmp:rw,size=256m",
+                "--volume", f"{out}:/out",
+                "--entrypoint", "python",
+                tag,
+                "/oracle/fingerprints.py",
+            ],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        report_path = out / "oracle_fingerprints.json"
+        if not report_path.exists():
+            raise OracleRunFailed(
+                f"no fingerprint report was produced. exit={proc.returncode} "
+                f"stderr={proc.stderr[-2000:]}"
+            )
+        report: dict[str, Any] = json.loads(report_path.read_text())
+
+    if report.get("findings"):
+        raise OracleRunFailed(f"the emitter reported findings: {report['findings']}")
+
+    observed = report.get("oracle_commit_sha")
+    if observed != ORACLE_COMMIT_SHA:
+        raise OracleRunFailed(f"image reports oracle commit {observed}, pins say {ORACLE_COMMIT_SHA}")
+
+    committed = json.loads(VECTORS_PATH.read_text(encoding="utf-8"))["vectors"]
+    expected = {vector["name"]: vector["normalized_sha256"] for vector in committed}
+    answered = {v["name"]: v["normalized_sha256"] for v in report.get("normalization_vectors", [])}
+    if not answered:
+        # D57. Zero vectors answered is not agreement; it is a cross-check that did not run.
+        raise OracleRunFailed("the emitter answered no normalization vectors")
+    disagreements = sorted(name for name, digest in expected.items() if answered.get(name) != digest)
+    if disagreements:
+        raise OracleRunFailed(
+            f"the in-image normalization disagrees with patch_side.py on {disagreements}; "
+            "every digest this run produced would be a digest of something else"
+        )
+
+    return report

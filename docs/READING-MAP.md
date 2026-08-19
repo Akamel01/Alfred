@@ -179,7 +179,8 @@ Binding on implementation and easy to miss, since they live inside one document.
 | [ADR-0021](tier1/adr-log.md) | Enumeration drift, and the two claims of CI coverage that were false |  |
 | [ADR-0022](tier1/adr-log.md) | Phase 0's exit, narrowed along the ownership seam, with the residue dated |  |
 | [ADR-0023](tier1/adr-log.md) | Which of ADR-0019's unhardened defaults are Alfred's, and the two that are |  |
+| [ADR-0024](tier1/adr-log.md) | C15's third clause runs, the denylist's names are read, and a gate nobody had |  |
 
 ---
 
-**63 documents mapped** · 43 binding · 13 context · 7 record · 23 architecture decisions
+**63 documents mapped** · 43 binding · 13 context · 7 record · 24 architecture decisions

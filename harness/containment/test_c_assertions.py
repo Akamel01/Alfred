@@ -1090,7 +1090,9 @@ def test_c15_passes_on_an_ordinary_patch(denylist: Denylist) -> None:
 
 def test_c15_says_so_when_clause_three_did_not_run(denylist: Denylist) -> None:
     """A two-clause check reporting a three-clause pass is the vacuity this avoids."""
-    result = assert_patch_carries_no_oracle(_diff("src/x.py", "import numpy"), denylist)
+    result = assert_patch_carries_no_oracle(
+        _diff("src/x.py", "import numpy"), denylist, denied_source_hashes={}
+    )
     assert result.outcome is AssertionOutcome.PASSED
     assert result.premise_verified is False
     assert "2 of 3" in result.detail
@@ -1333,3 +1335,86 @@ def test_c17_records_what_it_read_on_failure_too() -> None:
     result = _c17(container_launch_args=("docker", "run", "img"))
     assert result.outcome is AssertionOutcome.FAILED
     assert result.observed["container_launch_args"] == "docker run img"
+
+
+# ============================================== C15 clause 3, against the real register
+
+
+def _source_hash_register() -> dict[str, str]:
+    from harness.containment.source_hashes import load as _load
+
+    return _load().as_mapping()
+
+
+def test_the_source_hash_register_is_not_empty_and_names_its_pin() -> None:
+    """D57. A register of nothing disables clause 3 while looking built.
+
+    This is the test that would have failed on 2026-08-18, when the register did not exist and
+    clause 3 reported `2 of 3 clauses` on every real invocation with nothing recording it.
+    """
+    from harness.containment.source_hashes import load as _load
+
+    register = _load()
+    assert register.hashes, "the register carries no hashes"
+    assert len(register.hashes) >= 40, len(register.hashes)
+    assert register.oracle_commit_sha == "60bebed8005610f1b856e601852676a21e85cfc6"
+
+
+def test_clause_three_misses_a_fragment_pasted_into_an_existing_file(denylist: Denylist) -> None:
+    """Finding 8, pinned as a test rather than only as a docstring.
+
+    The register holds whole-file digests and the clause hashes a path's added lines, so a
+    vendored fragment appended to an existing file cannot match. Asserting the limit means a
+    future change that closes it fails here and has to say so, instead of quietly widening
+    what a green C15 means.
+    """
+    whole = "def ttc(a, b):\n    return a - b"
+    register = {normalized_source_hash(whole): "commonroad_crime/measure/time/ttc.py"}
+
+    # The control: the same register, the same content, added as a whole file. It must fail,
+    # or the test below would pass against a clause that never matches anything.
+    caught = assert_patch_carries_no_oracle(
+        _diff("src/metrics/copied.py", *whole.splitlines()),
+        denylist,
+        denied_source_hashes=register,
+    )
+    assert caught.outcome is AssertionOutcome.FAILED
+
+    # The limit: the second line alone, pasted into a file that already existed.
+    missed = assert_patch_carries_no_oracle(
+        _diff("src/metrics/existing.py", "    return a - b"),
+        denylist,
+        denied_source_hashes=register,
+    )
+    assert missed.outcome is AssertionOutcome.PASSED
+
+
+def test_c15_is_not_executed_when_the_register_cannot_be_read(
+    denylist: Denylist, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """An unreadable policy is not an absent one. Fail closed, never fall back to two clauses."""
+    import harness.containment.patch_side as patch_side
+    import harness.containment.source_hashes as source_hashes
+
+    monkeypatch.setattr(source_hashes, "DEFAULT_PATH", tmp_path / "absent.json")
+    monkeypatch.setattr(
+        patch_side, "load_source_hashes", lambda: source_hashes.load(source_hashes.DEFAULT_PATH)
+    )
+    result = assert_patch_carries_no_oracle(_diff("src/x.py", "import numpy"), denylist)
+    assert result.outcome is AssertionOutcome.NOT_EXECUTED
+    assert "register could not be read" in result.detail
+
+
+def test_the_normalization_vectors_agree_with_patch_sides_implementation() -> None:
+    """The committed side of the cross-check that keeps one canonical form out of two copies.
+
+    The in-image side is asserted by `harness/oracle/run.py::run_fingerprints`, which refuses
+    a run on disagreement. This is the half that can run without Docker, and without it a
+    drift would only be caught on a machine that happens to have the oracle image built.
+    """
+    vectors = json.loads(
+        (Path(__file__).resolve().parents[1] / "oracle" / "normalization_vectors.json").read_text()
+    )["vectors"]
+    assert len(vectors) >= 8
+    for vector in vectors:
+        assert normalized_source_hash(vector["input"]) == vector["normalized_sha256"], vector["name"]

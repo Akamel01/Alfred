@@ -31,6 +31,22 @@ lowercased. **A renamed, reformatted, partially rewritten vendored copy passes i
 the same limit `oracle_absence.py` records for its own name- and hash-based scan, and it is
 not closed here. What the clause does catch is the copy-paste case, which is the one an agent
 under time pressure actually produces.
+
+**And it compares added lines against whole files, so only a whole-new-file diff can match.**
+The digest is taken over the lines a path *adds*; the register it is compared against holds
+digests of *complete* oracle source files. A vendored copy pasted into an existing file adds a
+fragment, and a fragment's normalized hash is not the file's. So the clause catches
+`+++ b/src/metrics/ttc.py` created whole and misses the same code appended to a module that
+already existed. Recorded here beside the reformatting and renaming limits rather than fixed,
+because the fix is a different check: hashing post-application content would catch it and
+would cost the "runs on the diff, never on a working tree" property this module is built
+around, whose failure mode is a dirty tree. Two checks, and the second one is not written.
+
+**Until 2026-08-19 the clause had never run at all.** `denied_source_hashes` was supplied by
+two test cases and by nothing in production, so every real invocation reported `PASSED — 2 of
+3 clauses`. `harness/containment/source_hashes.py` loads the register that ends that, built
+inside the oracle image by `harness/oracle/fingerprints.py`. The limits above are worth
+stating precisely because the clause now produces green results somebody might quote.
 """
 
 from __future__ import annotations
@@ -44,6 +60,8 @@ from typing import Final
 
 from harness.containment.assertions import Assertion, AssertionOutcome
 from harness.containment.denylist import Denylist
+from harness.containment.source_hashes import SourceHashesUnavailable
+from harness.containment.source_hashes import load as load_source_hashes
 
 __all__ = [
     "ASSERTION_C15",
@@ -205,10 +223,16 @@ def assert_patch_carries_no_oracle(
     """C15 — the diff adds no dependency, no denied import, and no denied source file.
 
     `denied_source_hashes` maps a normalized hash to the name of the oracle source file it
-    came from. It is supplied by the operator-driven oracle environment — the only place the
-    oracle exists — and **an empty mapping disables clause 3 rather than satisfying it**,
-    which is why the assertion says so in its detail instead of reporting a clean three-clause
-    pass on a two-clause check.
+    came from, and **omitting it now loads `policy/oracle-source-hashes.json`** rather than
+    switching clause 3 off. That polarity is the fix for the defect this parameter had: the
+    default was "no hashes", nothing in production supplied any, and so the clause never ran
+    while C15 reported `PASSED` on every invocation.
+
+    The dangerous option still exists and now has to be asked for by name: passing an explicit
+    empty mapping disables clause 3, and the assertion says so in its detail instead of
+    reporting a clean three-clause pass over a two-clause check. A register that cannot be
+    read is `not_executed`, never a quiet fall back to two clauses — an unreadable policy is
+    not an absent one.
     """
     if not diff_text.strip():
         return Assertion(
@@ -216,6 +240,16 @@ def assert_patch_carries_no_oracle(
             outcome=AssertionOutcome.NOT_EXECUTED,
             detail="the diff is empty; a check over no lines is not a clean check",
         )
+
+    if denied_source_hashes is None:
+        try:
+            denied_source_hashes = load_source_hashes().as_mapping()
+        except SourceHashesUnavailable as exc:
+            return Assertion(
+                assertion_id=ASSERTION_C15,
+                outcome=AssertionOutcome.NOT_EXECUTED,
+                detail=f"the oracle source-hash register could not be read: {exc}",
+            )
 
     denied_distributions = {name.lower() for name in denylist.denied_distributions}
     denied_modules = set(denylist.denied_modules)

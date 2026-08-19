@@ -2387,3 +2387,137 @@ F25 turns into a refusal to start. Both are tested, parametrized over each field
 `harness/` is inspector machinery under D20. Major-fix #8 permits an agent-drafted inspector
 patch only under line-by-line human review with a mandatory ADR. This is that ADR. The review
 is O9, it has not happened, and this change joins the queue.
+
+---
+
+## ADR-0024 — C15's third clause runs, the denylist's names are read, and a gate nobody had
+
+**Date** 2026-08-19 · **Status** Accepted · **Supersedes** nothing
+
+### Context
+
+Three things, found together because they share a cause: something that looked checked and was
+not.
+
+**C15 clause 3 had never run.** The clause catches the vendoring case the other two miss
+entirely — a copied measure implementation under a new name declares no dependency and imports
+nothing denied — by comparing normalized content hashes against hashes of the oracle's source.
+`denied_source_hashes` was supplied in two test cases and by nothing else. There was no
+generator, no file in `policy/`, no production caller. So every real invocation of C15 reported
+`PASSED — 2 of 3 clauses (no denied source hashes supplied)`, and the module's own comment
+names the shape: *"a report that reads green over a check that did not run."*
+
+**The denylist's import names were `UNVERIFIED`** (D54), taken from this project's records
+rather than read from each distribution at a pinned version. A wrong import name is an
+assertion that passes while naming nothing.
+
+**And neither `ruff` nor `pyright` covers `harness/`.** Both declare `include = ["src",
+"tests"]`. A function in `harness/containment/` annotated `-> str` and returning an `int`
+passes both gates; this was verified by planting one. Every "ruff clean, pyright 0 errors"
+recorded in this log is true and says nothing about the inspector tree.
+
+### Decision — the hashes are produced inside the image, and only digests leave
+
+`harness/oracle/fingerprints.py` runs inside the pinned oracle image under the posture
+`run_oracle` already established — `--network none`, `--read-only`, non-root, no repository
+mount — and emits normalized digests for CriMe's measure sources, the real top-level import
+names of each denied distribution, and its answers to a committed vector suite. Output is
+`policy/oracle-source-hashes.json`: **47 files at commit `60bebed8005610`**.
+
+The hashing happens *inside* because D54 says the oracle's outputs cross the boundary as data
+and its code never crosses at all. Hashing outside would mean extracting CriMe's source text
+into this repository, which is the thing D54 forbids in as many words.
+
+### The normalization therefore exists twice, and that is the interesting decision
+
+`normalized_source_hash` in `patch_side.py` runs outside on the diff. `_normalized` in
+`fingerprints.py` runs inside. They cannot share a module: `extract.py`'s stated property is
+that nothing baked into the oracle image imports Alfred code, and that property is worth more
+than the duplication costs.
+
+Two implementations of one canonical form is exactly the hazard ACS-1 met and answered —
+publish vectors, make both sides answer them. `harness/oracle/normalization_vectors.json`
+carries nine, chosen for the rules where plausible implementations differ rather than for
+coverage: comment stripping at end-of-line versus whole-line, both comment syntaxes, whitespace
+runs across newlines, trimming, case folding, and a `#` inside a string literal — which *is*
+stripped, and the vector records that rather than hiding it. `run_fingerprints` refuses the run
+on any disagreement. Without that check a drift would make every digest in the register a
+digest of something else, clause 3 would match nothing, and the result would be
+indistinguishable from a clean patch.
+
+**Measured 2026-08-19: nine of nine vectors agree.** One file, in the build context, so the two
+sides cannot drift by somebody updating a copy.
+
+### The default polarity is inverted, because the old one was the defect
+
+Omitting `denied_source_hashes` now **loads the register**. Passing an explicit empty mapping
+still disables clause 3 and still says so in the detail. The dangerous option has to be asked
+for by name. A register that exists but cannot be read is `not_executed`, never a quiet
+fallback to two clauses: an unreadable policy is not an absent one.
+
+### Finding 8, documented rather than closed
+
+Clause 3 hashes a path's **added lines** and compares them against digests of **complete
+files**, so only a whole-new-file diff can match. A vendored fragment pasted into an existing
+file adds a fragment, and a fragment's normalized hash is not the file's.
+
+Written into the module's existing *"The limit"* section beside the reformatting and renaming
+limits, into the register's own header, **and pinned as a test** carrying its own control: the
+same content added as a whole file must fail, or the miss proves nothing. Asserting the limit
+means a future change that closes it fails there and has to say so, instead of quietly widening
+what a green C15 means.
+
+Not closed, because closing it is a different check. Hashing post-application content would
+catch the fragment and would cost the *"runs on the diff, never on a working tree"* property
+this module is built around, whose failure mode is a dirty tree. Two checks, and the second one
+is not written.
+
+### The denylist, verified
+
+All four denied distributions' import names match the records exactly:
+`commonroad_crime`, `commonroad_reach`, `commonroad_dc`, `commonroad_clcs`. The `UNVERIFIED`
+note is rewritten as a verification record rather than deleted, because what it said was true
+when it was written.
+
+One thing the reading found that the records did not have: **`commonroad-crime` installs a
+second top-level name, `tests`.** It is deliberately not denied — nothing in the schedulable
+task class is delegated to it, and denying a name that generic would collide with Alfred's own
+tree and with most third-party packages, producing false positives in the one check whose
+findings are meant to be acted on. Recorded so a future reader comparing this file against the
+distribution's metadata does not have to re-derive why.
+
+The denylist's `version` stays `1`: the digest input is `version`, `denied` and
+`permitted_substrate`, and none of those changed. The entries were confirmed, not edited.
+
+### Recorded and not fixed: `harness/` has no type gate and no lint gate
+
+`uv run pyright harness` reports **300 errors** under the strict settings the product tree is
+held to, and `uv run ruff check harness` reports *"No Python files found"* — the `include` list
+excludes it even against an explicit path.
+
+The exclusion is deliberate and its reason is sound: a product gate that fails for
+inspector reasons is a gate no product change can fix. What is not sound is the consequence,
+which is that the tree everything else is verified *by* is the one tree nothing verifies. This
+compounds with ADR-0022's criterion 7 — the unreviewed inspector patches on O9 are also
+untyped and unlinted, so "unreviewed" is a stronger statement than it reads.
+
+Not fixed here. Three hundred strict-mode errors in inspector code is its own piece of work
+with its own review, and folding it into this change would bury both. It is recorded so that
+the next reader does not have to plant a broken function to discover it, as this one did.
+
+### Consequences and enforcement
+
+- `harness/containment/source_hashes.py` loads the register and fails closed four ways:
+  absent, unparseable, zero hashes, or no oracle commit recorded. A register that parsed to
+  nothing is a generation failure, not an empty policy.
+- The oracle image gains `fingerprints.py` and the vectors by `COPY`, never a mount — the same
+  discipline and the same reason as `extract.py`. It is not the entrypoint; the driver
+  overrides it, so the image's default path stays the extractor.
+- **Not done:** no production code calls C15 yet. The register makes clause 3 work whenever
+  something does; it does not create the caller. The patch gate is where that lands.
+
+### Why this is an inspector patch
+
+`harness/` and `policy/` are inspector machinery under D20. Major-fix #8 permits an
+agent-drafted inspector patch only under line-by-line human review with a mandatory ADR. This
+is that ADR. The review is O9, it has not happened, and this change joins the queue.

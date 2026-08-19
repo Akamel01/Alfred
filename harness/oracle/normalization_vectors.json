@@ -1,0 +1,68 @@
+{
+  "_comment": [
+    "Cross-check vectors for the normalization C15 clause 3 compares against.",
+    "",
+    "The function exists TWICE, and it has to. `normalized_source_hash` in patch_side.py runs",
+    "outside on the diff; `_normalized` in harness/oracle/fingerprints.py runs INSIDE the",
+    "oracle image, where it must, because D54 forbids the oracle's source crossing the",
+    "boundary at all -- only digests may cross. And extract.py's stated property is that",
+    "nothing baked into that image imports Alfred code, so the two cannot share a module.",
+    "",
+    "Two implementations of a canonical form is the hazard ACS-1 already named and already",
+    "solved: publish vectors and make both sides answer them. If the two normalizations ever",
+    "disagree, every hash in policy/oracle-source-hashes.json is a hash of something else and",
+    "clause 3 silently matches nothing -- which reads exactly like a clean patch.",
+    "",
+    "The vectors are chosen for the rules that differ between plausible implementations, not",
+    "for coverage: comment stripping at end of line vs whole line, both comment syntaxes,",
+    "whitespace runs across newlines, leading and trailing trim, and case folding."
+  ],
+  "version": 1,
+  "vectors": [
+    {
+      "name": "empty",
+      "input": "",
+      "normalized_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "plain",
+      "input": "def f(x):\n    return x\n",
+      "normalized_sha256": "c4c1088ea5f77d5146997763d1b708faec4c2cce7fbce423e1ae2d8da5fb27fb"
+    },
+    {
+      "name": "trailing-hash-comment",
+      "input": "def f(x):  # keep\n    return x\n",
+      "normalized_sha256": "c4c1088ea5f77d5146997763d1b708faec4c2cce7fbce423e1ae2d8da5fb27fb"
+    },
+    {
+      "name": "whole-line-hash-comment",
+      "input": "# header\ndef f(x):\n    return x\n",
+      "normalized_sha256": "c4c1088ea5f77d5146997763d1b708faec4c2cce7fbce423e1ae2d8da5fb27fb"
+    },
+    {
+      "name": "slash-comment",
+      "input": "int f(int x) { // keep\n  return x;\n}\n",
+      "normalized_sha256": "7bf024eee88707a82f52c3cccc61183794964679fd595c1258814ec0446c4f46"
+    },
+    {
+      "name": "whitespace-runs",
+      "input": "def   f(x):\n\n\n\treturn    x\n",
+      "normalized_sha256": "c4c1088ea5f77d5146997763d1b708faec4c2cce7fbce423e1ae2d8da5fb27fb"
+    },
+    {
+      "name": "leading-and-trailing",
+      "input": "   \n def f(x): return x \n   \n",
+      "normalized_sha256": "c4c1088ea5f77d5146997763d1b708faec4c2cce7fbce423e1ae2d8da5fb27fb"
+    },
+    {
+      "name": "case",
+      "input": "DEF F(X): RETURN X\n",
+      "normalized_sha256": "c4c1088ea5f77d5146997763d1b708faec4c2cce7fbce423e1ae2d8da5fb27fb"
+    },
+    {
+      "name": "hash-inside-a-string-is-still-stripped",
+      "input": "s = \"a # b\"\n",
+      "normalized_sha256": "75f66d5b7c918e5e77399230ce07d77679961d694a640b0e98178d943bc1f852"
+    }
+  ]
+}
