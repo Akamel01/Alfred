@@ -2172,3 +2172,120 @@ that set together account for every document on disk, in both directions.
 in its own header. Major-fix #8 permits an agent-drafted inspector patch only under
 line-by-line human review with a mandatory ADR. This is that ADR. The review is O9, it has not
 happened, and this change joins the queue rather than clearing it.
+
+---
+
+## ADR-0022 — Phase 0's exit, narrowed along the ownership seam, with the residue dated
+
+**Date** 2026-08-19 · **Status** Accepted · **Supersedes** nothing · **D28 waiver:** yes
+
+### Context
+
+Phase 0 exit is **2026-09-09**, twenty-one days from this record. The calendar finding in
+`execution-order.md` has been on the board since the inventory and says the honest options are
+to move the date under a waiver ADR or to narrow the exit the way D36 narrows a task class.
+Neither had been taken.
+
+Counted against the criteria rather than against the stages, four of the seven are met: the
+null-agent floor test, the seeded-defect suite reddening correctly, deploy and rollback
+verified, and the egress canary — as a probe. Three are not: byte-identical deterministic
+replay, CriMe's asserted values reproduced on the six named scenarios, and an off-machine
+backup with a verified restore.
+
+**Two of the three unmet criteria are S5, and S5's exit is domain content.** The ownership rule
+is the operator's, stated verbatim: the factory is Alfred, and AV-project work belongs to the
+local models. Reproducing CriMe's numbers is that work. Phase 0 as written therefore gates the
+factory on work the factory does not own and cannot honestly schedule — which is a defect in
+the criterion, not a shortfall in the effort, and it is the reason narrowing is available here
+without lowering a bar.
+
+The remaining two have a different shape. `nftables` default-drop and a recorded D-production
+restore are the operator's to execute and are not code in this repository. They are also the
+only two criteria that test whether the containment and durability claims are true of anything
+outside CI. Narrowing those out would remove the half of Phase 0 most worth keeping.
+
+### Decision
+
+Both halves of the option, not one. **Narrow along the ownership seam, and date the residue.**
+
+**The narrowed Phase 0 exit:**
+
+1. The null-agent floor test (met).
+2. The seeded-defect suite reddening correctly (met).
+3. Deploy and rollback verified against what is serving (met).
+4. The egress canary firing against real enforcement — `nftables` default-drop in the host
+   network namespace, not the probe alone.
+5. Byte-identical deterministic replay, demonstrated end-to-end on a synthetic trajectory the
+   factory owns.
+6. A recorded **D-production** restore: the actual off-machine backup restored and compared
+   against the live anchor. A green CI run is D-synthetic and proves the mechanism only.
+7. **No unreviewed inspector patch enforces any of the above.**
+
+**The residue, dated 2026-10-07:** CriMe's asserted values reproduced on the six named
+scenarios, and everything downstream of D49's P3 rung — which is O3, already carrying
+2026-09-09 and moved here with it.
+
+### Why 2026-10-07, and why not a fresh date
+
+The residue is domain work by the local models, which is exactly what Phase 1 dispatches and
+what K3 measures. Pinning it to an existing milestone rather than inventing one makes it
+self-measuring: if the six scenarios are not reproduced by Phase 1 exit, K3's per-task merge
+rate on that task class is the evidence for why, and no separate post-mortem is needed. A
+fresh date would have to come from an estimate of the domain work, and the last such estimate
+is the sixty-six-hour figure that produced this problem.
+
+### Criterion 7, and why the review is a criterion rather than a note
+
+Every criterion above is enforced by inspector machinery, and eleven inspector patches stand
+unreviewed on O9 before this plan adds to them. A gate nobody has reviewed is not a gate — it
+is ADR-0007's vacuity class one level up, where the thing executed and passed and the reader
+concluded more than the check performed. Making the review a criterion makes the debt dated
+and countable instead of "Rolling". Review is batched by subsystem — the containment patch as
+one change, the lint family as one, the stamp and fingerprint pair as one — because sixteen
+separate reviews is the shape most likely to be skimmed.
+
+### The O1 derivation, recorded here because it closes half of an operator item
+
+`O1` asks for `F` and a target `n`, with `n` **stated as dispatched or merged**. The
+dispatched-or-merged half does not need an operator preference; it follows from the formula.
+The capacity ledger is `5·n·m + F ≤ C` with `m` defined as per-task human minutes **across
+authorship, review and escalation**. All three are paid on every task the operator dispatches,
+whether or not it merges. A merged `n` would therefore silently drop the minutes spent on
+rejected tasks, so **the capacity gate's `n` is dispatched**. The risk register's own
+arithmetic already reads it that way — "2–3 dispatched tasks/day is 80–120 dispatched and
+roughly 40–60 merged".
+
+K3's denominator stays **merged**, and the two are different quantities that happen to share a
+letter. That is where the factor of two the board flags actually lands.
+
+`F` remains open and is the one term nobody can derive. Either it is supplied, or 300 min/week
+stands as a declared assumption whose falsification condition is a measured `F` above it,
+invalidating every `m` budget in `mission-control-design.md`.
+
+### Consequences and enforcement
+
+- This is a **D28 waiver** and counts toward the waiver total the operating principles use as
+  a health metric. It is the first.
+- The narrowed criteria become the content of `docs/tier2/stage-gate-definitions.md`, which is
+  `owner: executable` and `enforcement: ci-gate` and has named no check since it was written —
+  falsified by its own frontmatter until the next change lands the check.
+- **Criterion 6 cannot be evaluated yet.** No Tier 0 recovery objective exists (D43), so a
+  restore drill produces a duration and nothing to compare it to. The gate reports that as a
+  failure rather than skipping it, per F25. Tier 0 authorship is permanently outside the agent
+  boundary, so this is owed by the operator and by nobody else.
+- **Operator-owned and not done here:** the `ttc_1`/`ttc_4` labelling defect in the plan's
+  exit-criterion prose — `ttc_1≈2.4` is `TTCStar` and `ttc_4≈1.25` is `TTR` on
+  `ZAM_Urban-7_1_S-2`, with `bench/tasks/phase1_tasks.json` already correct. It sits in the
+  residue's half of the criteria, so this narrowing does not transcribe it, but it must be
+  fixed before the residue is judged or the reproduction target is a different measure.
+- `docs/tier2/execution-order.md` is `owner: human` and is not edited. It does not yet carry
+  this narrowing, its O9 row names two items against a queue of twelve, and its
+  boot-assertion count is stale in three places.
+
+### What this decision does not do
+
+It does not lower a bar. Every criterion removed is moved, dated, and assigned to the party
+that owns the work; none is weakened in place. The failure this is written against is the one
+the plan names by name — arriving at 2026-09-09 and declaring exit on a subset without saying
+so — and the defence against it is that the subset and its remainder are both written down
+here, before the date rather than after it.

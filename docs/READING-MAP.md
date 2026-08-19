@@ -177,7 +177,8 @@ Binding on implementation and easy to miss, since they live inside one document.
 | [ADR-0019](tier1/adr-log.md) | D38's sandbox rationale, verified: true of one configuration, false of the default | Accepted |
 | [ADR-0020](tier1/adr-log.md) | The run fingerprint record, and the two assertions that were waiting on it | Accepted |
 | [ADR-0021](tier1/adr-log.md) | Enumeration drift, and the two claims of CI coverage that were false |  |
+| [ADR-0022](tier1/adr-log.md) | Phase 0's exit, narrowed along the ownership seam, with the residue dated |  |
 
 ---
 
-**63 documents mapped** · 43 binding · 13 context · 7 record · 21 architecture decisions
+**63 documents mapped** · 43 binding · 13 context · 7 record · 22 architecture decisions
