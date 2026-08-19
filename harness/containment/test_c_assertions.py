@@ -57,6 +57,7 @@ from harness.containment.shells import (
     C17,
     CANVAS_COMMIT,
     ConfigContractViolation,
+    ConfigKeyConfusion,
     CANVAS_REPO,
     EXECUTOR_COMMIT,
     EXECUTOR_REPO,
@@ -67,7 +68,9 @@ from harness.containment.shells import (
     Hole,
     HoleKind,
     PremiseShell,
+    confusable_config_keys,
     evaluate,
+    named_config_keys,
     open_holes,
     unsourced_holes,
     validated_config,
@@ -1566,3 +1569,99 @@ def test_typing_the_contract_does_not_make_a_wrong_value_right() -> None:
                       observation)
     assert result.outcome is AssertionOutcome.FAILED
     assert "does not spell a boolean" in result.detail
+
+
+# ================================================= the key set half of the same contract
+
+
+def test_the_named_key_set_is_derived_from_the_register_and_is_not_empty() -> None:
+    """D57 for this check. An empty reference set finds nothing and reports clean.
+
+    Derived rather than typed out, so a hole added later is covered without anybody
+    remembering a list — and asserted to contain the keys the checks actually read, so a
+    derivation that silently returned nothing goes red here rather than in a green run.
+    """
+    named = named_config_keys()
+    assert named
+    for key in ("persistence_dir", "delete_on_close", "session_api_keys", "enable_vscode"):
+        assert key in named, key
+
+
+def test_a_respelt_key_is_refused_at_the_boundary() -> None:
+    """The finding ADR-0026 left open, closed. The message names both spellings.
+
+    `sessionApiKeys` and `session_api_keys` cannot both be real keys of one executor, so the
+    collision is a fact rather than a guess at what the adaptor meant.
+    """
+    with pytest.raises(ConfigKeyConfusion, match="session_api_keys"):
+        ExecutorObservation(config={"sessionApiKeys": ["k"]})
+
+
+@pytest.mark.parametrize(
+    "sent",
+    [
+        "sessionApiKeys",
+        "session-api-keys",
+        "SESSION_API_KEYS",
+        "sessionapikeys",
+        "Session_Api_Keys",
+    ],
+)
+def test_every_spelling_convention_an_adaptor_might_use_is_caught(sent: str) -> None:
+    """Case, separators and both together — the class an adaptor written against JSON
+    documentation actually produces."""
+    assert confusable_config_keys({sent: ["k"]}) == ((sent, "session_api_keys"),)
+
+
+def test_a_key_alfred_does_not_read_is_legal_and_is_not_reported() -> None:
+    """The control that stops this being "reject unknown keys", which is a different and
+    false claim: the executor's configuration surface is larger than the set Alfred reads,
+    and every real observation carries keys no hole names.
+
+    Without this test the check could refuse everything and every other test here would
+    still pass.
+    """
+    assert confusable_config_keys({"some_key_alfred_does_not_read": 1}) == ()
+    assert ExecutorObservation(config={"some_key_alfred_does_not_read": 1}).config
+
+
+def test_the_key_a_hole_names_is_not_confusable_with_itself() -> None:
+    """The other half of the positive control: the real spelling passes through untouched."""
+    assert confusable_config_keys({"session_api_keys": ["k"]}) == ()
+
+
+def test_without_the_guard_a_respelt_key_reads_as_absent_and_fails_for_the_wrong_reason() -> None:
+    """Why this is refused at the boundary rather than reported inside a check.
+
+    By the time the check runs, the only thing it can say is that `session_api_keys` is
+    absent — which is exactly what it says about an executor that genuinely does not set it.
+    Two different findings, one sentence in the record. The observation here is built past
+    the guard on purpose, to show the state the guard now makes unreachable.
+    """
+    respelt: dict[str, object] = {"sessionApiKeys": ["k"]}
+    assert confusable_config_keys(respelt) == (("sessionApiKeys", "session_api_keys"),)
+
+    past_the_guard = ExecutorObservation(
+        container_launch_args=_HARDENED_ARGV, published_port_bindings=_LOOPBACK_BINDING
+    )
+    object.__setattr__(past_the_guard, "config", respelt)
+    result = evaluate(C17, past_the_guard)
+    assert result.outcome is AssertionOutcome.FAILED
+    assert "absent from the loaded configuration" in result.detail
+
+
+def test_a_misspelling_that_is_not_a_respelling_is_the_stated_limit() -> None:
+    """The limit, pinned rather than left to be discovered.
+
+    `sesion_api_keys` normalizes to itself and is not caught. What is caught is
+    spelling-convention drift. Edit-distance matching would catch this one and would produce
+    false positives in a check whose finding refuses a configuration outright — and a future
+    change that widens the rule fails here and has to say so.
+    """
+    assert confusable_config_keys({"sesion_api_keys": ["k"]}) == ()
+
+
+def test_a_nested_key_collides_with_nothing_because_no_hole_names_one() -> None:
+    """Every check reads `config[key]` at the top level, so a nested key is not a key any
+    hole names at all."""
+    assert confusable_config_keys({"outer": {"sessionApiKeys": ["k"]}}) == ()

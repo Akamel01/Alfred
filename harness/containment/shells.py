@@ -35,6 +35,7 @@ from harness.containment.assertions import Assertion, AssertionOutcome
 __all__ = [
     "C17",
     "ConfigContractViolation",
+    "ConfigKeyConfusion",
     "ConfigValue",
     "CANVAS_COMMIT",
     "CANVAS_REPO",
@@ -48,8 +49,10 @@ __all__ = [
     "HoleKind",
     "PremiseShell",
     "Unread",
+    "confusable_config_keys",
     "evaluate",
     "evaluate_all",
+    "named_config_keys",
     "validated_config",
     "open_holes",
     "unsourced_holes",
@@ -206,6 +209,19 @@ class ExecutorObservation:
         # would otherwise reach a reader that renders it with `str()` and compares a repr --
         # a comparison that can only fail, for a reason no report can explain.
         validated_config(self.config)
+        # The key-set half of the same contract. Same placement, same argument: an adaptor
+        # sending a key nobody can read should be told so where it sent it, not three checks
+        # later in the shape of a field that reads as unset.
+        confused = confusable_config_keys(self.config)
+        if confused:
+            raise ConfigKeyConfusion(
+                "; ".join(
+                    f"{sent!r} is not a key any hole names, and it is a re-spelling of "
+                    f"{named!r}, which is one they do -- a check reading {named!r} would "
+                    "report it absent and fail closed for the wrong reason"
+                    for sent, named in confused
+                )
+            )
 
 
 @dataclass(frozen=True)
@@ -286,6 +302,7 @@ def unsourced_holes(shells: Sequence[PremiseShell] | None = None) -> tuple[str, 
     """
     target = SHELLS if shells is None else shells
     return tuple(f"{s.assertion_id}.{name}" for s in target for name in s.unsourced())
+
 
 
 # ============================================================================ the checks
@@ -383,6 +400,94 @@ def _validated_value(value: object, path: str) -> ConfigValue:
         f"{path}: {type(value).__name__} is not a configuration value; the adaptor must send "
         "something that survives a round trip through JSON"
     )
+
+
+# ------------------------------------------------- the key set the holes actually name
+#
+# ADR-0026 typed the configuration *values* and recorded what it did not do, in as many
+# words: nothing validates that an adaptor sent a key the holes actually name. An unknown key
+# is legal and ignored, which is correct — the executor's configuration surface is larger
+# than the set Alfred reads — **but a typo'd key reads as absent rather than as a mistake.**
+# Absent is already a finding, so it fails closed; it fails with the wrong reason, and the
+# record cannot tell it apart from a genuinely unset field.
+#
+# This is not a check that unknown keys are rejected. That would be a different and false
+# claim, and it would fail on every real executor. It is a check for **confusability**: a key
+# that is not one the holes name, whose case- and separator-normalized form collides with one
+# that is. `sessionApiKeys` against `session_api_keys`; `container-id` against `container_id`.
+# Two spellings of one name cannot both be real keys of one executor, so the collision is a
+# fact rather than a guess at intent.
+#
+# **The limit, stated rather than left to be discovered.** A genuine misspelling —
+# `sesion_api_keys` — normalizes to itself and is not caught. What is caught is
+# spelling-convention drift: camelCase, hyphens, casing, dropped underscores. That is the
+# class an adaptor written against JSON documentation actually produces. Edit-distance
+# matching would catch more and would produce false positives in a check whose findings are
+# meant to be acted on, and a false positive here refuses a legal configuration outright.
+#
+# **Only top-level keys.** Every check reads `obs.config[key]` at the top level, so a nested
+# key is not one any hole names at all and a collision there would be against nothing.
+
+
+class ConfigKeyConfusion(ConfigContractViolation):
+    """The adaptor sent a re-spelling of a key the holes name.
+
+    A refusal at the boundary rather than a finding inside a check, and for the same reason
+    `ConfigContractViolation` is: by the time a check reads the key it can only report the
+    real one as absent, which is indistinguishable in the record from a field the executor
+    genuinely does not set.
+    """
+
+
+def _key_shape(key: str) -> str:
+    """A key with case and separators removed. Two keys with one shape are one name."""
+    return "".join(character for character in key.lower() if character.isalnum())
+
+
+def named_config_keys(shells: Sequence[PremiseShell] | None = None) -> tuple[str, ...]:
+    """Every name a `CONFIG_KEY` hole holds — the reference set, derived, never typed out.
+
+    Derived from the register so that a hole added later is covered without anybody
+    remembering to extend a list. D57 applies directly: an empty reference set makes the
+    confusability check find nothing on every input and report clean, so the suite asserts
+    this is non-empty and names the keys it must contain.
+
+    C10's `config_env_prefix` holds `OH`, an environment-variable prefix rather than a
+    configuration key, and it is included rather than special-cased. It is still a name read
+    out of the executor, a re-spelling of it is still an adaptor defect, and a hand-maintained
+    exception list is the shape this file avoids everywhere else.
+    """
+    target = SHELLS if shells is None else shells
+    names: set[str] = set()
+    for shell in target:
+        for hole in shell.holes:
+            if hole.kind is not HoleKind.CONFIG_KEY:
+                continue
+            if isinstance(hole.value, str):
+                names.add(hole.value)
+            elif isinstance(hole.value, tuple):
+                names.update(hole.value)
+    return tuple(sorted(names))
+
+
+def confusable_config_keys(
+    config: Mapping[str, object], shells: Sequence[PremiseShell] | None = None
+) -> tuple[tuple[str, str], ...]:
+    """`(sent, named)` for every key that is a re-spelling of one the holes name.
+
+    A key that *is* one the holes name is not confusable with itself, and a key that collides
+    with nothing is simply a key Alfred does not read — legal, ignored, and not reported.
+    """
+    named = named_config_keys(shells)
+    by_shape = {_key_shape(name): name for name in named}
+    found: list[tuple[str, str]] = []
+    for key in config:
+        if key in named:
+            continue
+        collision = by_shape.get(_key_shape(key))
+        if collision is not None:
+            found.append((key, collision))
+    return tuple(sorted(found))
 
 
 class Absent:
