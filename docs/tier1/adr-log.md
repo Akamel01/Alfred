@@ -1945,3 +1945,126 @@ break C1 in the direction that still reads green.
 - **Still outstanding from ADR-0018:** C4 and C11, blocked on a run fingerprint record that
   does not exist; and whether Agent Canvas being the headline product changes the executor's
   trajectory.
+
+---
+
+## ADR-0020 — The run fingerprint record, and the two assertions that were waiting on it
+
+**Date:** 2026-08-19 · **Status:** Accepted · **Supersedes:** none · **Amends:** the Sandbox Specification's C4 and C11 rows; the `Worker` port's fingerprint obligations · **See also:** ADR-0018 and ADR-0019 (which both recorded C4 and C11 as blocked on this), ADR-0017 (shells and why a green assertion can be worse than an absent one), ADR-0007 (the vacuity class), D19 and D40 (the field set)
+
+### Context
+
+C4 and C11 have never been written. Both compare a live reading against a declared value —
+the runtime image digest, and the serving lane's configuration — and there was no declared
+value anywhere in the repository to compare against. `runtime_image_digest` appeared in no
+Python file at all: not in a column, not in a constant, not in a type. `control.fingerprint`
+stored D19's and D40's components in the clear but had no column for the image digest, the
+model id, the quantization, the denylist version, or the executor's identity.
+
+ADR-0018 recorded the block and declined to write shells for the two rows, on the grounds
+that a shell whose only hole is "the fingerprint" belongs on no worklist. ADR-0019 restated
+it as still outstanding. Neither closed it, and the handoff that followed listed it as the
+one piece of unblocked agent work that unblocks something else.
+
+### Decision
+
+**One typed, frozen record — `harness/fingerprint/record.py` — carrying the full field set,
+whose digest is computed from the fields rather than supplied beside them.**
+
+Four properties, each answering a way a fingerprint stops being one:
+
+1. **The hash is a function of the fields, not a claim about them.** `fingerprint_sha256` is
+   a property computed through ACS-1 (`harness/acs/acs1.py`) with record type
+   `run_fingerprint`. ACS-1 is already the one encoder — the result stamp and the evidence
+   chain use it, it has a published vector suite and a JavaScript cross-check — so a second
+   canonicalization would be a second thing to keep in agreement. A test perturbs **every
+   field in turn** and requires the digest to move; a digest over a subset passes every
+   other test in the file while leaving the omitted fields free to change under a
+   measurement.
+2. **A missing field is a construction error.** No defaults, no `None` for "not known yet".
+   A record that cannot state a field cannot assert on it, and a defaulted field is one that
+   silently stops discriminating. This generalizes `lane_fingerprint.FingerprintIncomplete`,
+   which has enforced the same rule for the lane since it was written.
+3. **Comparison runs in both directions.** A declared field the observation omits, and an
+   observed field the record never declared, are both differences — the second because an
+   executor reporting a field nobody declared is an executor whose configuration surface grew
+   under the measurement, which the `Worker` port contract already requires raising on.
+4. **The record reads nothing.** It holds the declared value and compares. Reading the live
+   world is C4's and C11's job, which is what lets every branch of the comparison be tested
+   without a container or a serving layer.
+
+**`spec.fingerprint` becomes `RunFingerprint`** and the separate `fingerprint_sha256` field
+is removed: two fields that can disagree eventually will. **`observed_fingerprint` on the
+claim stays a `Mapping`**, deliberately — a dataclass cannot represent a field the record
+never declared, so typing it would delete property 3 by making its subject unrepresentable.
+It moves from `Mapping[str, str]` to `Mapping[str, object]`, because a context length is an
+integer and stringifying it at the boundary is where a comparison starts passing on the
+wrong thing.
+
+### The two limits, written down rather than papered over
+
+**C11 asserts three of its four conjuncts from the serving layer.** The parallel slot count
+is a launch-time property of the server and is not in `/api/v0/models`. It therefore arrives
+as an explicit argument, and its absence is `not_executed` rather than a quiet pass on the
+other three. Naming a plausible key for it would have produced a green assertion over a field
+nobody read — the misnamed-key vacuity ADR-0007 names, and the case ADR-0017 withdrew the
+"an assertion that harmlessly passes costs nothing" defence for. The slot count is not
+optional information: prefix reuse is 140x at one slot and 1.0x above it, so a lane at four
+slots is a different lane wearing the same model id.
+
+**C4 treats an unread pull location the same way.** `pulled_in_sandbox_netns` is
+`bool | None`, and `None` is `not_executed`. A `bool` with a `False` default would have
+turned every inspection that forgot to answer into a pass.
+
+### Vacuity controls
+
+- **C4** — the image count. An inspection that enumerated zero images is `not_executed`,
+  because an empty local store and a store that agreed are otherwise indistinguishable, and
+  "the image was not found, so nothing contradicted the digest" is the shape of a control
+  that stopped running. D57.
+- **C11** — inherited from `lane_fingerprint`, where an unreadable fingerprint has always
+  been treated exactly as a mismatched one. Both of its raising paths land on
+  `not_executed`, which F25 makes a failure.
+- **The record** — every field is perturbed and the digest must move; the field groups are
+  asserted to account for every field, so the grouping cannot drift into decoration.
+- **The register** — a test reads the control migrations' column names from source and
+  requires every record field to have one. Read from the AST rather than from a live schema
+  on purpose: a drift guard that only runs where Postgres does is a drift guard that stops
+  running.
+
+### Migration
+
+`migrations/harness/control/versions/0002_fingerprint_run_fields.py` adds the eight columns
+the register had no home for: `model_id`, `quantization`, `executor_name`,
+`executor_commit_sha`, `adaptor_version`, `runtime_image_digest`, `oracle_denylist_version`,
+`seed_layer_order_sha256`. All `NOT NULL` with no server default — the table starts empty in
+every environment, and a nullable fingerprint field is a field an assertion cannot be written
+against, which is the state this migration exists to end. `control` is configuration rather
+than evidence and sits outside `lint_migrations.py`'s additive-only guard by design; the
+`downgrade` still raises, because dropping a column rewrites what past rows claim.
+
+### Consequences and enforcement
+
+- C4 and C11 are written: `harness/containment/image.py` and `harness/containment/lane.py`.
+  The Sandbox Specification's rows and the containment package docstring are amended to match.
+- C11 wraps `harness/lane/lane_fingerprint.assert_fingerprint` rather than reimplementing it.
+  That module was written against an observed defect — a model loaded at 262,144 found serving
+  at 28,672 after an idle gap, turning 10/10 tool calling into 0/10 with nothing erroring — and
+  a second implementation of the same control is a second place for that defect to be missed.
+- `FieldDiff` has exactly one definition, in the record module; the lane module imports it.
+- **One conjunct of C11 remains unread**, and the assertion says so on every run rather than
+  reporting three-of-four as green.
+- **Not addressed here:** `ExecutorObservation.config` is still `Mapping[str, object]`,
+  adaptor-supplied and unvalidated. Typing the fingerprint does not type the adaptor contract,
+  and the two are separate reviews.
+- **Stale and operator-owned:** `docs/tier2/execution-order.md` is `owner: human`. Its O9 row
+  names two items and the queue is now eleven; its boot-assertion count says fifteen in three
+  places, the table held sixteen before this change and holds eighteen after. Neither is
+  corrected here.
+
+### Why this is an inspector patch
+
+`harness/` is inspector machinery under D20, and so is the migration tree. Major-fix #8
+permits an agent-drafted inspector patch only under line-by-line human review with a mandatory
+ADR. This is that ADR. The review is O9, it has not happened, and this change joins the queue
+rather than clearing it — landed and unreviewed, which is the honest state to record.

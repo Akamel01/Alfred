@@ -28,6 +28,8 @@ from enum import Enum
 from typing import Final, NewType, Protocol
 from uuid import UUID
 
+from harness.fingerprint.record import RunFingerprint
+
 RunId = NewType("RunId", UUID)
 TaskId = NewType("TaskId", UUID)
 AttemptId = NewType("AttemptId", UUID)
@@ -131,8 +133,10 @@ class WorkerSpec:
     task_id: TaskId
     attempt_id: AttemptId
     attempt_index: int
-    fingerprint_sha256: Sha256
-    fingerprint: Mapping[str, str]
+    # One typed record, and the digest is a property of it rather than a field beside it.
+    # A supplied `fingerprint_sha256` is a claim about the fields; a computed one is a
+    # function of them, and two fields that can disagree eventually will.
+    fingerprint: RunFingerprint
     seed: int
     seed_layers: tuple[SeedLayer, ...]
     read_mounts: tuple[MountSpec, ...]
@@ -315,7 +319,12 @@ class WorkerClaim:
     events: EventStreamRef
     reads: tuple[ReadRecord, ...]
     usage: Usage
-    observed_fingerprint: Mapping[str, str]
+    # Stays a mapping, and deliberately. `RunFingerprint` is what Alfred *declared*; this
+    # is what the executor *reported*, and a dataclass cannot represent a field the record
+    # never declared — which is precisely the direction `RunFingerprint.compare` checks and
+    # the contract raises on. Typing this would delete the check by making its subject
+    # unrepresentable. `object` rather than `str` because a context length is an int.
+    observed_fingerprint: Mapping[str, object]
     containment: tuple[AssertionReport, ...]
     schema_version: int
 
