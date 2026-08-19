@@ -47,10 +47,19 @@ packages = ["src/api", "src/domain", "src/ingest", "src/metrics", "src/provenanc
 line-length = 100
 target-version = "py312"
 src = ["src", "tests"]
-# The product tree only, matching [tool.pyright].include. `harness/` is protected,
-# sits outside the agent tree by design, and carries its own gates; `bench/` and
-# `scripts/` are measurement code with different conventions. Linting them from
-# here would make a product gate fail for reasons no product change can fix.
+# The product tree only, matching [tool.pyright].include. `bench/` and `scripts/` are
+# measurement code with different conventions, and linting them from here would make a
+# product gate fail for reasons no product change can fix.
+#
+# `harness/` is a different case and this comment used to state it wrongly. It said the
+# tree is protected and "carries its own gates". It is protected; it carries no lint gate
+# and no type gate at all, which is what ADR-0029 measured: 866 ruff violations, 236 after
+# the S101 ignore `tests/*` already gets, and 311 pyright errors, none of them collected by
+# anything. D20 forbids agents *editing* the inspector. Checking is a read and editing is a
+# write, so the exclusion above was never D20's decision to make and must not borrow its
+# authority. It stands for one reason only, stated plainly: nobody has yet decided how much
+# of that debt to pay (OBSERVER-1, ADR-0029). `scripts/lint_harness_gate.py` counts the
+# uncollected files on every CI run so the number is read rather than assumed.
 include = ["src/**/*.py", "tests/**/*.py", "migrations/**/*.py", "pyproject.toml"]
 
 [tool.ruff.lint]
