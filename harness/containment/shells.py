@@ -33,6 +33,7 @@ from typing import Final
 from harness.containment.assertions import Assertion, AssertionOutcome
 
 __all__ = [
+    "C17",
     "CANVAS_COMMIT",
     "CANVAS_REPO",
     "EXECUTOR_COMMIT",
@@ -188,6 +189,13 @@ class ExecutorObservation:
     executor_repo: str | None = None
     executor_commit_sha: str | None = None
     executor_resolved_through_redirect: bool | None = None
+    # The argv the container was actually started with, read from outside. C17's subject.
+    # Empty means the adaptor did not read it, which C17 reports as `not_executed` rather
+    # than as an unhardened launch: an argv nobody read says nothing about the flags on it.
+    container_launch_args: tuple[str, ...] = ()
+    # Host-side bindings for every published port, as `docker` reports them -- for example
+    # `0.0.0.0:8010->8000/tcp`. The direction S6's egress work does not cover.
+    published_port_bindings: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -714,6 +722,139 @@ def _check_c16(holes: Mapping[str, HoleValue], obs: ExecutorObservation) -> Asse
 
 
 
+# Loopback, by every spelling `docker port` emits. A binding anywhere else publishes the
+# agent server on an interface something other than this machine can reach.
+_LOOPBACK: Final[frozenset[str]] = frozenset({"127.0.0.1", "::1", "localhost"})
+
+# Alfred's launch requirements, not the executor's. Kept out of the hole register on purpose:
+# a hole is a fact about the executor that had to be read, and these are policy this project
+# chose. Mixing them would let a policy change look like a re-reading of somebody's source.
+_REQUIRED_LAUNCH_FLAGS: Final[tuple[tuple[str, str], ...]] = (
+    ("--cap-drop", "no capability is dropped, so in-container privilege is whatever the image grants"),
+    ("--network", "egress uses the default bridge, which is open"),
+)
+
+
+def _bind_host(binding: str) -> str:
+    """The host address out of `0.0.0.0:8010->8000/tcp`. Empty when it does not parse.
+
+    Unparseable is returned as empty and treated as a finding by the caller rather than as
+    loopback: a binding whose shape nobody recognizes is not a binding anybody checked.
+    """
+    left = binding.split("->", 1)[0].strip()
+    if not left:
+        return ""
+    # IPv6 bindings arrive bracketed: `[::1]:8010`. Strip the brackets before splitting on
+    # the port, or every IPv6 address parses as its own first hextet.
+    if left.startswith("["):
+        closing = left.find("]")
+        return left[1:closing] if closing != -1 else ""
+    parts = left.rsplit(":", 1)
+    return parts[0] if len(parts) == 2 else ""
+
+
+def _check_c17(holes: Mapping[str, HoleValue], obs: ExecutorObservation) -> Assertion:
+    """The ingress surface and the launch posture — the half of ADR-0019 nothing covered.
+
+    ADR-0019 recorded four unhardened defaults and left open which were Alfred's to assert and
+    which S6's host-level `nftables` work already covered. **Two of them are Alfred's, and the
+    reason is direction.** S6's default-drop is egress: it stops the container reaching out.
+    Points 1 and 2 are the other way round and the other layer:
+
+    1. **Ingress.** The agent server's `session_api_keys` defaults empty and "empty list
+       implies the server will be unsecured"; `DockerWorkspace` then sets `api_key = None`
+       outright. The server is told to bind `0.0.0.0` and is published with
+       `-p {host_port}:8000`, which Docker binds on **all** host interfaces. That is an
+       unauthenticated remote-code-execution endpoint reachable off-box, and no egress rule
+       touches it. Two clauses, because either alone is insufficient: authentication is
+       required, **and** the published binding must be loopback. An authenticated endpoint on
+       `0.0.0.0` is one credential away, and a loopback binding with no credential trusts every
+       process on the host.
+
+    2. **Launch flags.** The SDK's own `docker run` argument list carries no `--cap-drop`, no
+       `--read-only`, no `--security-opt`, no user namespace and no `--network`. These are
+       readable from outside the sandbox, which is where this assertion already runs, so they
+       are assertable rather than merely regrettable.
+
+    **What is deliberately not here.** The agent user's `NOPASSWD:ALL` sudo is baked into the
+    image, not chosen at launch, so no runtime flag can assert it away and reading the argv
+    would never see it. It belongs to S6's layer-1 image-build closure check, and this
+    docstring is the only place that split is currently written down outside the ADR.
+
+    **Vacuity control.** An unread argv and an unread binding list are `not_executed`, never a
+    pass — an assertion over an argv nobody collected would report the same thing on a
+    hardened launch and an unhardened one, which is the shape D57 and F25 exist to reject.
+    """
+    unread: list[str] = []
+    if not obs.container_launch_args:
+        unread.append("container_launch_args")
+    if not obs.published_port_bindings:
+        unread.append("published_port_bindings")
+    if unread:
+        return Assertion(
+            assertion_id="C17",
+            outcome=AssertionOutcome.NOT_EXECUTED,
+            detail=(
+                f"nothing read for {', '.join(unread)}; the launch posture cannot be told "
+                "from an argv and a binding list nobody collected"
+            ),
+        )
+
+    problems: list[str] = []
+
+    key = _as_key(holes["server_auth_key"])
+    configured = _read(obs, key)
+    if isinstance(configured, Absent):
+        problems.append(f"{key!r} is absent from the loaded configuration; its value is unknown")
+    elif configured is None:
+        problems.append(
+            f"{key!r} is None; DockerWorkspace sets it outright and the server is then unsecured"
+        )
+    elif isinstance(configured, (str, bytes)):
+        if not configured.strip():
+            problems.append(f"{key!r} is blank; a blank key is not a key")
+    elif isinstance(configured, Sequence) and not configured:
+        problems.append(
+            f"{key!r} is empty; an empty list means the server runs unauthenticated, and it "
+            "is the default"
+        )
+
+    off_box = sorted(
+        binding for binding in obs.published_port_bindings if _bind_host(binding) not in _LOOPBACK
+    )
+    if off_box:
+        problems.append(
+            f"{len(off_box)} published port binding(s) are not loopback: {off_box[:5]}; "
+            "the agent server is reachable from outside this machine"
+        )
+
+    argv = " ".join(obs.container_launch_args)
+    for flag, consequence in _REQUIRED_LAUNCH_FLAGS:
+        if flag not in obs.container_launch_args:
+            problems.append(f"{flag} absent from the launch; {consequence}")
+    if "--network" in obs.container_launch_args:
+        index = obs.container_launch_args.index("--network")
+        value = obs.container_launch_args[index + 1] if index + 1 < len(obs.container_launch_args) else ""
+        if value in ("", "bridge", "default"):
+            problems.append(
+                f"--network is {value!r}, which is the default bridge; naming the flag is not "
+                "the same as leaving the default network"
+            )
+
+    return _verdict(
+        "C17",
+        problems,
+        "server authenticated; every published binding on loopback; launch hardened",
+        observed={
+            "published_port_bindings": ",".join(obs.published_port_bindings),
+            # The full argv, not a summary. `reassert.compare` needs to tell a container
+            # relaunched with different flags from one launched the same way twice, and a
+            # summary of the flags this check happens to look at cannot show a flag it does not.
+            "container_launch_args": argv,
+        },
+    )
+
+
 # ================================================================== the register of shells
 #
 # Every `source` is a path:line inside EXECUTOR_REPO at EXECUTOR_COMMIT.
@@ -988,4 +1129,30 @@ C16: Final = PremiseShell(
     check=_check_c16,
 )
 
-SHELLS: Final[tuple[PremiseShell, ...]] = (C1, C2, C3, C5, C10, C16)
+C17: Final = PremiseShell(
+    assertion_id="C17",
+    claim=(
+        "The agent server requires authentication, every published port is bound to loopback, "
+        "and the container was launched with capabilities dropped and off the default network"
+    ),
+    holes=(
+        Hole(
+            name="server_auth_key",
+            kind=HoleKind.CONFIG_KEY,
+            question="Which configuration key authenticates the agent server, and what leaves it open?",
+        ).filled(
+            "session_api_keys",
+            source=f"{_SERVER}/config.py:223-232,33-44",
+            correction=(
+                "It defaults to an empty list, and the field's own documentation says an "
+                "empty list implies the server will be unsecured. `DockerWorkspace` then "
+                f"sets `api_key = None` outright ({_WORKSPACE}/docker/workspace.py:278), so "
+                "the default path is unauthenticated twice over. Read at O5 and recorded in "
+                "ADR-0019; not re-read here, and the citation is what makes that checkable."
+            ),
+        ),
+    ),
+    check=_check_c17,
+)
+
+SHELLS: Final[tuple[PremiseShell, ...]] = (C1, C2, C3, C5, C10, C16, C17)

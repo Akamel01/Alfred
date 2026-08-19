@@ -2289,3 +2289,101 @@ that owns the work; none is weakened in place. The failure this is written again
 the plan names by name — arriving at 2026-09-09 and declaring exit on a subset without saying
 so — and the defence against it is that the subset and its remainder are both written down
 here, before the date rather than after it.
+
+---
+
+## ADR-0023 — Which of ADR-0019's unhardened defaults are Alfred's, and the two that are
+
+**Date** 2026-08-19 · **Status** Accepted · **Supersedes** nothing
+
+### Context
+
+ADR-0019 recorded four properties of the executor that D38's sandbox rationale asserted by
+implication and the tree does not provide, and closed none of them. Its Consequences section
+left three items open. **Two of those three were discharged before this record and the ADR had
+gone stale saying otherwise** — `69a09e9` wrote C16, the workspace-kind control ADR-0019 calls
+*"the missing control that makes the other four vacuous"*, and the same commit added C1's
+fourth clause for `delete_on_close`. ADRs are immutable and are corrected by successors rather
+than edited, so this is where that is written down.
+
+What genuinely remained open is the third: whether points 1 and 2 — the unauthenticated server
+and the unhardened container — are Alfred's to assert or already covered by S6's host-level
+`nftables` work.
+
+### Decision
+
+**The deciding property is direction, and it settles the question without a judgement call.**
+
+S6's `nftables` default-drop is **egress**. The stage names it precisely: the run refuses to
+start unless a known non-allowlisted connection *fails*, because environment-variable proxy
+configuration is advisory and bypassable. Everything it covers is the container reaching out.
+
+Point 1 is **ingress**. `session_api_keys` defaults empty and its own field documentation says
+an empty list means the server will be unsecured; `DockerWorkspace` then sets `api_key = None`
+outright; the server is told to bind `0.0.0.0` and is published with `-p {host_port}:8000`,
+which Docker binds on **all host interfaces**. That is an unauthenticated remote-code-execution
+endpoint reachable off-box, and no egress rule touches it, in either direction of the word. It
+is Alfred's.
+
+Point 2 is neither ingress nor egress: it is a property of the `docker run` argv — no
+`--cap-drop`, no `--read-only`, no `--security-opt`, no user namespace, no `--network`. Those
+are readable from **outside** the sandbox, which is exactly where Alfred's assertions already
+run, so they are assertable rather than merely regrettable. Also Alfred's.
+
+Both become **C17**, a new shell in `harness/containment/shells.py`, running outside at
+dispatch.
+
+### The one that is not Alfred's, and why the split is not arbitrary
+
+The agent user's `NOPASSWD:ALL` sudo is baked into the image, not chosen at launch. No runtime
+flag asserts it away and reading the launch argv would never see it — an assertion about it
+would have to inspect the image, which is S6's layer-1 build-closure check against a real
+resolved lockfile. Putting it in C17 would produce a clause that cannot fail for the right
+reason, which is worse than an absent one.
+
+The fourth property, `webhooks` and `telemetry` as unenumerated egress channels, stays with C6
+as ADR-0019 already recorded. It is egress, so the direction test assigns it there too.
+
+### C17's clauses, and why the ingress half is two of them
+
+1. **The server requires authentication** — `session_api_keys` present, non-`None`, non-empty.
+   Absent, `None`, empty and blank are four distinct findings and each is reported by name,
+   because the four arrive by different routes and the fix differs.
+2. **Every published port binding is loopback.** An unparseable binding is a finding rather
+   than loopback: a binding whose shape nobody recognizes is not one anybody checked.
+3. **`--cap-drop` present and the network off the default bridge.** `--network bridge` is
+   reported specifically, because naming the flag is not the same as leaving the default
+   network and an argv carrying it looks hardened at a glance.
+
+Clauses 1 and 2 are separate because either alone is insufficient. An authenticated endpoint on
+`0.0.0.0` is one credential away from the same outcome; a loopback binding with no credential
+trusts every process on the host.
+
+### Vacuity control
+
+An unread `container_launch_args` or an unread `published_port_bindings` reports
+`not_executed`, never a pass. An assertion over an argv nobody collected returns the same
+answer on a hardened launch and an unhardened one, which is the shape D57 rejects and which
+F25 turns into a refusal to start. Both are tested, parametrized over each field in turn.
+
+### Consequences and enforcement
+
+- `ExecutorObservation` gains `container_launch_args` and `published_port_bindings`. Both
+  default empty, and empty is the unread case rather than the benign one, matching every other
+  field on that record.
+- The Sandbox Specification gains a C17 row and an amendment block recording the direction
+  test and the stale Consequences section.
+- **Not done here:** C17 is not in C14's re-assertion set. A container relaunched mid-run with
+  different flags would not be caught, and the argv is recorded in `observed` precisely so that
+  it *could* be compared — the comparison is simply not wired. That is a smaller change than it
+  looks and is deliberately separate from this review.
+- **Not done here:** `--read-only`, `--security-opt` and the user namespace are named in the
+  ADR and not asserted. Two flags were chosen because they are the two whose absence has a
+  consequence this specification already argues about; widening the list is a policy decision
+  with no new evidence behind it.
+
+### Why this is an inspector patch
+
+`harness/` is inspector machinery under D20. Major-fix #8 permits an agent-drafted inspector
+patch only under line-by-line human review with a mandatory ADR. This is that ADR. The review
+is O9, it has not happened, and this change joins the queue.

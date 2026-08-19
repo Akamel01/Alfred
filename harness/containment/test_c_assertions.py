@@ -53,6 +53,7 @@ from harness.containment.reassert import (
     value_blind,
 )
 from harness.containment.shells import (
+    C17,
     CANVAS_COMMIT,
     CANVAS_REPO,
     EXECUTOR_COMMIT,
@@ -117,8 +118,8 @@ def test_no_shell_can_pass_while_a_hole_is_unread() -> None:
 
 def test_the_shell_register_is_not_empty() -> None:
     """D57. The loop above would pass over an empty register."""
-    assert len(SHELLS) >= 6
-    assert {s.assertion_id for s in SHELLS} == {"C1", "C2", "C3", "C5", "C10", "C16"}
+    assert len(SHELLS) >= 7
+    assert {s.assertion_id for s in SHELLS} == {"C1", "C2", "C3", "C5", "C10", "C16", "C17"}
 
 
 def test_every_shell_has_at_least_one_hole() -> None:
@@ -1219,3 +1220,116 @@ def test_the_committed_denylist_is_what_c15_runs_against(denylist: Denylist) -> 
     """A suite that built its own denylist would never notice the committed one going empty."""
     assert denylist.denied_modules
     assert json.loads(DENYLIST_PATH.read_text())["version"] == denylist.version
+
+
+# ================================================================ C17 — ingress and launch
+
+
+_HARDENED_ARGV = ("docker", "run", "--cap-drop", "ALL", "--network", "none", "img")
+_LOOPBACK_BINDING = ("127.0.0.1:8010->8000/tcp",)
+
+
+def _c17(**overrides: object) -> Assertion:
+    """C17 over an otherwise-clean observation. Overrides are what each test is about."""
+    base = {
+        "config": {"session_api_keys": ["k"]},
+        "container_launch_args": _HARDENED_ARGV,
+        "published_port_bindings": _LOOPBACK_BINDING,
+    }
+    return evaluate(C17, ExecutorObservation(**{**base, **overrides}))  # pyright: ignore[reportArgumentType]
+
+
+def test_c17_passes_on_an_authenticated_loopback_hardened_launch() -> None:
+    """The positive control. Without it every test below passes on a check that never passes."""
+    result = _c17()
+    assert result.outcome is AssertionOutcome.PASSED
+    assert result.observed["container_launch_args"] == " ".join(_HARDENED_ARGV)
+
+
+@pytest.mark.parametrize(
+    ("label", "override"),
+    [
+        # ADR-0019 point 1: the default is an empty list, and empty means unsecured.
+        ("empty key list", {"config": {"session_api_keys": []}}),
+        # DockerWorkspace sets it to None outright, which is a second way to the same place.
+        ("key set to None", {"config": {"session_api_keys": None}}),
+        ("key absent entirely", {"config": {}}),
+        ("blank string key", {"config": {"session_api_keys": "  "}}),
+    ],
+)
+def test_c17_fails_every_way_the_server_ends_up_unauthenticated(
+    label: str, override: dict[str, object]
+) -> None:
+    assert _c17(**override).outcome is AssertionOutcome.FAILED, label
+
+
+@pytest.mark.parametrize(
+    "binding",
+    [
+        # What Docker actually does with `-p {host_port}:8000`.
+        "0.0.0.0:8010->8000/tcp",
+        "[::]:8010->8000/tcp",
+        "192.168.1.10:8010->8000/tcp",
+        # Unparseable is a finding, not loopback: a binding nobody can read is not one
+        # anybody checked.
+        "nonsense",
+    ],
+)
+def test_c17_fails_on_a_binding_that_is_not_loopback(binding: str) -> None:
+    assert _c17(published_port_bindings=(binding,)).outcome is AssertionOutcome.FAILED
+
+
+def test_c17_accepts_ipv6_loopback_without_mistaking_the_hextet_for_a_host() -> None:
+    """`[::1]:8010` must parse to `::1`, not to `[`. The bracket-stripping path, asserted."""
+    assert _c17(published_port_bindings=("[::1]:8010->8000/tcp",)).outcome is AssertionOutcome.PASSED
+
+
+@pytest.mark.parametrize(
+    ("label", "argv"),
+    [
+        ("no --cap-drop", ("docker", "run", "--network", "none", "img")),
+        ("no --network", ("docker", "run", "--cap-drop", "ALL", "img")),
+        # Naming the flag is not the same as leaving the default network -- the failure this
+        # clause exists for, because the argv looks hardened at a glance.
+        ("--network bridge", ("docker", "run", "--cap-drop", "ALL", "--network", "bridge", "img")),
+        ("--network with no value", ("docker", "run", "--cap-drop", "ALL", "--network")),
+    ],
+)
+def test_c17_fails_on_an_unhardened_launch(label: str, argv: tuple[str, ...]) -> None:
+    assert _c17(container_launch_args=argv).outcome is AssertionOutcome.FAILED, label
+
+
+@pytest.mark.parametrize("unread", ["container_launch_args", "published_port_bindings"])
+def test_c17_reports_not_executed_when_it_read_nothing(unread: str) -> None:
+    """The vacuity control (D57/F25).
+
+    An argv nobody collected reports the same thing on a hardened launch and an unhardened
+    one. `not_executed` is the only honest outcome, and `require_all_passed` treats it as a
+    failure -- which is the point: an unread launch posture must not let a run start.
+    """
+    result = _c17(**{unread: ()})
+    assert result.outcome is AssertionOutcome.NOT_EXECUTED
+    assert unread in result.detail
+
+
+def test_c17_reports_all_of_its_problems_at_once() -> None:
+    """Three findings, one report. Fixing them one run at a time is three runs."""
+    result = _c17(
+        config={"session_api_keys": []},
+        published_port_bindings=("0.0.0.0:8010->8000/tcp",),
+        container_launch_args=("docker", "run", "img"),
+    )
+    assert result.outcome is AssertionOutcome.FAILED
+    for fragment in ("session_api_keys", "not loopback", "--cap-drop", "--network"):
+        assert fragment in result.detail
+
+
+def test_c17_records_what_it_read_on_failure_too() -> None:
+    """`reassert.compare` reads values across boot and end regardless of outcome.
+
+    A container relaunched with different flags is indistinguishable from one launched twice
+    the same way if the argv is only attached to passes.
+    """
+    result = _c17(container_launch_args=("docker", "run", "img"))
+    assert result.outcome is AssertionOutcome.FAILED
+    assert result.observed["container_launch_args"] == "docker run img"

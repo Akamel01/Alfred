@@ -123,6 +123,7 @@ documented failures in this class actually were.
 | C14 | End-of-run re-assertion of C7, C9, C12, C13, C16, compared **by observed value and not only by outcome** — a mount whose mode moved, a writable root that grew, a container swapped for another of the same kind, **a denylist edited under the run**, and an observation a check stopped making | inside, after the agent stops, before the claim is accepted (C16's half outside) | anything that appeared during the run; **a container that exited under the measurement** — `docker run` carries `--rm`, so it leaves nothing behind | claim rejected, `indeterminate` |
 | C15 | Patch-side check: the diff adds no dependency, no import of a denied module, and no file whose normalized content hash matches a denied source file | outside, privileged, on the patch | the oracle arriving through the deliverable channel | patch rejected |
 | C16 | The agent executes inside the container at all: the workspace `kind` is `DockerWorkspace` (a closed set of names — `DockerDevWorkspace` builds its image on the fly, `APIRemoteWorkspace` and `OpenHandsCloudWorkspace` run off-machine against D35), the conversation is `RemoteConversation`, and a container id was recorded | outside, at dispatch **and again at end of run** (C14) | **a run with no container around it, on which C1, C2, C3 and C10 all still pass** (ADR-0019); at end of run, a container that died mid-task | run does not start; at end of run the claim is rejected, `indeterminate` |
+| C17 | The agent server requires authentication (`session_api_keys` non-empty; it defaults empty, which its own field documentation calls unsecured, and `DockerWorkspace` sets `api_key = None` outright), **every published port bound to loopback** (Docker publishes `-p {host_port}:8000` on all host interfaces), and the container launched with `--cap-drop` and off the default bridge (ADR-0019, ADR-0023) | outside, at dispatch | **an unauthenticated remote-code-execution endpoint reachable off-box**, and a container with every capability the image grants; neither is covered by S6's egress default-drop, which runs the other direction | run does not start |
 
 C1, C2, C3, C5 and C10 rest on the selected executor's own vocabulary — configuration keys,
 event class names, configuration search paths — none of which is in this repository and
@@ -187,11 +188,30 @@ dispatch on. **A shell never passes.**
 > sudo inside; and `webhooks` and `telemetry` are two egress channels this specification
 > never enumerated, stopped only by C6's deny-by-default policy.
 
-C16 is a shell too, in the same file, and holds three answered holes of its own. The rest of
+C16 and C17 are shells too, in the same file. The rest of
 the table needs no executor vocabulary and is written for real: C8, C9, C12 and C13 in
 `harness/containment/inside.py`, C14 in `reassert.py`, C15 in `patch_side.py`, C6 and C7 as
 before. **C4 and C11 are now written** — `image.py` and `lane.py` — and the thing they were
 blocked on, which was never O5, is `harness/fingerprint/record.py`.
+
+> **Amended by ADR-0023.** The four unhardened defaults quoted above were recorded with the
+> question of ownership left open — whether they were Alfred's to assert or already covered
+> by S6's host-level `nftables` work. **Two of the four are Alfred's, and the deciding
+> property is direction.** S6's default-drop is egress; it stops the container reaching out.
+> The unauthenticated server bound on `0.0.0.0` and published with `-p {host_port}:8000` is
+> **ingress**, and no egress rule touches it. The missing launch flags are neither — they are
+> properties of the `docker run` argv, readable from outside the sandbox, which is where these
+> assertions already run. Both are now C17.
+>
+> The third, `NOPASSWD:ALL` sudo, is **not** Alfred's to assert at runtime. It is baked into
+> the image rather than chosen at launch, so no flag asserts it away and reading the argv
+> would never see it; it belongs to S6's layer-1 image-build closure check. The fourth,
+> `webhooks` and `telemetry`, stays with C6 as already recorded.
+>
+> Two of ADR-0019's three open items were already discharged before this amendment and its
+> Consequences section had gone stale: C16 answers the workspace-kind control and C1's fourth
+> clause answers `delete_on_close`, both landed in `69a09e9`. Only the ownership split
+> remained.
 
 > **Amended by ADR-0020.** This paragraph previously read *"C4 and C11 are not written, and
 > are blocked on something other than O5: both compare against a run fingerprint record that
