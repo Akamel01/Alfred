@@ -50,6 +50,7 @@ __all__ = [
     "DEPENDENCY_FILENAMES",
     "PatchFinding",
     "assert_patch_carries_no_oracle",
+    "imported_top_level_names",
     "normalized_source_hash",
 ]
 
@@ -76,14 +77,28 @@ DEPENDENCY_FILENAMES: Final[frozenset[str]] = frozenset(
 
 _ADDED = re.compile(r"\A\+(?!\+\+)")
 _DIFF_HEADER = re.compile(r"\A\+\+\+ (?:b/)?(.+?)\s*\Z")
+# `@@ -a,b +c,d @@` — `c` is the first line number of the added side. Parsed rather than
+# skipped so a finding reports the line a reviewer can actually open.
+_HUNK = re.compile(r"\A@@ -\d+(?:,\d+)? \+(?P<start>\d+)(?:,\d+)? @@")
 
-# `import x`, `import x.y`, `from x import y`, `import x as z`, and the same behind a leading
-# indent. Deliberately not an AST parse: the input is a diff fragment, which is not valid
-# Python, and a parser that failed on a partial hunk would report nothing on the one input
-# this check receives.
-_IMPORT = re.compile(
-    r"^\s*(?:from\s+(?P<from>[A-Za-z_][A-Za-z0-9_]*)|import\s+(?P<import>[A-Za-z_][A-Za-z0-9_]*))"
+# Deliberately not an AST parse: the input is a diff fragment, which is not valid Python, and
+# a parser that failed on a partial hunk would report nothing on the one input this check
+# receives. What it must not do is stop at the *first* name on a line.
+#
+# `import a, b as c, d` — every name, not just `a`. The original pattern read one name and
+# passed `import os, commonroad_crime`, which is the same line with the words swapped.
+_IMPORT_STATEMENT = re.compile(r"^\s*import\s+(?P<names>[^#;]+)")
+# `from x import y`, and `from . import y` / `from .pkg import y` — the relative forms import
+# *names* from a package, so the imported names are what matter, not the empty module part.
+_FROM_STATEMENT = re.compile(
+    r"^\s*from\s+(?P<module>[A-Za-z_.][A-Za-z0-9_.]*)\s+import\s+(?P<names>[^#;]+)"
 )
+# The dynamic forms. Name-based like everything else here, and equally defeated by a name
+# assembled at runtime — which the module docstring already declines to claim it closes.
+_DYNAMIC = re.compile(
+    r"""(?:__import__|import_module)\s*\(\s*["'](?P<name>[A-Za-z_][A-Za-z0-9_.]*)["']"""
+)
+_ALIASED = re.compile(r"\A(?P<name>[A-Za-z_][A-Za-z0-9_.]*)(?:\s+as\s+[A-Za-z_][A-Za-z0-9_]*)?\Z")
 
 _COMMENT = re.compile(r"(?m)#.*$|//.*$")
 _WHITESPACE = re.compile(r"\s+")
@@ -97,6 +112,41 @@ class PatchFinding:
     path: str
     line_number: int
     detail: str
+
+
+def imported_top_level_names(line: str) -> frozenset[str]:
+    """Every top-level module name one added line could bring into scope.
+
+    Top-level only, because that is what the denylist names: `import a.b.c` denies on `a`.
+    Returns a set rather than the first hit so that a line naming two modules is read as
+    naming two modules.
+    """
+    found: set[str] = set()
+
+    statement = _IMPORT_STATEMENT.match(line)
+    if statement:
+        for part in statement.group("names").split(","):
+            aliased = _ALIASED.match(part.strip())
+            if aliased:
+                found.add(aliased.group("name").split(".")[0])
+
+    relative = _FROM_STATEMENT.match(line)
+    if relative:
+        module = relative.group("module")
+        if module.startswith("."):
+            # `from . import commonroad_crime` — the module part carries no name, and the
+            # names after `import` are what enter scope.
+            for part in relative.group("names").split(","):
+                aliased = _ALIASED.match(part.strip().removesuffix(")").strip())
+                if aliased:
+                    found.add(aliased.group("name").split(".")[0])
+        else:
+            found.add(module.split(".")[0])
+
+    for dynamic in _DYNAMIC.finditer(line):
+        found.add(dynamic.group("name").split(".")[0])
+
+    return frozenset(found)
 
 
 def normalized_source_hash(text: str) -> str:
@@ -113,21 +163,36 @@ def normalized_source_hash(text: str) -> str:
 
 
 def _added_lines(diff_text: str) -> list[tuple[str, int, str]]:
-    """`(path, line number within the file's added run, text)` for every added line."""
+    """`(path, line number in the post-image, text)` for every added line.
+
+    The number comes from the `@@` hunk header, which this used to skip — so a finding in a
+    hunk at line 501 was reported as `path:1` and a reviewer opened the wrong line. A
+    position that is confidently wrong is worse than none, because it is acted on.
+    """
     out: list[tuple[str, int, str]] = []
     path = "<unknown>"
-    counter = 0
+    # 0 means "no hunk header seen yet". A fragment handed in without one still gets scanned
+    # — refusing it would make the check easy to disable by trimming a line — and its
+    # findings are numbered from 1, which is the honest answer for a position nobody stated.
+    line_number = 0
     for raw in diff_text.splitlines():
         header = _DIFF_HEADER.match(raw)
         if header:
             path = header.group(1)
-            counter = 0
+            line_number = 0
             continue
-        if raw.startswith("--- ") or raw.startswith("@@"):
+        hunk = _HUNK.match(raw)
+        if hunk:
+            line_number = int(hunk.group("start"))
+            continue
+        if raw.startswith("--- "):
             continue
         if _ADDED.match(raw):
-            counter += 1
-            out.append((path, counter, raw[1:]))
+            out.append((path, max(line_number, 1), raw[1:]))
+            line_number = max(line_number, 1) + 1
+        elif not raw.startswith("-"):
+            # Context lines advance the post-image; removed lines do not.
+            line_number = line_number + 1 if line_number else 0
     return out
 
 
@@ -193,18 +258,15 @@ def assert_patch_carries_no_oracle(
                         )
                         break
 
-        match = _IMPORT.match(text)
-        if match:
-            module = match.group("from") or match.group("import")
-            if module in denied_modules:
-                findings.append(
-                    PatchFinding(
-                        clause="import",
-                        path=path,
-                        line_number=line_number,
-                        detail=f"denied module {module!r} imported",
-                    )
+        for module in sorted(imported_top_level_names(text) & denied_modules):
+            findings.append(
+                PatchFinding(
+                    clause="import",
+                    path=path,
+                    line_number=line_number,
+                    detail=f"denied module {module!r} imported",
                 )
+            )
 
     clause_three_ran = bool(denied_source_hashes)
     if clause_three_ran and denied_source_hashes is not None:

@@ -55,7 +55,8 @@ def to_result(
     this fell back to `{"detail": ...}`, which put prose where the handle's schema promises
     values — so the one structured thing an assertion knows stopped at the boundary and only
     a sentence about it crossed. An explicit `observed` argument still wins, for the adaptor
-    that measured something the probe could not.
+    that measured something the probe could not — **including an explicit empty mapping**,
+    which is a statement that nothing was observed and not the absence of one.
     """
     outcome = _OUTCOMES.get(assertion.outcome)
     if outcome is None:  # pragma: no cover — unreachable while the two enums agree
@@ -67,7 +68,13 @@ def to_result(
         assertion_id=assertion.assertion_id,
         outcome=outcome,
         executed_inside_container=executed_inside_container,
-        observed=dict(observed or assertion.observed or {"detail": assertion.detail}),
+        # `is not None`, not truthiness: an adaptor passing `{}` means "I observed nothing",
+        # and `{} or x` would silently substitute the probe's values for that statement.
+        observed=dict(
+            observed
+            if observed is not None
+            else (assertion.observed or {"detail": assertion.detail})
+        ),
         premise_verified=assertion.premise_verified,
     )
 

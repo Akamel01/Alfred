@@ -287,6 +287,94 @@ def _as_key(value: HoleValue) -> str:
     raise TypeError(f"expected a single configuration key, got {value!r}")
 
 
+# ------------------------------------------------- reading the adaptor's configuration
+#
+# `ExecutorObservation.config` is `Mapping[str, object]`: adaptor-supplied, unvalidated, and
+# with no agreed serialization. Before these helpers each check invented its own reading and
+# they disagreed — C1 refused to assume a library default, C2 assumed one; C3 compared with
+# `is True` while C2 compared with `str(...)`. Three green assertions over live hazards came
+# out of that, and none of them was a mistake anyone could see by reading one check alone.
+#
+# The discipline is one sentence: **absent is unknown, uninterpretable is a finding, and
+# neither is a pass.**
+
+
+class Absent:
+    """The sentinel for a key the loaded configuration does not carry.
+
+    Not the string `"<absent>"`, which was the previous spelling: a configuration value may
+    legitimately *be* that string, and `persistence_dir: "<absent>"` reported "absent from
+    the loaded configuration". The same argument as `Unread` against `None`, made twice in
+    one file because the second time it was made with a string.
+    """
+
+    _instance: Absent | None = None
+
+    def __new__(cls) -> Absent:
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
+    def __repr__(self) -> str:
+        return "ABSENT(the loaded configuration does not carry this key)"
+
+    def __bool__(self) -> bool:
+        return False
+
+
+ABSENT: Final = Absent()
+
+# What the three JSON-ish channels spell a boolean as. `load_config` merges `OH_*` environment
+# variables over the file (C10), and an environment variable is a string — so a check that
+# accepted only Python `True` would pass an enabled VS Code server on every environment-configured
+# container, which is exactly the surface C3 exists to close.
+_TRUE_SPELLINGS: Final[frozenset[str]] = frozenset({"true", "1", "yes", "on"})
+_FALSE_SPELLINGS: Final[frozenset[str]] = frozenset({"false", "0", "no", "off"})
+
+
+def _read(obs: ExecutorObservation, key: str) -> object | Absent:
+    """One configuration value, or `ABSENT`. Never conflates absent with any real value."""
+    return obs.config.get(key, ABSENT)
+
+
+def _as_flag(value: object) -> bool | None:
+    """A configuration value as a boolean, or `None` when it does not spell one.
+
+    `None` is *uninterpretable*, and every caller treats it as a problem rather than as
+    either polarity. A value nobody can read is not a value that says "off".
+    """
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, int):
+        return bool(value) if value in (0, 1) else None
+    if isinstance(value, str):
+        lowered = value.strip().lower()
+        if lowered in _TRUE_SPELLINGS:
+            return True
+        if lowered in _FALSE_SPELLINGS:
+            return False
+    return None
+
+
+def _flag_problem(key: str, value: object, *, required: bool, why: str) -> str | None:
+    """The shared boolean clause: absent, uninterpretable, or the wrong polarity.
+
+    `why` is the consequence of the wrong polarity, so each caller supplies its own sentence
+    and the three failure shapes stay identical across checks.
+    """
+    if isinstance(value, Absent):
+        return f"{key!r} is absent from the loaded configuration; its value is unknown ({why})"
+    flag = _as_flag(value)
+    if flag is None:
+        return (
+            f"{key!r} is {value!r}, which does not spell a boolean; an unreadable value is "
+            "not a value that says off"
+        )
+    if flag is not required:
+        return f"{key!r} is {value!r}; expected {required}. {why}"
+    return None
+
+
 def _verdict(
     assertion_id: str,
     problems: Sequence[str],
@@ -339,29 +427,27 @@ def _check_c1(holes: Mapping[str, HoleValue], obs: ExecutorObservation) -> Asser
     event count rather than as the configuration error it is.
     """
     key = _as_key(holes["persistence_dir_key"])
-    configured = obs.config.get(key, "<absent>")
+    configured = _read(obs, key)
     problems: list[str] = []
     if configured is None:
         problems.append(f"{key!r} is None; the conversation is explicitly not persisted")
-    elif configured == "<absent>":
+    elif isinstance(configured, Absent):
         problems.append(f"{key!r} is absent from the loaded configuration; its value is unknown")
     elif not str(configured).strip():
         problems.append(f"{key!r} is empty; a blank path is not a persistence directory")
 
     delete_key = _as_key(holes["delete_on_close_key"])
-    delete_on_close = obs.config.get(delete_key, "<absent>")
-    if delete_on_close is True:
-        problems.append(
-            f"{delete_key!r} is True; the conversation directory is removed on close, so a "
-            "durable read proves nothing about what survives the run"
-        )
-    elif delete_on_close == "<absent>":
-        problems.append(
-            f"{delete_key!r} is absent from the loaded configuration; it defaults to True and "
-            "the default deletes the evidence"
-        )
-    elif delete_on_close is not False:
-        problems.append(f"{delete_key!r} is {delete_on_close!r}; expected False")
+    delete_problem = _flag_problem(
+        delete_key,
+        _read(obs, delete_key),
+        required=False,
+        why=(
+            "it defaults to True, the conversation directory is removed on close, and a "
+            "durable read then proves nothing about what survives the run"
+        ),
+    )
+    if delete_problem:
+        problems.append(delete_problem)
 
     if obs.durable_read_after_close is not True:
         problems.append(
@@ -395,9 +481,18 @@ def _check_c2(holes: Mapping[str, HoleValue], obs: ExecutorObservation) -> Asser
     """
     key = _as_key(holes["condenser_key"])
     off_values = set(_as_names(holes["condenser_off_values"]))
-    configured = obs.config.get(key)
+    configured = _read(obs, key)
     problems: list[str] = []
-    if configured is not None and str(configured) not in off_values:
+    if isinstance(configured, Absent):
+        # C1 refuses to read an absent key as the library's default and this used to do the
+        # opposite for the same class of fact. The default happens to be `None`, which is
+        # off, which is what made the asymmetry survive: the check was right by coincidence
+        # for the one executor whose default nobody had changed.
+        problems.append(
+            f"{key!r} is absent from the loaded configuration; its value is unknown, and the "
+            "library default is not what is being asserted"
+        )
+    elif configured is not None and str(configured) not in off_values:
         problems.append(
             f"{key!r} is {configured!r}; a condenser is configured "
             f"(off is None or one of {sorted(off_values)})"
@@ -435,8 +530,13 @@ def _check_c3(holes: Mapping[str, HoleValue], obs: ExecutorObservation) -> Asser
 
     policy_key = _as_key(holes["confirmation_policy_key"])
     required_policy = _as_key(holes["confirmation_policy_off_value"])
-    policy = obs.config.get(policy_key)
-    if policy is not None and str(policy) != required_policy:
+    policy = _read(obs, policy_key)
+    if isinstance(policy, Absent):
+        problems.append(
+            f"{policy_key!r} is absent from the loaded configuration; the default is "
+            f"{required_policy}, and the default is not what is being asserted"
+        )
+    elif policy is not None and str(policy) != required_policy:
         problems.append(f"{policy_key!r} is {policy!r}, not {required_policy!r}")
 
     waiting = _as_key(holes["waiting_status_name"])
@@ -453,8 +553,17 @@ def _check_c3(holes: Mapping[str, HoleValue], obs: ExecutorObservation) -> Asser
         )
 
     for surface_key in _as_names(holes["interactive_surface_keys"]):
-        if obs.config.get(surface_key) is True:
-            problems.append(f"{surface_key!r} is True; an interactive surface is enabled")
+        surface_problem = _flag_problem(
+            surface_key,
+            _read(obs, surface_key),
+            required=False,
+            why=(
+                "an interactive surface into the execution plane is enabled, and anything a "
+                "human does through it lands in no event stream at any layer"
+            ),
+        )
+        if surface_problem:
+            problems.append(surface_problem)
 
     surface_ports = tuple(
         int(port) for port in _as_names(holes["interactive_surface_ports"]) if port.isdigit()

@@ -178,7 +178,9 @@ def compare(boot: AssertionReport, end: AssertionReport) -> tuple[Drift, ...]:
     both ends over a *different* observed value means the run moved underneath a control that
     never noticed — the case an outcome-level comparison cannot express at all.
 
-    Ordering is deterministic: the closed set's own order, then kind, then key.
+    Ordering is deterministic: the closed set's own order, then kind, then key. The set's
+    order is used rather than the alphabetical one, so `C9` precedes `C12` — the ids are not
+    lexically sortable and sorting them that way would put `C12` first and read as a bug.
     """
     boot_by_id = {a.assertion_id: a for a in boot.assertions}
     end_by_id = {a.assertion_id: a for a in end.assertions}
@@ -187,7 +189,10 @@ def compare(boot: AssertionReport, end: AssertionReport) -> tuple[Drift, ...]:
         found.extend(
             _drifts_for(assertion_id, boot_by_id.get(assertion_id), end_by_id.get(assertion_id))
         )
-    return tuple(sorted(found, key=lambda d: (d.kind.value, d.key or "")))
+    order = {assertion_id: index for index, assertion_id in enumerate(REASSERTED)}
+    return tuple(
+        sorted(found, key=lambda d: (order[d.assertion_id], d.kind.value, d.key or ""))
+    )
 
 
 def drifted_ids(drifts: Sequence[Drift]) -> tuple[str, ...]:

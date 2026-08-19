@@ -41,6 +41,7 @@ from harness.containment.inside import (
 from harness.containment.oracle_absence import probe
 from harness.containment.patch_side import (
     assert_patch_carries_no_oracle,
+    imported_top_level_names,
     normalized_source_hash,
 )
 from harness.containment.reassert import (
@@ -341,6 +342,83 @@ def test_c16_fails_without_a_container_id(container_id: str | None) -> None:
     assert result.outcome is AssertionOutcome.FAILED
     assert "no container id" in result.detail
 
+
+
+# ---- how every check reads the adaptor's configuration
+#
+# `ExecutorObservation.config` is `Mapping[str, object]` with no schema. Before these tests
+# each check invented its own reading and they disagreed, which produced three green
+# assertions over live hazards. The discipline, asserted here across every check that reads
+# configuration: absent is unknown, uninterpretable is a finding, and neither is a pass.
+
+
+@pytest.mark.parametrize("spelling", [True, 1, "true", "True", "TRUE", " on ", "yes"])
+def test_c3_catches_an_interactive_surface_however_the_channel_spells_true(
+    spelling: object,
+) -> None:
+    """The most serious of the review findings, and the one with a live hazard behind it.
+
+    `enable_vscode` defaults to True and puts a VS Code server inside the agent container.
+    The check compared with `is True`, so it passed on every spelling but the Python one —
+    and C10's whole finding is that configuration also arrives through `OH_*` environment
+    variables, where every value is a string.
+    """
+    obs = replace(CLEAN, config={**CLEAN.config, "enable_vscode": spelling})
+    result = evaluate(_shell("C3"), obs)
+    assert result.outcome is AssertionOutcome.FAILED, result.detail
+    assert "enable_vscode" in result.detail
+
+
+@pytest.mark.parametrize("spelling", [False, 0, "false", "FALSE", "off", "no"])
+def test_c3_accepts_every_spelling_of_off(spelling: object) -> None:
+    """The control. Without it the test above is satisfied by a check that refuses everything."""
+    obs = replace(CLEAN, config={**CLEAN.config, "enable_vscode": spelling})
+    assert evaluate(_shell("C3"), obs).outcome is AssertionOutcome.PASSED
+
+
+def test_c3_fails_on_a_value_that_does_not_spell_a_boolean() -> None:
+    """An unreadable value is not a value that says off."""
+    obs = replace(CLEAN, config={**CLEAN.config, "enable_vnc": "maybe"})
+    result = evaluate(_shell("C3"), obs)
+    assert result.outcome is AssertionOutcome.FAILED
+    assert "does not spell a boolean" in result.detail
+
+
+@pytest.mark.parametrize(
+    ("assertion_id", "key"),
+    [
+        ("C1", "persistence_dir"),
+        ("C1", "delete_on_close"),
+        ("C2", "condenser"),
+        ("C3", "confirmation_policy"),
+        ("C3", "enable_vscode"),
+        ("C3", "enable_vnc"),
+    ],
+)
+def test_no_check_reads_an_absent_key_as_the_library_default(
+    assertion_id: str, key: str
+) -> None:
+    """C1 refused to assume a default and C2 assumed one, for the same class of fact.
+
+    C2's default happens to be `None`, which is off, which is what let the asymmetry survive:
+    the check was right by coincidence for the one executor whose default nobody had changed.
+    """
+    config = {k: v for k, v in CLEAN.config.items() if k != key}
+    result = evaluate(_shell(assertion_id), replace(CLEAN, config=config))
+    assert result.outcome is AssertionOutcome.FAILED, result.detail
+    assert key in result.detail
+
+
+def test_a_configuration_value_may_be_the_string_the_sentinel_used_to_be() -> None:
+    """The absent sentinel is a singleton, not `"<absent>"`.
+
+    `shells.py` builds `Unread` precisely so a sentinel cannot collide with a real value, and
+    then spelled a second sentinel as a string two hundred lines later. A directory named
+    `<absent>` is absurd; a check that cannot tell one from a missing key is the point.
+    """
+    obs = replace(CLEAN, config={**CLEAN.config, "persistence_dir": "<absent>"})
+    result = evaluate(_shell("C1"), obs)
+    assert result.outcome is AssertionOutcome.PASSED, result.detail
 
 # ---- C2: two ways to be off, three event classes
 
@@ -867,6 +945,96 @@ def _diff(path: str, *added: str) -> str:
     return _DIFF_HEADER.format(p=path) + "".join(f"+{line}\n" for line in added)
 
 
+
+@pytest.mark.parametrize(
+    "line",
+    [
+        "import os, commonroad_crime",
+        "import commonroad_crime, os",
+        "import commonroad_crime as crime",
+        "import commonroad_crime.measure.time",
+        "from . import commonroad_crime",
+        "from .vendor import commonroad_crime",
+        "from commonroad_crime.measure import ttc",
+        'x = __import__("commonroad_crime")',
+        'm = importlib.import_module("commonroad_crime.measure")',
+    ],
+)
+def test_c15_catches_every_import_form_not_only_the_first_name_on_the_line(
+    line: str, denylist: Denylist
+) -> None:
+    """`import os, commonroad_crime` passed. It is the same line as the caught one, reordered.
+
+    The pattern read one name per line and stopped, so the miss was positional. Relative and
+    dynamic forms were missed outright — neither is exotic in a patch someone wrote to get a
+    number past a gate.
+    """
+    result = assert_patch_carries_no_oracle(
+        f"--- a/m.py\n+++ b/m.py\n@@ -1,0 +1,1 @@\n+{line}\n", denylist
+    )
+    assert result.outcome is AssertionOutcome.FAILED, result.detail
+    assert "commonroad_crime" in result.detail
+
+
+@pytest.mark.parametrize(
+    "line",
+    [
+        "import os, sys",
+        "from pathlib import Path",
+        "import numpy as np",
+        "from . import helpers",
+        'x = __import__("json")',
+        "# import commonroad_crime",
+        "commonroad_crime_notes = 1",
+    ],
+)
+def test_c15_does_not_fire_on_innocent_imports(line: str, denylist: Denylist) -> None:
+    """The control. A widened matcher that fires on everything is not a widened matcher."""
+    result = assert_patch_carries_no_oracle(
+        f"--- a/m.py\n+++ b/m.py\n@@ -1,0 +1,1 @@\n+{line}\n", denylist
+    )
+    assert result.outcome is AssertionOutcome.PASSED, result.detail
+
+
+def test_imported_top_level_names_reads_the_top_level_only() -> None:
+    """The denylist names top-level modules; `import a.b.c` denies on `a`."""
+    assert imported_top_level_names("import a.b.c, d as e") == frozenset({"a", "d"})
+    assert imported_top_level_names("from x.y import z") == frozenset({"x"})
+    assert imported_top_level_names("from . import p, q") == frozenset({"p", "q"})
+    assert imported_top_level_names("total = 1") == frozenset()
+
+
+def test_c15_reports_a_line_number_a_reviewer_can_open(denylist: Denylist) -> None:
+    """A finding in a hunk at line 501 was reported as `m.py:1`, and acted on as one.
+
+    The hunk header was in the `@@`-skipping branch. A position that is confidently wrong is
+    worse than no position, because a reviewer opens it and finds nothing.
+    """
+    diff = (
+        "--- a/src/m.py\n+++ b/src/m.py\n@@ -500,2 +500,3 @@\n"
+        " context line\n"
+        "-removed line\n"
+        "+import commonroad_crime\n"
+    )
+    result = assert_patch_carries_no_oracle(diff, denylist)
+    assert result.outcome is AssertionOutcome.FAILED
+    # 500 is the context line; the removed line does not advance the post-image; 501 is the
+    # added one.
+    assert "src/m.py:501" in result.detail
+
+
+def test_c15_numbers_from_one_when_the_fragment_states_no_hunk(denylist: Denylist) -> None:
+    """A fragment handed in without a header is still scanned — trimming a line must not
+    disable the check — and numbered from 1, the honest answer for a stated-by-nobody position.
+    """
+    result = assert_patch_carries_no_oracle(
+        "+++ b/m.py\n+import commonroad_crime\n", denylist
+    )
+    assert result.outcome is AssertionOutcome.FAILED
+    assert "m.py:1" in result.detail
+
+
+
 def test_c15_fails_on_a_denied_dependency(denylist: Denylist) -> None:
     distribution = sorted(denylist.denied_distributions)[0]
     result = assert_patch_carries_no_oracle(_diff("pyproject.toml", f'  "{distribution}>=0.1",'), denylist)
@@ -973,6 +1141,21 @@ def test_the_crossing_preserves_an_unverified_premise() -> None:
     )
     assert result.premise_verified is False
     assert result.outcome is PortOutcome.PASSED
+
+
+def test_the_crossing_treats_an_explicit_empty_observed_as_a_statement() -> None:
+    """`{} or x` silently substituted the probe's values for an adaptor saying "I saw none"."""
+    assertion = Assertion("C9", AssertionOutcome.PASSED, "prose", observed={"mounts": "/repo:rw"})
+    stated = to_result(assertion, executed_inside_container=True, observed={})
+    assert stated.observed == {}
+    inherited = to_result(assertion, executed_inside_container=True)
+    assert inherited.observed == {"mounts": "/repo:rw"}
+
+
+def test_the_crossing_falls_back_to_prose_only_when_the_probe_observed_nothing() -> None:
+    """The fallback still exists; it is now the last resort rather than the second."""
+    bare = Assertion("C9", AssertionOutcome.PASSED, "prose")
+    assert to_result(bare, executed_inside_container=True).observed == {"detail": "prose"}
 
 
 def test_the_crossing_preserves_not_executed() -> None:
