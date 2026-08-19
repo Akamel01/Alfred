@@ -39,7 +39,7 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 # Layout is fixed by docs/tier2/coding-standards.md § Structure.
-packages = ["src/api", "src/domain", "src/metrics", "src/provenance", "src/thresholds"]
+packages = ["src/api", "src/domain", "src/ingest", "src/metrics", "src/provenance", "src/replay", "src/thresholds"]
 
 # --------------------------------------------------------------------------- lint
 
