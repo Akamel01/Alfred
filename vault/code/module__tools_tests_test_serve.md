@@ -32,4 +32,5 @@ generated: true
 ## Binds
 
 - **imports** → [[module__tools_vaultgraph_runner|Runs the registry and fails on every way an extraction can be quietly empty.]]
+- **imports** → [[module__tools_vaultgraph_stamp|A cheap fingerprint of the inputs, so a served page can tell it has gone stale.]]
 - [[module__tools_tests|tools.tests]] **contains** → this

@@ -61,6 +61,7 @@ generated: true
 - **contains** → [[module__tools_vaultgraph_runner|Runs the registry and fails on every way an extraction can be quietly empty.]]
 - **contains** → [[module__tools_vaultgraph_selftest|Planted fixtures that prove the guards fire, and a clean control that proves they are quie]]
 - **contains** → [[module__tools_vaultgraph_serialize|Canonical JSON. The rules here are the whole of the determinism guarantee.]]
+- **contains** → [[module__tools_vaultgraph_stamp|A cheap fingerprint of the inputs, so a served page can tell it has gone stale.]]
 - **contains** → [[module__tools_vaultgraph_textio|Reading the repo the same way the repo already reads itself, and one path spelling.]]
 - [[module__tools_vaultgraph_runner|Runs the registry and fails on every way an extraction can be quietly empty.]] **imports** → this
 - [[module__tools_vaultgraph_selftest|Planted fixtures that prove the guards fire, and a clean control that proves they are quie]] **imports** → this

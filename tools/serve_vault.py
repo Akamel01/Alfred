@@ -50,6 +50,7 @@ from tools.vaultgraph import mirror                              # noqa: E402
 from tools.vaultgraph.render import html as render_html          # noqa: E402
 from tools.vaultgraph.runner import AuditFailed, build             # noqa: E402
 from tools.vaultgraph.serialize import build_payload, dumps      # noqa: E402
+from tools.vaultgraph.stamp import stamp                         # noqa: E402
 from tools.vaultgraph.textio import ROOT                         # noqa: E402
 
 HOST = "127.0.0.1"
@@ -130,6 +131,15 @@ class Handler(BaseHTTPRequestHandler):
                 live_token=TOKEN,
             )
             self._send(200, page.encode("utf-8"), "text/html; charset=utf-8")
+            return
+        if path == "/stamp":
+            # Deliberately unauthenticated and deliberately not behind the refresh token. It
+            # changes nothing, reads no file content, and answers one hash -- the token exists
+            # to stop a stranger's page *running the generator*, and spending it here would
+            # only mean the page had to prove itself to ask a question it already knows the
+            # answer to. The loopback bind and the Host allowlist still apply.
+            self._send(200, json.dumps({"stamp": stamp(ROOT)}).encode("utf-8"),
+                       "application/json")
             return
         if path == "/graph.json":
             result = self._build()

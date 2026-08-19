@@ -213,3 +213,58 @@ def test_a_drifted_plan_mirror_is_never_served() -> None:
     status, body = answers[0]
     assert status == 503
     assert b"drifted" in body
+
+
+# ---- staleness ------------------------------------------------------------------------------
+
+
+def test_the_stamp_moves_when_a_watched_file_moves(server) -> None:
+    """The whole staleness signal in one test. Metadata only, so `touch` is enough -- and
+    `touch` is also the weakest thing that must be detected: an editor that rewrites identical
+    bytes still moves mtime, and a reader looking at the old graph would never know."""
+    status, first = _request("GET", "/stamp")
+    assert status == 200
+    before = json.loads(first)["stamp"]
+
+    status, second = _request("GET", "/stamp")
+    assert json.loads(second)["stamp"] == before, "the stamp is not stable across two reads"
+
+    watched = ROOT / "bench" / "bench_infer.py"
+    watched.touch()
+    _status, third = _request("GET", "/stamp")
+    assert json.loads(third)["stamp"] != before, "touching a watched file did not move the stamp"
+
+
+def test_the_stamp_ignores_what_the_build_writes(server) -> None:
+    """The control, and the reason it matters: `vault/`, `graph.json` and `docs-graph.html` are
+    written by the regeneration the stamp exists to prompt. Watching them would make every
+    successful refresh immediately report the repository as changed -- a staleness signal whose
+    most reliable trigger is the act of resolving it."""
+    _status, first = _request("GET", "/stamp")
+    before = json.loads(first)["stamp"]
+    for generated in (ROOT / "graph.json", ROOT / "docs-graph.html"):
+        generated.touch()
+    for note in sorted((ROOT / "vault").glob("*/*.md"))[:5]:
+        note.touch()
+    _status, after = _request("GET", "/stamp")
+    assert json.loads(after)["stamp"] == before, "a generated file moved the stamp"
+
+
+def test_the_stamp_reads_no_file_content(server) -> None:
+    """It is polled every four seconds, so it must stay a stat walk. A hash over content would
+    be the build running on a timer, which is the cost the poll exists to avoid."""
+    from tools.vaultgraph import stamp as stamp_module
+
+    source = (ROOT / "tools" / "vaultgraph" / "stamp.py").read_text(encoding="utf-8")
+    for reader in ("read_text(", "read_bytes(", "open("):
+        assert reader not in source, f"the stamp opens files: {reader!r}"
+    assert stamp_module.stamp(ROOT) == stamp_module.stamp(ROOT)
+
+
+def test_a_rebound_host_cannot_read_the_stamp(server) -> None:
+    """It is unauthenticated by design -- it changes nothing and answers one hash -- so the
+    loopback controls are the only thing standing in front of it, and they have to."""
+    status, _body = _request(
+        "GET", "/stamp", {"Host": "attacker.example", "Origin": "https://attacker.example"}
+    )
+    assert status == 403

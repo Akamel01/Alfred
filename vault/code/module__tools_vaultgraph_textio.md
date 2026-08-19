@@ -43,3 +43,4 @@ generated: true
 - [[module__tools_vaultgraph_extract_stages|S0-S9 and O1-O9, and the dependency clauses that make them a DAG.]] **imports** → this
 - [[module__tools_vaultgraph_extract_workflows|The gates: five jobs and every step they run, read out of `.github/workflows/gates.yml`.]] **imports** → this
 - [[module__tools_vaultgraph_mirror|The plan file lives outside the repo. This mirrors it in, and makes drift mechanical.]] **imports** → this
+- [[module__tools_vaultgraph_stamp|A cheap fingerprint of the inputs, so a served page can tell it has gone stale.]] **imports** → this

@@ -172,12 +172,18 @@ def test_the_committed_page_names_the_surface_that_can_refresh_it() -> None:
     nothing instead leaves a reader with a stale graph, no way to tell it is stale, and no way
     to find the button -- so the committed page names the address and the served page has it."""
     committed = _artifact()
-    assert "Snapshot" in committed
+    assert "is a snapshot" in committed
     assert LOOPBACK in committed
     assert 'id="regenerate"' not in committed, "the committed page shows a button it cannot honour"
+    # Nor the staleness chip, and nor the poll behind it: a file opened from disk has no server
+    # to ask, and a chip that could never appear is a control that lies more quietly.
+    assert 'id="stale"' not in committed
+    assert "/stamp" not in _page_script(committed)
     served = _artifact(live_token="t0ken")
     assert 'id="regenerate"' in served
-    assert "Snapshot" not in served, "the served page shows the snapshot notice instead of its button"
+    assert 'id="stale"' in served
+    assert "/stamp" in _page_script(served)
+    assert "is a snapshot" not in served, "the served page shows the snapshot notice, not its button"
 
 
 def test_the_address_the_pages_name_is_the_one_the_server_binds() -> None:

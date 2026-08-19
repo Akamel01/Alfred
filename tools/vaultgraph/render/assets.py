@@ -243,6 +243,13 @@ button.chip {
   cursor: pointer;
 }
 button.chip:hover { background: var(--sunk); }
+/* The staleness chip is an alert, not a third control. It borrows the alarm token the gauges
+   use for a count that should not be there, so "something is wrong" reads the same in both
+   places on the page. */
+button.chip.stale {
+  border-color: var(--alarm); color: var(--alarm); font-weight: 600;
+}
+button.chip.stale:hover { background: var(--alarm); color: var(--panel); }
 button.chip:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
 
 /* ---- inspector -------------------------------------------------------- */

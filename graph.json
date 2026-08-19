@@ -25,7 +25,7 @@
     "gate": 5,
     "gate-step": 36,
     "kill-criterion": 6,
-    "module": 129,
+    "module": 130,
     "operator-item": 9,
     "risk": 12,
     "schema": 5,
@@ -37,9 +37,9 @@
     "amended_by": 2,
     "amends": 5,
     "blocks": 35,
-    "contains": 182,
+    "contains": 183,
     "enforced_by": 142,
-    "imports": 143,
+    "imports": 145,
     "needs": 4,
     "runs": 15,
     "see_also": 6,
@@ -2123,6 +2123,19 @@
         "end_line": 1,
         "line": 1,
         "path": "tools/vaultgraph/serialize.py"
+      },
+      "src": "module:tools.vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.stamp",
+      "evidence": "tools/vaultgraph/stamp.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/stamp.py"
       },
       "src": "module:tools.vaultgraph"
     },
@@ -5292,8 +5305,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 265,
-        "line": 265,
+        "end_line": 271,
+        "line": 271,
         "path": "tools/tests/test_render.py"
       },
       "src": "module:tools.tests.test_render"
@@ -5305,8 +5318,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 364,
-        "line": 364,
+        "end_line": 370,
+        "line": 370,
         "path": "tools/tests/test_render.py"
       },
       "src": "module:tools.tests.test_render"
@@ -5318,8 +5331,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 300,
-        "line": 300,
+        "end_line": 306,
+        "line": 306,
         "path": "tools/tests/test_render.py"
       },
       "src": "module:tools.tests.test_render"
@@ -5344,8 +5357,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 365,
-        "line": 365,
+        "end_line": 371,
+        "line": 371,
         "path": "tools/tests/test_render.py"
       },
       "src": "module:tools.tests.test_render"
@@ -5357,8 +5370,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 522,
-        "line": 522,
+        "end_line": 528,
+        "line": 528,
         "path": "tools/tests/test_render.py"
       },
       "src": "module:tools.tests.test_render"
@@ -5383,8 +5396,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 366,
-        "line": 366,
+        "end_line": 372,
+        "line": 372,
         "path": "tools/tests/test_render.py"
       },
       "src": "module:tools.tests.test_render"
@@ -5437,6 +5450,19 @@
       "source": {
         "end_line": 163,
         "line": 163,
+        "path": "tools/tests/test_serve.py"
+      },
+      "src": "module:tools.tests.test_serve"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.stamp",
+      "evidence": "tools.vaultgraph.stamp",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 256,
+        "line": 256,
         "path": "tools/tests/test_serve.py"
       },
       "src": "module:tools.tests.test_serve"
@@ -6665,6 +6691,19 @@
     },
     {
       "confidence": "structural",
+      "dst": "module:tools.vaultgraph.textio",
+      "evidence": "tools.vaultgraph.textio.ROOT",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 24,
+        "line": 24,
+        "path": "tools/vaultgraph/stamp.py"
+      },
+      "src": "module:tools.vaultgraph.stamp"
+    },
+    {
+      "confidence": "structural",
       "dst": "gate:integrity",
       "evidence": "needs: integrity",
       "extractor": "workflows",
@@ -7043,16 +7082,16 @@
       "unparsed": 0
     },
     {
-      "edges": 83,
+      "edges": 84,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 45,
       "min_nodes": 90,
       "name": "code",
-      "nodes": 134,
+      "nodes": 135,
       "rejected": 0,
-      "scanned": 160,
+      "scanned": 161,
       "unparsed": 0
     },
     {
@@ -7082,7 +7121,7 @@
       "unparsed": 0
     },
     {
-      "edges": 143,
+      "edges": 145,
       "expect_rejected": null,
       "max_nodes": 0,
       "max_unparsed": 0,
@@ -7091,7 +7130,7 @@
       "name": "imports",
       "nodes": 0,
       "rejected": 0,
-      "scanned": 112,
+      "scanned": 113,
       "unparsed": 0
     },
     {
@@ -15113,6 +15152,30 @@
       "status": "",
       "tags": [],
       "title": "Canonical JSON. The rules here are the whole of the determinism guarantee."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "tools/vaultgraph/stamp.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.vaultgraph.stamp",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/stamp.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "A cheap fingerprint of the inputs, so a served page can tell it has gone stale."
     },
     {
       "attrs": {

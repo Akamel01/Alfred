@@ -182,6 +182,7 @@ def _gauges(nodes: list[Node], edges: list[Edge], anomalies: list, unparsed: lis
 #: is embedded rather than concatenated: the committed file cannot accidentally acquire one.
 LIVE_CONTROL = """
 <button type="button" class="chip" id="regenerate">Regenerate from repository</button>
+<button type="button" class="chip stale" id="stale" hidden>repository changed \u00b7 reload</button>
 <span id="regenerate-status" class="kicker" role="status"></span>
 """
 
@@ -190,17 +191,39 @@ LIVE_CONTROL = """
 #: reader with a stale graph and no way to tell it is stale or what to do about it. The URL is
 #: loopback and appears as text: the page names where the button is, it does not go there.
 STATIC_REFRESH = (
-    '<span class="footer-status">Snapshot · rebuild with '
-    "<code>python3 tools/serve_vault.py</code> and press "
-    "<em>Regenerate from repository</em> at "
-    f'<code>{LOCAL_SURFACE}</code></span>'
+    '<span class="footer-status">This file is a snapshot. The live surface is '
+    f"<code>{LOCAL_SURFACE}</code> — run <code>python3 tools/serve_vault.py</code> and open it. "
+    "That page re-reads the working tree on every load and tells you when the repository has "
+    "moved under it; this one cannot, which is why it says so here instead.</span>"
 )
 
 LIVE_SCRIPT = """
 (function () {
   const button = document.getElementById('regenerate');
   const status = document.getElementById('regenerate-status');
+  const stale = document.getElementById('stale');
   if (!button) return;
+
+  // The page is correct the moment it loads and silent about it ever after, so a tab open for
+  // five hours looks exactly like one open for five seconds. This asks the server for a
+  // metadata hash of what the extractors read -- no rebuild -- and offers a reload rather than
+  // taking one: the canvas must not re-lay-out under an open inspector.
+  let known = null;
+  async function poll() {
+    try {
+      const response = await fetch('/stamp');
+      if (!response.ok) return;
+      const seen = (await response.json()).stamp;
+      if (known === null) { known = seen; return; }
+      if (seen !== known) stale.hidden = false;
+    } catch (error) {
+      // A failed poll means the server went away. That is not staleness, and saying it is
+      // would be the page reporting a condition it cannot distinguish.
+    }
+  }
+  stale.addEventListener('click', () => window.location.reload());
+  poll();
+  setInterval(poll, 4000);
   button.addEventListener('click', async () => {
     button.disabled = true;
     status.textContent = 'Re-reading the repository…';
