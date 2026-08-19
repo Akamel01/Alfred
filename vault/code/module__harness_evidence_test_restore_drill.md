@@ -32,6 +32,11 @@ generated: true
 
 ## Binds
 
+- **imports** → [[module__harness_db_cluster|Throwaway Postgres cluster: create, migrate, assert against, destroy.]]
+- **imports** → [[module__harness_evidence_anchor|The chain head, recorded off-machine, and derived by the implementation that is not Python]]
+- **imports** → [[module__harness_evidence_export|Dump a chain as raw columns, so something else can check it.]]
+- **imports** → [[module__harness_evidence_restore_drill|D-synthetic: dump one cluster, restore into another, and check four ways.]]
+- **imports** → [[module__harness_evidence_store|Append-only, hash-chained evidence writes.]]
 - [[module__harness_evidence|harness.evidence]] **contains** → this
 
 ## Enforced by (code)

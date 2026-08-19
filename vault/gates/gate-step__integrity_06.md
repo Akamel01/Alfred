@@ -34,4 +34,5 @@ python3 scripts/lint_migrations.py
 
 ## Binds
 
+- **runs** → [[module__scripts_lint_migrations|Additive-only lint over the evidence and held-out migration directories.]]
 - [[gate__integrity|integrity (fixtures and register)]] **contains** → this

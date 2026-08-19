@@ -34,4 +34,5 @@ uv run pytest tools/tests
 
 ## Binds
 
+- **runs** → [[module__tools_tests|tools.tests]]
 - [[gate__integrity|integrity (fixtures and register)]] **contains** → this

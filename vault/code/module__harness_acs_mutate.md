@@ -33,6 +33,7 @@ generated: true
 ## Binds
 
 - [[module__harness_acs|harness.acs]] **contains** → this
+- [[gate-step__mutation_04|ACS-1 mutation control]] **runs** → this
 
 ## Enforced by (code)
 

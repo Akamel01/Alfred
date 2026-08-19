@@ -34,4 +34,5 @@ uv run pytest harness/containment
 
 ## Binds
 
+- **runs** → [[module__harness_containment|harness.containment]]
 - [[gate__inspector|inspector (ACS-1, lane, bench)]] **contains** → this

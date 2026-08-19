@@ -61,4 +61,5 @@ echo "byte-identical: $after"
 
 ## Binds
 
+- **runs** → [[module__harness_acs_gen_vectors|Generate the ACS-1 test-vector suite (ADR-0003).]]
 - [[gate__integrity|integrity (fixtures and register)]] **contains** → this

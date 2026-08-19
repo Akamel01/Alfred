@@ -37,3 +37,4 @@ generated: true
 - **contains** → [[module__harness_criterion_test_execute|Three outcomes, and the ways two of them get silently collapsed into one.]]
 - **contains** → [[module__harness_criterion_test_materialize|A1, asserted as an architectural claim rather than as a list of blocked filenames.]]
 - **contains** → [[module__harness_criterion_test_runner|Verdict composition, with the two collapses that would make the number meaningless.]]
+- [[gate-step__database_06|CriterionRunner — materialization, execution, verdict composition]] **runs** → this

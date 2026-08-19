@@ -33,6 +33,7 @@ generated: true
 ## Binds
 
 - [[module__harness_acs|harness.acs]] **contains** → this
+- [[gate-step__integrity_09|ACS-1 vectors regenerate byte-identically]] **runs** → this
 
 ## Enforced by (code)
 

@@ -36,3 +36,4 @@ generated: true
 - **contains** → [[module__harness_containment_egress|C6 — the egress canary, and the control that stops it being vacuous.]]
 - **contains** → [[module__harness_containment_oracle_absence|C7 — the oracle is absent, asserted rather than assumed.]]
 - **contains** → [[module__harness_containment_test_containment|Containment assertions, each paired with the control that stops it reading green.]]
+- [[gate-step__inspector_08|Containment probes (C6 egress canary, C7 oracle absence)]] **runs** → this

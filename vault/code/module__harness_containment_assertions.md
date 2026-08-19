@@ -33,6 +33,9 @@ generated: true
 ## Binds
 
 - [[module__harness_containment|harness.containment]] **contains** → this
+- [[module__harness_containment_egress|C6 — the egress canary, and the control that stops it being vacuous.]] **imports** → this
+- [[module__harness_containment_oracle_absence|C7 — the oracle is absent, asserted rather than assumed.]] **imports** → this
+- [[module__harness_containment_test_containment|Containment assertions, each paired with the control that stops it reading green.]] **imports** → this
 
 ## Enforced by (code)
 

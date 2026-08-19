@@ -32,6 +32,10 @@ generated: true
 
 ## Binds
 
+- **imports** → [[module__harness_containment_assertions|Three outcomes for a containment assertion, and the third is the dangerous one.]]
+- **imports** → [[module__harness_containment_denylist|Load the oracle denylist and give it a digest the fingerprint can carry.]]
+- **imports** → [[module__harness_containment_egress|C6 — the egress canary, and the control that stops it being vacuous.]]
+- **imports** → [[module__harness_containment_oracle_absence|C7 — the oracle is absent, asserted rather than assumed.]]
 - [[module__harness_containment|harness.containment]] **contains** → this
 
 ## Enforced by (code)

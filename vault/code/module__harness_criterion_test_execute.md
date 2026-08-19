@@ -32,6 +32,7 @@ generated: true
 
 ## Binds
 
+- **imports** → [[module__harness_criterion_execute|Run a criterion hermetically and classify what happened three ways.]]
 - [[module__harness_criterion|harness.criterion]] **contains** → this
 
 ## Enforced by (code)

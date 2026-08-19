@@ -25,7 +25,7 @@
     "gate": 5,
     "gate-step": 36,
     "kill-criterion": 6,
-    "module": 118,
+    "module": 126,
     "operator-item": 9,
     "risk": 12,
     "schema": 5,
@@ -37,9 +37,11 @@
     "amended_by": 2,
     "amends": 5,
     "blocks": 35,
-    "contains": 146,
+    "contains": 179,
     "enforced_by": 142,
+    "imports": 136,
     "needs": 4,
+    "runs": 15,
     "see_also": 6,
     "supersedes": 1
   },
@@ -1668,6 +1670,435 @@
         "path": "src/provenance/stamp.py"
       },
       "src": "module:src.provenance"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.tests.test_render",
+      "evidence": "tools/tests/test_render.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/tests/test_render.py"
+      },
+      "src": "module:tools.tests"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.tests.test_serve",
+      "evidence": "tools/tests/test_serve.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/tests/test_serve.py"
+      },
+      "src": "module:tools.tests"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.tests.test_vaultgraph",
+      "evidence": "tools/tests/test_vaultgraph.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/tests/test_vaultgraph.py"
+      },
+      "src": "module:tools.tests"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.__init__",
+      "evidence": "tools/vaultgraph/__init__.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/__init__.py"
+      },
+      "src": "module:tools.vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.extract.__init__",
+      "evidence": "tools/vaultgraph/extract/__init__.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/extract/__init__.py"
+      },
+      "src": "module:tools.vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.extract.adrs",
+      "evidence": "tools/vaultgraph/extract/adrs.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/extract/adrs.py"
+      },
+      "src": "module:tools.vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.extract.amendments",
+      "evidence": "tools/vaultgraph/extract/amendments.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/extract/amendments.py"
+      },
+      "src": "module:tools.vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.extract.charter",
+      "evidence": "tools/vaultgraph/extract/charter.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/extract/charter.py"
+      },
+      "src": "module:tools.vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.extract.code",
+      "evidence": "tools/vaultgraph/extract/code.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/extract/code.py"
+      },
+      "src": "module:tools.vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.extract.decisions",
+      "evidence": "tools/vaultgraph/extract/decisions.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/extract/decisions.py"
+      },
+      "src": "module:tools.vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.extract.documents",
+      "evidence": "tools/vaultgraph/extract/documents.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/extract/documents.py"
+      },
+      "src": "module:tools.vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.extract.imports",
+      "evidence": "tools/vaultgraph/extract/imports.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/extract/imports.py"
+      },
+      "src": "module:tools.vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.extract.references",
+      "evidence": "tools/vaultgraph/extract/references.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/extract/references.py"
+      },
+      "src": "module:tools.vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.extract.stages",
+      "evidence": "tools/vaultgraph/extract/stages.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/extract/stages.py"
+      },
+      "src": "module:tools.vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.extract.workflows",
+      "evidence": "tools/vaultgraph/extract/workflows.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/extract/workflows.py"
+      },
+      "src": "module:tools.vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.fixtures",
+      "evidence": "tools/vaultgraph/fixtures.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/fixtures.py"
+      },
+      "src": "module:tools.vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.mdscan",
+      "evidence": "tools/vaultgraph/mdscan.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/mdscan.py"
+      },
+      "src": "module:tools.vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.mirror",
+      "evidence": "tools/vaultgraph/mirror.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/mirror.py"
+      },
+      "src": "module:tools.vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.model",
+      "evidence": "tools/vaultgraph/model.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/model.py"
+      },
+      "src": "module:tools.vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.protocol",
+      "evidence": "tools/vaultgraph/protocol.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/protocol.py"
+      },
+      "src": "module:tools.vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.render.__init__",
+      "evidence": "tools/vaultgraph/render/__init__.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/render/__init__.py"
+      },
+      "src": "module:tools.vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.render.assets",
+      "evidence": "tools/vaultgraph/render/assets.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/render/assets.py"
+      },
+      "src": "module:tools.vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.render.canvas",
+      "evidence": "tools/vaultgraph/render/canvas.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/render/canvas.py"
+      },
+      "src": "module:tools.vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.render.cluster",
+      "evidence": "tools/vaultgraph/render/cluster.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/render/cluster.py"
+      },
+      "src": "module:tools.vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.render.dataview",
+      "evidence": "tools/vaultgraph/render/dataview.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/render/dataview.py"
+      },
+      "src": "module:tools.vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.render.html",
+      "evidence": "tools/vaultgraph/render/html.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/render/html.py"
+      },
+      "src": "module:tools.vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.render.note",
+      "evidence": "tools/vaultgraph/render/note.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/render/note.py"
+      },
+      "src": "module:tools.vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.render.script",
+      "evidence": "tools/vaultgraph/render/script.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/render/script.py"
+      },
+      "src": "module:tools.vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.render.vault",
+      "evidence": "tools/vaultgraph/render/vault.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/render/vault.py"
+      },
+      "src": "module:tools.vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.runner",
+      "evidence": "tools/vaultgraph/runner.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/runner.py"
+      },
+      "src": "module:tools.vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.selftest",
+      "evidence": "tools/vaultgraph/selftest.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/selftest.py"
+      },
+      "src": "module:tools.vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.serialize",
+      "evidence": "tools/vaultgraph/serialize.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/serialize.py"
+      },
+      "src": "module:tools.vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.textio",
+      "evidence": "tools/vaultgraph/textio.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/textio.py"
+      },
+      "src": "module:tools.vaultgraph"
     },
     {
       "confidence": "structural",
@@ -4336,6 +4767,1774 @@
     },
     {
       "confidence": "structural",
+      "dst": "module:harness.acs.acs1",
+      "evidence": "harness.acs.acs1.acs_sha256",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 25,
+        "line": 25,
+        "path": "harness/containment/denylist.py"
+      },
+      "src": "module:harness.containment.denylist"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.containment.assertions",
+      "evidence": "harness.containment.assertions.Assertion",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 45,
+        "line": 45,
+        "path": "harness/containment/egress.py"
+      },
+      "src": "module:harness.containment.egress"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.containment.assertions",
+      "evidence": "harness.containment.assertions.Assertion",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 43,
+        "line": 43,
+        "path": "harness/containment/oracle_absence.py"
+      },
+      "src": "module:harness.containment.oracle_absence"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.containment.denylist",
+      "evidence": "harness.containment.denylist.Classification",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 44,
+        "line": 44,
+        "path": "harness/containment/oracle_absence.py"
+      },
+      "src": "module:harness.containment.oracle_absence"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.containment.assertions",
+      "evidence": "harness.containment.assertions.Assertion",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 35,
+        "line": 35,
+        "path": "harness/containment/test_containment.py"
+      },
+      "src": "module:harness.containment.test_containment"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.containment.denylist",
+      "evidence": "harness.containment.denylist.Classification",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 41,
+        "line": 41,
+        "path": "harness/containment/test_containment.py"
+      },
+      "src": "module:harness.containment.test_containment"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.containment.egress",
+      "evidence": "harness.containment.egress.CanaryTarget",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 43,
+        "line": 43,
+        "path": "harness/containment/test_containment.py"
+      },
+      "src": "module:harness.containment.test_containment"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.containment.oracle_absence",
+      "evidence": "harness.containment.oracle_absence.check_closure",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 51,
+        "line": 51,
+        "path": "harness/containment/test_containment.py"
+      },
+      "src": "module:harness.containment.test_containment"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.criterion.execute",
+      "evidence": "harness.criterion.execute.Execution",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 45,
+        "line": 45,
+        "path": "harness/criterion/runner.py"
+      },
+      "src": "module:harness.criterion.runner"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.criterion.materialize",
+      "evidence": "harness.criterion.materialize.Materialization",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 46,
+        "line": 46,
+        "path": "harness/criterion/runner.py"
+      },
+      "src": "module:harness.criterion.runner"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.evidence.store",
+      "evidence": "harness.evidence.store.Appended",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 51,
+        "line": 51,
+        "path": "harness/criterion/runner.py"
+      },
+      "src": "module:harness.criterion.runner"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.criterion.execute",
+      "evidence": "harness.criterion.execute.REPORT_FILENAME",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 23,
+        "line": 23,
+        "path": "harness/criterion/test_execute.py"
+      },
+      "src": "module:harness.criterion.test_execute"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.criterion.materialize",
+      "evidence": "harness.criterion.materialize.MaterializationError",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 22,
+        "line": 22,
+        "path": "harness/criterion/test_materialize.py"
+      },
+      "src": "module:harness.criterion.test_materialize"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.criterion.execute",
+      "evidence": "harness.criterion.execute.REPORT_FILENAME",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 29,
+        "line": 29,
+        "path": "harness/criterion/test_runner.py"
+      },
+      "src": "module:harness.criterion.test_runner"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.criterion.materialize",
+      "evidence": "harness.criterion.materialize.MaterializationSpec",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 30,
+        "line": 30,
+        "path": "harness/criterion/test_runner.py"
+      },
+      "src": "module:harness.criterion.test_runner"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.criterion.runner",
+      "evidence": "harness.criterion.runner.HARVEST_FILENAME",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 31,
+        "line": 31,
+        "path": "harness/criterion/test_runner.py"
+      },
+      "src": "module:harness.criterion.test_runner"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.db.cluster",
+      "evidence": "harness.db.cluster.SUPERUSER",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 40,
+        "line": 40,
+        "path": "harness/criterion/test_runner.py"
+      },
+      "src": "module:harness.criterion.test_runner"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.evidence.store",
+      "evidence": "harness.evidence.store.EvidenceStore",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 41,
+        "line": 41,
+        "path": "harness/criterion/test_runner.py"
+      },
+      "src": "module:harness.criterion.test_runner"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.db.grants_declared",
+      "evidence": "harness.db.grants_declared.Declaration",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 40,
+        "line": 40,
+        "path": "harness/db/assert_grants.py"
+      },
+      "src": "module:harness.db.assert_grants"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.db.cluster",
+      "evidence": "harness.db.cluster.DBNAME",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 19,
+        "line": 19,
+        "path": "harness/db/test_cluster.py"
+      },
+      "src": "module:harness.db.test_cluster"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.db.assert_grants",
+      "evidence": "harness.db.assert_grants.Report",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 29,
+        "line": 29,
+        "path": "harness/db/test_grants.py"
+      },
+      "src": "module:harness.db.test_grants"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.db.cluster",
+      "evidence": "harness.db.cluster.SUPERUSER",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 30,
+        "line": 30,
+        "path": "harness/db/test_grants.py"
+      },
+      "src": "module:harness.db.test_grants"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.evidence.store",
+      "evidence": "harness.evidence.store.CHAINED_TABLES",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 33,
+        "line": 33,
+        "path": "harness/evidence/export.py"
+      },
+      "src": "module:harness.evidence.export"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.db.cluster",
+      "evidence": "harness.db.cluster.SUPERUSER",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 40,
+        "line": 40,
+        "path": "harness/evidence/restore_drill.py"
+      },
+      "src": "module:harness.evidence.restore_drill"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.evidence.anchor",
+      "evidence": "harness.evidence.anchor.Anchor",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 41,
+        "line": 41,
+        "path": "harness/evidence/restore_drill.py"
+      },
+      "src": "module:harness.evidence.restore_drill"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.evidence.export",
+      "evidence": "harness.evidence.export.export_chain",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 42,
+        "line": 42,
+        "path": "harness/evidence/restore_drill.py"
+      },
+      "src": "module:harness.evidence.restore_drill"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.acs.acs1",
+      "evidence": "harness.acs.acs1.acs_sha256",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 43,
+        "line": 43,
+        "path": "harness/evidence/store.py"
+      },
+      "src": "module:harness.evidence.store"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.db.cluster",
+      "evidence": "harness.db.cluster.ThrowawayCluster",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 30,
+        "line": 30,
+        "path": "harness/evidence/test_restore_drill.py"
+      },
+      "src": "module:harness.evidence.test_restore_drill"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.evidence.anchor",
+      "evidence": "harness.evidence.anchor.Anchor",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 31,
+        "line": 31,
+        "path": "harness/evidence/test_restore_drill.py"
+      },
+      "src": "module:harness.evidence.test_restore_drill"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.evidence.export",
+      "evidence": "harness.evidence.export.export_chain",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 32,
+        "line": 32,
+        "path": "harness/evidence/test_restore_drill.py"
+      },
+      "src": "module:harness.evidence.test_restore_drill"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.evidence.restore_drill",
+      "evidence": "harness.evidence.restore_drill.DrillError",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 33,
+        "line": 33,
+        "path": "harness/evidence/test_restore_drill.py"
+      },
+      "src": "module:harness.evidence.test_restore_drill"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.evidence.store",
+      "evidence": "harness.evidence.store.EvidenceStore",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 34,
+        "line": 34,
+        "path": "harness/evidence/test_restore_drill.py"
+      },
+      "src": "module:harness.evidence.test_restore_drill"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.acs.acs1",
+      "evidence": "harness.acs.acs1.acs_sha256",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 172,
+        "line": 172,
+        "path": "harness/evidence/test_store.py"
+      },
+      "src": "module:harness.evidence.test_store"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.db.cluster",
+      "evidence": "harness.db.cluster.SUPERUSER",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 36,
+        "line": 36,
+        "path": "harness/evidence/test_store.py"
+      },
+      "src": "module:harness.evidence.test_store"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.evidence.store",
+      "evidence": "harness.evidence.store.VERDICT_RECORD_TYPE",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 37,
+        "line": 37,
+        "path": "harness/evidence/test_store.py"
+      },
+      "src": "module:harness.evidence.test_store"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.acs.acs1",
+      "evidence": "harness.acs.acs1.ACS_VERSION",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 16,
+        "line": 16,
+        "path": "src/provenance/encoding.py"
+      },
+      "src": "module:src.provenance.encoding"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.model",
+      "evidence": "tools.vaultgraph.model.NodeKind",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 26,
+        "line": 26,
+        "path": "tools/tests/test_render.py"
+      },
+      "src": "module:tools.tests.test_render"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.render.assets",
+      "evidence": "tools.vaultgraph.render.assets.CSS",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 265,
+        "line": 265,
+        "path": "tools/tests/test_render.py"
+      },
+      "src": "module:tools.tests.test_render"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.render.cluster",
+      "evidence": "tools.vaultgraph.render.cluster",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 300,
+        "line": 300,
+        "path": "tools/tests/test_render.py"
+      },
+      "src": "module:tools.tests.test_render"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.render.html",
+      "evidence": "tools.vaultgraph.render.html",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 32,
+        "line": 32,
+        "path": "tools/tests/test_render.py"
+      },
+      "src": "module:tools.tests.test_render"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.render.vault",
+      "evidence": "tools.vaultgraph.render.vault",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 31,
+        "line": 31,
+        "path": "tools/tests/test_render.py"
+      },
+      "src": "module:tools.tests.test_render"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.runner",
+      "evidence": "tools.vaultgraph.runner.run",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 27,
+        "line": 27,
+        "path": "tools/tests/test_render.py"
+      },
+      "src": "module:tools.tests.test_render"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.selftest",
+      "evidence": "tools.vaultgraph.selftest._reaches",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 79,
+        "line": 79,
+        "path": "tools/tests/test_render.py"
+      },
+      "src": "module:tools.tests.test_render"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.serialize",
+      "evidence": "tools.vaultgraph.serialize.compare_tree",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 33,
+        "line": 33,
+        "path": "tools/tests/test_render.py"
+      },
+      "src": "module:tools.tests.test_render"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.runner",
+      "evidence": "tools.vaultgraph.runner.AuditFailed",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 163,
+        "line": 163,
+        "path": "tools/tests/test_serve.py"
+      },
+      "src": "module:tools.tests.test_serve"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.mirror",
+      "evidence": "tools.vaultgraph.mirror",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 208,
+        "line": 208,
+        "path": "tools/tests/test_vaultgraph.py"
+      },
+      "src": "module:tools.tests.test_vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.model",
+      "evidence": "tools.vaultgraph.model.Minter",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 28,
+        "line": 28,
+        "path": "tools/tests/test_vaultgraph.py"
+      },
+      "src": "module:tools.tests.test_vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.protocol",
+      "evidence": "tools.vaultgraph.protocol.ExtractorSpec",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 29,
+        "line": 29,
+        "path": "tools/tests/test_vaultgraph.py"
+      },
+      "src": "module:tools.tests.test_vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.runner",
+      "evidence": "tools.vaultgraph.runner.run",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 35,
+        "line": 35,
+        "path": "tools/tests/test_vaultgraph.py"
+      },
+      "src": "module:tools.tests.test_vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.selftest",
+      "evidence": "tools.vaultgraph.selftest.self_test",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 36,
+        "line": 36,
+        "path": "tools/tests/test_vaultgraph.py"
+      },
+      "src": "module:tools.tests.test_vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.serialize",
+      "evidence": "tools.vaultgraph.serialize.build_payload",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 37,
+        "line": 37,
+        "path": "tools/tests/test_vaultgraph.py"
+      },
+      "src": "module:tools.tests.test_vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.extract.adrs",
+      "evidence": "tools.vaultgraph.extract.adrs",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 16,
+        "line": 16,
+        "path": "tools/vaultgraph/extract/__init__.py"
+      },
+      "src": "module:tools.vaultgraph.extract.__init__"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.extract.amendments",
+      "evidence": "tools.vaultgraph.extract.amendments",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 16,
+        "line": 16,
+        "path": "tools/vaultgraph/extract/__init__.py"
+      },
+      "src": "module:tools.vaultgraph.extract.__init__"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.extract.charter",
+      "evidence": "tools.vaultgraph.extract.charter",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 16,
+        "line": 16,
+        "path": "tools/vaultgraph/extract/__init__.py"
+      },
+      "src": "module:tools.vaultgraph.extract.__init__"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.extract.code",
+      "evidence": "tools.vaultgraph.extract.code",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 16,
+        "line": 16,
+        "path": "tools/vaultgraph/extract/__init__.py"
+      },
+      "src": "module:tools.vaultgraph.extract.__init__"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.extract.decisions",
+      "evidence": "tools.vaultgraph.extract.decisions",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 16,
+        "line": 16,
+        "path": "tools/vaultgraph/extract/__init__.py"
+      },
+      "src": "module:tools.vaultgraph.extract.__init__"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.extract.documents",
+      "evidence": "tools.vaultgraph.extract.documents",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 16,
+        "line": 16,
+        "path": "tools/vaultgraph/extract/__init__.py"
+      },
+      "src": "module:tools.vaultgraph.extract.__init__"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.extract.imports",
+      "evidence": "tools.vaultgraph.extract.imports",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 16,
+        "line": 16,
+        "path": "tools/vaultgraph/extract/__init__.py"
+      },
+      "src": "module:tools.vaultgraph.extract.__init__"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.extract.references",
+      "evidence": "tools.vaultgraph.extract.references",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 16,
+        "line": 16,
+        "path": "tools/vaultgraph/extract/__init__.py"
+      },
+      "src": "module:tools.vaultgraph.extract.__init__"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.extract.stages",
+      "evidence": "tools.vaultgraph.extract.stages",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 16,
+        "line": 16,
+        "path": "tools/vaultgraph/extract/__init__.py"
+      },
+      "src": "module:tools.vaultgraph.extract.__init__"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.extract.workflows",
+      "evidence": "tools.vaultgraph.extract.workflows",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 16,
+        "line": 16,
+        "path": "tools/vaultgraph/extract/__init__.py"
+      },
+      "src": "module:tools.vaultgraph.extract.__init__"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.protocol",
+      "evidence": "tools.vaultgraph.protocol.ExtractorSpec",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 15,
+        "line": 15,
+        "path": "tools/vaultgraph/extract/__init__.py"
+      },
+      "src": "module:tools.vaultgraph.extract.__init__"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.model",
+      "evidence": "tools.vaultgraph.model.Confidence",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 21,
+        "line": 21,
+        "path": "tools/vaultgraph/extract/adrs.py"
+      },
+      "src": "module:tools.vaultgraph.extract.adrs"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.protocol",
+      "evidence": "tools.vaultgraph.protocol.Anomaly",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 22,
+        "line": 22,
+        "path": "tools/vaultgraph/extract/adrs.py"
+      },
+      "src": "module:tools.vaultgraph.extract.adrs"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.textio",
+      "evidence": "tools.vaultgraph.textio.read_lines",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 23,
+        "line": 23,
+        "path": "tools/vaultgraph/extract/adrs.py"
+      },
+      "src": "module:tools.vaultgraph.extract.adrs"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.mdscan",
+      "evidence": "tools.vaultgraph.mdscan.split_row",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 18,
+        "line": 18,
+        "path": "tools/vaultgraph/extract/amendments.py"
+      },
+      "src": "module:tools.vaultgraph.extract.amendments"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.mirror",
+      "evidence": "tools.vaultgraph.mirror.MIRROR_NAME",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 19,
+        "line": 19,
+        "path": "tools/vaultgraph/extract/amendments.py"
+      },
+      "src": "module:tools.vaultgraph.extract.amendments"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.model",
+      "evidence": "tools.vaultgraph.model.Confidence",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 20,
+        "line": 20,
+        "path": "tools/vaultgraph/extract/amendments.py"
+      },
+      "src": "module:tools.vaultgraph.extract.amendments"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.protocol",
+      "evidence": "tools.vaultgraph.protocol.Anomaly",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 21,
+        "line": 21,
+        "path": "tools/vaultgraph/extract/amendments.py"
+      },
+      "src": "module:tools.vaultgraph.extract.amendments"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.textio",
+      "evidence": "tools.vaultgraph.textio.read_lines",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 22,
+        "line": 22,
+        "path": "tools/vaultgraph/extract/amendments.py"
+      },
+      "src": "module:tools.vaultgraph.extract.amendments"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.mdscan",
+      "evidence": "tools.vaultgraph.mdscan.split_row",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 17,
+        "line": 17,
+        "path": "tools/vaultgraph/extract/charter.py"
+      },
+      "src": "module:tools.vaultgraph.extract.charter"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.model",
+      "evidence": "tools.vaultgraph.model.Node",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 18,
+        "line": 18,
+        "path": "tools/vaultgraph/extract/charter.py"
+      },
+      "src": "module:tools.vaultgraph.extract.charter"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.protocol",
+      "evidence": "tools.vaultgraph.protocol.Anomaly",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 19,
+        "line": 19,
+        "path": "tools/vaultgraph/extract/charter.py"
+      },
+      "src": "module:tools.vaultgraph.extract.charter"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.textio",
+      "evidence": "tools.vaultgraph.textio.read_lines",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 20,
+        "line": 20,
+        "path": "tools/vaultgraph/extract/charter.py"
+      },
+      "src": "module:tools.vaultgraph.extract.charter"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.model",
+      "evidence": "tools.vaultgraph.model.Confidence",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 27,
+        "line": 27,
+        "path": "tools/vaultgraph/extract/code.py"
+      },
+      "src": "module:tools.vaultgraph.extract.code"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.protocol",
+      "evidence": "tools.vaultgraph.protocol.Anomaly",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 28,
+        "line": 28,
+        "path": "tools/vaultgraph/extract/code.py"
+      },
+      "src": "module:tools.vaultgraph.extract.code"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.textio",
+      "evidence": "tools.vaultgraph.textio.read_lines",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 29,
+        "line": 29,
+        "path": "tools/vaultgraph/extract/code.py"
+      },
+      "src": "module:tools.vaultgraph.extract.code"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.mdscan",
+      "evidence": "tools.vaultgraph.mdscan.bold_lead",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 29,
+        "line": 29,
+        "path": "tools/vaultgraph/extract/decisions.py"
+      },
+      "src": "module:tools.vaultgraph.extract.decisions"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.mirror",
+      "evidence": "tools.vaultgraph.mirror.MIRROR_NAME",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 30,
+        "line": 30,
+        "path": "tools/vaultgraph/extract/decisions.py"
+      },
+      "src": "module:tools.vaultgraph.extract.decisions"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.model",
+      "evidence": "tools.vaultgraph.model.Confidence",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 28,
+        "line": 28,
+        "path": "tools/vaultgraph/extract/decisions.py"
+      },
+      "src": "module:tools.vaultgraph.extract.decisions"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.protocol",
+      "evidence": "tools.vaultgraph.protocol.Anomaly",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 31,
+        "line": 31,
+        "path": "tools/vaultgraph/extract/decisions.py"
+      },
+      "src": "module:tools.vaultgraph.extract.decisions"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.textio",
+      "evidence": "tools.vaultgraph.textio.read_lines",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 32,
+        "line": 32,
+        "path": "tools/vaultgraph/extract/decisions.py"
+      },
+      "src": "module:tools.vaultgraph.extract.decisions"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.model",
+      "evidence": "tools.vaultgraph.model.Confidence",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 20,
+        "line": 20,
+        "path": "tools/vaultgraph/extract/documents.py"
+      },
+      "src": "module:tools.vaultgraph.extract.documents"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.protocol",
+      "evidence": "tools.vaultgraph.protocol.Anomaly",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 21,
+        "line": 21,
+        "path": "tools/vaultgraph/extract/documents.py"
+      },
+      "src": "module:tools.vaultgraph.extract.documents"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.textio",
+      "evidence": "tools.vaultgraph.textio.frontmatter_end_line",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 22,
+        "line": 22,
+        "path": "tools/vaultgraph/extract/documents.py"
+      },
+      "src": "module:tools.vaultgraph.extract.documents"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.model",
+      "evidence": "tools.vaultgraph.model.Confidence",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 25,
+        "line": 25,
+        "path": "tools/vaultgraph/extract/imports.py"
+      },
+      "src": "module:tools.vaultgraph.extract.imports"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.protocol",
+      "evidence": "tools.vaultgraph.protocol.Context",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 26,
+        "line": 26,
+        "path": "tools/vaultgraph/extract/imports.py"
+      },
+      "src": "module:tools.vaultgraph.extract.imports"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.textio",
+      "evidence": "tools.vaultgraph.textio.rel",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 27,
+        "line": 27,
+        "path": "tools/vaultgraph/extract/imports.py"
+      },
+      "src": "module:tools.vaultgraph.extract.imports"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.model",
+      "evidence": "tools.vaultgraph.model.Confidence",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 28,
+        "line": 28,
+        "path": "tools/vaultgraph/extract/references.py"
+      },
+      "src": "module:tools.vaultgraph.extract.references"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.protocol",
+      "evidence": "tools.vaultgraph.protocol.Context",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 29,
+        "line": 29,
+        "path": "tools/vaultgraph/extract/references.py"
+      },
+      "src": "module:tools.vaultgraph.extract.references"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.textio",
+      "evidence": "tools.vaultgraph.textio.read_lines",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 30,
+        "line": 30,
+        "path": "tools/vaultgraph/extract/references.py"
+      },
+      "src": "module:tools.vaultgraph.extract.references"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.mdscan",
+      "evidence": "tools.vaultgraph.mdscan.expand_range",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 28,
+        "line": 28,
+        "path": "tools/vaultgraph/extract/stages.py"
+      },
+      "src": "module:tools.vaultgraph.extract.stages"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.model",
+      "evidence": "tools.vaultgraph.model.Confidence",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 29,
+        "line": 29,
+        "path": "tools/vaultgraph/extract/stages.py"
+      },
+      "src": "module:tools.vaultgraph.extract.stages"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.protocol",
+      "evidence": "tools.vaultgraph.protocol.Anomaly",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 30,
+        "line": 30,
+        "path": "tools/vaultgraph/extract/stages.py"
+      },
+      "src": "module:tools.vaultgraph.extract.stages"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.textio",
+      "evidence": "tools.vaultgraph.textio.read_lines",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 31,
+        "line": 31,
+        "path": "tools/vaultgraph/extract/stages.py"
+      },
+      "src": "module:tools.vaultgraph.extract.stages"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.model",
+      "evidence": "tools.vaultgraph.model.Confidence",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 23,
+        "line": 23,
+        "path": "tools/vaultgraph/extract/workflows.py"
+      },
+      "src": "module:tools.vaultgraph.extract.workflows"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.protocol",
+      "evidence": "tools.vaultgraph.protocol.Context",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 24,
+        "line": 24,
+        "path": "tools/vaultgraph/extract/workflows.py"
+      },
+      "src": "module:tools.vaultgraph.extract.workflows"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.textio",
+      "evidence": "tools.vaultgraph.textio.read_lines",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 25,
+        "line": 25,
+        "path": "tools/vaultgraph/extract/workflows.py"
+      },
+      "src": "module:tools.vaultgraph.extract.workflows"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.mirror",
+      "evidence": "tools.vaultgraph.mirror.MIRROR_NAME",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 13,
+        "line": 13,
+        "path": "tools/vaultgraph/fixtures.py"
+      },
+      "src": "module:tools.vaultgraph.fixtures"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.textio",
+      "evidence": "tools.vaultgraph.textio.ROOT",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 32,
+        "line": 32,
+        "path": "tools/vaultgraph/mirror.py"
+      },
+      "src": "module:tools.vaultgraph.mirror"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.model",
+      "evidence": "tools.vaultgraph.model.Edge",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 23,
+        "line": 23,
+        "path": "tools/vaultgraph/protocol.py"
+      },
+      "src": "module:tools.vaultgraph.protocol"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.model",
+      "evidence": "tools.vaultgraph.model.Confidence",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 19,
+        "line": 19,
+        "path": "tools/vaultgraph/render/canvas.py"
+      },
+      "src": "module:tools.vaultgraph.render.canvas"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.render.note",
+      "evidence": "tools.vaultgraph.render.note.filename",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 68,
+        "line": 68,
+        "path": "tools/vaultgraph/render/canvas.py"
+      },
+      "src": "module:tools.vaultgraph.render.canvas"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.model",
+      "evidence": "tools.vaultgraph.model.Edge",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 24,
+        "line": 24,
+        "path": "tools/vaultgraph/render/cluster.py"
+      },
+      "src": "module:tools.vaultgraph.render.cluster"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.model",
+      "evidence": "tools.vaultgraph.model.Edge",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 13,
+        "line": 13,
+        "path": "tools/vaultgraph/render/dataview.py"
+      },
+      "src": "module:tools.vaultgraph.render.dataview"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.render.html",
+      "evidence": "tools.vaultgraph.render.html.LOCAL_SURFACE",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 14,
+        "line": 14,
+        "path": "tools/vaultgraph/render/dataview.py"
+      },
+      "src": "module:tools.vaultgraph.render.dataview"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.render.note",
+      "evidence": "tools.vaultgraph.render.note.BANNER",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 15,
+        "line": 15,
+        "path": "tools/vaultgraph/render/dataview.py"
+      },
+      "src": "module:tools.vaultgraph.render.dataview"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.model",
+      "evidence": "tools.vaultgraph.model.Edge",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 23,
+        "line": 23,
+        "path": "tools/vaultgraph/render/html.py"
+      },
+      "src": "module:tools.vaultgraph.render.html"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.render.assets",
+      "evidence": "tools.vaultgraph.render.assets.CSS",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 25,
+        "line": 25,
+        "path": "tools/vaultgraph/render/html.py"
+      },
+      "src": "module:tools.vaultgraph.render.html"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.render.cluster",
+      "evidence": "tools.vaultgraph.render.cluster",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 24,
+        "line": 24,
+        "path": "tools/vaultgraph/render/html.py"
+      },
+      "src": "module:tools.vaultgraph.render.html"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.render.script",
+      "evidence": "tools.vaultgraph.render.script.JS",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 26,
+        "line": 26,
+        "path": "tools/vaultgraph/render/html.py"
+      },
+      "src": "module:tools.vaultgraph.render.html"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.model",
+      "evidence": "tools.vaultgraph.model.Confidence",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 22,
+        "line": 22,
+        "path": "tools/vaultgraph/render/note.py"
+      },
+      "src": "module:tools.vaultgraph.render.note"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.model",
+      "evidence": "tools.vaultgraph.model.Edge",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 17,
+        "line": 17,
+        "path": "tools/vaultgraph/render/vault.py"
+      },
+      "src": "module:tools.vaultgraph.render.vault"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.render.canvas",
+      "evidence": "tools.vaultgraph.render.canvas",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 18,
+        "line": 18,
+        "path": "tools/vaultgraph/render/vault.py"
+      },
+      "src": "module:tools.vaultgraph.render.vault"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.render.dataview",
+      "evidence": "tools.vaultgraph.render.dataview",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 18,
+        "line": 18,
+        "path": "tools/vaultgraph/render/vault.py"
+      },
+      "src": "module:tools.vaultgraph.render.vault"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.render.html",
+      "evidence": "tools.vaultgraph.render.html",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 18,
+        "line": 18,
+        "path": "tools/vaultgraph/render/vault.py"
+      },
+      "src": "module:tools.vaultgraph.render.vault"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.render.note",
+      "evidence": "tools.vaultgraph.render.note",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 18,
+        "line": 18,
+        "path": "tools/vaultgraph/render/vault.py"
+      },
+      "src": "module:tools.vaultgraph.render.vault"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph",
+      "evidence": "tools.vaultgraph.extract.EXTRACTORS",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 25,
+        "line": 25,
+        "path": "tools/vaultgraph/runner.py"
+      },
+      "src": "module:tools.vaultgraph.runner"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.model",
+      "evidence": "tools.vaultgraph.model.Edge",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 26,
+        "line": 26,
+        "path": "tools/vaultgraph/runner.py"
+      },
+      "src": "module:tools.vaultgraph.runner"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.protocol",
+      "evidence": "tools.vaultgraph.protocol.Anomaly",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 27,
+        "line": 27,
+        "path": "tools/vaultgraph/runner.py"
+      },
+      "src": "module:tools.vaultgraph.runner"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph",
+      "evidence": "tools.vaultgraph.extract.EXTRACTORS",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 21,
+        "line": 21,
+        "path": "tools/vaultgraph/selftest.py"
+      },
+      "src": "module:tools.vaultgraph.selftest"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.extract.code",
+      "evidence": "tools.vaultgraph.extract.code",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 21,
+        "line": 21,
+        "path": "tools/vaultgraph/selftest.py"
+      },
+      "src": "module:tools.vaultgraph.selftest"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.extract.decisions",
+      "evidence": "tools.vaultgraph.extract.decisions",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 21,
+        "line": 21,
+        "path": "tools/vaultgraph/selftest.py"
+      },
+      "src": "module:tools.vaultgraph.selftest"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.extract.documents",
+      "evidence": "tools.vaultgraph.extract.documents",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 21,
+        "line": 21,
+        "path": "tools/vaultgraph/selftest.py"
+      },
+      "src": "module:tools.vaultgraph.selftest"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.extract.imports",
+      "evidence": "tools.vaultgraph.extract.imports",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 21,
+        "line": 21,
+        "path": "tools/vaultgraph/selftest.py"
+      },
+      "src": "module:tools.vaultgraph.selftest"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.extract.references",
+      "evidence": "tools.vaultgraph.extract.references",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 21,
+        "line": 21,
+        "path": "tools/vaultgraph/selftest.py"
+      },
+      "src": "module:tools.vaultgraph.selftest"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.extract.workflows",
+      "evidence": "tools.vaultgraph.extract.workflows",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 21,
+        "line": 21,
+        "path": "tools/vaultgraph/selftest.py"
+      },
+      "src": "module:tools.vaultgraph.selftest"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.fixtures",
+      "evidence": "tools.vaultgraph.fixtures._plant",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 22,
+        "line": 22,
+        "path": "tools/vaultgraph/selftest.py"
+      },
+      "src": "module:tools.vaultgraph.selftest"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.model",
+      "evidence": "tools.vaultgraph.model.Confidence",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 23,
+        "line": 23,
+        "path": "tools/vaultgraph/selftest.py"
+      },
+      "src": "module:tools.vaultgraph.selftest"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.protocol",
+      "evidence": "tools.vaultgraph.protocol.Context",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 26,
+        "line": 26,
+        "path": "tools/vaultgraph/selftest.py"
+      },
+      "src": "module:tools.vaultgraph.selftest"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.render.vault",
+      "evidence": "tools.vaultgraph.render.vault",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 27,
+        "line": 27,
+        "path": "tools/vaultgraph/selftest.py"
+      },
+      "src": "module:tools.vaultgraph.selftest"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.runner",
+      "evidence": "tools.vaultgraph.runner._audit",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 28,
+        "line": 28,
+        "path": "tools/vaultgraph/selftest.py"
+      },
+      "src": "module:tools.vaultgraph.selftest"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.serialize",
+      "evidence": "tools.vaultgraph.serialize.build_payload",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 29,
+        "line": 29,
+        "path": "tools/vaultgraph/selftest.py"
+      },
+      "src": "module:tools.vaultgraph.selftest"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.model",
+      "evidence": "tools.vaultgraph.model.Edge",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 22,
+        "line": 22,
+        "path": "tools/vaultgraph/serialize.py"
+      },
+      "src": "module:tools.vaultgraph.serialize"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.protocol",
+      "evidence": "tools.vaultgraph.protocol.Anomaly",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 23,
+        "line": 23,
+        "path": "tools/vaultgraph/serialize.py"
+      },
+      "src": "module:tools.vaultgraph.serialize"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.runner",
+      "evidence": "tools.vaultgraph.runner.RunResult",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 24,
+        "line": 24,
+        "path": "tools/vaultgraph/serialize.py"
+      },
+      "src": "module:tools.vaultgraph.serialize"
+    },
+    {
+      "confidence": "structural",
       "dst": "gate:integrity",
       "evidence": "needs: integrity",
       "extractor": "workflows",
@@ -4385,6 +6584,201 @@
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:product"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.db",
+      "evidence": "uv run pytest harness/db",
+      "extractor": "workflows",
+      "kind": "runs",
+      "source": {
+        "end_line": 258,
+        "line": 258,
+        "path": ".github/workflows/gates.yml"
+      },
+      "src": "gate-step:database.04"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.evidence",
+      "evidence": "uv run pytest harness/evidence",
+      "extractor": "workflows",
+      "kind": "runs",
+      "source": {
+        "end_line": 275,
+        "line": 275,
+        "path": ".github/workflows/gates.yml"
+      },
+      "src": "gate-step:database.05"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.criterion",
+      "evidence": "uv run pytest harness/criterion",
+      "extractor": "workflows",
+      "kind": "runs",
+      "source": {
+        "end_line": 280,
+        "line": 280,
+        "path": ".github/workflows/gates.yml"
+      },
+      "src": "gate-step:database.06"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.acs",
+      "evidence": "uv run pytest harness/acs",
+      "extractor": "workflows",
+      "kind": "runs",
+      "source": {
+        "end_line": 197,
+        "line": 197,
+        "path": ".github/workflows/gates.yml"
+      },
+      "src": "gate-step:inspector.04"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.acs.verify_js.mjs",
+      "evidence": "node harness/acs/verify_js.mjs",
+      "extractor": "workflows",
+      "kind": "runs",
+      "source": {
+        "end_line": 204,
+        "line": 204,
+        "path": ".github/workflows/gates.yml"
+      },
+      "src": "gate-step:inspector.05"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.lane",
+      "evidence": "uv run pytest harness/lane",
+      "extractor": "workflows",
+      "kind": "runs",
+      "source": {
+        "end_line": 215,
+        "line": 215,
+        "path": ".github/workflows/gates.yml"
+      },
+      "src": "gate-step:inspector.07"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.containment",
+      "evidence": "uv run pytest harness/containment",
+      "extractor": "workflows",
+      "kind": "runs",
+      "source": {
+        "end_line": 218,
+        "line": 218,
+        "path": ".github/workflows/gates.yml"
+      },
+      "src": "gate-step:inspector.08"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:scripts.lint_docs",
+      "evidence": "python3 scripts/lint_docs.py --check",
+      "extractor": "workflows",
+      "kind": "runs",
+      "source": {
+        "end_line": 59,
+        "line": 59,
+        "path": ".github/workflows/gates.yml"
+      },
+      "src": "gate-step:integrity.04"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:scripts.gen_reading_map",
+      "evidence": "python3 scripts/gen_reading_map.py --check",
+      "extractor": "workflows",
+      "kind": "runs",
+      "source": {
+        "end_line": 62,
+        "line": 62,
+        "path": ".github/workflows/gates.yml"
+      },
+      "src": "gate-step:integrity.05"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:scripts.lint_migrations",
+      "evidence": "python3 scripts/lint_migrations.py",
+      "extractor": "workflows",
+      "kind": "runs",
+      "source": {
+        "end_line": 70,
+        "line": 70,
+        "path": ".github/workflows/gates.yml"
+      },
+      "src": "gate-step:integrity.06"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:scripts.lint_verdict_boundary",
+      "evidence": "python3 scripts/lint_verdict_boundary.py",
+      "extractor": "workflows",
+      "kind": "runs",
+      "source": {
+        "end_line": 79,
+        "line": 79,
+        "path": ".github/workflows/gates.yml"
+      },
+      "src": "gate-step:integrity.07"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:scripts.lint_verdict_boundary",
+      "evidence": "python3 scripts/lint_verdict_boundary.py --self-test",
+      "extractor": "workflows",
+      "kind": "runs",
+      "source": {
+        "end_line": 84,
+        "line": 84,
+        "path": ".github/workflows/gates.yml"
+      },
+      "src": "gate-step:integrity.08"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.acs.gen_vectors",
+      "evidence": "set -euo pipefail\nbefore=\"$(shasum -a 256 harness/acs/vectors.json | cut -d' ' -f1)\"\npython3 harness/acs/gen_vectors.py > /dev/null\nafter=\"$(shasum -a 256 harness/acs/vectors.json ",
+      "extractor": "workflows",
+      "kind": "runs",
+      "source": {
+        "end_line": 95,
+        "line": 95,
+        "path": ".github/workflows/gates.yml"
+      },
+      "src": "gate-step:integrity.09"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.tests",
+      "evidence": "uv run pytest tools/tests",
+      "extractor": "workflows",
+      "kind": "runs",
+      "source": {
+        "end_line": 137,
+        "line": 137,
+        "path": ".github/workflows/gates.yml"
+      },
+      "src": "gate-step:integrity.12"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.acs.mutate",
+      "evidence": "uv run python harness/acs/mutate.py",
+      "extractor": "workflows",
+      "kind": "runs",
+      "source": {
+        "end_line": 320,
+        "line": 320,
+        "path": ".github/workflows/gates.yml"
+      },
+      "src": "gate-step:mutation.04"
     },
     {
       "confidence": "structural",
@@ -4519,16 +6913,16 @@
       "unparsed": 0
     },
     {
-      "edges": 47,
+      "edges": 80,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 45,
       "min_nodes": 90,
       "name": "code",
-      "nodes": 123,
+      "nodes": 131,
       "rejected": 0,
-      "scanned": 122,
+      "scanned": 157,
       "unparsed": 0
     },
     {
@@ -4558,6 +6952,19 @@
       "unparsed": 0
     },
     {
+      "edges": 136,
+      "expect_rejected": null,
+      "max_nodes": 0,
+      "max_unparsed": 0,
+      "min_edges": 90,
+      "min_nodes": 0,
+      "name": "imports",
+      "nodes": 0,
+      "rejected": 0,
+      "scanned": 109,
+      "unparsed": 0
+    },
+    {
       "edges": 142,
       "expect_rejected": null,
       "max_nodes": 0,
@@ -4584,11 +6991,11 @@
       "unparsed": 1
     },
     {
-      "edges": 40,
+      "edges": 55,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
-      "min_edges": 28,
+      "min_edges": 50,
       "min_nodes": 30,
       "name": "workflows",
       "nodes": 41,
@@ -9513,654 +11920,6 @@
     },
     {
       "attrs": {
-        "is_test": "false",
-        "lint_gated": "false",
-        "path": "bench/results/agentic-openai_gpt-oss-120b-rollup.json",
-        "present": "true",
-        "protected": "false",
-        "tree": "bench"
-      },
-      "body": "",
-      "extractor": "code",
-      "id": "module:bench.results.agentic-openai_gpt-oss-120b-rollup.json",
-      "kind": "module",
-      "occurrences": [],
-      "shape": "file",
-      "source": {
-        "end_line": 1,
-        "line": 1,
-        "path": "bench/results/agentic-openai_gpt-oss-120b-rollup.json"
-      },
-      "status": "",
-      "tags": [],
-      "title": "bench/results/agentic-openai_gpt-oss-120b-rollup.json"
-    },
-    {
-      "attrs": {
-        "is_test": "false",
-        "lint_gated": "false",
-        "path": "bench/results/agentic-openai_gpt-oss-120b-seed3355.json",
-        "present": "true",
-        "protected": "false",
-        "tree": "bench"
-      },
-      "body": "",
-      "extractor": "code",
-      "id": "module:bench.results.agentic-openai_gpt-oss-120b-seed3355.json",
-      "kind": "module",
-      "occurrences": [],
-      "shape": "file",
-      "source": {
-        "end_line": 1,
-        "line": 1,
-        "path": "bench/results/agentic-openai_gpt-oss-120b-seed3355.json"
-      },
-      "status": "",
-      "tags": [],
-      "title": "bench/results/agentic-openai_gpt-oss-120b-seed3355.json"
-    },
-    {
-      "attrs": {
-        "is_test": "false",
-        "lint_gated": "false",
-        "path": "bench/results/agentic-openai_gpt-oss-120b-seed424242.json",
-        "present": "true",
-        "protected": "false",
-        "tree": "bench"
-      },
-      "body": "",
-      "extractor": "code",
-      "id": "module:bench.results.agentic-openai_gpt-oss-120b-seed424242.json",
-      "kind": "module",
-      "occurrences": [],
-      "shape": "file",
-      "source": {
-        "end_line": 1,
-        "line": 1,
-        "path": "bench/results/agentic-openai_gpt-oss-120b-seed424242.json"
-      },
-      "status": "",
-      "tags": [],
-      "title": "bench/results/agentic-openai_gpt-oss-120b-seed424242.json"
-    },
-    {
-      "attrs": {
-        "is_test": "false",
-        "lint_gated": "false",
-        "path": "bench/results/agentic-openai_gpt-oss-120b-seed7.json",
-        "present": "true",
-        "protected": "false",
-        "tree": "bench"
-      },
-      "body": "",
-      "extractor": "code",
-      "id": "module:bench.results.agentic-openai_gpt-oss-120b-seed7.json",
-      "kind": "module",
-      "occurrences": [],
-      "shape": "file",
-      "source": {
-        "end_line": 1,
-        "line": 1,
-        "path": "bench/results/agentic-openai_gpt-oss-120b-seed7.json"
-      },
-      "status": "",
-      "tags": [],
-      "title": "bench/results/agentic-openai_gpt-oss-120b-seed7.json"
-    },
-    {
-      "attrs": {
-        "is_test": "false",
-        "lint_gated": "false",
-        "path": "bench/results/agentic-openai_gpt-oss-120b-seed91.json",
-        "present": "true",
-        "protected": "false",
-        "tree": "bench"
-      },
-      "body": "",
-      "extractor": "code",
-      "id": "module:bench.results.agentic-openai_gpt-oss-120b-seed91.json",
-      "kind": "module",
-      "occurrences": [],
-      "shape": "file",
-      "source": {
-        "end_line": 1,
-        "line": 1,
-        "path": "bench/results/agentic-openai_gpt-oss-120b-seed91.json"
-      },
-      "status": "",
-      "tags": [],
-      "title": "bench/results/agentic-openai_gpt-oss-120b-seed91.json"
-    },
-    {
-      "attrs": {
-        "is_test": "false",
-        "lint_gated": "false",
-        "path": "bench/results/agentic-qwen3-next-80b-a3b-instruct-rollup.json",
-        "present": "true",
-        "protected": "false",
-        "tree": "bench"
-      },
-      "body": "",
-      "extractor": "code",
-      "id": "module:bench.results.agentic-qwen3-next-80b-a3b-instruct-rollup.json",
-      "kind": "module",
-      "occurrences": [],
-      "shape": "file",
-      "source": {
-        "end_line": 1,
-        "line": 1,
-        "path": "bench/results/agentic-qwen3-next-80b-a3b-instruct-rollup.json"
-      },
-      "status": "",
-      "tags": [],
-      "title": "bench/results/agentic-qwen3-next-80b-a3b-instruct-rollup.json"
-    },
-    {
-      "attrs": {
-        "is_test": "false",
-        "lint_gated": "false",
-        "path": "bench/results/agentic-qwen3-next-80b-a3b-instruct-seed3355.json",
-        "present": "true",
-        "protected": "false",
-        "tree": "bench"
-      },
-      "body": "",
-      "extractor": "code",
-      "id": "module:bench.results.agentic-qwen3-next-80b-a3b-instruct-seed3355.json",
-      "kind": "module",
-      "occurrences": [],
-      "shape": "file",
-      "source": {
-        "end_line": 1,
-        "line": 1,
-        "path": "bench/results/agentic-qwen3-next-80b-a3b-instruct-seed3355.json"
-      },
-      "status": "",
-      "tags": [],
-      "title": "bench/results/agentic-qwen3-next-80b-a3b-instruct-seed3355.json"
-    },
-    {
-      "attrs": {
-        "is_test": "false",
-        "lint_gated": "false",
-        "path": "bench/results/agentic-qwen3-next-80b-a3b-instruct-seed424242.json",
-        "present": "true",
-        "protected": "false",
-        "tree": "bench"
-      },
-      "body": "",
-      "extractor": "code",
-      "id": "module:bench.results.agentic-qwen3-next-80b-a3b-instruct-seed424242.json",
-      "kind": "module",
-      "occurrences": [],
-      "shape": "file",
-      "source": {
-        "end_line": 1,
-        "line": 1,
-        "path": "bench/results/agentic-qwen3-next-80b-a3b-instruct-seed424242.json"
-      },
-      "status": "",
-      "tags": [],
-      "title": "bench/results/agentic-qwen3-next-80b-a3b-instruct-seed424242.json"
-    },
-    {
-      "attrs": {
-        "is_test": "false",
-        "lint_gated": "false",
-        "path": "bench/results/agentic-qwen3-next-80b-a3b-instruct-seed7.json",
-        "present": "true",
-        "protected": "false",
-        "tree": "bench"
-      },
-      "body": "",
-      "extractor": "code",
-      "id": "module:bench.results.agentic-qwen3-next-80b-a3b-instruct-seed7.json",
-      "kind": "module",
-      "occurrences": [],
-      "shape": "file",
-      "source": {
-        "end_line": 1,
-        "line": 1,
-        "path": "bench/results/agentic-qwen3-next-80b-a3b-instruct-seed7.json"
-      },
-      "status": "",
-      "tags": [],
-      "title": "bench/results/agentic-qwen3-next-80b-a3b-instruct-seed7.json"
-    },
-    {
-      "attrs": {
-        "is_test": "false",
-        "lint_gated": "false",
-        "path": "bench/results/agentic-qwen3-next-80b-a3b-instruct-seed91.json",
-        "present": "true",
-        "protected": "false",
-        "tree": "bench"
-      },
-      "body": "",
-      "extractor": "code",
-      "id": "module:bench.results.agentic-qwen3-next-80b-a3b-instruct-seed91.json",
-      "kind": "module",
-      "occurrences": [],
-      "shape": "file",
-      "source": {
-        "end_line": 1,
-        "line": 1,
-        "path": "bench/results/agentic-qwen3-next-80b-a3b-instruct-seed91.json"
-      },
-      "status": "",
-      "tags": [],
-      "title": "bench/results/agentic-qwen3-next-80b-a3b-instruct-seed91.json"
-    },
-    {
-      "attrs": {
-        "is_test": "false",
-        "lint_gated": "false",
-        "path": "bench/results/agentic-qwen3-next-80b-a3b-instruct.json",
-        "present": "true",
-        "protected": "false",
-        "tree": "bench"
-      },
-      "body": "",
-      "extractor": "code",
-      "id": "module:bench.results.agentic-qwen3-next-80b-a3b-instruct.json",
-      "kind": "module",
-      "occurrences": [],
-      "shape": "file",
-      "source": {
-        "end_line": 1,
-        "line": 1,
-        "path": "bench/results/agentic-qwen3-next-80b-a3b-instruct.json"
-      },
-      "status": "",
-      "tags": [],
-      "title": "bench/results/agentic-qwen3-next-80b-a3b-instruct.json"
-    },
-    {
-      "attrs": {
-        "is_test": "false",
-        "lint_gated": "false",
-        "path": "bench/results/openai_gpt-oss-120b.INVALID-no-salt.json",
-        "present": "true",
-        "protected": "false",
-        "tree": "bench"
-      },
-      "body": "",
-      "extractor": "code",
-      "id": "module:bench.results.openai_gpt-oss-120b.INVALID-no-salt.json",
-      "kind": "module",
-      "occurrences": [],
-      "shape": "file",
-      "source": {
-        "end_line": 1,
-        "line": 1,
-        "path": "bench/results/openai_gpt-oss-120b.INVALID-no-salt.json"
-      },
-      "status": "",
-      "tags": [],
-      "title": "bench/results/openai_gpt-oss-120b.INVALID-no-salt.json"
-    },
-    {
-      "attrs": {
-        "is_test": "false",
-        "lint_gated": "false",
-        "path": "bench/results/openai_gpt-oss-120b.json",
-        "present": "true",
-        "protected": "false",
-        "tree": "bench"
-      },
-      "body": "",
-      "extractor": "code",
-      "id": "module:bench.results.openai_gpt-oss-120b.json",
-      "kind": "module",
-      "occurrences": [],
-      "shape": "file",
-      "source": {
-        "end_line": 1,
-        "line": 1,
-        "path": "bench/results/openai_gpt-oss-120b.json"
-      },
-      "status": "",
-      "tags": [],
-      "title": "bench/results/openai_gpt-oss-120b.json"
-    },
-    {
-      "attrs": {
-        "is_test": "false",
-        "lint_gated": "false",
-        "path": "bench/results/prefixcache-qwen3-next-80b-a3b-instruct-ctx262144-par1-final.json",
-        "present": "true",
-        "protected": "false",
-        "tree": "bench"
-      },
-      "body": "",
-      "extractor": "code",
-      "id": "module:bench.results.prefixcache-qwen3-next-80b-a3b-instruct-ctx262144-par1-final.json",
-      "kind": "module",
-      "occurrences": [],
-      "shape": "file",
-      "source": {
-        "end_line": 1,
-        "line": 1,
-        "path": "bench/results/prefixcache-qwen3-next-80b-a3b-instruct-ctx262144-par1-final.json"
-      },
-      "status": "",
-      "tags": [],
-      "title": "bench/results/prefixcache-qwen3-next-80b-a3b-instruct-ctx262144-par1-final.json"
-    },
-    {
-      "attrs": {
-        "is_test": "false",
-        "lint_gated": "false",
-        "path": "bench/results/prefixcache-qwen3-next-80b-a3b-instruct-ctx262144-par1-rerun.json",
-        "present": "true",
-        "protected": "false",
-        "tree": "bench"
-      },
-      "body": "",
-      "extractor": "code",
-      "id": "module:bench.results.prefixcache-qwen3-next-80b-a3b-instruct-ctx262144-par1-rerun.json",
-      "kind": "module",
-      "occurrences": [],
-      "shape": "file",
-      "source": {
-        "end_line": 1,
-        "line": 1,
-        "path": "bench/results/prefixcache-qwen3-next-80b-a3b-instruct-ctx262144-par1-rerun.json"
-      },
-      "status": "",
-      "tags": [],
-      "title": "bench/results/prefixcache-qwen3-next-80b-a3b-instruct-ctx262144-par1-rerun.json"
-    },
-    {
-      "attrs": {
-        "is_test": "false",
-        "lint_gated": "false",
-        "path": "bench/results/prefixcache-qwen3-next-80b-a3b-instruct-ctx262144-par1.json",
-        "present": "true",
-        "protected": "false",
-        "tree": "bench"
-      },
-      "body": "",
-      "extractor": "code",
-      "id": "module:bench.results.prefixcache-qwen3-next-80b-a3b-instruct-ctx262144-par1.json",
-      "kind": "module",
-      "occurrences": [],
-      "shape": "file",
-      "source": {
-        "end_line": 1,
-        "line": 1,
-        "path": "bench/results/prefixcache-qwen3-next-80b-a3b-instruct-ctx262144-par1.json"
-      },
-      "status": "",
-      "tags": [],
-      "title": "bench/results/prefixcache-qwen3-next-80b-a3b-instruct-ctx262144-par1.json"
-    },
-    {
-      "attrs": {
-        "is_test": "false",
-        "lint_gated": "false",
-        "path": "bench/results/prefixcache-qwen3-next-80b-a3b-instruct-ctx262144-par2.json",
-        "present": "true",
-        "protected": "false",
-        "tree": "bench"
-      },
-      "body": "",
-      "extractor": "code",
-      "id": "module:bench.results.prefixcache-qwen3-next-80b-a3b-instruct-ctx262144-par2.json",
-      "kind": "module",
-      "occurrences": [],
-      "shape": "file",
-      "source": {
-        "end_line": 1,
-        "line": 1,
-        "path": "bench/results/prefixcache-qwen3-next-80b-a3b-instruct-ctx262144-par2.json"
-      },
-      "status": "",
-      "tags": [],
-      "title": "bench/results/prefixcache-qwen3-next-80b-a3b-instruct-ctx262144-par2.json"
-    },
-    {
-      "attrs": {
-        "is_test": "false",
-        "lint_gated": "false",
-        "path": "bench/results/prefixcache-qwen3-next-80b-a3b-instruct-ctx262144-par4-rerun.json",
-        "present": "true",
-        "protected": "false",
-        "tree": "bench"
-      },
-      "body": "",
-      "extractor": "code",
-      "id": "module:bench.results.prefixcache-qwen3-next-80b-a3b-instruct-ctx262144-par4-rerun.json",
-      "kind": "module",
-      "occurrences": [],
-      "shape": "file",
-      "source": {
-        "end_line": 1,
-        "line": 1,
-        "path": "bench/results/prefixcache-qwen3-next-80b-a3b-instruct-ctx262144-par4-rerun.json"
-      },
-      "status": "",
-      "tags": [],
-      "title": "bench/results/prefixcache-qwen3-next-80b-a3b-instruct-ctx262144-par4-rerun.json"
-    },
-    {
-      "attrs": {
-        "is_test": "false",
-        "lint_gated": "false",
-        "path": "bench/results/prefixcache-qwen3-next-80b-a3b-instruct-ctx262144-par4.json",
-        "present": "true",
-        "protected": "false",
-        "tree": "bench"
-      },
-      "body": "",
-      "extractor": "code",
-      "id": "module:bench.results.prefixcache-qwen3-next-80b-a3b-instruct-ctx262144-par4.json",
-      "kind": "module",
-      "occurrences": [],
-      "shape": "file",
-      "source": {
-        "end_line": 1,
-        "line": 1,
-        "path": "bench/results/prefixcache-qwen3-next-80b-a3b-instruct-ctx262144-par4.json"
-      },
-      "status": "",
-      "tags": [],
-      "title": "bench/results/prefixcache-qwen3-next-80b-a3b-instruct-ctx262144-par4.json"
-    },
-    {
-      "attrs": {
-        "is_test": "false",
-        "lint_gated": "false",
-        "path": "bench/results/prefixcache-qwen3-next-80b-a3b-instruct-ctx28672-par1.json",
-        "present": "true",
-        "protected": "false",
-        "tree": "bench"
-      },
-      "body": "",
-      "extractor": "code",
-      "id": "module:bench.results.prefixcache-qwen3-next-80b-a3b-instruct-ctx28672-par1.json",
-      "kind": "module",
-      "occurrences": [],
-      "shape": "file",
-      "source": {
-        "end_line": 1,
-        "line": 1,
-        "path": "bench/results/prefixcache-qwen3-next-80b-a3b-instruct-ctx28672-par1.json"
-      },
-      "status": "",
-      "tags": [],
-      "title": "bench/results/prefixcache-qwen3-next-80b-a3b-instruct-ctx28672-par1.json"
-    },
-    {
-      "attrs": {
-        "is_test": "false",
-        "lint_gated": "false",
-        "path": "bench/results/prefixcache-qwen3-next-80b-a3b-instruct-ctx28672-par4.json",
-        "present": "true",
-        "protected": "false",
-        "tree": "bench"
-      },
-      "body": "",
-      "extractor": "code",
-      "id": "module:bench.results.prefixcache-qwen3-next-80b-a3b-instruct-ctx28672-par4.json",
-      "kind": "module",
-      "occurrences": [],
-      "shape": "file",
-      "source": {
-        "end_line": 1,
-        "line": 1,
-        "path": "bench/results/prefixcache-qwen3-next-80b-a3b-instruct-ctx28672-par4.json"
-      },
-      "status": "",
-      "tags": [],
-      "title": "bench/results/prefixcache-qwen3-next-80b-a3b-instruct-ctx28672-par4.json"
-    },
-    {
-      "attrs": {
-        "is_test": "false",
-        "lint_gated": "false",
-        "path": "bench/results/prefixcapacity-qwen3-next-80b-a3b-instruct-ctx262144-par1-d4.json",
-        "present": "true",
-        "protected": "false",
-        "tree": "bench"
-      },
-      "body": "",
-      "extractor": "code",
-      "id": "module:bench.results.prefixcapacity-qwen3-next-80b-a3b-instruct-ctx262144-par1-d4.json",
-      "kind": "module",
-      "occurrences": [],
-      "shape": "file",
-      "source": {
-        "end_line": 1,
-        "line": 1,
-        "path": "bench/results/prefixcapacity-qwen3-next-80b-a3b-instruct-ctx262144-par1-d4.json"
-      },
-      "status": "",
-      "tags": [],
-      "title": "bench/results/prefixcapacity-qwen3-next-80b-a3b-instruct-ctx262144-par1-d4.json"
-    },
-    {
-      "attrs": {
-        "is_test": "false",
-        "lint_gated": "false",
-        "path": "bench/results/qwen3-next-80b-a3b-instruct.json",
-        "present": "true",
-        "protected": "false",
-        "tree": "bench"
-      },
-      "body": "",
-      "extractor": "code",
-      "id": "module:bench.results.qwen3-next-80b-a3b-instruct.json",
-      "kind": "module",
-      "occurrences": [],
-      "shape": "file",
-      "source": {
-        "end_line": 1,
-        "line": 1,
-        "path": "bench/results/qwen3-next-80b-a3b-instruct.json"
-      },
-      "status": "",
-      "tags": [],
-      "title": "bench/results/qwen3-next-80b-a3b-instruct.json"
-    },
-    {
-      "attrs": {
-        "is_test": "false",
-        "lint_gated": "false",
-        "path": "bench/results/toy_openai_gpt-oss-120b.json",
-        "present": "true",
-        "protected": "false",
-        "tree": "bench"
-      },
-      "body": "",
-      "extractor": "code",
-      "id": "module:bench.results.toy_openai_gpt-oss-120b.json",
-      "kind": "module",
-      "occurrences": [],
-      "shape": "file",
-      "source": {
-        "end_line": 1,
-        "line": 1,
-        "path": "bench/results/toy_openai_gpt-oss-120b.json"
-      },
-      "status": "",
-      "tags": [],
-      "title": "bench/results/toy_openai_gpt-oss-120b.json"
-    },
-    {
-      "attrs": {
-        "is_test": "false",
-        "lint_gated": "false",
-        "path": "bench/results/toy_qwen3-next-80b-a3b-instruct.json",
-        "present": "true",
-        "protected": "false",
-        "tree": "bench"
-      },
-      "body": "",
-      "extractor": "code",
-      "id": "module:bench.results.toy_qwen3-next-80b-a3b-instruct.json",
-      "kind": "module",
-      "occurrences": [],
-      "shape": "file",
-      "source": {
-        "end_line": 1,
-        "line": 1,
-        "path": "bench/results/toy_qwen3-next-80b-a3b-instruct.json"
-      },
-      "status": "",
-      "tags": [],
-      "title": "bench/results/toy_qwen3-next-80b-a3b-instruct.json"
-    },
-    {
-      "attrs": {
-        "is_test": "false",
-        "lint_gated": "false",
-        "path": "bench/results/zai-org_glm-4.7-flash.json",
-        "present": "true",
-        "protected": "false",
-        "tree": "bench"
-      },
-      "body": "",
-      "extractor": "code",
-      "id": "module:bench.results.zai-org_glm-4.7-flash.json",
-      "kind": "module",
-      "occurrences": [],
-      "shape": "file",
-      "source": {
-        "end_line": 1,
-        "line": 1,
-        "path": "bench/results/zai-org_glm-4.7-flash.json"
-      },
-      "status": "",
-      "tags": [],
-      "title": "bench/results/zai-org_glm-4.7-flash.json"
-    },
-    {
-      "attrs": {
-        "is_test": "false",
-        "lint_gated": "false",
-        "path": "bench/tasks/phase1_tasks.json",
-        "present": "true",
-        "protected": "false",
-        "tree": "bench"
-      },
-      "body": "",
-      "extractor": "code",
-      "id": "module:bench.tasks.phase1_tasks.json",
-      "kind": "module",
-      "occurrences": [],
-      "shape": "file",
-      "source": {
-        "end_line": 1,
-        "line": 1,
-        "path": "bench/tasks/phase1_tasks.json"
-      },
-      "status": "",
-      "tags": [],
-      "title": "bench/tasks/phase1_tasks.json"
-    },
-    {
-      "attrs": {
         "is_test": "true",
         "lint_gated": "false",
         "path": "bench/test_results_integrity.py",
@@ -12338,6 +14097,844 @@
       "status": "",
       "tags": [],
       "title": "The reason codebook invariants (ADR-0002)."
+    },
+    {
+      "attrs": {
+        "lint_gated": "false",
+        "namespace_package": "true",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.tests",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "package",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/tests"
+      },
+      "status": "",
+      "tags": [],
+      "title": "tools.tests"
+    },
+    {
+      "attrs": {
+        "is_test": "true",
+        "lint_gated": "false",
+        "path": "tools/tests/test_render.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.tests.test_render",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/tests/test_render.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "The renderers: the vault tree, and the published artifact."
+    },
+    {
+      "attrs": {
+        "is_test": "true",
+        "lint_gated": "false",
+        "path": "tools/tests/test_serve.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.tests.test_serve",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/tests/test_serve.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "The local refresh surface, and the four controls that keep it from being a liability."
+    },
+    {
+      "attrs": {
+        "is_test": "true",
+        "lint_gated": "false",
+        "path": "tools/tests/test_vaultgraph.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.tests.test_vaultgraph",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/tests/test_vaultgraph.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "The generator's own guards, asserted from outside the generator."
+    },
+    {
+      "attrs": {
+        "lint_gated": "false",
+        "namespace_package": "false",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.vaultgraph",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "package",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph"
+      },
+      "status": "",
+      "tags": [],
+      "title": "tools.vaultgraph"
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "tools/vaultgraph/__init__.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.vaultgraph.__init__",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/__init__.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Alfred's vault and knowledge graph generator. One extraction, several renderers."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "tools/vaultgraph/extract/__init__.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.vaultgraph.extract.__init__",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/extract/__init__.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "The one ordered registry. Adding an extractor means adding it here, with its floors."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "tools/vaultgraph/extract/adrs.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.vaultgraph.extract.adrs",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/extract/adrs.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Every ADR in the log, and the relations stated on each entry's metadata line."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "tools/vaultgraph/extract/amendments.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.vaultgraph.extract.amendments",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/extract/amendments.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "A1-A12, and the edges from an amendment to the decision it amends."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "tools/vaultgraph/extract/charter.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.vaultgraph.extract.charter",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/extract/charter.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "K1-K6 and R1-R12, which live in Tier 0 and not, as the handoff assumed, in the plan."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "tools/vaultgraph/extract/code.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.vaultgraph.extract.code",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/extract/code.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "The engineered half of the graph: packages, modules, schemas, and what D20 protects."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "tools/vaultgraph/extract/decisions.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.vaultgraph.extract.decisions",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/extract/decisions.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "D1-D57, which the plan encodes four different ways, two of them traps."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "tools/vaultgraph/extract/documents.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.vaultgraph.extract.documents",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/extract/documents.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "The 63 documents under `docs/tier0`…`tier7`, and the eight tiers that hold them."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "tools/vaultgraph/extract/imports.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.vaultgraph.extract.imports",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/extract/imports.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "What depends on what: module -> module edges, read from import statements."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "tools/vaultgraph/extract/references.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.vaultgraph.extract.references",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/extract/references.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Where decisions are enforced in code, read out of comments and docstrings."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "tools/vaultgraph/extract/stages.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.vaultgraph.extract.stages",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/extract/stages.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "S0-S9 and O1-O9, and the dependency clauses that make them a DAG."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "tools/vaultgraph/extract/workflows.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.vaultgraph.extract.workflows",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/extract/workflows.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "The gates: five jobs and every step they run, read out of `.github/workflows/gates.yml`."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "tools/vaultgraph/fixtures.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.vaultgraph.fixtures",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/fixtures.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Planted fixture trees, kept apart from the assertions that use them."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "tools/vaultgraph/mdscan.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.vaultgraph.mdscan",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/mdscan.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Line-oriented markdown primitives. The risky parsing, isolated from anything that uses it."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "tools/vaultgraph/mirror.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.vaultgraph.mirror",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/mirror.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "The plan file lives outside the repo. This mirrors it in, and makes drift mechanical."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "tools/vaultgraph/model.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.vaultgraph.model",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/model.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "The graph's type vocabulary: what a node is, what an edge is, and how ids are minted."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "tools/vaultgraph/protocol.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.vaultgraph.protocol",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/protocol.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "The extractor contract, shaped so a missing vacuity guard is impossible rather than unlikely."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "tools/vaultgraph/render/__init__.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.vaultgraph.render.__init__",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/render/__init__.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Renderers. Downstream of one extraction, and structurally unable to reach it."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "tools/vaultgraph/render/assets.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.vaultgraph.render.assets",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/render/assets.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "The stylesheet, inlined at build time."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "tools/vaultgraph/render/canvas.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.vaultgraph.render.canvas",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/render/canvas.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Obsidian Canvas boards — the stage DAG, laid out deterministically."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "tools/vaultgraph/render/cluster.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.vaultgraph.render.cluster",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/render/cluster.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "What clumps together, computed rather than declared."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "tools/vaultgraph/render/dataview.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.vaultgraph.render.dataview",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/render/dataview.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Dataview boards. Queries, not materialized tables."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "tools/vaultgraph/render/html.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.vaultgraph.render.html",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/render/html.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "The published artifact: one self-contained file built from the same graph the vault is."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "tools/vaultgraph/render/note.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.vaultgraph.render.note",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/render/note.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "One node, one note. Frontmatter mirroring the repo's own contract, and a source pointer."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "tools/vaultgraph/render/script.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.vaultgraph.render.script",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/render/script.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "The script, inlined at build time."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "tools/vaultgraph/render/vault.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.vaultgraph.render.vault",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/render/vault.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "The whole vault as a dict of path to content, built in memory before anything is written."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "tools/vaultgraph/runner.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.vaultgraph.runner",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/runner.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Runs the registry and fails on every way an extraction can be quietly empty."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "tools/vaultgraph/selftest.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.vaultgraph.selftest",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/selftest.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Planted fixtures that prove the guards fire, and a clean control that proves they are quiet."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "tools/vaultgraph/serialize.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.vaultgraph.serialize",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/serialize.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Canonical JSON. The rules here are the whole of the determinism guarantee."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "tools/vaultgraph/textio.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.vaultgraph.textio",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/textio.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Reading the repo the same way the repo already reads itself, and one path spelling."
     },
     {
       "attrs": {

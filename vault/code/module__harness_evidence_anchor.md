@@ -33,6 +33,8 @@ generated: true
 ## Binds
 
 - [[module__harness_evidence|harness.evidence]] **contains** → this
+- [[module__harness_evidence_restore_drill|D-synthetic: dump one cluster, restore into another, and check four ways.]] **imports** → this
+- [[module__harness_evidence_test_restore_drill|The restore drill and the independent re-walk, each with the control that matters.]] **imports** → this
 
 ## Enforced by (code)
 

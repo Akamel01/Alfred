@@ -35,3 +35,4 @@ generated: true
 - **contains** → [[module__harness_db_grants_declared|`migrations/roles/grants.yaml`, parsed and expanded into concrete grant tuples.]]
 - **contains** → [[module__harness_db_test_cluster|Tests of the fixture itself, before anything is asserted through it.]]
 - **contains** → [[module__harness_db_test_grants|The grant matrix, asserted two ways: by set equality, and by being refused.]]
+- [[gate-step__database_04|Throwaway cluster, roles, grants and migrations]] **runs** → this

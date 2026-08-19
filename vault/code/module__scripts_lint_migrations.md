@@ -29,3 +29,7 @@ generated: true
 | `is_test` | false |
 | `path` | scripts/lint_migrations.py |
 | `tree` | scripts |
+
+## Binds
+
+- [[gate-step__integrity_06|Migrations are additive-only]] **runs** → this

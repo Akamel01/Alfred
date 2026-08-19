@@ -34,4 +34,5 @@ node harness/acs/verify_js.mjs
 
 ## Binds
 
+- **runs** → [[module__harness_acs_verify_js_mjs|Verify the JavaScript implementation against the published ACS-1 vector suite.]]
 - [[gate__inspector|inspector (ACS-1, lane, bench)]] **contains** → this

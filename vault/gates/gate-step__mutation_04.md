@@ -34,4 +34,5 @@ uv run python harness/acs/mutate.py
 
 ## Binds
 
+- **runs** → [[module__harness_acs_mutate|Mutation control for the ACS-1 conformance suite.]]
 - [[gate__mutation|mutation control (the suite's own negative control)]] **contains** → this

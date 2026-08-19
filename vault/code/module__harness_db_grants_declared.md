@@ -33,3 +33,4 @@ generated: true
 ## Binds
 
 - [[module__harness_db|harness.db]] **contains** → this
+- [[module__harness_db_assert_grants|Assert the cluster's grant matrix **equals** `migrations/roles/grants.yaml`.]] **imports** → this

@@ -32,6 +32,7 @@ generated: true
 
 ## Binds
 
+- **imports** → [[module__harness_criterion_materialize|Build the criterion environment from an allowlist, never from the candidate tree.]]
 - [[module__harness_criterion|harness.criterion]] **contains** → this
 
 ## Enforced by (code)

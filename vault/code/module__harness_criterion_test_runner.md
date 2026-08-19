@@ -32,6 +32,11 @@ generated: true
 
 ## Binds
 
+- **imports** → [[module__harness_criterion_execute|Run a criterion hermetically and classify what happened three ways.]]
+- **imports** → [[module__harness_criterion_materialize|Build the criterion environment from an allowlist, never from the candidate tree.]]
+- **imports** → [[module__harness_criterion_runner|Compose one verdict, and keep the held-out half out of the environment that runs.]]
+- **imports** → [[module__harness_db_cluster|Throwaway Postgres cluster: create, migrate, assert against, destroy.]]
+- **imports** → [[module__harness_evidence_store|Append-only, hash-chained evidence writes.]]
 - [[module__harness_criterion|harness.criterion]] **contains** → this
 
 ## Enforced by (code)

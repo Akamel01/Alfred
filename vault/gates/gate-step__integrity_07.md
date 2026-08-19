@@ -34,4 +34,5 @@ python3 scripts/lint_verdict_boundary.py
 
 ## Binds
 
+- **runs** → [[module__scripts_lint_verdict_boundary|D16/D39: the verdict boundary, enforced structurally rather than by convention.]]
 - [[gate__integrity|integrity (fixtures and register)]] **contains** → this

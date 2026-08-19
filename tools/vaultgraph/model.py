@@ -62,6 +62,12 @@ class EdgeKind(StrEnum):
     REFERENCES = "references"
     RESTATES = "restates"
     PROTECTED = "protected"
+    #: One module imports another. The only relation in this graph that answers "what does
+    #: this depend on"; every other module edge is containment, which is a tree.
+    IMPORTS = "imports"
+    #: A gate step executes a module. Closes the chain decision -> module <- gate step <- gate:
+    #: what a decision claims, which code enforces it, and which CI step actually runs that code.
+    RUNS = "runs"
 
 
 class Confidence(StrEnum):
@@ -160,6 +166,34 @@ class Minter:
         self._seen[node_id] = str(source)
         self._folded[folded] = node_id
         return node_id
+
+    def knows(self, node_id: str) -> bool:
+        """Whether some earlier extractor already minted this id.
+
+        The alternative was for each extractor that points at modules to re-derive which paths
+        `code` would have minted -- which is the rule duplication `module_id` exists to end,
+        one level up. Registry order is already load-bearing and already documented as such,
+        so the minter is the one authority on what exists yet.
+        """
+        return node_id in self._seen
+
+
+def module_id(rel_path: str) -> str:
+    """The one path -> module id rule.
+
+    Three extractors need it and each had grown its own copy: `code` mints the nodes,
+    `references` points enforcement edges at them, and `workflows` points `runs` edges at them.
+    Three spellings of the same rule is three chances for one of them to drift and produce
+    edges whose endpoints silently do not exist -- which renders as nothing, not as an error.
+
+    A directory maps to its dotted name; `.py` loses its suffix and `.mjs` keeps its own,
+    because `harness/acs/acs1.py` and `harness/acs/acs1.mjs` are two independent
+    implementations of one specification and collapsing them would erase the pair.
+    """
+    local = rel_path.replace("/", ".")
+    if rel_path.endswith(".py"):
+        local = local.removesuffix(".py")
+    return f"{NodeKind.MODULE.value}:{local}"
 
 
 def resolvable(nodes: Iterable[Node], edges: Iterable[Edge]) -> list[Edge]:

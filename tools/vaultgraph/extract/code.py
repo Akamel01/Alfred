@@ -34,7 +34,14 @@ NAME = "code"
 PROTECTED = ("scripts/", ".github/workflows/", "policy/", "migrations/roles/", "harness/")
 
 #: Trees that hold importable packages, and whether the product gates reach them.
-TREES = (("harness", False), ("src", True))
+#:
+#: `tools` is here so the generator models itself. It was left out at first on the reasoning
+#: that a read model should not be about the thing building it -- but `gates.yml` runs
+#: `tools/gen_vault.py` three times, so the graph was showing CI executing something it also
+#: claimed did not exist, and an "overview of Alfred's components" was omitting 4,600 lines of
+#: them. The cost is that editing this package now moves `graph.json`, which is already true of
+#: every other tree here.
+TREES = (("harness", False), ("src", True), ("tools", False))
 
 #: Trees whose files are machinery but not packages -- no `__init__.py`, no dotted name worth
 #: minting a parent for. They are minted anyway, because the references extractor finds
@@ -44,6 +51,16 @@ TREES = (("harness", False), ("src", True))
 FLAT_TREES = (("scripts", False), ("bench", False), ("tests", True), ("migrations", False),
               ("policy", False))
 FLAT_SUFFIXES = {".py", ".mjs", ".sql", ".json", ".yaml"}
+
+#: Directories holding benchmark output rather than machinery. 29 files, 28 of them with no
+#: edge at all -- two thirds of the whole graph's isolates were one tool's result blobs, and a
+#: reader counting unrelated nodes was mostly counting those.
+#:
+#: Excluded by directory and not by suffix, deliberately. `.json` has to stay in
+#: `FLAT_SUFFIXES`: `policy/oracle-denylist.json` and `harness/acs/vectors.json` are both named
+#: by other extractors, and dropping the suffix would leave those edges pointing at nothing --
+#: which renders as silence rather than as an error.
+DATA_DIRS = ("bench/results/", "bench/tasks/")
 
 SCHEMA_DIRS = (
     "migrations/product",
@@ -61,6 +78,11 @@ _JS_TITLE = re.compile(r"^\s*(?://+|/\*+)\s*(\S.*)")
 
 def is_protected(path: str) -> bool:
     return any(path.startswith(prefix) for prefix in PROTECTED)
+
+
+def is_data(path: str) -> bool:
+    """Benchmark output, not a component. See `DATA_DIRS`."""
+    return any(path.startswith(prefix) for prefix in DATA_DIRS)
 
 
 def _summary(path, root) -> str:
@@ -166,6 +188,8 @@ def extract(ctx: Context) -> Harvest:
                            and "__pycache__" not in p.parts):
             rel_path = rel(path, root)
             harvest.scanned += 1
+            if is_data(rel_path):
+                continue
             src = SourceRef(rel_path, 1)
             local = rel_path.replace("/", ".")
             if path.suffix == ".py":

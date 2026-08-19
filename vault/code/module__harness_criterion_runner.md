@@ -32,7 +32,11 @@ generated: true
 
 ## Binds
 
+- **imports** → [[module__harness_criterion_execute|Run a criterion hermetically and classify what happened three ways.]]
+- **imports** → [[module__harness_criterion_materialize|Build the criterion environment from an allowlist, never from the candidate tree.]]
+- **imports** → [[module__harness_evidence_store|Append-only, hash-chained evidence writes.]]
 - [[module__harness_criterion|harness.criterion]] **contains** → this
+- [[module__harness_criterion_test_runner|Verdict composition, with the two collapses that would make the number meaningless.]] **imports** → this
 
 ## Enforced by (code)
 

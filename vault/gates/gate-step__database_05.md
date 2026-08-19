@@ -34,4 +34,5 @@ uv run pytest harness/evidence
 
 ## Binds
 
+- **runs** → [[module__harness_evidence|harness.evidence]]
 - [[gate__database|database (throwaway cluster, roles and grants)]] **contains** → this

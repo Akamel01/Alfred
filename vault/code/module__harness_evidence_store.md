@@ -32,7 +32,13 @@ generated: true
 
 ## Binds
 
+- **imports** → [[module__harness_acs_acs1|ACS-1 — Alfred Canonical Serialization, version 1 (ADR-0003, ADR-0004).]]
 - [[module__harness_evidence|harness.evidence]] **contains** → this
+- [[module__harness_criterion_runner|Compose one verdict, and keep the held-out half out of the environment that runs.]] **imports** → this
+- [[module__harness_criterion_test_runner|Verdict composition, with the two collapses that would make the number meaningless.]] **imports** → this
+- [[module__harness_evidence_export|Dump a chain as raw columns, so something else can check it.]] **imports** → this
+- [[module__harness_evidence_test_restore_drill|The restore drill and the independent re-walk, each with the control that matters.]] **imports** → this
+- [[module__harness_evidence_test_store|The append-only chain, asserted from both sides.]] **imports** → this
 
 ## Enforced by (code)
 

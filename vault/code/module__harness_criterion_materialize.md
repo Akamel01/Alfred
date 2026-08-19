@@ -33,3 +33,6 @@ generated: true
 ## Binds
 
 - [[module__harness_criterion|harness.criterion]] **contains** → this
+- [[module__harness_criterion_runner|Compose one verdict, and keep the held-out half out of the environment that runs.]] **imports** → this
+- [[module__harness_criterion_test_materialize|A1, asserted as an architectural claim rather than as a list of blocked filenames.]] **imports** → this
+- [[module__harness_criterion_test_runner|Verdict composition, with the two collapses that would make the number meaningless.]] **imports** → this

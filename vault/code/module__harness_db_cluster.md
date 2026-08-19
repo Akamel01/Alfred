@@ -33,3 +33,9 @@ generated: true
 ## Binds
 
 - [[module__harness_db|harness.db]] **contains** → this
+- [[module__harness_criterion_test_runner|Verdict composition, with the two collapses that would make the number meaningless.]] **imports** → this
+- [[module__harness_db_test_cluster|Tests of the fixture itself, before anything is asserted through it.]] **imports** → this
+- [[module__harness_db_test_grants|The grant matrix, asserted two ways: by set equality, and by being refused.]] **imports** → this
+- [[module__harness_evidence_restore_drill|D-synthetic: dump one cluster, restore into another, and check four ways.]] **imports** → this
+- [[module__harness_evidence_test_restore_drill|The restore drill and the independent re-walk, each with the control that matters.]] **imports** → this
+- [[module__harness_evidence_test_store|The append-only chain, asserted from both sides.]] **imports** → this

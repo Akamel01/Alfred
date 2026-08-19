@@ -30,6 +30,10 @@ generated: true
 | `path` | scripts/gen_reading_map.py |
 | `tree` | scripts |
 
+## Binds
+
+- [[gate-step__integrity_05|Reading map current]] **runs** → this
+
 ## Enforced by (code)
 
 - [[adr__ADR-0001|Representation of undefined and infinite metric values]] **enforced_by** → this — "ADR-0001 to 0008 constrain every metric signature, every hashed record, and the operator surface"

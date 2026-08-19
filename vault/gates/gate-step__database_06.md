@@ -34,4 +34,5 @@ uv run pytest harness/criterion
 
 ## Binds
 
+- **runs** → [[module__harness_criterion|harness.criterion]]
 - [[gate__database|database (throwaway cluster, roles and grants)]] **contains** → this

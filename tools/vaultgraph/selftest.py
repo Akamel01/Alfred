@@ -18,8 +18,8 @@ import sys
 import tempfile
 from pathlib import Path
 
-from .extract import EXTRACTORS, code, decisions, documents, references
-from .fixtures import _plant, _plant_code, _plant_plan
+from .extract import EXTRACTORS, code, decisions, documents, imports, references, workflows
+from .fixtures import _plant, _plant_code, _plant_imports, _plant_plan, _plant_workflow
 from .model import (
     Confidence, Edge, EdgeError, EdgeKind, Minter, MintError, Node, NodeKind, SourceRef,
 )
@@ -301,6 +301,61 @@ def self_test() -> int:
             "a package declared in pyproject and missing from disk raised no anomaly",
         )
 
+
+    # ---- 11a. Imports resolve to modules and nothing else. The controls carry the weight: a
+    #           resolver that answered every name would satisfy every positive assertion here.
+    #           `code` runs first and on the same context, because resolution asks the minter
+    #           what exists — which makes registry order a property worth failing on.
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        _plant_imports(root)
+        ctx = _ctx(root)
+        code.extract(ctx)
+        harvest = imports.extract(ctx)
+        found = sorted((e.src, e.dst) for e in harvest.edges)
+        expect(
+            found == [
+                ("module:harness.consumer.reader", "module:harness.consumer.probe"),
+                ("module:harness.consumer.reader", "module:harness.fixture.probe"),
+            ],
+            f"import edges: found {found} — expected the absolute import, the relative one, "
+            "and the function import falling back to its module; json, pytest and the "
+            "commented-out import are not dependencies",
+        )
+        expect(
+            all(e.confidence is Confidence.STRUCTURAL for e in harvest.edges),
+            "an import edge claimed less than structural confidence; an import is a statement",
+        )
+        expect(not harvest.nodes, f"the imports extractor minted nodes: {harvest.nodes}")
+        expect(not harvest.unparsed, f"import fixture left unparsed items: {harvest.unparsed}")
+
+    # ---- 11b. The same fixture with no prior `code` run must yield nothing. This is the
+    #           control for 11a: it proves those edges came from resolution against real
+    #           modules, and not from a parser that trusts whatever a name says.
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        _plant_imports(root)
+        harvest = imports.extract(_ctx(root))
+        expect(
+            not harvest.edges,
+            f"imports resolved {len(harvest.edges)} edges with no modules minted — it is "
+            "inventing endpoints rather than resolving them",
+        )
+
+    # ---- 11c. A gate step runs a module, and the three steps that name no module say nothing.
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        _plant_workflow(root)
+        ctx = _ctx(root)
+        code.extract(ctx)
+        harvest = workflows.extract(ctx)
+        runs = sorted(e.dst for e in harvest.edges if e.kind is EdgeKind.RUNS)
+        expect(
+            runs == ["module:harness.fixture", "module:harness.fixture.probe"],
+            f"runs edges: found {runs} — expected the file and the package; `uv sync`, "
+            "`actions/checkout@v4` and the unminted `migrations/roles/` name no module",
+        )
+        expect(not harvest.unparsed, f"workflow fixture left unparsed items: {harvest.unparsed}")
 
     # ---- 12. Renderers are downstream of one extraction and cannot reach it.
     render_dir = Path(__file__).resolve().parent / "render"

@@ -90,6 +90,72 @@ def _plant_code(root: Path) -> None:
     (package / "probe.py").write_text(REFERENCE_FIXTURE, encoding="utf-8")
 
 
+#: Every import shape that must resolve, beside three that must not. The controls are the point:
+#: a resolver that returned an edge for everything would pass every "it found it" assertion.
+#:
+#: * `harness.fixture.probe`   — absolute, names a module directly.
+#: * `from ..fixture import probe`  — relative, and the name lands on a module not a symbol.
+#: * `from .probe import compute`   — relative, and the name is a *function*, so the edge has
+#:                                    to fall back to the module holding it.
+#: * `import json`, `from pytest import fixture` — external; nothing in the repo, no edge.
+#: * `# from harness.fixture.probe import compute` — a comment, which is why this is `ast`.
+IMPORT_FIXTURE = '''"""Fixture module that imports.
+
+Not `from harness.fixture.probe import compute` — this is a docstring, not a statement.
+"""
+
+import json
+from pytest import fixture
+
+import harness.fixture.probe
+from ..fixture import probe
+from .probe import compute
+
+# from harness.fixture.probe import compute
+
+__all__ = ["json", "fixture", "probe", "compute"]
+'''
+
+
+def _plant_imports(root: Path) -> None:
+    """`_plant_code`'s tree plus a second package that imports out of it."""
+    _plant_code(root)
+    package = root / "harness" / "consumer"
+    package.mkdir(parents=True, exist_ok=True)
+    (package / "__init__.py").write_text('"""Consumer package."""\n', encoding="utf-8")
+    (package / "probe.py").write_text('"""Same leaf name, different package."""\n', encoding="utf-8")
+    (package / "reader.py").write_text(IMPORT_FIXTURE, encoding="utf-8")
+
+
+#: Two steps that name a module and three that name something else. `uv sync --frozen` carries
+#: no path at all; `migrations/roles/` is a directory in a flat tree and was never minted; and
+#: `actions/checkout@v4` has a slash but no tree name, which is what anchors the pattern.
+WORKFLOW_FIXTURE = """name: gates
+
+jobs:
+  integrity:
+    name: integrity
+    steps:
+      - uses: actions/checkout@v4
+      - name: Sync dependencies
+        run: uv sync --frozen --all-extras --dev
+      - name: Fixture probe
+        run: python3 harness/fixture/probe.py
+      - name: Whole package
+        run: uv run pytest harness/fixture
+      - name: Roles are declared
+        run: python3 -c "print('migrations/roles/')"
+"""
+
+
+def _plant_workflow(root: Path) -> None:
+    """`_plant_code`'s tree plus a workflow whose steps run parts of it."""
+    _plant_code(root)
+    workflows = root / ".github" / "workflows"
+    workflows.mkdir(parents=True, exist_ok=True)
+    (workflows / "gates.yml").write_text(WORKFLOW_FIXTURE, encoding="utf-8")
+
+
 def _plant(root: Path) -> None:
     docs = root / "docs"
     (docs / "tier0").mkdir(parents=True)

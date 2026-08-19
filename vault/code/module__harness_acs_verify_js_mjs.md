@@ -33,3 +33,4 @@ generated: true
 ## Binds
 
 - [[module__harness_acs|harness.acs]] **contains** → this
+- [[gate-step__inspector_05|ACS-1 — JavaScript conformance]] **runs** → this

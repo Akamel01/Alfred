@@ -25,7 +25,7 @@ import io
 import re
 import tokenize
 
-from ..model import Confidence, Edge, EdgeKind, NodeKind, SourceRef
+from ..model import Confidence, Edge, EdgeKind, NodeKind, SourceRef, module_id
 from ..protocol import Context, ExtractorSpec, Harvest
 from ..textio import read_lines, rel
 
@@ -87,13 +87,6 @@ def _text_spans(path, suffix: str) -> list[tuple[int, str]]:
     return spans
 
 
-def _module_id(rel_path: str) -> str:
-    local = rel_path.replace("/", ".")
-    if rel_path.endswith(PY_SUFFIX):
-        local = local.removesuffix(PY_SUFFIX)
-    return f"{NodeKind.MODULE.value}:{local}"
-
-
 def extract(ctx: Context) -> Harvest:
     harvest = Harvest()
     root = ctx.root
@@ -135,7 +128,7 @@ def extract(ctx: Context) -> Harvest:
                     continue
                 seen.add(key)
                 harvest.edges.append(Edge(
-                    src=target, dst=_module_id(rel_path), kind=EdgeKind.ENFORCED_BY,
+                    src=target, dst=module_id(rel_path), kind=EdgeKind.ENFORCED_BY,
                     confidence=Confidence.DERIVED, source=SourceRef(rel_path, line_no),
                     evidence=text.strip()[:180], extractor=NAME,
                 ))

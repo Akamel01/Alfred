@@ -34,4 +34,5 @@ python3 scripts/lint_docs.py --check
 
 ## Binds
 
+- **runs** → [[module__scripts_lint_docs|Doc lint — the CI gate the Documentation Standard commits to.]]
 - [[gate__integrity|integrity (fixtures and register)]] **contains** → this

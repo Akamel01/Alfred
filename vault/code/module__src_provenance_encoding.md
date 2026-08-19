@@ -31,6 +31,7 @@ generated: true
 
 ## Binds
 
+- **imports** → [[module__harness_acs_acs1|ACS-1 — Alfred Canonical Serialization, version 1 (ADR-0003, ADR-0004).]]
 - [[module__src_provenance|src.provenance]] **contains** → this
 
 ## Enforced by (code)

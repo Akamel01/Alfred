@@ -30,6 +30,11 @@ generated: true
 | `path` | scripts/lint_verdict_boundary.py |
 | `tree` | scripts |
 
+## Binds
+
+- [[gate-step__integrity_07|Verdict boundary holds]] **runs** → this
+- [[gate-step__integrity_08|Verdict boundary lint detects planted violations]] **runs** → this
+
 ## Enforced by (code)
 
 - [[decision__D16|Verdict fields are owned by deterministic nodes]] **enforced_by** → this — """D16/D39: the verdict boundary, enforced structurally rather than by convention.

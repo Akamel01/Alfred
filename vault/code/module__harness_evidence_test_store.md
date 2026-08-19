@@ -32,6 +32,9 @@ generated: true
 
 ## Binds
 
+- **imports** → [[module__harness_acs_acs1|ACS-1 — Alfred Canonical Serialization, version 1 (ADR-0003, ADR-0004).]]
+- **imports** → [[module__harness_db_cluster|Throwaway Postgres cluster: create, migrate, assert against, destroy.]]
+- **imports** → [[module__harness_evidence_store|Append-only, hash-chained evidence writes.]]
 - [[module__harness_evidence|harness.evidence]] **contains** → this
 
 ## Enforced by (code)

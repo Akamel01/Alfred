@@ -20,12 +20,20 @@ from __future__ import annotations
 
 import re
 
-from ..model import Confidence, Edge, EdgeKind, Node, NodeKind, SourceRef
+from ..model import Confidence, Edge, EdgeKind, Node, NodeKind, SourceRef, module_id
 from ..protocol import Context, ExtractorSpec, Harvest, Unparsed
 from ..textio import read_lines
 
 NAME = "workflows"
 WORKFLOW = ".github/workflows/gates.yml"
+
+#: Path-shaped tokens inside a step's command, restricted to the trees `code` mints nodes for.
+#: Anchored on a tree name rather than on "anything with a slash": a step's command also
+#: carries flags, shell fragments and URLs, and a looser pattern would mint edges out of
+#: `--frozen` and `actions/checkout@v4`.
+_COMMAND_PATH = re.compile(
+    r"\b((?:harness|src|tools|scripts|bench|tests|migrations|policy)/[A-Za-z0-9_./-]*)"
+)
 
 _JOBS_HEADER = re.compile(r"^jobs:\s*$")
 _JOB = re.compile(r"^  ([A-Za-z][\w-]*):\s*$")
@@ -39,6 +47,23 @@ _USES = re.compile(r"^        uses:\s*(.+?)\s*$")
 
 def _unquote(text: str) -> str:
     return text.strip().strip('"').strip("'")
+
+
+def _run_targets(ctx: Context, command: str) -> list[str]:
+    """Module ids a step's command names, in a stable order and each named once.
+
+    Resolution is by asking the minter, not by re-deriving which paths `code` mints. A token
+    that names nothing -- `migrations/roles/` is a directory in a flat tree, `harness/acs/vectors.json`
+    is data -- is dropped rather than reported: `gates.yml` legitimately names paths that are
+    not modules, and reporting those as unparsed would spend a zero budget on the file working
+    as intended. What the graph must not do is invent an endpoint, and it does not.
+    """
+    found: list[str] = []
+    for token in _COMMAND_PATH.findall(command):
+        candidate = module_id(token.rstrip("/"))
+        if ctx.minter.knows(candidate) and candidate not in found:
+            found.append(candidate)
+    return sorted(found)
 
 
 def extract(ctx: Context) -> Harvest:
@@ -83,6 +108,15 @@ def extract(ctx: Context) -> Harvest:
             confidence=Confidence.STRUCTURAL, source=src, evidence=pending["name"],
             extractor=NAME,
         ))
+        # What this step actually executes. Before this, all 36 gate steps were dead ends whose
+        # only relation was the job containing them, and the register could say a decision was
+        # enforced in a module without being able to say anything ran that module.
+        for target in _run_targets(ctx, command):
+            harvest.edges.append(Edge(
+                src=step_id, dst=target, kind=EdgeKind.RUNS,
+                confidence=Confidence.STRUCTURAL, source=src,
+                evidence=command.strip()[:180], extractor=NAME,
+            ))
         pending, block_run, in_block = None, [], False
 
     needs_edges: list[tuple[str, str, int]] = []
@@ -179,7 +213,11 @@ SPEC = ExtractorSpec(
     # not red the build. The ceiling that matters here is the unparsed budget, which is zero.
     min_nodes=30,
     max_nodes=None,
-    min_edges=28,
+    # 36 `contains` + 4 `needs` + the `runs` edges. Raised from 28 when `runs` landed, so that
+    # a command parser which stopped matching reds the build instead of quietly returning a
+    # graph where nothing executes anything -- the aggregate floor is the only floor this
+    # contract has, so it has to be tight enough for the newest edge kind to be missed.
+    min_edges=50,
     max_unparsed=0,
     expect_rejected=None,
     run=extract,

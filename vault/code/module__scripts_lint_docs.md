@@ -29,3 +29,7 @@ generated: true
 | `is_test` | false |
 | `path` | scripts/lint_docs.py |
 | `tree` | scripts |
+
+## Binds
+
+- [[gate-step__integrity_04|Document header contract]] **runs** → this
