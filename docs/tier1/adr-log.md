@@ -2521,3 +2521,94 @@ the next reader does not have to plant a broken function to discover it, as this
 `harness/` and `policy/` are inspector machinery under D20. Major-fix #8 permits an
 agent-drafted inspector patch only under line-by-line human review with a mandatory ADR. This
 is that ADR. The review is O9, it has not happened, and this change joins the queue.
+
+---
+
+## ADR-0025 — Byte-identical replay, with the domain left out of it
+
+**Date** 2026-08-19 · **Status** Accepted · **Supersedes** nothing
+
+### Context
+
+P0-5 of the narrowed Phase 0 exit is byte-identical deterministic replay. `src/replay/`
+carried the port and no implementation; nothing in the tree had ever replayed anything twice
+and compared the results.
+
+The criterion is the **harness's** determinism, not any measure's correctness. Building a
+CommonRoad adapter and a TTC implementation to test it would test exactly the same property
+and would also be domain content the ownership rule assigns to the local models.
+
+### Decision
+
+**Real harness in `src/`, synthetic plugs in `harness/`.** `src/replay/harness.py` holds
+`DeterministicReplay`: load through a `TrajectorySource`, evaluate through a `Metric`, stamp,
+and return the stamped record's own content hash. It names no dataset and no measure. The
+`SyntheticSource` and `SyntheticMetric` that exercise it live in `harness/selftest/`, beside
+the synthetic criterion S4 built for the stated reason that *"a factory gate does not depend
+on a domain that may be written off."*
+
+When the local models land a CommonRoad source it plugs into a harness that already carries a
+byte-identical proof.
+
+### The input hash is taken over what was loaded, not over what was asked for
+
+`input_hash` covers the tracks the source actually returned — every sample of `t`, `x`, `y`,
+plus the geometry — and not merely the `ScenarioRef`. A hash over the request would be stable
+across a source that silently returned different data, which is precisely the failure a
+determinism check exists to catch. Arrays go in whole rather than by length or summary: a
+digest over shapes is identical for two scenarios with the same sample count.
+
+Tracks are hashed in the dataset's own identifier order rather than in load order. A source
+free to return them in any order would otherwise produce a different digest per run and fail
+the criterion for a reason that is not about determinism. That is asserted by a test with a
+deliberately order-reversing source.
+
+**Tenancy and track ids are deliberately excluded** from the preimage. `org_id`, `project_id`
+and `track_id` are not properties of the measurement, and including them would make the same
+scenario measured by two tenants two different numbers.
+
+### Non-derivable stamp fields are supplied, not discovered
+
+`code_commit`, `upstream`, `tolerance`, `assumption_set` and `metric_version` arrive through
+`StampContext`. The harness could shell out to `git` or read an environment variable; D40's
+argument against that is the one S8 made about release identity — a fact read from outside the
+artifact describes the reader's situation and not the artifact's. The caller knows these and
+the harness does not, so guessing would produce a stamp that is confidently wrong rather than
+one that is absent.
+
+### Two refusals, and both produce no number at all
+
+- **A source returning zero tracks raises.** A metric over nothing still returns something,
+  and that something would be stamped and stored as a measurement of a scenario nobody loaded.
+  D57 at the product boundary.
+- **A metric whose declared `arity` disagrees with its result raises.** A declaration nobody
+  checks is a comment.
+
+Both are `ReplayContractViolation`, never a partial `ReplayResult`. A result meaning "some of
+it worked" is a result nothing downstream could refuse.
+
+Degeneracies remain values: a single-track scenario is E24, stamped as `Undefined`, not raised.
+ADR-0001's split, asserted rather than assumed.
+
+### How this would be shown vacuous
+
+Every determinism test here would pass against a harness returning a constant digest. The
+control is `test_a_changed_input_moves_the_digest`, parametrized over the loaded data, the
+sample count, the metric version, the tolerance and the harness version, so a hash taken over
+a subset of the inputs fails at least one case. A determinism test that never watches the
+digest change is one a constant satisfies.
+
+### Consequences and enforcement
+
+- **P0-5 moves to `met`** in the stage-gate register. The Phase 0 gate now reports 4 of 7.
+- The metric fixture is not a measure and says so in its own citation: `separation` has no
+  safety semantics, no paper behind it and no threshold. It reads all of its input on purpose
+  — a constant-returning metric would replay identically no matter what the source did.
+- **Not done:** no `ReplayHarness` runs against real data, because no real source exists.
+  That is R0-1, dated 2026-10-07, and it is the local models' work.
+
+### Why this is partly an inspector patch
+
+`src/replay/harness.py` is product tree and ordinary agent territory. `harness/selftest/` is
+inspector machinery under D20, so Major-fix #8 applies to the fixtures and this ADR authorizes
+them. The review is O9 and has not happened.

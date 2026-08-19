@@ -4,7 +4,7 @@
   "statuses": {
     "met": "The criterion holds. Requires evidence: a path that exists for `automatic`, a recorded run or ADR reference for `attested`.",
     "unmet": "The criterion does not hold and could be evaluated.",
-    "blocked": "The criterion could not be evaluated at all, because something it depends on does not exist. Fails, per F25 — not-evaluated is never passed. `reason` is required."
+    "blocked": "The criterion could not be evaluated at all, because something it depends on does not exist. Fails, per F25 \u2014 not-evaluated is never passed. `reason` is required."
   },
   "phases": {
     "phase0": {
@@ -32,9 +32,10 @@
           "reason": "nftables default-drop does not exist in the host network namespace. C6 passes as a probe and reports FAILED on any unfiltered host, which is the correct report and is not this criterion."
         },
         "P0-5": {
-          "status": "unmet",
+          "status": "met",
           "kind": "automatic",
-          "reason": "No ReplayHarness implementation exists. src/replay/ carries the port only, as of d6f752f."
+          "evidence": "harness/selftest/test_replay.py",
+          "note": "src/replay/harness.py is the harness; the source and metric that exercise it are synthetic and live in harness/selftest, per ADR-0022's cut along the ownership rule. Two replays agree byte for byte, and the control asserts the digest MOVES when the loaded data, the metric version, the tolerance or the harness version changes -- without that half, a constant would satisfy the criterion."
         },
         "P0-6": {
           "status": "blocked",
