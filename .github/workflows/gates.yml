@@ -104,6 +104,18 @@ jobs:
       - name: CI coverage lint detects planted violations
         run: python3 scripts/lint_ci_coverage.py --self-test
 
+      # Stage gate REGISTER integrity, not the exit gate. The exit gate is
+      # `--gate phase0` and is run when exit is claimed: it reports red from the day it
+      # is written until the day the phase ends, and a check that is red for reasons
+      # nobody reads is a check that gets turned off. This step asserts the record is
+      # well formed -- every criterion in the document registered, every `met` naming
+      # evidence that resolves, every unmet carrying a reason.
+      - name: Stage gate register integrity
+        run: python3 scripts/lint_stage_gates.py
+
+      - name: Stage gate lint detects planted violations
+        run: python3 scripts/lint_stage_gates.py --self-test
+
       - name: ACS-1 vectors regenerate byte-identically
         run: |
           set -euo pipefail

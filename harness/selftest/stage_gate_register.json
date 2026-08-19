@@ -1,0 +1,52 @@
+{
+  "register_version": 1,
+  "note": "The status of each stage-gate criterion named in docs/tier2/stage-gate-definitions.md. Split from the document deliberately: the document states what is being asserted and does not change when a criterion's status does, so a status flipping is a diff in one file that a reader can see whole. scripts/lint_stage_gates.py asserts this register and that document agree in both directions, and that every `met` carries evidence that resolves.",
+  "statuses": {
+    "met": "The criterion holds. Requires evidence: a path that exists for `automatic`, a recorded run or ADR reference for `attested`.",
+    "unmet": "The criterion does not hold and could be evaluated.",
+    "blocked": "The criterion could not be evaluated at all, because something it depends on does not exist. Fails, per F25 — not-evaluated is never passed. `reason` is required."
+  },
+  "phases": {
+    "phase0": {
+      "narrowed_by": "ADR-0022",
+      "date": "2026-09-09",
+      "criteria": {
+        "P0-1": {
+          "status": "met",
+          "kind": "automatic",
+          "evidence": "harness/selftest/test_selftest.py"
+        },
+        "P0-2": {
+          "status": "met",
+          "kind": "automatic",
+          "evidence": "harness/selftest/suites.py"
+        },
+        "P0-3": {
+          "status": "met",
+          "kind": "automatic",
+          "evidence": "harness/deploy/test_deploy.py"
+        },
+        "P0-4": {
+          "status": "unmet",
+          "kind": "attested",
+          "reason": "nftables default-drop does not exist in the host network namespace. C6 passes as a probe and reports FAILED on any unfiltered host, which is the correct report and is not this criterion."
+        },
+        "P0-5": {
+          "status": "unmet",
+          "kind": "automatic",
+          "reason": "No ReplayHarness implementation exists. src/replay/ carries the port only, as of d6f752f."
+        },
+        "P0-6": {
+          "status": "blocked",
+          "kind": "attested",
+          "reason": "No Tier 0 recovery objective exists (D43). A restore drill produces a duration and nothing to compare it to, so the criterion cannot be evaluated rather than merely failing. Tier 0 authorship is outside the agent boundary; owed by the operator."
+        },
+        "P0-7": {
+          "status": "unmet",
+          "kind": "attested",
+          "reason": "The O9 review queue is non-empty and includes patches that enforce criteria above. Batched by subsystem: the containment patch, the lint family, the stamp and fingerprint pair."
+        }
+      }
+    }
+  }
+}
