@@ -204,14 +204,27 @@ def assert_mounts_match(
     if mismatched:
         problems.append(f"mode differs: {mismatched}")
 
+    # The observed set as one canonical string, mode included, so `reassert.compare` can see a
+    # mount that moved between boot and end even when both ends still match their spec — the
+    # spec is not what the agent runs against, the mounts are.
+    mount_values = {
+        "mounts": ",".join(
+            f"{path}:{'ro' if observed_modes[path] else 'rw'}" for path in sorted(observed_modes)
+        ),
+        "mount_count": str(len(observed_modes)),
+    }
     if problems:
         return Assertion(
-            assertion_id=ASSERTION_C9, outcome=AssertionOutcome.FAILED, detail="; ".join(problems)
+            assertion_id=ASSERTION_C9,
+            outcome=AssertionOutcome.FAILED,
+            detail="; ".join(problems),
+            observed=mount_values,
         )
     return Assertion(
         assertion_id=ASSERTION_C9,
         outcome=AssertionOutcome.PASSED,
         detail=f"{len(observed)} mounts match the dispatch spec, mode for mode",
+        observed=mount_values,
     )
 
 
@@ -295,9 +308,16 @@ def assert_writable_set(
             elif not mode:
                 problems.append(f"interpreter {interpreter} is writable")
 
+    writable_values = {
+        "writable_roots": ",".join(sorted(writable_roots)),
+        "interpreter_paths": ",".join(sorted(interpreter_paths)),
+    }
     if problems:
         return Assertion(
-            assertion_id=ASSERTION_C12, outcome=AssertionOutcome.FAILED, detail="; ".join(problems)
+            assertion_id=ASSERTION_C12,
+            outcome=AssertionOutcome.FAILED,
+            detail="; ".join(problems),
+            observed=writable_values,
         )
     return Assertion(
         assertion_id=ASSERTION_C12,
@@ -306,6 +326,7 @@ def assert_writable_set(
             f"writable set is exactly {sorted(writable_roots)}; "
             f"{len(interpreter_paths)} interpreter path(s) read-only"
         ),
+        observed=writable_values,
     )
 
 
@@ -398,12 +419,24 @@ def assert_no_archives_or_caches(roots: Sequence[Path]) -> Assertion:
         problems.append(f"package archives present: {sorted(archives)[:10]}")
     if caches:
         problems.append(f"resolver caches present: {sorted(caches)[:10]}")
+    # Counts, not the listings: C13 walks a whole tree and a full inventory as one observed
+    # value would drift on every unrelated file. A count that moves is still a finding, and
+    # `detail` carries the names on the failing side.
+    archive_values = {
+        "archives": str(len(archives)),
+        "resolver_caches": str(len(caches)),
+        "roots": ",".join(sorted(str(r) for r in roots)),
+    }
     if problems:
         return Assertion(
-            assertion_id=ASSERTION_C13, outcome=AssertionOutcome.FAILED, detail="; ".join(problems)
+            assertion_id=ASSERTION_C13,
+            outcome=AssertionOutcome.FAILED,
+            detail="; ".join(problems),
+            observed=archive_values,
         )
     return Assertion(
         assertion_id=ASSERTION_C13,
         outcome=AssertionOutcome.PASSED,
         detail=f"{scanned} entries under {len(roots)} root(s); no archive, no resolver cache",
+        observed=archive_values,
     )

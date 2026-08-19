@@ -287,19 +287,33 @@ def _as_key(value: HoleValue) -> str:
     raise TypeError(f"expected a single configuration key, got {value!r}")
 
 
-def _verdict(assertion_id: str, problems: Sequence[str], claim: str) -> Assertion:
+def _verdict(
+    assertion_id: str,
+    problems: Sequence[str],
+    claim: str,
+    observed: Mapping[str, str] | None = None,
+) -> Assertion:
+    """`observed` is attached to **both** outcomes on purpose.
+
+    A failed assertion's values are exactly what a reader needs to see, and `reassert.compare`
+    reads observations across boot and end regardless of outcome — attaching them only to the
+    pass would make a value diff impossible in the one case where something is already wrong.
+    """
+    values = dict(observed or {})
     if problems:
         return Assertion(
             assertion_id=assertion_id,
             outcome=AssertionOutcome.FAILED,
             detail="; ".join(problems),
             premise_verified=True,
+            observed=values,
         )
     return Assertion(
         assertion_id=assertion_id,
         outcome=AssertionOutcome.PASSED,
         detail=claim,
         premise_verified=True,
+        observed=values,
     )
 
 
@@ -578,6 +592,15 @@ def _check_c16(holes: Mapping[str, HoleValue], obs: ExecutorObservation) -> Asse
         problems,
         f"workspace kind {obs.workspace_kind}; {required_conversation}; container "
         f"{(obs.container_id or '')[:12]}",
+        # The container id is the reason `compare` reads values at all: two passes over two
+        # different containers are indistinguishable by outcome. Recorded in full, not
+        # truncated as the prose is — a diff over a 12-character prefix is a diff over a
+        # prefix.
+        observed={
+            "workspace_kind": obs.workspace_kind or "<unreported>",
+            "conversation_kind": obs.conversation_kind or "<unreported>",
+            "container_id": obs.container_id or "<unreported>",
+        },
     )
 
 

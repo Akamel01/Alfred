@@ -41,7 +41,14 @@ from harness.containment.patch_side import (
     assert_patch_carries_no_oracle,
     normalized_source_hash,
 )
-from harness.containment.reassert import REASSERTED, compare, reassert
+from harness.containment.reassert import (
+    REASSERTED,
+    DriftKind,
+    compare,
+    drifted_ids,
+    reassert,
+    value_blind,
+)
 from harness.containment.shells import (
     CANVAS_COMMIT,
     CANVAS_REPO,
@@ -692,21 +699,100 @@ def test_c14_fails_when_the_container_is_gone_at_the_end_of_the_run() -> None:
     assert result.outcome is AssertionOutcome.FAILED
     assert "indeterminate" in result.detail
     boot = AssertionReport(tuple(_passed(i) for i in REASSERTED))
-    assert compare(boot, AssertionReport(tuple(end))) == ("C16",)
+    assert drifted_ids(compare(boot, AssertionReport(tuple(end)))) == ("C16",)
 
 
-def test_c14_compare_does_not_see_a_container_swapped_for_another_of_the_same_kind() -> None:
-    """The stated limit of re-asserting C16, held as a test so it is not forgotten.
+def test_c14_compare_sees_a_container_swapped_for_another_of_the_same_kind() -> None:
+    """The case that made `compare` read values. Two passes, two different containers.
 
-    `compare` is outcome-level. A run that replaced its container with another `DockerWorkspace`
-    passes C16 at both ends under a **different id**, and nothing here notices. Closing it
-    needs an identity comparison, not another member of the set.
+    Nothing about the outcomes moved — both ends are `passed`, both are `DockerWorkspace`,
+    both are `RemoteConversation`. The run moved underneath a control that an outcome-level
+    comparison would have called clean.
     """
     boot = evaluate(_shell("C16"), replace(CLEAN, container_id="aaaaaaaaaaaa"))
     end = evaluate(_shell("C16"), replace(CLEAN, container_id="bbbbbbbbbbbb"))
-    assert boot.outcome is AssertionOutcome.PASSED
-    assert end.outcome is AssertionOutcome.PASSED
-    assert compare(AssertionReport((boot,)), AssertionReport((end,))) == ()
+    assert boot.outcome is end.outcome is AssertionOutcome.PASSED
+
+    drifts = compare(AssertionReport((boot,)), AssertionReport((end,)))
+    assert [(d.kind, d.key) for d in drifts] == [(DriftKind.VALUE, "container_id")]
+    assert drifts[0].boot == "aaaaaaaaaaaa"
+    assert drifts[0].end == "bbbbbbbbbbbb"
+
+
+def test_c14_compare_records_the_container_id_in_full_not_the_prose_prefix() -> None:
+    """`detail` truncates the id to twelve characters; a diff over a prefix is a prefix diff."""
+    long_id = "c" * 64
+    result = evaluate(_shell("C16"), replace(CLEAN, container_id=long_id))
+    assert result.observed["container_id"] == long_id
+
+
+def test_c14_compare_reports_an_observation_that_stopped_being_made() -> None:
+    """The quiet kind. A key-wise diff over *shared* keys sees nothing here.
+
+    A check that stopped observing and a check that observed no change are the same shape
+    from outside, which is the whole reason this is a named kind rather than a silence.
+    """
+    boot = Assertion("C9", AssertionOutcome.PASSED, "ok", observed={"mounts": "/repo:rw"})
+    end = Assertion("C9", AssertionOutcome.PASSED, "ok", observed={})
+    drifts = compare(AssertionReport((boot,)), AssertionReport((end,)))
+    assert [(d.kind, d.key) for d in drifts] == [(DriftKind.OBSERVATION_LOST, "mounts")]
+
+
+def test_c14_compare_reports_an_observation_that_appeared() -> None:
+    """The mirror, reported rather than judged benign on the reader's behalf."""
+    boot = Assertion("C9", AssertionOutcome.PASSED, "ok", observed={})
+    end = Assertion("C9", AssertionOutcome.PASSED, "ok", observed={"mounts": "/repo:rw"})
+    drifts = compare(AssertionReport((boot,)), AssertionReport((end,)))
+    assert [(d.kind, d.key) for d in drifts] == [(DriftKind.OBSERVATION_APPEARED, "mounts")]
+
+
+def test_c14_compare_reports_an_assertion_present_at_only_one_end() -> None:
+    """`reassert` refuses on end-side absence; boot-side absence was caught by nothing."""
+    only_end = compare(AssertionReport(()), AssertionReport((_passed("C13"),)))
+    assert [d.kind for d in only_end] == [DriftKind.MISSING_AT_BOOT]
+    only_boot = compare(AssertionReport((_passed("C13"),)), AssertionReport(()))
+    assert [d.kind for d in only_boot] == [DriftKind.MISSING_AT_END]
+
+
+def test_c14_compare_reads_values_on_a_failing_outcome_too() -> None:
+    """Attaching observations only to the pass would blind the diff where it matters most."""
+    boot = Assertion("C13", AssertionOutcome.PASSED, "clean", observed={"archives": "0"})
+    end = Assertion("C13", AssertionOutcome.FAILED, "a wheel appeared", observed={"archives": "1"})
+    kinds = {(d.kind, d.key) for d in compare(AssertionReport((boot,)), AssertionReport((end,)))}
+    assert kinds == {(DriftKind.OUTCOME, None), (DriftKind.VALUE, "archives")}
+
+
+def test_value_blind_names_what_was_compared_on_its_outcome_alone() -> None:
+    """D57 for this comparison. An empty `compare` over these ids is not evidence of stillness."""
+    reports = AssertionReport(tuple(_passed(i) for i in REASSERTED))
+    assert compare(reports, reports) == ()
+    assert value_blind(reports, reports) == REASSERTED
+
+
+def test_value_blind_is_not_empty_today_and_names_who_still_owes_observations() -> None:
+    """C7 reports no observations. Recorded as a fact rather than as coverage nobody has.
+
+    C9, C12, C13 and C16 record theirs; C7's oracle-absence probe does not, so a `compare`
+    that returns nothing for C7 means only that its outcome held.
+    """
+    boot = AssertionReport(
+        (
+            _passed("C7"),
+            Assertion("C9", AssertionOutcome.PASSED, "ok", observed={"mounts": "/repo:rw"}),
+            Assertion("C12", AssertionOutcome.PASSED, "ok", observed={"writable_roots": "/repo"}),
+            Assertion("C13", AssertionOutcome.PASSED, "ok", observed={"archives": "0"}),
+            evaluate(_shell("C16"), CLEAN),
+        )
+    )
+    assert value_blind(boot, boot) == ("C7",)
+
+
+def test_drifted_ids_deduplicates_and_keeps_the_closed_sets_order() -> None:
+    boot = Assertion("C13", AssertionOutcome.PASSED, "ok", observed={"a": "1", "b": "1"})
+    end = Assertion("C13", AssertionOutcome.FAILED, "no", observed={"a": "2", "b": "2"})
+    drifts = compare(AssertionReport((boot, _passed("C9"))), AssertionReport((end, _passed("C9"))))
+    assert len(drifts) > 1
+    assert drifted_ids(drifts) == ("C13",)
 
 
 def test_c14_is_not_executed_when_a_member_is_absent() -> None:
@@ -739,7 +825,8 @@ def test_c14_compare_names_only_what_changed_during_the_run() -> None:
             for i in REASSERTED
         )
     )
-    assert compare(boot, end) == ("C13",)
+    assert drifted_ids(compare(boot, end)) == ("C13",)
+    assert [d.kind for d in compare(boot, end)] == [DriftKind.OUTCOME]
 
 
 def test_c14_compare_is_silent_when_nothing_moved() -> None:

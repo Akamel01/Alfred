@@ -50,6 +50,12 @@ def to_result(
     assigns each assertion a side — C6 and C7 run inside, C4 and C5 run outside — and a
     default here would let an adaptor omit the one fact that says whether the claim is about
     the container or merely about the dispatch that requested it.
+
+    **`observed` now carries the probe's own values across.** Until the checks recorded them
+    this fell back to `{"detail": ...}`, which put prose where the handle's schema promises
+    values — so the one structured thing an assertion knows stopped at the boundary and only
+    a sentence about it crossed. An explicit `observed` argument still wins, for the adaptor
+    that measured something the probe could not.
     """
     outcome = _OUTCOMES.get(assertion.outcome)
     if outcome is None:  # pragma: no cover — unreachable while the two enums agree
@@ -61,7 +67,7 @@ def to_result(
         assertion_id=assertion.assertion_id,
         outcome=outcome,
         executed_inside_container=executed_inside_container,
-        observed=dict(observed or {"detail": assertion.detail}),
+        observed=dict(observed or assertion.observed or {"detail": assertion.detail}),
         premise_verified=assertion.premise_verified,
     )
 
