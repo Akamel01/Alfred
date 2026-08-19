@@ -38,8 +38,13 @@ and reports six distinct kinds of movement, because they are six different findi
 **A value comparison over assertions that report no values is not a clean comparison**
 (D57). `value_blind` names every id that both reports carry and that neither side gave an
 observation for: those were compared on their outcome alone, exactly as before, and a caller
-reading an empty `compare` result over them is reading less than it looks like. It is not
-empty today, and the test that says so names which assertions still owe observations.
+reading an empty `compare` result over them is reading less than it looks like.
+
+Every member of the closed set records observations today, so `value_blind` is empty against
+the real implementations — which is what makes it a control rather than a note. It fires on
+an adaptor that supplies reports without observations, and on a member added later that
+forgets to. Both halves are tested: one against the five real checks, one against reports
+built with no observations at all.
 
 So the five are re-run after the agent stops and before the claim is accepted. The
 disposition differs from boot and the difference is the point: at boot a failure means *the
@@ -198,6 +203,10 @@ def value_blind(boot: AssertionReport, end: AssertionReport) -> tuple[str, ...]:
     in this list means only that its outcome held; nothing was compared value-wise, because
     there was nothing to compare. A caller that reads that as "the container did not move"
     is reading a check that did not run.
+
+    Empty against the five real checks, which all record observations. What it catches is an
+    adaptor that supplies reports without them, and a member added to `REASSERTED` later that
+    forgets to record any.
     """
     boot_by_id = {a.assertion_id: a for a in boot.assertions}
     end_by_id = {a.assertion_id: a for a in end.assertions}

@@ -20,8 +20,9 @@ Three tests carry the weight:
 from __future__ import annotations
 
 import json
-from pathlib import Path
+import sys
 from dataclasses import replace
+from pathlib import Path
 from uuid import uuid4
 
 import pytest
@@ -37,6 +38,7 @@ from harness.containment.inside import (
     assert_no_archives_or_caches,
     assert_writable_set,
 )
+from harness.containment.oracle_absence import probe
 from harness.containment.patch_side import (
     assert_patch_carries_no_oracle,
     normalized_source_hash,
@@ -769,22 +771,44 @@ def test_value_blind_names_what_was_compared_on_its_outcome_alone() -> None:
     assert value_blind(reports, reports) == REASSERTED
 
 
-def test_value_blind_is_not_empty_today_and_names_who_still_owes_observations() -> None:
-    """C7 reports no observations. Recorded as a fact rather than as coverage nobody has.
+def test_every_reasserted_member_records_observations(
+    denylist: Denylist, tmp_path: Path
+) -> None:
+    """The coverage assertion, run against the real implementations rather than fixtures.
 
-    C9, C12, C13 and C16 record theirs; C7's oracle-absence probe does not, so a `compare`
-    that returns nothing for C7 means only that its outcome held.
+    `value_blind` names what could only be compared by outcome. This is the other side of it:
+    every member of the closed set is built here the way the adaptor builds it, and each one
+    must return something to compare. A member added later without observations makes
+    `value_blind` non-empty in production and this test red first.
     """
-    boot = AssertionReport(
-        (
-            _passed("C7"),
-            Assertion("C9", AssertionOutcome.PASSED, "ok", observed={"mounts": "/repo:rw"}),
-            Assertion("C12", AssertionOutcome.PASSED, "ok", observed={"writable_roots": "/repo"}),
-            Assertion("C13", AssertionOutcome.PASSED, "ok", observed={"archives": "0"}),
-            evaluate(_shell("C16"), CLEAN),
-        )
+    mount = tmp_path / "mnt"
+    mount.mkdir()
+    real = (
+        probe(
+            denylist=denylist,
+            interpreters=(sys.executable,),
+            extra_paths=(str(mount),),
+            strict_import_hooks=False,
+        ),
+        assert_mounts_match(
+            [MountObservation("/repo", read_only=False)],
+            [MountObservation("/repo", read_only=False)],
+        ),
+        assert_writable_set(
+            [MountObservation("/repo", read_only=False)],
+            writable_roots=["/repo"],
+            interpreter_paths=[],
+        ),
+        assert_no_archives_or_caches([tmp_path]),
+        evaluate(_shell("C16"), CLEAN),
     )
-    assert value_blind(boot, boot) == ("C7",)
+    assert tuple(a.assertion_id for a in real) == REASSERTED
+    for assertion in real:
+        assert assertion.observed, assertion.assertion_id
+
+    report = AssertionReport(real)
+    assert value_blind(report, report) == ()
+    assert compare(report, report) == ()
 
 
 def test_drifted_ids_deduplicates_and_keeps_the_closed_sets_order() -> None:
