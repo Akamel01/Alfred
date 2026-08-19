@@ -212,6 +212,19 @@ CLEAN = ExecutorObservation(
     executor_resolved_through_redirect=True,
 )
 
+# C17's subject. Defined beside `CLEAN` rather than in the C17 section below because the C14
+# coverage assertion needs it too: C17 is a member of `REASSERTED`, so the launch posture has
+# to be built the way the adaptor builds it in both places, from one definition.
+_HARDENED_ARGV = ("docker", "run", "--cap-drop", "ALL", "--network", "none", "img")
+_LOOPBACK_BINDING = ("127.0.0.1:8010->8000/tcp",)
+
+CLEAN_LAUNCH = replace(
+    CLEAN,
+    config={**CLEAN.config, "session_api_keys": ["k"]},
+    container_launch_args=_HARDENED_ARGV,
+    published_port_bindings=_LOOPBACK_BINDING,
+)
+
 
 @pytest.mark.parametrize("assertion_id", ["C1", "C2", "C3", "C5", "C10", "C16"])
 def test_every_shell_passes_on_a_correctly_configured_executor(assertion_id: str) -> None:
@@ -765,7 +778,7 @@ def test_the_reassertion_set_is_stated_not_derived() -> None:
     Pinned as a literal rather than as a length, because the failure this guards against is a
     member quietly leaving — which shrinks the set without breaking anything that reads it.
     """
-    assert REASSERTED == ("C7", "C9", "C12", "C13", "C16")
+    assert REASSERTED == ("C7", "C9", "C12", "C13", "C16", "C17")
 
 
 def test_c14_passes_when_every_member_re_asserts() -> None:
@@ -808,6 +821,72 @@ def test_c14_compare_records_the_container_id_in_full_not_the_prose_prefix() -> 
     long_id = "c" * 64
     result = evaluate(_shell("C16"), replace(CLEAN, container_id=long_id))
     assert result.observed["container_id"] == long_id
+
+
+def test_c14_catches_a_relaunch_that_reopened_the_ingress_surface() -> None:
+    """Why C17 is in the set. The drift kinds are the assertion, not the outcomes.
+
+    A container relaunched mid-run with the port republished on `0.0.0.0` and `--cap-drop`
+    gone passes C17 at boot — the gate that would have refused it has already run — and is
+    never re-checked without this. `drifted_ids` naming C17 is what fails if C17 leaves
+    `REASSERTED`; the `VALUE` kinds on both keys are what fails if the check stops reading
+    the argv, which an outcome-level pass/fail pair cannot tell apart from a real relaunch.
+    """
+    boot = evaluate(_shell("C17"), CLEAN_LAUNCH)
+    end = evaluate(
+        _shell("C17"),
+        replace(
+            CLEAN_LAUNCH,
+            container_launch_args=("docker", "run", "img"),
+            published_port_bindings=("0.0.0.0:8010->8000/tcp",),
+        ),
+    )
+    assert boot.outcome is AssertionOutcome.PASSED
+    assert end.outcome is AssertionOutcome.FAILED
+
+    drifts = compare(AssertionReport((boot,)), AssertionReport((end,)))
+    assert drifted_ids(drifts) == ("C17",)
+    assert {(d.kind, d.key) for d in drifts} == {
+        (DriftKind.OUTCOME, None),
+        (DriftKind.VALUE, "container_launch_args"),
+        (DriftKind.VALUE, "published_port_bindings"),
+    }
+    assert reassert([_passed(i) for i in REASSERTED if i != "C17"] + [end]).outcome is (
+        AssertionOutcome.FAILED
+    )
+
+
+def test_c14_sees_a_relaunch_that_kept_the_posture_and_changed_the_argv() -> None:
+    """The case an outcome comparison cannot express, for C17 rather than for C16.
+
+    Both ends pass: capabilities dropped, off the default network, loopback binding. The
+    container is a different container all the same — a different image, a different
+    `--cap-drop` value — and the run moved underneath a control that never noticed. This is
+    the reason C17 records the **full** argv rather than a summary of the flags the check
+    happens to look at: a summary cannot show a flag it does not summarize.
+    """
+    boot = evaluate(_shell("C17"), CLEAN_LAUNCH)
+    end = evaluate(
+        _shell("C17"),
+        replace(
+            CLEAN_LAUNCH,
+            container_launch_args=("docker", "run", "--cap-drop", "NET_RAW", "--network", "none", "other"),
+        ),
+    )
+    assert boot.outcome is end.outcome is AssertionOutcome.PASSED
+    drifts = compare(AssertionReport((boot,)), AssertionReport((end,)))
+    assert [(d.kind, d.key) for d in drifts] == [(DriftKind.VALUE, "container_launch_args")]
+
+
+def test_c14_reports_not_executed_when_the_relaunched_posture_was_not_read() -> None:
+    """F25 through the new member. An end-of-run C17 over an argv nobody collected is
+    `not_executed`, and a fold that read that as a pass would be the quietest way for the
+    re-assertion to stop running."""
+    end = [_passed(i) for i in REASSERTED if i != "C17"]
+    end.append(evaluate(_shell("C17"), replace(CLEAN_LAUNCH, container_launch_args=())))
+    result = reassert(end)
+    assert result.outcome is AssertionOutcome.NOT_EXECUTED
+    assert "C17" in result.detail
 
 
 def test_c14_compare_reports_an_observation_that_stopped_being_made() -> None:
@@ -883,6 +962,7 @@ def test_every_reasserted_member_records_observations(
         ),
         assert_no_archives_or_caches([tmp_path]),
         evaluate(_shell("C16"), CLEAN),
+        evaluate(_shell("C17"), CLEAN_LAUNCH),
     )
     assert tuple(a.assertion_id for a in real) == REASSERTED
     for assertion in real:
@@ -1228,10 +1308,6 @@ def test_the_committed_denylist_is_what_c15_runs_against(denylist: Denylist) -> 
 
 
 # ================================================================ C17 — ingress and launch
-
-
-_HARDENED_ARGV = ("docker", "run", "--cap-drop", "ALL", "--network", "none", "img")
-_LOOPBACK_BINDING = ("127.0.0.1:8010->8000/tcp",)
 
 
 def _c17(**overrides: object) -> Assertion:
