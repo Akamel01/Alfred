@@ -1,12 +1,27 @@
 """C14 — the end-of-run re-assertion, and why a boot-time pass is not enough.
 
-C7, C9, C12 and C13 are asserted before the agent process starts. Each of them is a claim
-about a container that then runs untrusted code for the length of a task. Boot-time absence
-plus an argument that nothing could have changed is still an argument: C6 makes fetching
-impossible and C12/C13 make installing impossible, and **a control that holds "by argument"
-is a control that has not been checked.**
+C7, C9, C12, C13 and C16 are asserted before the agent process starts. Each of them is a
+claim about a container that then runs untrusted code for the length of a task. Boot-time
+absence plus an argument that nothing could have changed is still an argument: C6 makes
+fetching impossible and C12/C13 make installing impossible, and **a control that holds "by
+argument" is a control that has not been checked.**
 
-So the four are re-run after the agent stops and before the claim is accepted. The
+C16 was added to the set for a reason the other four do not have. It is not that the
+workspace kind could change mid-run — it cannot. It is that `docker run` carries `--rm`, so
+**a container that exits during the run leaves nothing behind**. At the end of the run the
+adaptor either still has a container id or it does not, and if it does not, C16 fails, C14
+fails, and the verdict is `indeterminate` — which is the correct reading of a run whose
+container died under the measurement.
+
+### What re-asserting C16 does not catch
+
+`compare` is outcome-level: it reports an id whose end-of-run *outcome* differs from boot.
+A run that swapped one container for another of the same kind passes C16 at both ends with a
+**different container id**, and `compare` sees two passes. Closing that needs an identity
+comparison, not another member of this set, and it is not written. Stated here rather than
+left for a reader to assume, because "C16 is re-asserted" reads stronger than it is.
+
+So the five are re-run after the agent stops and before the claim is accepted. The
 disposition differs from boot and the difference is the point: at boot a failure means *the
 run does not start*, and here it means *the claim is rejected and the verdict is
 `indeterminate`* (F18). Nothing was learned about the agent — the environment moved under
@@ -27,8 +42,9 @@ from harness.containment.assertions import Assertion, AssertionOutcome, Assertio
 
 __all__ = ["ASSERTION_C14", "REASSERTED", "compare", "reassert"]
 
-# C7 oracle absence, C9 mounts, C12 writable set, C13 archives and caches.
-REASSERTED: Final[tuple[str, ...]] = ("C7", "C9", "C12", "C13")
+# C7 oracle absence, C9 mounts, C12 writable set, C13 archives and caches, C16 the container
+# still being there at all.
+REASSERTED: Final[tuple[str, ...]] = ("C7", "C9", "C12", "C13", "C16")
 
 ASSERTION_C14: Final = "C14"
 

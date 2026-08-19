@@ -668,8 +668,45 @@ def _passed(assertion_id: str) -> Assertion:
     return Assertion(assertion_id, AssertionOutcome.PASSED, "ok")
 
 
+def test_the_reassertion_set_is_stated_not_derived() -> None:
+    """The set is closed and written down. D57: the loops below pass over an empty tuple.
+
+    Pinned as a literal rather than as a length, because the failure this guards against is a
+    member quietly leaving — which shrinks the set without breaking anything that reads it.
+    """
+    assert REASSERTED == ("C7", "C9", "C12", "C13", "C16")
+
+
 def test_c14_passes_when_every_member_re_asserts() -> None:
     assert reassert([_passed(i) for i in REASSERTED]).outcome is AssertionOutcome.PASSED
+
+
+def test_c14_fails_when_the_container_is_gone_at_the_end_of_the_run() -> None:
+    """Why C16 is in the set. `docker run` carries `--rm`: a container that exited mid-run
+    leaves nothing behind, so the adaptor has no container id and C16 fails at the end while
+    having passed at boot. That is `indeterminate`, not a verdict about the agent.
+    """
+    end = [_passed(i) for i in REASSERTED if i != "C16"]
+    end.append(evaluate(_shell("C16"), replace(CLEAN, container_id=None)))
+    result = reassert(end)
+    assert result.outcome is AssertionOutcome.FAILED
+    assert "indeterminate" in result.detail
+    boot = AssertionReport(tuple(_passed(i) for i in REASSERTED))
+    assert compare(boot, AssertionReport(tuple(end))) == ("C16",)
+
+
+def test_c14_compare_does_not_see_a_container_swapped_for_another_of_the_same_kind() -> None:
+    """The stated limit of re-asserting C16, held as a test so it is not forgotten.
+
+    `compare` is outcome-level. A run that replaced its container with another `DockerWorkspace`
+    passes C16 at both ends under a **different id**, and nothing here notices. Closing it
+    needs an identity comparison, not another member of the set.
+    """
+    boot = evaluate(_shell("C16"), replace(CLEAN, container_id="aaaaaaaaaaaa"))
+    end = evaluate(_shell("C16"), replace(CLEAN, container_id="bbbbbbbbbbbb"))
+    assert boot.outcome is AssertionOutcome.PASSED
+    assert end.outcome is AssertionOutcome.PASSED
+    assert compare(AssertionReport((boot,)), AssertionReport((end,))) == ()
 
 
 def test_c14_is_not_executed_when_a_member_is_absent() -> None:
