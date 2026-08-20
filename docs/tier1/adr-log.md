@@ -2940,9 +2940,9 @@ has no recall. Every successor pays the whole corpus for the one fact it needs.
 The `agentdb-memory-patterns` skill, applied as a pattern reference, names the shapes a
 recall mechanism for that corpus would take: session memory, long-term memory, pattern
 learning, consolidation. Two of those shapes do not survive the plan of record's own
-constraints, and the question of whether the rest survive contact with Alfred's corpus is
-not arguable, because it was measured: a pre-registered three-arm spike (Phase 0), on
-this machine, outside the repository.
+constraints, and the one that does — read-only recall over a committed corpus — was not
+argued but measured: a pre-registered three-arm spike (Phase 0), on this machine, outside
+the repository.
 
 **The spike, measured 2026-08-20.** The corpus: 7 files, 238 structural chunks,
 70,577 tokens, pinned at `fa62b4b` by per-file sha256. The queries: 10 pre-registered
@@ -3021,7 +3021,8 @@ the reading map. The seventh is a named operator-plane document with no committe
 the pin — the ICM plan in `~/.claude/plans/` — and it is pinned by sha256 in the ingest
 manifest. The committed six are trusted by git; the one operator-plane document is trusted
 by hash. Both classes remain derived, read-only, and disposable under invariant 1, and
-both sit inside invariant 2 as the plan of record's own corpus clause names them.
+both sit inside invariant 2 as the plan of record for this work names them in its corpus
+clause.
 Extending the boundary — adding a class of document, or committing the operator-plane
 copy — is a new ADR.
 
