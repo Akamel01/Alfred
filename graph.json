@@ -1,6 +1,11 @@
 {
   "anomalies": [
     {
+      "detail": "the log is append-only and numbers are never reused; missing: ADR-0029, ADR-0030",
+      "kind": "adr-numbering-gap",
+      "refs": []
+    },
+    {
       "detail": "ADR-0018 declares **Discharges:** O5, and no operator-item by that name is declared",
       "kind": "discharge-target-absent",
       "refs": [
@@ -23,7 +28,7 @@
     }
   ],
   "counts": {
-    "adr": 28,
+    "adr": 29,
     "amendment": 12,
     "decision": 57,
     "document": 63,
@@ -11033,7 +11038,7 @@
       "min_edges": 4,
       "min_nodes": 14,
       "name": "adrs",
-      "nodes": 28,
+      "nodes": 29,
       "rejected": 0,
       "scanned": 1,
       "unparsed": 0
@@ -11749,6 +11754,27 @@
       "status": "accepted",
       "tags": [],
       "title": "The review ADR-0027 said was owed has been done"
+    },
+    {
+      "attrs": {
+        "date": "2026-08-20",
+        "status": "accepted",
+        "status_raw": "Accepted"
+      },
+      "body": "**Date:** 2026-08-20 · **Status:** Accepted · **Supersedes:** none",
+      "extractor": "adrs",
+      "id": "adr:ADR-0031",
+      "kind": "adr",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 2922,
+        "line": 2922,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "accepted",
+      "tags": [],
+      "title": "Operator-plane memory is recall over the committed corpus, not a store"
     },
     {
       "attrs": {
