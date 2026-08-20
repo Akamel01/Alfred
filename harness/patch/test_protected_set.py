@@ -1,4 +1,4 @@
-"""The protected set is policy configuration, and the policy is one home (ADR-0024).
+"""The protected set is policy configuration, and the policy is one home (ADR-0029).
 
 Three things must agree: `policy/protected-paths.json` (what the gate loads), the
 behaviour of `validate.py` (what the gate actually refuses), and the table in

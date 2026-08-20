@@ -32,7 +32,7 @@ declared source paths.
 
 Protected paths are the second layer, and they are policy configuration, never code.
 
-Since ADR-0024 that sentence is literal. The set's machine-readable form is
+Since ADR-0029 that sentence is literal. The set's machine-readable form is
 `policy/protected-paths.json` — versioned, and under `policy/` itself, so the gate's
 policy file is protected by the gate. `harness/patch/validate.py` loads it, failing
 closed on any load error, and `harness/patch/test_protected_set.py` asserts set

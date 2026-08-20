@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "authority": "docs/tier4/protected-paths-policy.md (frozen) and D20 — ADR-0024",
+  "authority": "docs/tier4/protected-paths-policy.md (frozen) and D20 — ADR-0029",
   "prefixes": [
     {
       "path": "harness/",

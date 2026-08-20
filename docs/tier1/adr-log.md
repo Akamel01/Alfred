@@ -2388,9 +2388,20 @@ F25 turns into a refusal to start. Both are tested, parametrized over each field
 patch only under line-by-line human review with a mandatory ADR. This is that ADR. The review
 is O9, it has not happened, and this change joins the queue.
 
-## ADR-0024 — The protected set is one file, and the gate protects its own policy
+---
 
-**Date** 2026-08-19 · **Status** Accepted · **Supersedes** nothing; amends one row of the tier4 table
+> **Renumbering note.** This record was written as ADR-0024 on
+> `bionic/protected-set`, before `main` had independently issued that number to an
+> unrelated decision (C15's third clause, the denylist's names, and a gate —
+> ADR-0024 on main). Numbering is sequential and never reused, so this record takes
+> the next free number, 0029, per the precedent of the `fa62b4b` merge. The commit
+> message of `6cbe52d` still names the old number and cannot be rewritten; a reader
+> following it to "ADR-0024" lands on a different decision. That mismatch is
+> recorded here rather than left to be discovered.
+
+## ADR-0029 — The protected set is one file, and the gate protects its own policy
+
+**Date:** 2026-08-19 · **Status:** Accepted · **Supersedes:** nothing; amends one row of the tier4 table
 
 ### Context
 
@@ -2458,7 +2469,7 @@ result stamping, thresholds, held-out criteria, the harness migrations, the
 constitution, and the dependency closure. Direct development under ADR + O9 is
 unaffected; the gate sits on the container's deliverable channel (A2), not on the
 review process. The `src/thresholds/__init__.py` placeholder (bionic/structure-drift)
-lands by operator merge; the gate protects the path thereafter.
+has since landed on main; the gate protects the path.
 
 ### Why this is an inspector patch
 
@@ -2468,5 +2479,8 @@ patches are permitted only under line-by-line human review with a mandatory ADR"
 this ADR authorizes the change and the review is O9. This change is landed and
 unreviewed.
 
-The branch also carries the queue 11–14 stream (`c1ca0b4`…`6c99003`); the O9 review
-of this branch covers everything since main, in one pass.
+When drafted, the branch also carried the queue 11–14 stream
+(`c1ca0b4`…`6c99003`), so that the O9 review covered everything since main in one
+pass. That stream has since landed on main, and main has since issued its own
+ADR-0024; what this branch carries relative to main is now this record, and the
+O9 review covers it.

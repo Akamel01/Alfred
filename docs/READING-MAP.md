@@ -179,7 +179,7 @@ Binding on implementation and easy to miss, since they live inside one document.
 | [ADR-0021](tier1/adr-log.md) | Enumeration drift, and the two claims of CI coverage that were false |  |
 | [ADR-0022](tier1/adr-log.md) | Phase 0's exit, narrowed along the ownership seam, with the residue dated |  |
 | [ADR-0023](tier1/adr-log.md) | Which of ADR-0019's unhardened defaults are Alfred's, and the two that are |  |
-| [ADR-0024](tier1/adr-log.md) | The protected set is one file, and the gate protects its own policy |  |
+| [ADR-0029](tier1/adr-log.md) | The protected set is one file, and the gate protects its own policy | Accepted |
 
 ---
 

@@ -18,7 +18,7 @@ its own policy file. That is the CVE-2025-53773 shape, where an agent wrote
 `"chat.tools.autoApprove": true` into `.vscode/settings.json` and disabled its own
 approval gate because the gate lived in a file it could write. The human-readable form is
 `docs/tier4/protected-paths-policy.md`, bound to the file by `test_protected_set.py`
-in both directions (ADR-0024). An agent editing the judge collapses every control
+in both directions (ADR-0029). An agent editing the judge collapses every control
 beneath it at once, silently, with the tests green — because the tests are downstream of
 the edit.
 
@@ -47,7 +47,7 @@ from dataclasses import dataclass, field
 from pathlib import Path, PurePosixPath
 from typing import Final, cast
 
-# The protected set as policy configuration (ADR-0024). The file is under `policy/` —
+# The protected set as policy configuration (ADR-0029). The file is under `policy/` —
 # a protected prefix — so the gate protects its own policy file.
 DEFAULT_PROTECTED_PATH: Final = (
     Path(__file__).resolve().parents[2] / "policy" / "protected-paths.json"
