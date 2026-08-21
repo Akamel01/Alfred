@@ -2904,3 +2904,178 @@ enforced by a person or it is not enforced.
 stating that a review is outstanding. Someone reading the register a year from now finds that
 sentence and has no way to learn it stopped being true, because a commit message is not part
 of the register. The claim was made in the register and it has to be closed there.
+
+---
+
+## ADR-0029 — The tree that verifies every other tree is verified by nothing
+
+**Date:** 2026-08-19 · **Status:** Accepted · **Supersedes:** none · **See also:** ADR-0007 (the vacuity class this is an instance of, found in the tooling rather than in an assertion), ADR-0027 and ADR-0028 (the D20 review this ADR incurs)
+
+### Context
+
+`[tool.ruff].include` and `[tool.pyright].include` both name `src` and `tests`. Neither
+reaches `harness/` — the criterion runner, the containment assertions, the stamp verifier,
+the egress canary, the seeded-defect suite. The tree everything else in this repository is
+verified *by* is the one tree nothing verifies.
+
+Measured on `main` @ `fa62b4b`, with the venv from `uv sync --frozen --all-extras --dev`:
+
+| measurement | result |
+|---|---|
+| `uv run ruff check` (product gate) | 0 violations |
+| `uv run pyright` (product gate) | 0 errors |
+| `uv run ruff check harness` | `warning: No Python files found under the given path(s)`, **exit 0** |
+| `uv run ruff check harness`, include widened | **866** violations |
+| the same, with `S101` ignored as `tests/*` already ignores it | **236** |
+| `uv run pyright harness` | **311** errors |
+| `.py` files under `harness/` | **74** |
+
+The gap was proven rather than read off the config. Planting
+
+```python
+import os
+def broken(x: int) -> str: return x
+```
+
+into `harness/acs/acs1.py` leaves both product gates green. The identical plant in
+`src/domain/ids.py` turns both red, pyright naming the planted line
+(`reportReturnType: "int" is not assignable to return type "str"`). That control arm is the
+load-bearing half: without it, "the gates passed it" is equally consistent with the gates
+being inert. With it, the gates are live and `harness/` is scoped out.
+
+**This is ADR-0007's vacuity class, living in the tooling.** `ruff` answers a path it
+collects nothing from with a warning and exit 0 — byte-for-byte what a clean tree looks
+like. An assertion resting on a misnamed key reports `passed` while doing nothing; so does a
+lint whose include matches nothing. That is how this survived unnoticed through eighteen
+ADRs of work whose whole subject is checks that do not check.
+
+### Decision
+
+**1. Widening the include to cover `harness/` is not a D20 crossing.** D20 forbids agents
+*editing* the inspector without Major-fix #8. Checking is a read; editing is a write. The
+comment at `pyproject.toml:50` said the tree "is protected, sits outside the agent tree by
+design, and carries its own gates" — three claims, of which the first is true, the second is
+irrelevant to whether a linter may look at it, and the third is false: `harness/` carries a
+test suite, which is neither a lint gate nor a type gate. The comment borrowed D20's
+authority for a scope decision D20 never made. It has been rewritten to record the gap and
+name the real reason the exclusion stands, which is that nobody has yet decided how much of
+the debt to pay.
+
+**The counter-argument, stated rather than dismissed.** Turning a checker on over the
+protected tree is not itself a write, but it is the *cause* of writes: 311 pyright errors
+and 236 ruff violations do not clear themselves, and the only way to make the gate green is
+an agent editing the inspector at several hundred sites. Under that reading the include
+change is a D20 crossing by consequence, since it converts a decision nobody has taken into
+work someone must do inside the protected tree. The decision above accepts that the
+consequence is real and holds that it lands on the *fixing*, not on the *checking* — which is
+why the fixing is held below and the reading is not. A checker that is switched on and whose
+findings are recorded and unpaid is a strictly better state than one that was never switched
+on, because the debt is then counted.
+
+**2. What lands: the measurement and its control, not the fix.**
+`scripts/lint_harness_gate.py` is wired into the `integrity` job of
+`.github/workflows/gates.yml`, in two steps like the three lint/self-test pairs already there.
+Its coverage check prints `ruff collects 0 of 74 .py files under harness/` on every run and
+asserts that number against a recorded floor, which may go up and may not go down. Its
+`--self-test` plants `F401` into a collected harness-shaped file in a scratch copy and
+requires *that rule at that path* to be reported — not merely a non-zero exit, which a plant
+landing somewhere `ruff` never reaches would also produce — and requires the clean arm to stay
+quiet, so a detector that reports red unconditionally fails there rather than passing
+everywhere.
+
+**3. Neither include is widened, and no error is fixed.** Held on OBSERVER-1.
+
+### The cheap option turned out not to be cheap
+
+The three options were meant to be ordered by cost, with `ruff check harness` as the cheap
+increment and pyright deferred. The measurement does not support that ordering. Of the 236:
+44 are safely auto-fixable; **120 are hand edits** (67 `E501`, 38 `ANN*`, 15 `ARG*`); 55 are
+rule/tree conflicts where the honest answer is a scoped suppression rather than a fix
+(`T201` — harness scripts print by design; `S603`/`S607` — a harness that shells out to
+`docker` and `git` is the point); and 17 need individual judgement, several of which must
+**not** be fixed.
+
+And the distribution settles it independently of the count: 45 of the 236 are in
+`harness/containment/`, which module M2 is editing now; 8 are in `harness/selftest/`, which
+M3 is editing now; 2 are in `harness/patch/`, which no module may touch while
+`bionic/protected-set` is live. `ruff` cannot be made green over `harness/` from this module
+without writing into two other agents' work in flight and one tree that is off limits to
+everyone.
+
+### What the 311 pyright errors are, and the one finding that outweighs the count
+
+`harness/` contains **zero return-type and zero assignment-type errors**. Planting the
+`def broken` line moves 311 to 312 and the added error is the only `reportReturnType` in the
+tree. The 311 are 213 `reportUnknown*` (annotation debt), 22 `reportOptionalMemberAccess`
+(mostly narrowing pyright cannot do across a `.get()` called twice), and about seven dead
+guards — `isinstance(v, str)` where `v` is already `str` at `containment/shells.py:363`, an
+`is not None` arm that can never be false at `containment/patch_side.py:306`, three more of
+the same shape in `lane/`, a `Final` redeclared in a subclass at
+`selftest/test_replay.py:119`, and a register helper nothing calls at
+`containment/test_c_assertions.py:1346`. One is a real latent crash: `acs/mutate.py:541`
+calls `__doc__.splitlines()`, which is an `AttributeError` under `python -OO`. The full
+classification is `CLASSIFICATION-M1.md`.
+
+The finding that matters more than any of those counts:
+
+> `harness/fingerprint/test_record.py:64` is `reportCallIssue: No parameter named
+> "fingerprint_sha256"` — inside `test_the_hash_is_not_stored_and_cannot_be_supplied`, which
+> calls the constructor wrongly *on purpose* and asserts it raises `TypeError`.
+> `harness/lane/test_lane_controls.py:166` is `BLE001: Do not catch blind exception` — inside
+> `test_mutant_without_fail_closed_reading_would_swallow_the_error`, where swallowing the
+> error is the modelled failure. `harness/acs/gen_vectors.py` carries four `RUF001` ambiguous
+> fullwidth characters, which are the ACS-1 Unicode test vectors and are byte-identity-checked
+> by `gates.yml`.
+
+**A bulk pass over these gates would delete this repository's own negative controls.** A tool
+flagging a deliberately-invalid call, and an agent making the call valid to clear the flag, is
+precisely how a seeded-defect suite quietly stops seeding defects. This is a stronger argument
+against full-strict coverage than the volume is, and it is why the scope call is held for a
+person.
+
+### Falsifies if
+
+- `scripts/lint_harness_gate.py` reports a coverage count that does not move when
+  `[tool.ruff].include` is changed — the check would then be reading something other than the
+  configuration it claims to measure.
+- The `--self-test` passes against a `ruff` with `F401` disabled — the plant would then be
+  firing for a reason unrelated to the plant.
+- Some later measurement finds return-type or assignment-type errors in `harness/` that
+  predate this record — the claim that the 311 are debt rather than silent type lies would be
+  wrong, and the priority of OBSERVER-1 would rise sharply.
+
+### Held for the observer — OBSERVER-1
+
+**How much of the debt to pay, and at what strictness.** This is a write into the protected
+tree and the three options are costed in the M1 report. It is deliberately *not* decided here,
+and it now covers `ruff` as well as `pyright`, because the measurement showed the two are the
+same kind of decision rather than a cheap one and an expensive one.
+
+### Rejected
+
+**Landing the include with per-file-ignores broad enough to make it green.** That is a gate
+green by construction — the same failure as the empty include, wearing a fix's clothes. The
+suppression list required (`S101`, `T201`, `S603`, `S607`, `S608`, `S311`, `S108`, `S104`)
+silences 685 of 866, and choosing it is a scope decision of exactly the kind held above.
+
+**Wiring the coverage check as a hard failure at a floor of 74.** It would hold CI red from
+the day it landed until OBSERVER-1 is answered, and this repository has already written down
+what happens then: `gates.yml` keeps the stage-gate *exit* check out of the job for that
+reason — *"a check that is red for reasons nobody reads is a check that gets turned off."*
+The floor is 0, the shortfall is printed on every run, and the count going up is a change a
+reader sees. `lint_ci_coverage.py` takes the same position about the twenty-four
+`not-yet-injected` failure rows and for the same stated reason.
+
+**Fixing the seven dead guards while here.** Five of them are in `harness/containment/` and
+`harness/selftest/`, which M2 and M3 hold open. A fix landing under them would be reviewed
+twice and merged once, and the merge order the observer set — M2, then M3, then M1 — exists
+so this module's gate lands *over* their work rather than under it.
+
+### Consequence
+
+`P0-7 — no unreviewed inspector patch enforces an exit criterion` is `unmet` at 17.
+`scripts/lint_harness_gate.py`, the `gates.yml` wiring and the `pyproject.toml` comment are
+three more inspector edits under D20, each owing line-by-line human review under Major-fix #8,
+and each is filed as an O9 item by this record. This ADR supplies the mandatory ADR and
+nothing else; it does not discharge the review, which an agent structurally cannot supply —
+the position ADR-0027 took and ADR-0028 closed.

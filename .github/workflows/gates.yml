@@ -104,6 +104,26 @@ jobs:
       - name: CI coverage lint detects planted violations
         run: python3 scripts/lint_ci_coverage.py --self-test
 
+      # How much of `harness/` the lint gate collects, and whether that gate can go red.
+      # `[tool.ruff].include` reaches no file under `harness/`, and ruff answers a path it
+      # collects nothing from with "No Python files found" and exit 0 -- indistinguishable
+      # from a clean tree. That is the ADR-0007 vacuity class in the tooling, and it is how
+      # the tree that verifies every other tree came to be verified by nothing.
+      #
+      # The coverage floor is 0 today and the run prints "0 of 74". That is a recorded
+      # measurement, not a passing grade, in the same shape as the twenty-four
+      # `not-yet-injected` rows above: raising it is OBSERVER-1 under ADR-0029, and until it
+      # is answered what this step forbids is drift -- coverage going down, or the disk scan
+      # going quiet. The count is in the output of every run, so the hole is read, not hidden.
+      - name: Harness lint coverage
+        run: python3 scripts/lint_harness_gate.py
+
+      # The gate seen red. Plants F401 in a collected harness-shaped file and requires that
+      # rule, at that path, to be reported -- and requires the clean arm to stay quiet, so a
+      # detector that reports red unconditionally fails here rather than passing everywhere.
+      - name: Harness gate detects planted violations
+        run: python3 scripts/lint_harness_gate.py --self-test
+
       # Stage gate REGISTER integrity, not the exit gate. The exit gate is
       # `--gate phase0` and is run when exit is claimed: it reports red from the day it
       # is written until the day the phase ends, and a check that is red for reasons

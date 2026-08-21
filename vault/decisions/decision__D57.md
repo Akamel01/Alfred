@@ -89,6 +89,9 @@ C7, C9, C12, C13 and C16 are asserted bef
 
     A metric over zero tracks still returns something, and that something would be stam
 - **enforced_by** → [[module__harness_stamp_test_verdict_map|The verdict table's own tests, including its vacuity control.]] — """D57. A mapping with no rows would pass every row-wise test below for free."""
+- **enforced_by** → [[module__scripts_lint_harness_gate|How much of `harness/` the lint gate actually collects, and whether it can go red.]] — """How much of `harness/` the lint gate actually collects, and whether it can go red.
+
+`harness/` is the tree everything
 - **enforced_by** → [[module__src_replay_harness|The replay harness: load, evaluate, stamp, and produce a digest two runs are compared on.]] — # D57 at the product boundary. A metric over zero tracks returns something, and
 - **enforced_by** → [[module__tests_test_stamp_schema_contract|ADR-0006's enforcement clauses, as executable checks with their own controls.]] — """ADR-0006's enforcement clauses, as executable checks with their own controls.
 

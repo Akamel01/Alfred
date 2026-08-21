@@ -33,3 +33,4 @@ generated: true
 ## Binds
 
 - **see_also** → [[adr__ADR-0027|An agent edited the inspector, and this record was drafted by the same agent]]
+- [[adr__ADR-0029|The tree that verifies every other tree is verified by nothing]] **see_also** → this

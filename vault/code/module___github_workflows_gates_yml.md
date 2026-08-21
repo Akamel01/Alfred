@@ -34,8 +34,10 @@ generated: true
 
 - [[adr__ADR-0003|Canonical serialization for hashed structures (ACS-1)]] **enforced_by** → this — digests without running Alfred's code (ADR-0003). It runs on stock Node with
 - [[adr__ADR-0004|The ACS-1 float presentation grammar]] **enforced_by** → this — ACS-1 test vectors are the published specification (ADR-0004), so a
+- [[adr__ADR-0007|Executor-premise assertions may pass vacuously, and that is a third outcome]] **enforced_by** → this — from a clean tree. That is the ADR-0007 vacuity class in the tooling, and it is how
 - [[adr__ADR-0012|The verdict boundary is a lint, and the lint fails when it has nothing to check]] **enforced_by** → this — would pass. That is the failure this project has paid for four times (ADR-0012,
 - [[adr__ADR-0013|Containment probes, and the control that stops each one reading green]] **enforced_by** → this — ADR-0013), arriving through a new door.
+- [[adr__ADR-0029|The tree that verifies every other tree is verified by nothing]] **enforced_by** → this — `not-yet-injected` rows above: raising it is OBSERVER-1 under ADR-0029, and until it
 - [[decision__D16|Verdict fields are owned by deterministic nodes]] **enforced_by** → this — D16/D39. LangGraph raises only on *concurrent* unreducered writes, so a
 - [[decision__D20|Agents may improve the factory, never the inspector]] **enforced_by** → this — machinery (D20): agents may not edit it.
 - [[decision__D39|structural enforcement of D16/D20 (from gstack, the one idea that stands alone)]] **enforced_by** → this — D16/D39. LangGraph raises only on *concurrent* unreducered writes, so a

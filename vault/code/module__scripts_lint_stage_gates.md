@@ -32,8 +32,8 @@ generated: true
 
 ## Binds
 
-- [[gate-step__integrity_11|Stage gate register integrity]] **runs** → this
-- [[gate-step__integrity_12|Stage gate lint detects planted violations]] **runs** → this
+- [[gate-step__integrity_13|Stage gate register integrity]] **runs** → this
+- [[gate-step__integrity_14|Stage gate lint detects planted violations]] **runs** → this
 
 ## Enforced by (code)
 

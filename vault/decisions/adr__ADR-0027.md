@@ -35,3 +35,4 @@ generated: true
 - **see_also** → [[adr__ADR-0012|The verdict boundary is a lint, and the lint fails when it has nothing to check]]
 - **see_also** → [[adr__ADR-0013|Containment probes, and the control that stops each one reading green]]
 - [[adr__ADR-0028|The review ADR-0027 said was owed has been done]] **see_also** → this
+- [[adr__ADR-0029|The tree that verifies every other tree is verified by nothing]] **see_also** → this

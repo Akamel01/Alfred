@@ -36,9 +36,11 @@ generated: true
 - [[adr__ADR-0018|The executor moved, and eleven of thirteen premises were wrong]] **see_also** → this
 - [[adr__ADR-0019|D38's sandbox rationale, verified: true of one configuration, false of the default]] **see_also** → this
 - [[adr__ADR-0020|The run fingerprint record, and the two assertions that were waiting on it]] **see_also** → this
+- [[adr__ADR-0029|The tree that verifies every other tree is verified by nothing]] **see_also** → this
 
 ## Enforced by (code)
 
+- **enforced_by** → [[module___github_workflows_gates_yml|.github/workflows/gates.yml]] — from a clean tree. That is the ADR-0007 vacuity class in the tooling, and it is how
 - **enforced_by** → [[module__harness_containment_assertions|Three outcomes for a containment assertion, and the third is the dangerous one.]] — """Three outcomes for a containment assertion, and the third is the dangerous one.
 
 `passed` and `failed` are obvious. *
@@ -83,3 +85,6 @@ The oracle's code never cros
 - **enforced_by** → [[module__harness_worker_test_port|The Worker port's structural refusals, and the control on the check that enforces them.]] — """A worker that requires nothing has been configured to check nothing, and from
     outside that is indistinguishable f
 - **enforced_by** → [[module__policy_oracle-denylist_json|policy/oracle-denylist.json]] — "the vacuity ADR-0007 named. They are now read from importlib.metadata inside the pinned",
+- **enforced_by** → [[module__scripts_lint_harness_gate|How much of `harness/` the lint gate actually collects, and whether it can go red.]] — """How much of `harness/` the lint gate actually collects, and whether it can go red.
+
+`harness/` is the tree everything
