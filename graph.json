@@ -23,7 +23,7 @@
     }
   ],
   "counts": {
-    "adr": 31,
+    "adr": 32,
     "amendment": 12,
     "decision": 57,
     "document": 63,
@@ -11449,7 +11449,7 @@
       "min_edges": 4,
       "min_nodes": 14,
       "name": "adrs",
-      "nodes": 31,
+      "nodes": 32,
       "rejected": 0,
       "scanned": 1,
       "unparsed": 0
@@ -12228,6 +12228,27 @@
       "status": "accepted",
       "tags": [],
       "title": "The protected set is one file, and the gate protects its own policy"
+    },
+    {
+      "attrs": {
+        "date": "2026-08-20",
+        "status": "accepted",
+        "status_raw": "Accepted"
+      },
+      "body": "**Date:** 2026-08-20 · **Status:** Accepted · **Supersedes:** none",
+      "extractor": "adrs",
+      "id": "adr:ADR-0032",
+      "kind": "adr",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 3376,
+        "line": 3376,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "accepted",
+      "tags": [],
+      "title": "Operator-plane memory is recall over the committed corpus, not a store"
     },
     {
       "attrs": {

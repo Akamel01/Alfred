@@ -3357,3 +3357,277 @@ When drafted, the branch also carried the queue 11–14 stream
 pass. That stream has since landed on main, and main has since issued its own
 ADR-0024; what this branch carries relative to main is now this record, and the
 O9 review covers it.
+
+---
+
+> **Renumbering note.** This record was drafted as ADR-0031 on
+> `bionic/agentdb-memory-index`, the next uncontested number at drafting time: `main`
+> ends at ADR-0028, ADR-0029 is claimed by two unmerged branches
+> (`m1-harness-verification-gate` and `bionic/protected-set`), and ADR-0030 by
+> `m2/containment-controls`. Numbering is sequential and never reused, so the draft
+> took the next free number rather than join the 0029 collision. The operator's
+> merge-order ruling at merge (2026-08-21: chronological landing, first-claim priority
+> — m1 keeps ADR-0029, m2 keeps ADR-0030, the protected-set record renumbers 0029 to
+> 0031) renumbers this record to ADR-0032, the correction this note pre-authorized,
+> per the `fa62b4b` precedent, before it is published on `main`. The commits on this
+> branch name the drafted number and cannot be rewritten; this corrected note is what
+> reconciles a reader who follows them. The note travels with the record.
+
+## ADR-0032 — Operator-plane memory is recall over the committed corpus, not a store
+
+**Date:** 2026-08-20 · **Status:** Accepted · **Supersedes:** none
+
+### Context
+
+The plan of record's memory decisions — D44, the amended D47, and the FATAL finding —
+settle the factory plane: the containerized worker, the single serialized lane, the
+evidence store, verdict-adjacent context. On that plane the evidence store *is* the
+memory; a read-only, derived retrieval index is permitted; and anything an agent writes
+and later reads into context is an agent editing agent-influencing configuration. None of
+them settles the operator plane — an interactive agent doing supervised work in the
+repository, with a human in the loop and no container between it and the corpus — and
+this work happened exactly there. The session exhausted its context and handed off by
+prose document; its successor re-read a 242 KB plan and a 171 KB ADR register to
+rediscover one precedent that lived two documents deep in both. The status-quo mechanism
+has no recall. Every successor pays the whole corpus for the one fact it needs.
+
+The `agentdb-memory-patterns` skill, applied as a pattern reference, names the shapes a
+recall mechanism for that corpus would take: session memory, long-term memory, pattern
+learning, consolidation. Two of those shapes do not survive the plan of record's own
+constraints, and the one that does — read-only recall over a committed corpus — was not
+argued but measured: a pre-registered three-arm spike (Phase 0), on this machine, outside
+the repository.
+
+**The spike, measured 2026-08-20.** The corpus: 7 files, 238 structural chunks,
+70,577 tokens, pinned at `fa62b4b` by per-file sha256. The queries: 10 pre-registered
+before scoring — 8 real lookups drawn from this factory's history, 2 no-precedent
+negative controls. The arms, same corpus, same queries:
+
+- **A — the status quo** (iterative grep + document re-reads, 5-read cap): 2/8 recall@1,
+  15,576 tokens-to-answer, 20.8 ms median.
+- **B — lexical** (BM25, k1=1.5, b=0.75): 5/8 recall@1, 7/8 in its 3-window, 5,625
+  tokens, 0.9 ms.
+- **C — vector** (`agentdb@3.0.0-alpha.20` with `nomic-embed-text-v1.5`, 768-d, local):
+  2/8 recall@1; MRR 0.60 against B's 0.90 on the five paraphrase queries; and one
+  negative-control false hit — the corpus's 52-token orientation chunk at cosine 0.717,
+  inside the band its true lookups occupy (0.5899–0.7494).
+
+The pre-registered rule: C earns its embedding cost only if it beats B on the paraphrase
+queries **and** posts zero negative-control false hits. C fails both legs. B beats A on
+tokens-to-answer (2.8× less context) and wall clock (24×) — the rule's second branch, met
+on both axes. **A durable lexical recall tool is justified; the embedding half is not
+built.**
+
+One finding outranks the verdict. Left ungated, *both* index arms answer no-precedent
+queries confidently — the documented failure class of similarity retrieval (a wrong match
+scored 0.97 above a 0.92 threshold; action pairs 0.91-cosine apart) materializing on
+Alfred's own corpus, in the spike's own controls. The status-quo arm abstains cleanly by
+construction, because grep matches only literal tokens. A recall system that answers
+"nothing is written on this" with "here is something plausible" is worse than no recall.
+The calibrated-abstention gate and the two-sided selftest are therefore binding
+requirements on the Phase 2 tool, not refinements.
+
+The full arm-by-query tables, the corpus manifest, the scoring protocol, and the decision
+rule as applied live in the operator-plane spike notes; the plan that gated them sits
+beside it. Both are outside the repository by design. What this record carries is the
+verdict, the boundary, and the configuration the verdict fixed.
+
+### Decision
+
+**Operator-plane memory is read-only recall over the committed corpus, not a store.** The
+committed document stream — plans, ADR drafts, handoffs, policy — *is* the memory, which
+is D44's thesis applied to the plane it was missing. Nothing new is written anywhere an
+agent reads. The one new artifact is a derived, disposable retrieval index over the
+corpus, built by a human-run script: delete it and nothing is lost, because every fact it
+holds has a canonical home in the repository.
+
+The design is bound by five invariants, each the plan of record's own constraint
+translated to the operator plane. An implementation violating any one is out of scope for
+this decision regardless of its usefulness.
+
+1. **Derived, never canonical** (one home per fact). Every indexed record carries its
+   canonical source pointer — repository path plus git blob hash at ingest. On conflict
+   the canonical document wins and the record is invalidated. The index is disposable:
+   deleting the store loses nothing.
+2. **Corpus boundary = committed, git-trusted artifacts only** (D12 / FATAL). Ingest
+   reads files at a pinned commit. Agent conversation, web content, uncommitted scratch,
+   and container output are never ingested. Extending the boundary is a new ADR that
+   must re-run the FATAL analysis.
+3. **The agent never writes.** Ingest and rebuild are human-run scripts; the agent's
+   maximum surface is a read tool. If an MCP server is ever exposed to agent sessions,
+   only the read-only subset — the write tools are not offered, because FATAL's finding
+   is that the write channel needs no privileges to be captured, and the only safe design
+   is no channel.
+4. **Mechanical ingest, no LLM extraction** (D44). Chunking is structural: one ADR
+   record is one chunk, one decision row one chunk, one handoff section one chunk. An
+   embedding step, if ever re-admitted, is a named, versioned function call to a local
+   model (D35) — never a reasoning step, never free-form extraction.
+5. **Python in the repository; the npm package stays external** (D13). AgentDB is a
+   spike-only reference implementation. Any durable in-repo tool is Python under
+   `tools/`, carrying vaultgraph's true status: generator of the vault read model,
+   CI-gated (the integrity job runs its self-test and `--check` — the paid D20 crossing
+   recorded in ADR-0027/0028), D51 read-model class rather than inspector, never feeds
+   a verdict, never enters a dispatch workspace; outside the protected set, O9 not
+   applicable.
+
+**The corpus boundary, named.** The first instantiation ingested 7 files at the pin
+`fa62b4b`. Six are committed repository artifacts — the ADR register, the plan of record
+(the committed `plan/` mirror, whose operator-plane copy is byte-identical and proven so
+by the manifest's sha256), the protected-paths policy, the coding standards, the README,
+the reading map. The seventh is a named operator-plane document with no committed copy at
+the pin — the ICM plan in `~/.claude/plans/` — and it is pinned by sha256 in the ingest
+manifest. The committed six are trusted by git; the one operator-plane document is trusted
+by hash. Both classes remain derived, read-only, and disposable under invariant 1, and
+both sit inside invariant 2 as the plan of record for this work names them in its corpus
+clause.
+Extending the boundary — adding a class of document, or committing the operator-plane
+copy — is a new ADR.
+
+**The retrieval configuration, as versioned configuration.** What Phase 0 measured is
+what v1 is, and a change to any element below is a superseding ADR — the operator-plane
+analogue of D47's `context_strategy_version` discipline.
+
+- **Engine:** BM25 (k1=1.5, b=0.75, BM25+ idf), lexical first. No embedding half in v1:
+  the vector arm failed both legs of its earn-cost rule, and the factory plane has made
+  the same sequencing call already. The embedding arm's measured configuration is
+  recorded anyway — `nomic-embed-text-v1.5`, 768 dimensions, 2,048-token context, local
+  LM Studio server, no cloud (the plan named `Qwen3-Embedding-0.6B`; those models were
+  no longer on disk at spike start) — so a future ADR re-admits it against a fixed
+  baseline rather than a memory of one.
+- **Calibrated-abstention gate:** the threshold is the weakest true lookup's top-1 score
+  over the pre-registered query set — the strictest tuning-free bar, least favorable to
+  the index under test (D57's direction: the spike exists to falsify the index). A query
+  whose top-1 falls below the bar returns nothing. First calibration: 5.399 (BM25); the
+  vector arm's cosine bar (0.5899) is recorded with its caveat — BM25 scores carry no
+  cross-query scale, so the bar is per-engine, not a shared number.
+- **ID-anchored fast path:** an exact decision-ID query resolves directly to that record
+  before any ranking. The spike found Alfred's dominant query shape — the exact decision
+  ID lookup — missed in-window by all three arms, each for a different reason (file order
+  exhausting A's read cap; hyphenation and generic terms diluting B's; C reading it as
+  "a record about some ADR").
+- **Chunking:** structural — one ADR record one chunk, re-packed on paragraph boundaries
+  under a 6,000-character bound; other documents on structural separators, then
+  blank-line runs, then hard cut; a 1,900-token truncation cap that never bound. Every
+  chunk carries file, character offsets, and blob hash, plus a per-chunk sha256.
+- **Corpus pin:** the commit, plus a per-file sha256 manifest carried by the rebuild
+  script — the spike's manifest is the first. Full rebuild per run; at 238 chunks,
+  incremental sync would be machinery for a scale this corpus does not have.
+
+**The pattern source, and the declined package.** The pattern source is the
+`agentdb-memory-patterns` skill, cited as pattern reference and spike engine only. Its
+npm package — `ruvnet/agentdb`, `3.0.0-alpha.20`, MIT/Apache-2.0, version-pinned at spike
+time because a floating `@latest` is not a fingerprint — is **explicitly declined as a
+repository dependency**: D13 is a single Python toolchain, and an npm dependency in the
+repository breaks it the way D51's "no JS dependency closure to hash-lock" rules out a JS
+closure in the UI. The package ran in a scratchpad outside the repository, in the
+operator's trust domain, ingest read-only from a git-trusted corpus, output never feeding
+a verdict; the factory container never saw it, and D12's territory is untouched.
+
+**Phase 2, named but not built.** The durable tool lands under `tools/` per invariant 5,
+in three parts. `rebuild.py` is human-run: pinned commit → corpus manifest → structural
+chunks → the store file. `query.py` is the only agent-reachable surface: read-only,
+top-k with canonical pointers and scores, and a per-call log — query, returned row IDs,
+timestamp — that makes D47's retrieval-miss-rate instrument computable at operator scale,
+mirroring D26's read-recording. `selftest.py` is two-sided per D57, with three cases: a
+seeded fixture corpus with known answers must be retrieved; a no-precedent query must
+return nothing above the gate; a canonical source that changed after ingest must surface
+as stale or be excluded, never served silently. The store location is an open operator
+ruling at the Phase 2 gate — the plan's default is outside the repository
+(`~/alfred-memory/`), and the gate decides between that and a gitignored in-repo path —
+and this record does not spend that question.
+
+### Why the pattern survives and the package does not
+
+The write side of the skill — session memory, the pattern store, LLM-extraction
+consolidation — does not survive translation for a reason the plan of record already
+established: any memory store that agents write and later read into context is, by
+Alfred's own definition, agents editing agent-influencing configuration, and the write
+channel needs no privileges to be captured. MINJA: 98.2% injection and 76.8% attack
+success by a query-only actor. AgentPoison: >80% attack success at <0.1% poison rate,
+with the memory-mediated variant surviving session boundaries. What the operator plane
+offers instead for what sessions produce is the mechanism it already has — the
+human-gated document pipeline that commits them. That stream is the memory; the index is
+recall over it.
+
+The skill's own evidence points the same way: Letta's benchmark found a plain filesystem
+beat framework memory, 74.0% against 68.5%.
+
+The spike engine, for what it is worth, is alpha at its seams. Three defects, all patched
+locally in the scratchpad copy and recorded in the spike notes: a `vector-search`
+argument parser that tested the default database path and silently ignored the one
+passed, returning empty for every query; a `Float32Array` reconstruction that re-read
+each stored byte as one element — 3,072 pseudo-floats where 768 were meant — and crashed
+every query on a dimension mismatch; and usage text documenting a threshold default the
+code does not implement. None touches the in-repo Python tool, and all are worth an
+upstream issue. The record is not that the reference implementation is defective — it is
+alpha, and it was audited as such — but that what this repository adopts is the pattern,
+with the package left where D13 leaves it.
+
+### Falsifies if
+
+- the index is ever written by a process the agent can invoke; or
+- an action is observed that relies on an indexed fact whose canonical source changed
+  after ingest, with the staleness not surfaced; or
+- a chunk with no resolvable canonical pointer is ever returned.
+
+The second is the one the corpus most threatens, because the corpus is a live register
+and the index is a snapshot of it. The selftest's staleness case exists for the interval
+between a corpus edit and the next rebuild.
+
+### Consequence
+
+Nothing in the repository changes with this record beyond the register itself and the
+generated artifacts that read it — the reading map's decision table and count, and the
+vault graph with its notes, which the existing generated pipeline regenerates. No tool
+ships.
+
+Phase 2 is gated on the operator's ruling of the store location and the engine mix (the
+verdict says lexical-only) and then ordinary review at merge. The factory-plane feed is
+one-directional, per the plan: the spike's numbers — the no-index status quo at 2/8
+recall@1 and 15,576 tokens; the lexical index at 5/8 and 5,625; the vector index at 2/8
+and 3,846, with in-window recall of 3/8, 7/8, and 6/8 against the status quo's 3/8 — are
+delivered to D47's Phase 2 as the local-hardware data point the plan of record named
+missing: its open challenge to D44 had the no-index stance supported only when a frontier
+model drove agentic search (4.7 against 3.2/5), fully-local driving only tying RAG, and
+Alfred's own query shapes unmeasured. D47's own Phase 2 — pgvector/tsvector over the
+evidence store, golden-set A/B, `context_strategy_version` hashing, miss-rate
+instrumentation — is its own workstream with its own gates, and nothing here builds any
+part of it.
+
+This record touches `docs/tier1/` plus the generated artifacts that read it. O9 does not
+apply: the protected set covers `docs/tier0/` and the inspector prefixes, not
+`docs/tier1/` — and no `harness/`, no `policy/`, no inspector machinery moves.
+
+### Rejected
+
+**An agent-writable memory store of any shape** — the session-memory and pattern-store
+arms of the skill. FATAL, quoted above: the write channel needs no privileges to be
+captured, and a store that persists across sessions is a persistence primitive for a
+captured one.
+
+**An LLM-extraction consolidation layer** — the skill's `MemoryOptimizer` /
+`ExperienceCurator` shape. D44: an unfingerprintable, nondeterministic write path into
+agent context. Every credible framework in the plan of record's survey is extraction-
+based; Mem0 is ADD-only and structurally cannot carry D32's expiry; the open-weight
+backbones posted 17.9–30.4% format-error rates *during memory operations*, which is
+silent failure under D35 wearing a maintenance hat.
+
+**The npm package as a repository dependency.** D13, applied to the one channel this plan
+ever opened. The package was audited, version-pinned, and contained in the spike; it is
+not adopted.
+
+**The vector half for v1.** The earn-cost rule it failed is recorded in the Context. The
+rejection is sequencing, not principle: the rule names the two legs a vector arm must
+clear, and the per-call log Phase 2 ships is the instrument that would measure the case
+for it. The pgvector cliff the plan of record recorded — 2,110 QPS at 2 million vectors
+falling to 12.9 at 5 million, recall 0.99995 to 0.5444, and no space reclaim on delete
+against D43's append-only store — is the standing reminder that the revisit, when it
+comes, arrives with the cost attached.
+
+**A CI gate over the tool.** vaultgraph's standing — a derived read model whose floor is
+its selftest (quoted as drafted there: local/manual, selftest present, not a gate — the
+drifted self-description; the true status is what the corrected invariant 5 records) — is
+what this tool inherits, and invariant 5 fixes it. A CI job would be a
+protected change under `.github/` for a convenience mechanism, and a gate whose only job
+is verifying a derived cache verifies the cache's freshness, not anything the product
+ships. The selftest is the floor; the gate would be theater.
