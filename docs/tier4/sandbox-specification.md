@@ -120,10 +120,10 @@ documented failures in this class actually were.
 | C11 | Lane fingerprint asserted against the run fingerprint record: `loaded_context_length`, model id, quantization read from the serving layer, **and the parallel slot count supplied from outside it** — the serving API does not publish the count, and C11 reports `not_executed` rather than passing on three of four conjuncts (ADR-0020) | outside, against the serving layer | a lane that reconfigured itself unobserved | run does not start |
 | C12 | Writable set is exactly the repo tree and the patch output volume; every interpreter path outside the repo tree is mounted read-only | inside | a mid-run install into site-packages | run does not start |
 | C13 | No package archives or resolver caches: no `.whl`, `.tar.gz`, `.zip`, no `pip`/`uv` cache directory, under any mount | inside | an offline install of something egress control already blocks downloading | run does not start |
-| C14 | End-of-run re-assertion of C7, C9, C12, C13, C16, compared **by observed value and not only by outcome** — a mount whose mode moved, a writable root that grew, a container swapped for another of the same kind, **a denylist edited under the run**, and an observation a check stopped making | inside, after the agent stops, before the claim is accepted (C16's half outside) | anything that appeared during the run; **a container that exited under the measurement** — `docker run` carries `--rm`, so it leaves nothing behind | claim rejected, `indeterminate` |
+| C14 | End-of-run re-assertion of C7, C9, C12, C13, C16, C17, compared **by observed value and not only by outcome** — a mount whose mode moved, a writable root that grew, a container swapped for another of the same kind, **a container relaunched with a republished port or its capabilities restored**, **a denylist edited under the run**, and an observation a check stopped making | inside, after the agent stops, before the claim is accepted (C16's and C17's halves outside) | anything that appeared during the run; **a container that exited under the measurement** — `docker run` carries `--rm`, so it leaves nothing behind | claim rejected, `indeterminate` |
 | C15 | Patch-side check: the diff adds no dependency, no import of a denied module, and no file whose normalized content hash matches a denied source file | outside, privileged, on the patch | the oracle arriving through the deliverable channel | patch rejected |
 | C16 | The agent executes inside the container at all: the workspace `kind` is `DockerWorkspace` (a closed set of names — `DockerDevWorkspace` builds its image on the fly, `APIRemoteWorkspace` and `OpenHandsCloudWorkspace` run off-machine against D35), the conversation is `RemoteConversation`, and a container id was recorded | outside, at dispatch **and again at end of run** (C14) | **a run with no container around it, on which C1, C2, C3 and C10 all still pass** (ADR-0019); at end of run, a container that died mid-task | run does not start; at end of run the claim is rejected, `indeterminate` |
-| C17 | The agent server requires authentication (`session_api_keys` non-empty; it defaults empty, which its own field documentation calls unsecured, and `DockerWorkspace` sets `api_key = None` outright), **every published port bound to loopback** (Docker publishes `-p {host_port}:8000` on all host interfaces), and the container launched with `--cap-drop` and off the default bridge (ADR-0019, ADR-0023) | outside, at dispatch | **an unauthenticated remote-code-execution endpoint reachable off-box**, and a container with every capability the image grants; neither is covered by S6's egress default-drop, which runs the other direction | run does not start |
+| C17 | The agent server requires authentication (`session_api_keys` non-empty; it defaults empty, which its own field documentation calls unsecured, and `DockerWorkspace` sets `api_key = None` outright), **every published port bound to loopback** (Docker publishes `-p {host_port}:8000` on all host interfaces), and the container launched with `--cap-drop` and off the default bridge (ADR-0019, ADR-0023) | outside, at dispatch **and again at end of run** (C14, ADR-0030) | **an unauthenticated remote-code-execution endpoint reachable off-box**, and a container with every capability the image grants; neither is covered by S6's egress default-drop, which runs the other direction | run does not start |
 
 C1, C2, C3, C5 and C10 rest on the selected executor's own vocabulary — configuration keys,
 event class names, configuration search paths — none of which is in this repository and
@@ -212,6 +212,15 @@ blocked on, which was never O5, is `harness/fingerprint/record.py`.
 > Consequences section had gone stale: C16 answers the workspace-kind control and C1's fourth
 > clause answers `delete_on_close`, both landed in `69a09e9`. Only the ownership split
 > remained.
+
+> **Amended by ADR-0030.** ADR-0023 left C17 out of C14's re-assertion set and said so: a
+> container relaunched mid-run with different flags would not be caught, and the argv was
+> recorded in `observed` precisely so that it *could* be compared. **C17 is now a member of
+> the closed set**, so the launch posture is re-read after the agent stops and diffed by value
+> against the boot reading. C16 asks whether there is still a container; C17 asks what it was
+> launched with, which is the relaunch case C16's `--rm` argument does not cover. The
+> re-assertion set is now C7, C9, C12, C13, C16, C17, and an end-of-run report missing C17 is
+> `not_executed`, which F25 makes a failure.
 
 > **Amended by ADR-0020.** This paragraph previously read *"C4 and C11 are not written, and
 > are blocked on something other than O5: both compare against a run fingerprint record that

@@ -45,6 +45,12 @@ Inspector machinery (D20). Every assertion
 - [[adr__ADR-0020|The run fingerprint record, and the two assertions that were waiting on it]] **enforced_by** → this — """Containment assertions: what the sandbox must prove before a run starts.
 
 Inspector machinery (D20). Every assertion 
+- [[adr__ADR-0026|The adaptor configuration contract, typed at the boundary]] **enforced_by** → this — """Containment assertions: what the sandbox must prove before a run starts.
+
+Inspector machinery (D20). Every assertion 
+- [[adr__ADR-0030|Two containment controls that existed and did not run, and two that still do not]] **enforced_by** → this — """Containment assertions: what the sandbox must prove before a run starts.
+
+Inspector machinery (D20). Every assertion 
 - [[decision__D20|Agents may improve the factory, never the inspector]] **enforced_by** → this — """Containment assertions: what the sandbox must prove before a run starts.
 
 Inspector machinery (D20). Every assertion 

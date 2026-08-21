@@ -36,10 +36,13 @@ generated: true
 Runs **outside** the contai
 - **enforced_by** → [[module__harness_containment_reassert|C14 — the end-of-run re-assertion, and why a boot-time pass is not enough.]] — """C14 — the end-of-run re-assertion, and why a boot-time pass is not enough.
 
-C7, C9, C12, C13 and C16 are asserted bef
+C7, C9, C12, C13, C16 and C17 are asserte
 - **enforced_by** → [[module__harness_containment_reassert|C14 — the end-of-run re-assertion, and why a boot-time pass is not enough.]] — """Re-asserted ids present in both reports that **neither side gave any observation for**.
 
     D57, aimed at this compa
+- **enforced_by** → [[module__harness_containment_shells|The executor-premise assertions, and the source read that filled their holes (O5).]] — """Every name a `CONFIG_KEY` hole holds — the reference set, derived, never typed out.
+
+    Derived from the register so
 - **enforced_by** → [[module__harness_containment_shells|The executor-premise assertions, and the source read that filled their holes (O5).]] — """The ingress surface and the launch posture — the half of ADR-0019 nothing covered.
 
     ADR-0019 recorded four unhard
@@ -58,6 +61,9 @@ C7, C9, C12, C13 and C16 are asserted bef
 - **enforced_by** → [[module__harness_containment_test_c_assertions|C1–C15 beyond the two probes, each paired with the control that stops it reading green.]] — """D57. A register of nothing disables clause 3 while looking built.
 
     This is the test that would have failed on 202
+- **enforced_by** → [[module__harness_containment_test_c_assertions|C1–C15 beyond the two probes, each paired with the control that stops it reading green.]] — """D57 for this check. An empty reference set finds nothing and reports clean.
+
+    Derived rather than typed out, so a 
 - **enforced_by** → [[module__harness_containment_test_containment|Containment assertions, each paired with the control that stops it reading green.]] — """Containment assertions, each paired with the control that stops it reading green.
 
 **How this suite would be shown va

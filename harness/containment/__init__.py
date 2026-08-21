@@ -13,7 +13,7 @@ The table lives in `docs/tier4/sandbox-specification.md`. What is here:
 | `lane.py` | C11 | the serving lane, wrapping `harness/lane/lane_fingerprint.py` |
 | `oracle_absence.py` | C7 | four layers: closure, import probe, path scan, acquisition |
 | `inside.py` | C8, C9, C12, C13 | no executor vocabulary needed, so written for real |
-| `reassert.py` | C14 | the closed re-assertion set, after the agent stops |
+| `reassert.py` | C14 | the closed re-assertion set — C7, C9, C12, C13, C16, C17 — after the agent stops |
 | `patch_side.py` | C15 | the one control that faces the deliverable rather than the container |
 | `shells.py` | C1, C2, C3, C5, C10, C16, C17 | O5 discharged (ADR-0018); a shell never passes with a hole unread (ADR-0017) |
 | `handle.py` | — | the one crossing to the shape `Worker.check_handle` reads |
@@ -24,4 +24,11 @@ fingerprint" would have put them on O5's worklist, where they did not belong. Th
 now `harness/fingerprint/record.py` and both are written (ADR-0020). One conjunct is still
 unread and says so rather than passing: the serving API does not publish the parallel slot
 count, so C11 reports `not_executed` unless the count is supplied from outside it.
+
+**The adaptor contract is typed on both halves.** `validated_config` closes the values
+(ADR-0026); `confusable_config_keys` closes the key set (ADR-0030). Neither claims the key set
+is closed — an unknown key is legal and ignored, because the executor's configuration surface
+is larger than the set Alfred reads. What is refused is a *re-spelling* of a key a hole names,
+which would otherwise reach a check that reports the real key absent and fails closed for the
+wrong reason.
 """

@@ -59,6 +59,9 @@ generated: true
 - [[adr__ADR-0018|The executor moved, and eleven of thirteen premises were wrong]] **enforced_by** → this — """ADR-0018. D38 names the repository that is now Agent Canvas, which is not the executor."""
 - [[adr__ADR-0019|D38's sandbox rationale, verified: true of one configuration, false of the default]] **enforced_by** → this — """ADR-0019. The default removes the conversation directory; C1 was reading it after."""
 - [[adr__ADR-0019|D38's sandbox rationale, verified: true of one configuration, false of the default]] **enforced_by** → this — # ADR-0019 point 1: the default is an empty list, and empty means unsecured.
+- [[adr__ADR-0026|The adaptor configuration contract, typed at the boundary]] **enforced_by** → this — """The finding ADR-0026 left open, closed. The message names both spellings.
+
+    `sessionApiKeys` and `session_api_keys
 - [[decision__D38|Decision 9's named harness (Claude Agent SDK) demoted to provisional]] **enforced_by** → this — """ADR-0018. D38 names the repository that is now Agent Canvas, which is not the executor."""
 - [[decision__D38|Decision 9's named harness (Claude Agent SDK) demoted to provisional]] **enforced_by** → this — """D38 names this repository. At its HEAD it is Agent Canvas and holds no executor."""
 - [[decision__D53|Executor containment is fifteen numbered boot assertions, split by placement, and the `Wor]] **enforced_by** → this — """The count half, which D53 insists on because a flag says only what was intended."""
@@ -76,3 +79,6 @@ generated: true
 - [[decision__D57|The harness self-test suites are two-sided, and each carries a stated vacuity control]] **enforced_by** → this — """D57. A register of nothing disables clause 3 while looking built.
 
     This is the test that would have failed on 202
+- [[decision__D57|The harness self-test suites are two-sided, and each carries a stated vacuity control]] **enforced_by** → this — """D57 for this check. An empty reference set finds nothing and reports clean.
+
+    Derived rather than typed out, so a 

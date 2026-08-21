@@ -23,7 +23,7 @@
     }
   ],
   "counts": {
-    "adr": 29,
+    "adr": 30,
     "amendment": 12,
     "decision": 57,
     "document": 63,
@@ -43,7 +43,7 @@
     "amends": 9,
     "blocks": 32,
     "contains": 254,
-    "enforced_by": 302,
+    "enforced_by": 309,
     "imports": 204,
     "needs": 4,
     "runs": 29,
@@ -5154,8 +5154,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 276,
-        "line": 276,
+        "end_line": 293,
+        "line": 293,
         "path": "harness/containment/reassert.py"
       },
       "src": "adr:ADR-0007"
@@ -5167,8 +5167,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 727,
-        "line": 727,
+        "end_line": 832,
+        "line": 832,
         "path": "harness/containment/shells.py"
       },
       "src": "adr:ADR-0007"
@@ -5193,8 +5193,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 98,
-        "line": 98,
+        "end_line": 101,
+        "line": 101,
         "path": "harness/containment/test_c_assertions.py"
       },
       "src": "adr:ADR-0007"
@@ -5206,8 +5206,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 305,
-        "line": 305,
+        "end_line": 321,
+        "line": 321,
         "path": "harness/containment/test_c_assertions.py"
       },
       "src": "adr:ADR-0007"
@@ -5219,8 +5219,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 1184,
-        "line": 1184,
+        "end_line": 1267,
+        "line": 1267,
         "path": "harness/containment/test_c_assertions.py"
       },
       "src": "adr:ADR-0007"
@@ -5518,8 +5518,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 70,
-        "line": 70,
+        "end_line": 73,
+        "line": 73,
         "path": "harness/containment/shells.py"
       },
       "src": "adr:ADR-0018"
@@ -5531,8 +5531,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 1095,
-        "line": 1095,
+        "end_line": 1200,
+        "line": 1200,
         "path": "harness/containment/shells.py"
       },
       "src": "adr:ADR-0018"
@@ -5544,8 +5544,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 157,
-        "line": 157,
+        "end_line": 160,
+        "line": 160,
         "path": "harness/containment/test_c_assertions.py"
       },
       "src": "adr:ADR-0018"
@@ -5583,8 +5583,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 495,
-        "line": 495,
+        "end_line": 600,
+        "line": 600,
         "path": "harness/containment/shells.py"
       },
       "src": "adr:ADR-0019"
@@ -5596,8 +5596,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 727,
-        "line": 727,
+        "end_line": 832,
+        "line": 832,
         "path": "harness/containment/shells.py"
       },
       "src": "adr:ADR-0019"
@@ -5609,8 +5609,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 835,
-        "line": 835,
+        "end_line": 940,
+        "line": 940,
         "path": "harness/containment/shells.py"
       },
       "src": "adr:ADR-0019"
@@ -5622,8 +5622,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 972,
-        "line": 972,
+        "end_line": 1077,
+        "line": 1077,
         "path": "harness/containment/shells.py"
       },
       "src": "adr:ADR-0019"
@@ -5635,8 +5635,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 1229,
-        "line": 1229,
+        "end_line": 1334,
+        "line": 1334,
         "path": "harness/containment/shells.py"
       },
       "src": "adr:ADR-0019"
@@ -5648,8 +5648,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 257,
-        "line": 257,
+        "end_line": 273,
+        "line": 273,
         "path": "harness/containment/test_c_assertions.py"
       },
       "src": "adr:ADR-0019"
@@ -5661,8 +5661,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 1257,
-        "line": 1257,
+        "end_line": 1336,
+        "line": 1336,
         "path": "harness/containment/test_c_assertions.py"
       },
       "src": "adr:ADR-0019"
@@ -5760,6 +5760,58 @@
     },
     {
       "confidence": "derived",
+      "dst": "module:harness.containment.reassert",
+      "evidence": "\"\"\"C14 — the end-of-run re-assertion, and why a boot-time pass is not enough.\n\nC7, C9, C12, C13, C16 and C17 are asserted before the agent process starts. Each of them is\na claim a",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/containment/reassert.py"
+      },
+      "src": "adr:ADR-0023"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:harness.containment.__init__",
+      "evidence": "\"\"\"Containment assertions: what the sandbox must prove before a run starts.\n\nInspector machinery (D20). Every assertion here is fail-closed, the probe erroring\nincluded, and **`not",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/containment/__init__.py"
+      },
+      "src": "adr:ADR-0026"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:harness.containment.shells",
+      "evidence": "# ADR-0026 typed the configuration *values* and recorded what it did not do, in as many",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 407,
+        "line": 407,
+        "path": "harness/containment/shells.py"
+      },
+      "src": "adr:ADR-0026"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:harness.containment.test_c_assertions",
+      "evidence": "\"\"\"The finding ADR-0026 left open, closed. The message names both spellings.\n\n    `sessionApiKeys` and `session_api_keys` cannot both be real keys of one executor, so the\n    colli",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 1591,
+        "line": 1591,
+        "path": "harness/containment/test_c_assertions.py"
+      },
+      "src": "adr:ADR-0026"
+    },
+    {
+      "confidence": "derived",
       "dst": "module:.github.workflows.gates.yml",
       "evidence": "`not-yet-injected` rows above: raising it is OBSERVER-1 under ADR-0029, and until it",
       "extractor": "references",
@@ -5796,6 +5848,19 @@
         "path": "scripts/lint_harness_gate.py"
       },
       "src": "adr:ADR-0029"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:harness.containment.__init__",
+      "evidence": "\"\"\"Containment assertions: what the sandbox must prove before a run starts.\n\nInspector machinery (D20). Every assertion here is fail-closed, the probe erroring\nincluded, and **`not",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/containment/__init__.py"
+      },
+      "src": "adr:ADR-0030"
     },
     {
       "confidence": "derived",
@@ -6311,8 +6376,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 1172,
-        "line": 1172,
+        "end_line": 1277,
+        "line": 1277,
         "path": "harness/containment/shells.py"
       },
       "src": "decision:D35"
@@ -6337,8 +6402,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 69,
-        "line": 69,
+        "end_line": 72,
+        "line": 72,
         "path": "harness/containment/shells.py"
       },
       "src": "decision:D38"
@@ -6350,8 +6415,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 1097,
-        "line": 1097,
+        "end_line": 1202,
+        "line": 1202,
         "path": "harness/containment/shells.py"
       },
       "src": "decision:D38"
@@ -6363,8 +6428,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 157,
-        "line": 157,
+        "end_line": 160,
+        "line": 160,
         "path": "harness/containment/test_c_assertions.py"
       },
       "src": "decision:D38"
@@ -6376,8 +6441,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 529,
-        "line": 529,
+        "end_line": 545,
+        "line": 545,
         "path": "harness/containment/test_c_assertions.py"
       },
       "src": "decision:D38"
@@ -7221,8 +7286,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 495,
-        "line": 495,
+        "end_line": 600,
+        "line": 600,
         "path": "harness/containment/shells.py"
       },
       "src": "decision:D53"
@@ -7234,8 +7299,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 244,
-        "line": 244,
+        "end_line": 260,
+        "line": 260,
         "path": "harness/containment/test_c_assertions.py"
       },
       "src": "decision:D53"
@@ -7438,7 +7503,7 @@
     {
       "confidence": "derived",
       "dst": "module:harness.containment.reassert",
-      "evidence": "\"\"\"C14 — the end-of-run re-assertion, and why a boot-time pass is not enough.\n\nC7, C9, C12, C13 and C16 are asserted before the agent process starts. Each of them is a\nclaim about ",
+      "evidence": "\"\"\"C14 — the end-of-run re-assertion, and why a boot-time pass is not enough.\n\nC7, C9, C12, C13, C16 and C17 are asserted before the agent process starts. Each of them is\na claim a",
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
@@ -7455,9 +7520,22 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 205,
-        "line": 205,
+        "end_line": 222,
+        "line": 222,
         "path": "harness/containment/reassert.py"
+      },
+      "src": "decision:D57"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:harness.containment.shells",
+      "evidence": "\"\"\"Every name a `CONFIG_KEY` hole holds — the reference set, derived, never typed out.\n\n    Derived from the register so that a hole added later is covered without anybody\n    reme",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 448,
+        "line": 448,
+        "path": "harness/containment/shells.py"
       },
       "src": "decision:D57"
     },
@@ -7468,8 +7546,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 835,
-        "line": 835,
+        "end_line": 940,
+        "line": 940,
         "path": "harness/containment/shells.py"
       },
       "src": "decision:D57"
@@ -7507,8 +7585,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 123,
-        "line": 123,
+        "end_line": 126,
+        "line": 126,
         "path": "harness/containment/test_c_assertions.py"
       },
       "src": "decision:D57"
@@ -7520,8 +7598,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 763,
-        "line": 763,
+        "end_line": 779,
+        "line": 779,
         "path": "harness/containment/test_c_assertions.py"
       },
       "src": "decision:D57"
@@ -7533,8 +7611,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 850,
-        "line": 850,
+        "end_line": 932,
+        "line": 932,
         "path": "harness/containment/test_c_assertions.py"
       },
       "src": "decision:D57"
@@ -7546,8 +7624,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 1309,
-        "line": 1309,
+        "end_line": 1388,
+        "line": 1388,
         "path": "harness/containment/test_c_assertions.py"
       },
       "src": "decision:D57"
@@ -7559,8 +7637,21 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 1353,
-        "line": 1353,
+        "end_line": 1432,
+        "line": 1432,
+        "path": "harness/containment/test_c_assertions.py"
+      },
+      "src": "decision:D57"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:harness.containment.test_c_assertions",
+      "evidence": "\"\"\"D57 for this check. An empty reference set finds nothing and reports clean.\n\n    Derived rather than typed out, so a hole added later is covered without anybody\n    remembering ",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 1578,
+        "line": 1578,
         "path": "harness/containment/test_c_assertions.py"
       },
       "src": "decision:D57"
@@ -8040,8 +8131,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 68,
-        "line": 68,
+        "end_line": 82,
+        "line": 82,
         "path": "harness/containment/reassert.py"
       },
       "src": "module:harness.containment.reassert"
@@ -8170,8 +8261,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 1347,
-        "line": 1347,
+        "end_line": 1426,
+        "line": 1426,
         "path": "harness/containment/test_c_assertions.py"
       },
       "src": "module:harness.containment.test_c_assertions"
@@ -8183,8 +8274,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 75,
-        "line": 75,
+        "end_line": 78,
+        "line": 78,
         "path": "harness/containment/test_c_assertions.py"
       },
       "src": "module:harness.containment.test_c_assertions"
@@ -11215,7 +11306,7 @@
       "min_edges": 4,
       "min_nodes": 14,
       "name": "adrs",
-      "nodes": 29,
+      "nodes": 30,
       "rejected": 0,
       "scanned": 1,
       "unparsed": 0
@@ -11299,7 +11390,7 @@
       "unparsed": 0
     },
     {
-      "edges": 302,
+      "edges": 309,
       "expect_rejected": null,
       "max_nodes": 0,
       "max_unparsed": 0,
@@ -11952,6 +12043,27 @@
       "status": "accepted",
       "tags": [],
       "title": "The tree that verifies every other tree is verified by nothing"
+    },
+    {
+      "attrs": {
+        "date": "",
+        "status": "",
+        "status_raw": ""
+      },
+      "body": "**Date** 2026-08-19 · **Status** Accepted · **Supersedes** nothing · **Amends** ADR-0023's",
+      "extractor": "adrs",
+      "id": "adr:ADR-0030",
+      "kind": "adr",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 3085,
+        "line": 3085,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Two containment controls that existed and did not run, and two that still do not"
     },
     {
       "attrs": {

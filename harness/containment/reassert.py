@@ -1,7 +1,7 @@
 """C14 — the end-of-run re-assertion, and why a boot-time pass is not enough.
 
-C7, C9, C12, C13 and C16 are asserted before the agent process starts. Each of them is a
-claim about a container that then runs untrusted code for the length of a task. Boot-time
+C7, C9, C12, C13, C16 and C17 are asserted before the agent process starts. Each of them is
+a claim about a container that then runs untrusted code for the length of a task. Boot-time
 absence plus an argument that nothing could have changed is still an argument: C6 makes
 fetching impossible and C12/C13 make installing impossible, and **a control that holds "by
 argument" is a control that has not been checked.**
@@ -12,6 +12,20 @@ workspace kind could change mid-run — it cannot. It is that `docker run` carri
 adaptor either still has a container id or it does not, and if it does not, C16 fails, C14
 fails, and the verdict is `indeterminate` — which is the correct reading of a run whose
 container died under the measurement.
+
+C17 is here for the case C16 does not cover: **a container that exits and is replaced.** C16
+asks whether there is still a container; C17 asks what it was launched with. A relaunch mid-run
+— by a supervisor, by a retry path, by anything that re-issues `docker run` — can restore the
+container id's *presence* while changing the argv underneath it, and every boot-time C17 pass
+stays true of a container that no longer exists. A published port that was loopback at boot and
+is `0.0.0.0` at the end, or a `--cap-drop` that is simply gone, is the ingress surface ADR-0023
+argues is Alfred's, opened *after* the gate that would have refused it. ADR-0023 recorded the
+gap in as many words — the argv is carried in `observed` **precisely so that it could be
+compared**, and the comparison was simply not wired. This is that wire.
+
+It is a value-level finding first and an outcome-level one only sometimes, which is why it
+belongs to `compare` rather than to the boot gate alone: a relaunch that keeps the posture and
+changes the argv passes C17 at both ends, and the run still moved underneath the control.
 
 ### `compare` reads values, not just outcomes
 
@@ -79,8 +93,11 @@ __all__ = [
 ]
 
 # C7 oracle absence, C9 mounts, C12 writable set, C13 archives and caches, C16 the container
-# still being there at all.
-REASSERTED: Final[tuple[str, ...]] = ("C7", "C9", "C12", "C13", "C16")
+# still being there at all, C17 what it was launched with.
+#
+# C17 is appended rather than inserted: `compare` orders its findings by this tuple's own
+# order, so appending is the only edit that leaves every existing report's ordering alone.
+REASSERTED: Final[tuple[str, ...]] = ("C7", "C9", "C12", "C13", "C16", "C17")
 
 ASSERTION_C14: Final = "C14"
 

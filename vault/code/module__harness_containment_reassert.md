@@ -39,9 +39,12 @@ generated: true
 ## Enforced by (code)
 
 - [[adr__ADR-0007|Executor-premise assertions may pass vacuously, and that is a third outcome]] **enforced_by** → this — # ADR-0007 exists to keep visible.
+- [[adr__ADR-0023|Which of ADR-0019's unhardened defaults are Alfred's, and the two that are]] **enforced_by** → this — """C14 — the end-of-run re-assertion, and why a boot-time pass is not enough.
+
+C7, C9, C12, C13, C16 and C17 are asserte
 - [[decision__D57|The harness self-test suites are two-sided, and each carries a stated vacuity control]] **enforced_by** → this — """C14 — the end-of-run re-assertion, and why a boot-time pass is not enough.
 
-C7, C9, C12, C13 and C16 are asserted bef
+C7, C9, C12, C13, C16 and C17 are asserte
 - [[decision__D57|The harness self-test suites are two-sided, and each carries a stated vacuity control]] **enforced_by** → this — """Re-asserted ids present in both reports that **neither side gave any observation for**.
 
     D57, aimed at this compa

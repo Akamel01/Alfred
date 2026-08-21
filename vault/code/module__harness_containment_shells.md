@@ -57,12 +57,16 @@ C1, C2, C3, C5 and C10 rest on th
     ADR-0019 recorded four unhard
 - [[adr__ADR-0019|D38's sandbox rationale, verified: true of one configuration, false of the default]] **enforced_by** → this — "Not in the specification, and it falsified C1 as written (ADR-0019). It "
 - [[adr__ADR-0019|D38's sandbox rationale, verified: true of one configuration, false of the default]] **enforced_by** → this — "ADR-0019; not re-read here, and the citation is what makes that checkable."
+- [[adr__ADR-0026|The adaptor configuration contract, typed at the boundary]] **enforced_by** → this — # ADR-0026 typed the configuration *values* and recorded what it did not do, in as many
 - [[decision__D35|hard constraint]] **enforced_by** → this — "put the run on somebody else's machine, which D35 forbids outright. "
 - [[decision__D38|Decision 9's named harness (Claude Agent SDK) demoted to provisional]] **enforced_by** → this — # Pinned here only so that a future reader who finds this name in D38 can see it was checked
 - [[decision__D38|Decision 9's named harness (Claude Agent SDK) demoted to provisional]] **enforced_by** → this — "D38 names OpenHands/OpenHands. At 1916c904 that repository is 'Agent Canvas', "
 - [[decision__D53|Executor containment is fifteen numbered boot assertions, split by placement, and the `Wor]] **enforced_by** → this — """Persistence configured, and every observed event durable at end of run.
 
     **The premise inverted at O5.** The rese
+- [[decision__D57|The harness self-test suites are two-sided, and each carries a stated vacuity control]] **enforced_by** → this — """Every name a `CONFIG_KEY` hole holds — the reference set, derived, never typed out.
+
+    Derived from the register so
 - [[decision__D57|The harness self-test suites are two-sided, and each carries a stated vacuity control]] **enforced_by** → this — """The ingress surface and the launch posture — the half of ADR-0019 nothing covered.
 
     ADR-0019 recorded four unhard

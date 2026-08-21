@@ -21,3 +21,9 @@ generated: true
 ## Statement
 
 **Date** 2026-08-19 · **Status** Accepted · **Supersedes** nothing
+
+## Enforced by (code)
+
+- **enforced_by** → [[module__harness_containment_reassert|C14 — the end-of-run re-assertion, and why a boot-time pass is not enough.]] — """C14 — the end-of-run re-assertion, and why a boot-time pass is not enough.
+
+C7, C9, C12, C13, C16 and C17 are asserte

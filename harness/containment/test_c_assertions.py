@@ -57,6 +57,7 @@ from harness.containment.shells import (
     C17,
     CANVAS_COMMIT,
     ConfigContractViolation,
+    ConfigKeyConfusion,
     CANVAS_REPO,
     EXECUTOR_COMMIT,
     EXECUTOR_REPO,
@@ -67,7 +68,9 @@ from harness.containment.shells import (
     Hole,
     HoleKind,
     PremiseShell,
+    confusable_config_keys,
     evaluate,
+    named_config_keys,
     open_holes,
     unsourced_holes,
     validated_config,
@@ -210,6 +213,19 @@ CLEAN = ExecutorObservation(
     executor_repo=EXECUTOR_REPO,
     executor_commit_sha=EXECUTOR_COMMIT,
     executor_resolved_through_redirect=True,
+)
+
+# C17's subject. Defined beside `CLEAN` rather than in the C17 section below because the C14
+# coverage assertion needs it too: C17 is a member of `REASSERTED`, so the launch posture has
+# to be built the way the adaptor builds it in both places, from one definition.
+_HARDENED_ARGV = ("docker", "run", "--cap-drop", "ALL", "--network", "none", "img")
+_LOOPBACK_BINDING = ("127.0.0.1:8010->8000/tcp",)
+
+CLEAN_LAUNCH = replace(
+    CLEAN,
+    config={**CLEAN.config, "session_api_keys": ["k"]},
+    container_launch_args=_HARDENED_ARGV,
+    published_port_bindings=_LOOPBACK_BINDING,
 )
 
 
@@ -765,7 +781,7 @@ def test_the_reassertion_set_is_stated_not_derived() -> None:
     Pinned as a literal rather than as a length, because the failure this guards against is a
     member quietly leaving — which shrinks the set without breaking anything that reads it.
     """
-    assert REASSERTED == ("C7", "C9", "C12", "C13", "C16")
+    assert REASSERTED == ("C7", "C9", "C12", "C13", "C16", "C17")
 
 
 def test_c14_passes_when_every_member_re_asserts() -> None:
@@ -808,6 +824,72 @@ def test_c14_compare_records_the_container_id_in_full_not_the_prose_prefix() -> 
     long_id = "c" * 64
     result = evaluate(_shell("C16"), replace(CLEAN, container_id=long_id))
     assert result.observed["container_id"] == long_id
+
+
+def test_c14_catches_a_relaunch_that_reopened_the_ingress_surface() -> None:
+    """Why C17 is in the set. The drift kinds are the assertion, not the outcomes.
+
+    A container relaunched mid-run with the port republished on `0.0.0.0` and `--cap-drop`
+    gone passes C17 at boot — the gate that would have refused it has already run — and is
+    never re-checked without this. `drifted_ids` naming C17 is what fails if C17 leaves
+    `REASSERTED`; the `VALUE` kinds on both keys are what fails if the check stops reading
+    the argv, which an outcome-level pass/fail pair cannot tell apart from a real relaunch.
+    """
+    boot = evaluate(_shell("C17"), CLEAN_LAUNCH)
+    end = evaluate(
+        _shell("C17"),
+        replace(
+            CLEAN_LAUNCH,
+            container_launch_args=("docker", "run", "img"),
+            published_port_bindings=("0.0.0.0:8010->8000/tcp",),
+        ),
+    )
+    assert boot.outcome is AssertionOutcome.PASSED
+    assert end.outcome is AssertionOutcome.FAILED
+
+    drifts = compare(AssertionReport((boot,)), AssertionReport((end,)))
+    assert drifted_ids(drifts) == ("C17",)
+    assert {(d.kind, d.key) for d in drifts} == {
+        (DriftKind.OUTCOME, None),
+        (DriftKind.VALUE, "container_launch_args"),
+        (DriftKind.VALUE, "published_port_bindings"),
+    }
+    assert reassert([_passed(i) for i in REASSERTED if i != "C17"] + [end]).outcome is (
+        AssertionOutcome.FAILED
+    )
+
+
+def test_c14_sees_a_relaunch_that_kept_the_posture_and_changed_the_argv() -> None:
+    """The case an outcome comparison cannot express, for C17 rather than for C16.
+
+    Both ends pass: capabilities dropped, off the default network, loopback binding. The
+    container is a different container all the same — a different image, a different
+    `--cap-drop` value — and the run moved underneath a control that never noticed. This is
+    the reason C17 records the **full** argv rather than a summary of the flags the check
+    happens to look at: a summary cannot show a flag it does not summarize.
+    """
+    boot = evaluate(_shell("C17"), CLEAN_LAUNCH)
+    end = evaluate(
+        _shell("C17"),
+        replace(
+            CLEAN_LAUNCH,
+            container_launch_args=("docker", "run", "--cap-drop", "NET_RAW", "--network", "none", "other"),
+        ),
+    )
+    assert boot.outcome is end.outcome is AssertionOutcome.PASSED
+    drifts = compare(AssertionReport((boot,)), AssertionReport((end,)))
+    assert [(d.kind, d.key) for d in drifts] == [(DriftKind.VALUE, "container_launch_args")]
+
+
+def test_c14_reports_not_executed_when_the_relaunched_posture_was_not_read() -> None:
+    """F25 through the new member. An end-of-run C17 over an argv nobody collected is
+    `not_executed`, and a fold that read that as a pass would be the quietest way for the
+    re-assertion to stop running."""
+    end = [_passed(i) for i in REASSERTED if i != "C17"]
+    end.append(evaluate(_shell("C17"), replace(CLEAN_LAUNCH, container_launch_args=())))
+    result = reassert(end)
+    assert result.outcome is AssertionOutcome.NOT_EXECUTED
+    assert "C17" in result.detail
 
 
 def test_c14_compare_reports_an_observation_that_stopped_being_made() -> None:
@@ -883,6 +965,7 @@ def test_every_reasserted_member_records_observations(
         ),
         assert_no_archives_or_caches([tmp_path]),
         evaluate(_shell("C16"), CLEAN),
+        evaluate(_shell("C17"), CLEAN_LAUNCH),
     )
     assert tuple(a.assertion_id for a in real) == REASSERTED
     for assertion in real:
@@ -1230,10 +1313,6 @@ def test_the_committed_denylist_is_what_c15_runs_against(denylist: Denylist) -> 
 # ================================================================ C17 — ingress and launch
 
 
-_HARDENED_ARGV = ("docker", "run", "--cap-drop", "ALL", "--network", "none", "img")
-_LOOPBACK_BINDING = ("127.0.0.1:8010->8000/tcp",)
-
-
 def _c17(**overrides: object) -> Assertion:
     """C17 over an otherwise-clean observation. Overrides are what each test is about."""
     base = {
@@ -1490,3 +1569,99 @@ def test_typing_the_contract_does_not_make_a_wrong_value_right() -> None:
                       observation)
     assert result.outcome is AssertionOutcome.FAILED
     assert "does not spell a boolean" in result.detail
+
+
+# ================================================= the key set half of the same contract
+
+
+def test_the_named_key_set_is_derived_from_the_register_and_is_not_empty() -> None:
+    """D57 for this check. An empty reference set finds nothing and reports clean.
+
+    Derived rather than typed out, so a hole added later is covered without anybody
+    remembering a list — and asserted to contain the keys the checks actually read, so a
+    derivation that silently returned nothing goes red here rather than in a green run.
+    """
+    named = named_config_keys()
+    assert named
+    for key in ("persistence_dir", "delete_on_close", "session_api_keys", "enable_vscode"):
+        assert key in named, key
+
+
+def test_a_respelt_key_is_refused_at_the_boundary() -> None:
+    """The finding ADR-0026 left open, closed. The message names both spellings.
+
+    `sessionApiKeys` and `session_api_keys` cannot both be real keys of one executor, so the
+    collision is a fact rather than a guess at what the adaptor meant.
+    """
+    with pytest.raises(ConfigKeyConfusion, match="session_api_keys"):
+        ExecutorObservation(config={"sessionApiKeys": ["k"]})
+
+
+@pytest.mark.parametrize(
+    "sent",
+    [
+        "sessionApiKeys",
+        "session-api-keys",
+        "SESSION_API_KEYS",
+        "sessionapikeys",
+        "Session_Api_Keys",
+    ],
+)
+def test_every_spelling_convention_an_adaptor_might_use_is_caught(sent: str) -> None:
+    """Case, separators and both together — the class an adaptor written against JSON
+    documentation actually produces."""
+    assert confusable_config_keys({sent: ["k"]}) == ((sent, "session_api_keys"),)
+
+
+def test_a_key_alfred_does_not_read_is_legal_and_is_not_reported() -> None:
+    """The control that stops this being "reject unknown keys", which is a different and
+    false claim: the executor's configuration surface is larger than the set Alfred reads,
+    and every real observation carries keys no hole names.
+
+    Without this test the check could refuse everything and every other test here would
+    still pass.
+    """
+    assert confusable_config_keys({"some_key_alfred_does_not_read": 1}) == ()
+    assert ExecutorObservation(config={"some_key_alfred_does_not_read": 1}).config
+
+
+def test_the_key_a_hole_names_is_not_confusable_with_itself() -> None:
+    """The other half of the positive control: the real spelling passes through untouched."""
+    assert confusable_config_keys({"session_api_keys": ["k"]}) == ()
+
+
+def test_without_the_guard_a_respelt_key_reads_as_absent_and_fails_for_the_wrong_reason() -> None:
+    """Why this is refused at the boundary rather than reported inside a check.
+
+    By the time the check runs, the only thing it can say is that `session_api_keys` is
+    absent — which is exactly what it says about an executor that genuinely does not set it.
+    Two different findings, one sentence in the record. The observation here is built past
+    the guard on purpose, to show the state the guard now makes unreachable.
+    """
+    respelt: dict[str, object] = {"sessionApiKeys": ["k"]}
+    assert confusable_config_keys(respelt) == (("sessionApiKeys", "session_api_keys"),)
+
+    past_the_guard = ExecutorObservation(
+        container_launch_args=_HARDENED_ARGV, published_port_bindings=_LOOPBACK_BINDING
+    )
+    object.__setattr__(past_the_guard, "config", respelt)
+    result = evaluate(C17, past_the_guard)
+    assert result.outcome is AssertionOutcome.FAILED
+    assert "absent from the loaded configuration" in result.detail
+
+
+def test_a_misspelling_that_is_not_a_respelling_is_the_stated_limit() -> None:
+    """The limit, pinned rather than left to be discovered.
+
+    `sesion_api_keys` normalizes to itself and is not caught. What is caught is
+    spelling-convention drift. Edit-distance matching would catch this one and would produce
+    false positives in a check whose finding refuses a configuration outright — and a future
+    change that widens the rule fails here and has to say so.
+    """
+    assert confusable_config_keys({"sesion_api_keys": ["k"]}) == ()
+
+
+def test_a_nested_key_collides_with_nothing_because_no_hole_names_one() -> None:
+    """Every check reads `config[key]` at the top level, so a nested key is not a key any
+    hole names at all."""
+    assert confusable_config_keys({"outer": {"sessionApiKeys": ["k"]}}) == ()
