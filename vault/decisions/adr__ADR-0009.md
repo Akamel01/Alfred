@@ -29,3 +29,9 @@ generated: true
 | Field | Value |
 |---|---|
 | `status_raw` | Accepted |
+
+## Enforced by (code)
+
+- **enforced_by** → [[module__harness_patch_test_protected_set|The protected set is policy configuration, and the policy is one home (ADR-0031).]] — """The protected set is policy configuration, and the policy is one home (ADR-0031).
+
+Three things must agree: `policy/p

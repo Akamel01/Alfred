@@ -186,7 +186,8 @@ Binding on implementation and easy to miss, since they live inside one document.
 | [ADR-0028](tier1/adr-log.md) | The review ADR-0027 said was owed has been done | Accepted |
 | [ADR-0029](tier1/adr-log.md) | The tree that verifies every other tree is verified by nothing | Accepted |
 | [ADR-0030](tier1/adr-log.md) | Two containment controls that existed and did not run, and two that still do not |  |
+| [ADR-0031](tier1/adr-log.md) | The protected set is one file, and the gate protects its own policy | Accepted |
 
 ---
 
-**63 documents mapped** · 43 binding · 13 context · 7 record · 30 architecture decisions
+**63 documents mapped** · 43 binding · 13 context · 7 record · 31 architecture decisions

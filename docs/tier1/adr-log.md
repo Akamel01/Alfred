@@ -3255,3 +3255,105 @@ closed here, and the test that pins the limit is untouched.
 patch only under line-by-line human review with a mandatory ADR. This is that ADR. The review
 is O9, it has not happened, and this change joins the containment batch already named in
 P0-7's register entry — which is `unmet`, and which this makes no smaller.
+
+---
+
+> **Renumbering note.** This record was written as ADR-0024 on
+> `bionic/protected-set`, before `main` had independently issued that number to an
+> unrelated decision (C15's third clause, the denylist's names, and a gate —
+> ADR-0024 on main). Numbering is sequential and never reused, so the record was
+> renumbered to ADR-0029 at commit time, from `main`'s numbering alone. The
+> operator's merge-order ruling (2026-08-21, the ICM/Wayfinder restructure) lands
+> the two same-day unmerged claims first — `m1-harness-verification-gate` keeps
+> ADR-0029, `m2/containment-controls` keeps ADR-0030 — so this record takes ADR-0031
+> on landing, per the precedent of the `fa62b4b` merge. The commits on this branch
+> — `6cbe52d` and `ee9e4ee` — still name the old numbers and cannot be rewritten; a
+> reader following them to "ADR-0024" or "ADR-0029" lands on a different decision.
+> That mismatch is recorded here rather than left to be discovered, and it is the
+> whole cost of the collision.
+
+## ADR-0031 — The protected set is one file, and the gate protects its own policy
+
+**Date:** 2026-08-19 · **Status:** Accepted · **Supersedes:** nothing; amends one row of the tier4 table
+
+### Context
+
+The protected set was enumerated three ways, and the three disagreed.
+
+- The frozen table in `docs/tier4/protected-paths-policy.md` — thirteen rows: `harness/`,
+  `src/provenance/`, `src/thresholds/`, `tests/heldout/`, `migrations/harness/` and
+  `migrations/roles/`, the `scripts/` gate entry points, `policy/`, `.github/`,
+  `docs/tier0/`, `pyproject.toml` and `uv.lock`, the fingerprint tracker, the oracle
+  environment and its pin, the oracle denylist.
+- D20, as quoted where the patch gate was written — `harness/`, `scripts/`, `.github/`,
+  `policy/`, `migrations/roles/`.
+- `PROTECTED_PREFIXES` in `harness/patch/validate.py` — the same five.
+
+The executable enforcement was a strict subset of the frozen policy. Six of the thirteen
+rows promised protection the gate did not carry: result stamping (`src/provenance/`),
+thresholds, held-out criteria, the control and evidence schemas, the constitution, and
+the dependency closure. And on `scripts/` the two sources disagreed in the other
+direction — the table said only the gate entry points, D20 says the whole directory,
+and the gate enforced D20.
+
+The document already names what this drift is: "Protected paths are the second layer,
+and they are policy configuration, never code." The configuration did not exist as a
+file. The table and the tuple were two prose renderings of one fact, and prose
+renderings drift (ADR-0021 is the same mechanism wearing CI's clothes).
+
+### Decision
+
+**One machine-readable home.** `policy/protected-paths.json` — versioned, and under
+`policy/` itself, which is a protected prefix, so the gate protects its own policy
+file. That is the CVE-2025-53773 shape, where a gate was disabled because the file
+stating its rules was writable by the party the rules constrained.
+
+- `validate.py` loads the file per validation, **failing closed**: a missing, malformed,
+  or unparseable set raises `ProtectedSetError` rather than falling back to a smaller
+  set (F25 — an unreadable policy is a failed one). An empty set — zero prefixes and
+  zero files — raises rather than passes (D57): a set that enumerates nothing protects
+  nothing.
+- The set: ten prefixes (`.github/`, `docs/tier0/`, `harness/`, `migrations/harness/`,
+  `migrations/roles/`, `policy/`, `scripts/`, `src/provenance/`, `src/thresholds/`,
+  `tests/heldout/`) and two exact files (`pyproject.toml`, `uv.lock`). Each entry
+carries the document's *contains* clause, so a refusal names the specific reason
+  rather than the rule's category.
+- The tier4 table keeps its human-facing role. The `scripts/` row is corrected to name
+  the whole directory — D20, the newer operator decision — and the document now states
+  the machine-readable home. The three conceptual rows (fingerprint tracker, oracle
+  environment, oracle denylist) resolve to prefixes already in the set; their
+  protection is unchanged, only made explicit.
+- `harness/patch/test_protected_set.py` asserts set equality **in both directions**
+  between the file and the table, on the grants precedent (ADR-0009): a row in the
+  table with no entry in the file protects nothing — the failure direction the
+  document's own `falsifies_if` names — and an entry with no row protects something no
+  one was told about. The row-to-entry mapping is written out rather than derived, and
+  a table row with no mapping fails. Behavioural tests cover the whole loaded set, the
+  gate's own policy file, and a boundary of non-protected paths, so the set cannot
+  silently widen into everything.
+- The `control.policy_protected_path` table already carries the same policy per tenant
+  for runtime enforcement. Nothing here claims the sync between the file and that
+  table: its writer is a later stage, and a sync asserted before the writer exists
+  would be a claim with no referent.
+
+**What this changes for agents.** The container's patch channel — the only channel this
+gate governs — now refuses everything the frozen table has promised since 2026-08-12:
+result stamping, thresholds, held-out criteria, the harness migrations, the
+constitution, and the dependency closure. Direct development under ADR + O9 is
+unaffected; the gate sits on the container's deliverable channel (A2), not on the
+review process. The `src/thresholds/__init__.py` placeholder (bionic/structure-drift)
+has since landed on main; the gate protects the path.
+
+### Why this is an inspector patch
+
+It changes `harness/patch/`, which is inspector machinery under D20, and adds a file
+under `policy/`. Per Major-fix #8 and the tier4 policy — "agent-drafted inspector
+patches are permitted only under line-by-line human review with a mandatory ADR" —
+this ADR authorizes the change and the review is O9. This change is landed and
+unreviewed.
+
+When drafted, the branch also carried the queue 11–14 stream
+(`c1ca0b4`…`6c99003`), so that the O9 review covered everything since main in one
+pass. That stream has since landed on main, and main has since issued its own
+ADR-0024; what this branch carries relative to main is now this record, and the
+O9 review covers it.

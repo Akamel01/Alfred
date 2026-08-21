@@ -23,14 +23,14 @@
     }
   ],
   "counts": {
-    "adr": 30,
+    "adr": 31,
     "amendment": 12,
     "decision": 57,
     "document": 63,
     "gate": 5,
     "gate-step": 49,
     "kill-criterion": 6,
-    "module": 207,
+    "module": 209,
     "operator-item": 8,
     "risk": 12,
     "schema": 5,
@@ -42,9 +42,9 @@
     "amended_by": 2,
     "amends": 9,
     "blocks": 32,
-    "contains": 254,
-    "enforced_by": 309,
-    "imports": 204,
+    "contains": 255,
+    "enforced_by": 318,
+    "imports": 205,
     "needs": 4,
     "runs": 29,
     "see_also": 21,
@@ -2063,6 +2063,19 @@
         "end_line": 1,
         "line": 1,
         "path": "harness/patch/__init__.py"
+      },
+      "src": "module:harness.patch"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.patch.test_protected_set",
+      "evidence": "harness/patch/test_protected_set.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/patch/test_protected_set.py"
       },
       "src": "module:harness.patch"
     },
@@ -5357,6 +5370,19 @@
     },
     {
       "confidence": "derived",
+      "dst": "module:harness.patch.test_protected_set",
+      "evidence": "\"\"\"The protected set is policy configuration, and the policy is one home (ADR-0031).\n\nThree things must agree: `policy/protected-paths.json` (what the gate loads), the\nbehaviour of",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/patch/test_protected_set.py"
+      },
+      "src": "adr:ADR-0009"
+    },
+    {
+      "confidence": "derived",
       "dst": "module:harness.selftest.synthetic",
       "evidence": "# beside the code under test is D50's delegation failure (ADR-0011).",
       "extractor": "references",
@@ -5864,6 +5890,45 @@
     },
     {
       "confidence": "derived",
+      "dst": "module:harness.patch.test_protected_set",
+      "evidence": "\"\"\"The protected set is policy configuration, and the policy is one home (ADR-0031).\n\nThree things must agree: `policy/protected-paths.json` (what the gate loads), the\nbehaviour of",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/patch/test_protected_set.py"
+      },
+      "src": "adr:ADR-0031"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:harness.patch.validate",
+      "evidence": "\"\"\"Validates a patch before anything touches a tree. Runs outside the container.\n\nA2: the container holds no VCS credential and emits a patch file to a mounted volume; a\nseparate u",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/patch/validate.py"
+      },
+      "src": "adr:ADR-0031"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:harness.patch.validate",
+      "evidence": "# The protected set as policy configuration (ADR-0031). The file is under `policy/` —",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 50,
+        "line": 50,
+        "path": "harness/patch/validate.py"
+      },
+      "src": "adr:ADR-0031"
+    },
+    {
+      "confidence": "derived",
       "dst": "module:bench.toy_tasks",
       "evidence": "\"\"\"Phase -1 toy tasks: is the narrow task class within reach of a local model?\n\nEach task is shaped like the real Phase 1 class (D36): a published formula, a\nfixed signature, and a",
       "extractor": "references",
@@ -6177,12 +6242,25 @@
     {
       "confidence": "derived",
       "dst": "module:harness.patch.validate",
-      "evidence": "# Inspector machinery (D20). Prefix match on a repo-relative POSIX path.",
+      "evidence": "\"configuration and never agent-writable (D20)\"",
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 46,
-        "line": 46,
+        "end_line": 268,
+        "line": 268,
+        "path": "harness/patch/validate.py"
+      },
+      "src": "decision:D20"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:harness.patch.validate",
+      "evidence": "\"configuration and never agent-writable (D20)\"",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 278,
+        "line": 278,
         "path": "harness/patch/validate.py"
       },
       "src": "decision:D20"
@@ -6311,8 +6389,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 179,
-        "line": 179,
+        "end_line": 295,
+        "line": 295,
         "path": "harness/patch/validate.py"
       },
       "src": "decision:D32"
@@ -7788,6 +7866,58 @@
     },
     {
       "confidence": "derived",
+      "dst": "module:harness.patch.test_protected_set",
+      "evidence": "\"\"\"D57. A set that enumerates nothing protects nothing, and passes everything.\"\"\"",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 97,
+        "line": 97,
+        "path": "harness/patch/test_protected_set.py"
+      },
+      "src": "decision:D57"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:harness.patch.validate",
+      "evidence": "\"\"\"Read the protected set, refusing every way it can be missing.\n\n    Failing open is not an option for the file a gate reads: a gate that cannot state its\n    own policy has no po",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 83,
+        "line": 83,
+        "path": "harness/patch/validate.py"
+      },
+      "src": "decision:D57"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:harness.patch.validate",
+      "evidence": "\"and a gate that passes everything is a formality (D57)\"",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 156,
+        "line": 156,
+        "path": "harness/patch/validate.py"
+      },
+      "src": "decision:D57"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:harness.patch.validate",
+      "evidence": "\"\"\"Read a unified diff and report every reason it must not be applied.\n\n    Every finding is collected rather than raising on the first: a reviewer handed one\n    refusal at a time",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 327,
+        "line": 327,
+        "path": "harness/patch/validate.py"
+      },
+      "src": "decision:D57"
+    },
+    {
+      "confidence": "derived",
       "dst": "module:harness.selftest.test_replay",
       "evidence": "\"\"\"Byte-identical deterministic replay, and the control that stops it being trivial.\n\n**P0-5 of the narrowed Phase 0 exit** (ADR-0022). The criterion is the harness's determinism,\n",
       "extractor": "references",
@@ -8929,6 +9059,19 @@
         "path": "harness/oracle/test_oracle.py"
       },
       "src": "module:harness.oracle.test_oracle"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.patch.validate",
+      "evidence": "harness.patch.validate.ProtectedSetError",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 19,
+        "line": 19,
+        "path": "harness/patch/test_protected_set.py"
+      },
+      "src": "module:harness.patch.test_protected_set"
     },
     {
       "confidence": "structural",
@@ -11306,7 +11449,7 @@
       "min_edges": 4,
       "min_nodes": 14,
       "name": "adrs",
-      "nodes": 30,
+      "nodes": 31,
       "rejected": 0,
       "scanned": 1,
       "unparsed": 0
@@ -11338,16 +11481,16 @@
       "unparsed": 0
     },
     {
-      "edges": 142,
+      "edges": 143,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 45,
       "min_nodes": 90,
       "name": "code",
-      "nodes": 212,
+      "nodes": 214,
       "rejected": 0,
-      "scanned": 239,
+      "scanned": 241,
       "unparsed": 0
     },
     {
@@ -11377,7 +11520,7 @@
       "unparsed": 0
     },
     {
-      "edges": 204,
+      "edges": 205,
       "expect_rejected": null,
       "max_nodes": 0,
       "max_unparsed": 0,
@@ -11386,11 +11529,11 @@
       "name": "imports",
       "nodes": 0,
       "rejected": 0,
-      "scanned": 175,
+      "scanned": 176,
       "unparsed": 0
     },
     {
-      "edges": 309,
+      "edges": 318,
       "expect_rejected": null,
       "max_nodes": 0,
       "max_unparsed": 0,
@@ -11399,7 +11542,7 @@
       "name": "references",
       "nodes": 0,
       "rejected": 0,
-      "scanned": 176,
+      "scanned": 178,
       "unparsed": 0
     },
     {
@@ -12064,6 +12207,27 @@
       "status": "",
       "tags": [],
       "title": "Two containment controls that existed and did not run, and two that still do not"
+    },
+    {
+      "attrs": {
+        "date": "2026-08-19",
+        "status": "accepted",
+        "status_raw": "Accepted"
+      },
+      "body": "**Date:** 2026-08-19 · **Status:** Accepted · **Supersedes:** nothing; amends one row of the tier4 table",
+      "extractor": "adrs",
+      "id": "adr:ADR-0031",
+      "kind": "adr",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 3275,
+        "line": 3275,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "accepted",
+      "tags": [],
+      "title": "The protected set is one file, and the gate protects its own policy"
     },
     {
       "attrs": {
@@ -18910,6 +19074,32 @@
       "attrs": {
         "is_test": "true",
         "lint_gated": "false",
+        "path": "harness/patch/test_protected_set.py",
+        "present": "true",
+        "protected": "true",
+        "tree": "harness"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:harness.patch.test_protected_set",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/patch/test_protected_set.py"
+      },
+      "status": "",
+      "tags": [
+        "protected"
+      ],
+      "title": "The protected set is policy configuration, and the policy is one home (ADR-0031)."
+    },
+    {
+      "attrs": {
+        "is_test": "true",
+        "lint_gated": "false",
         "path": "harness/patch/test_validate.py",
         "present": "true",
         "protected": "true",
@@ -19794,6 +19984,32 @@
         "protected"
       ],
       "title": "policy/oracle-source-hashes.json"
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "policy/protected-paths.json",
+        "present": "true",
+        "protected": "true",
+        "tree": "policy"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:policy.protected-paths.json",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "policy/protected-paths.json"
+      },
+      "status": "",
+      "tags": [
+        "protected"
+      ],
+      "title": "policy/protected-paths.json"
     },
     {
       "attrs": {

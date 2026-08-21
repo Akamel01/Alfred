@@ -48,7 +48,8 @@ Inspector machinery (D20). `record.py`
 - **enforced_by** → [[module__harness_patch_validate|Validates a patch before anything touches a tree. Runs outside the container.]] — """Validates a patch before anything touches a tree. Runs outside the container.
 
 A2: the container holds no VCS credent
-- **enforced_by** → [[module__harness_patch_validate|Validates a patch before anything touches a tree. Runs outside the container.]] — # Inspector machinery (D20). Prefix match on a repo-relative POSIX path.
+- **enforced_by** → [[module__harness_patch_validate|Validates a patch before anything touches a tree. Runs outside the container.]] — "configuration and never agent-writable (D20)"
+- **enforced_by** → [[module__harness_patch_validate|Validates a patch before anything touches a tree. Runs outside the container.]] — "configuration and never agent-writable (D20)"
 - **enforced_by** → [[module__scripts_lint_ci_coverage|Two claims of CI coverage, checked against what CI actually runs.]] — """Two claims of CI coverage, checked against what CI actually runs.
 
 `gates.yml` states the rule this file generalizes:

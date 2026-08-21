@@ -1,0 +1,41 @@
+---
+kind: adr
+id: "adr:ADR-0031"
+title: "The protected set is one file, and the gate protects its own policy"
+status: "accepted"
+shape: "heading"
+date: "2026-08-19"
+source: "docs/tier1/adr-log.md:3275"
+extractor: "adrs"
+aliases:
+  - "ADR-0031"
+  - "The protected set is one file, and the gate protects its own policy"
+generated: true
+---
+
+# The protected set is one file, and the gate protects its own policy
+
+> [!warning] Generated — do not edit
+> This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
+
+**Source** · `docs/tier1/adr-log.md:3275`
+
+## Statement
+
+**Date:** 2026-08-19 · **Status:** Accepted · **Supersedes:** nothing; amends one row of the tier4 table
+
+## Fields
+
+| Field | Value |
+|---|---|
+| `status_raw` | Accepted |
+
+## Enforced by (code)
+
+- **enforced_by** → [[module__harness_patch_test_protected_set|The protected set is policy configuration, and the policy is one home (ADR-0031).]] — """The protected set is policy configuration, and the policy is one home (ADR-0031).
+
+Three things must agree: `policy/p
+- **enforced_by** → [[module__harness_patch_validate|Validates a patch before anything touches a tree. Runs outside the container.]] — """Validates a patch before anything touches a tree. Runs outside the container.
+
+A2: the container holds no VCS credent
+- **enforced_by** → [[module__harness_patch_validate|Validates a patch before anything touches a tree. Runs outside the container.]] — # The protected set as policy configuration (ADR-0031). The file is under `policy/` —

@@ -88,6 +88,14 @@ C7, C9, C12, C13, C16 and C17 are asserte
 **How this suite would be shown vacuous** (D57). Every positive tes
 - **enforced_by** → [[module__harness_oracle_fingerprints|Runs INSIDE the oracle image. Emits digests and names, and never the source itself.]] — # D57. A register built from zero files would disable clause 3 while looking built.
 - **enforced_by** → [[module__harness_oracle_run|Runs the oracle image. Outside the container, and it never imports the oracle.]] — # D57. Zero vectors answered is not agreement; it is a cross-check that did not run.
+- **enforced_by** → [[module__harness_patch_test_protected_set|The protected set is policy configuration, and the policy is one home (ADR-0031).]] — """D57. A set that enumerates nothing protects nothing, and passes everything."""
+- **enforced_by** → [[module__harness_patch_validate|Validates a patch before anything touches a tree. Runs outside the container.]] — """Read the protected set, refusing every way it can be missing.
+
+    Failing open is not an option for the file a gate 
+- **enforced_by** → [[module__harness_patch_validate|Validates a patch before anything touches a tree. Runs outside the container.]] — "and a gate that passes everything is a formality (D57)"
+- **enforced_by** → [[module__harness_patch_validate|Validates a patch before anything touches a tree. Runs outside the container.]] — """Read a unified diff and report every reason it must not be applied.
+
+    Every finding is collected rather than raisi
 - **enforced_by** → [[module__harness_selftest_test_replay|Byte-identical deterministic replay, and the control that stops it being trivial.]] — """Byte-identical deterministic replay, and the control that stops it being trivial.
 
 **P0-5 of the narrowed Phase 0 exi

@@ -12,12 +12,15 @@ escape the path rules exist to prevent.
 
 ---------------------------------------------------------------- what it refuses, and why
 
-**Protected paths (D20).** `harness/`, `scripts/`, `.github/`, `policy/` and
-`migrations/roles/` are the inspector. An agent editing the judge collapses every control
+**Protected paths (D20).** The set is policy configuration, not code:
+`policy/protected-paths.json`, versioned, and under `policy/` itself — the gate protects
+its own policy file. That is the CVE-2025-53773 shape, where an agent wrote
+`"chat.tools.autoApprove": true` into `.vscode/settings.json` and disabled its own
+approval gate because the gate lived in a file it could write. The human-readable form is
+`docs/tier4/protected-paths-policy.md`, bound to the file by `test_protected_set.py`
+in both directions (ADR-0031). An agent editing the judge collapses every control
 beneath it at once, silently, with the tests green — because the tests are downstream of
-the edit. CVE-2025-53773 is the documented instance: an agent wrote
-`"chat.tools.autoApprove": true` into `.vscode/settings.json`, disabling its own approval
-gate because the gate lived in a file it could write.
+the edit.
 
 **Invisible characters (A10).** Zero-width, bidi and control characters outside declared
 string literals. TrapDoor planted `CLAUDE.md` and `.cursorrules` carrying zero-width
@@ -37,20 +40,123 @@ repository, is refused on the name alone. A symlink names one file and delivers 
 
 from __future__ import annotations
 
+import json
 import re
 import unicodedata
 from dataclasses import dataclass, field
-from pathlib import PurePosixPath
-from typing import Final
+from pathlib import Path, PurePosixPath
+from typing import Final, cast
 
-# Inspector machinery (D20). Prefix match on a repo-relative POSIX path.
-PROTECTED_PREFIXES: Final = (
-    ".github/",
-    "harness/",
-    "policy/",
-    "scripts/",
-    "migrations/roles/",
+# The protected set as policy configuration (ADR-0031). The file is under `policy/` —
+# a protected prefix — so the gate protects its own policy file.
+DEFAULT_PROTECTED_PATH: Final = (
+    Path(__file__).resolve().parents[2] / "policy" / "protected-paths.json"
 )
+
+
+class ProtectedSetError(RuntimeError):
+    """The protected set could not be loaded. Fail closed: no set, no dispatch (F25).
+
+    An unreadable policy is treated exactly as a mismatched one — the caller must not be
+    able to tell them apart by whether a value came back.
+    """
+
+
+@dataclass(frozen=True)
+class ProtectedEntry:
+    path: str
+    contains: str
+
+
+@dataclass(frozen=True)
+class ProtectedSet:
+    version: int
+    prefixes: tuple[ProtectedEntry, ...]
+    files: tuple[ProtectedEntry, ...]
+
+    @property
+    def all_paths(self) -> frozenset[str]:
+        return frozenset(e.path for e in (*self.prefixes, *self.files))
+
+
+def load_protected_set(path: Path = DEFAULT_PROTECTED_PATH) -> ProtectedSet:
+    """Read the protected set, refusing every way it can be missing.
+
+    Failing open is not an option for the file a gate reads: a gate that cannot state its
+    own policy has no policy. D57 closes the last loophole — a set that enumerates nothing
+    protects nothing, and passes everything it exists to stop.
+    """
+    try:
+        raw = path.read_text(encoding="utf-8")
+    except OSError as exc:
+        raise ProtectedSetError(
+            f"{path} is unreadable ({exc}); refusing without a protected set"
+        ) from exc
+    try:
+        parsed: object = json.loads(raw)
+    except json.JSONDecodeError as exc:
+        raise ProtectedSetError(
+            f"{path} is not valid JSON ({exc}); refusing without a protected set"
+        ) from exc
+    if not isinstance(parsed, dict):
+        raise ProtectedSetError(f"{path} is not a JSON object; refusing")
+
+    # `json.loads` yields an untyped dict. The casts — backed by the isinstance guard
+    # above and the per-field checks below — type it as `dict[str, object]` so every
+    # value is `object` until an isinstance check narrows it; no untyped value reaches
+    # a decision.
+    data = cast("dict[str, object]", parsed)
+    version: object = data.get("version")
+    if not isinstance(version, int) or isinstance(version, bool) or version < 1:
+        raise ProtectedSetError(f"{path} carries no usable version ({version!r}); refusing")
+
+    def entries(key: str) -> tuple[ProtectedEntry, ...]:
+        rows: object = data.get(key)
+        if not isinstance(rows, list):
+            raise ProtectedSetError(f"{path} is missing {key!r}; refusing")
+        typed_rows = cast("list[object]", rows)
+        out: list[ProtectedEntry] = []
+        seen: set[str] = set()
+        for row in typed_rows:
+            if not isinstance(row, dict):
+                raise ProtectedSetError(f"{path} {key} entry is not an object; refusing")
+            row_map = cast("dict[str, object]", row)
+            entry_path: object = row_map.get("path")
+            contains: object = row_map.get("contains")
+            if not isinstance(entry_path, str) or not entry_path.strip():
+                raise ProtectedSetError(f"{path} {key} entry carries no path; refusing")
+            if not isinstance(contains, str) or not contains.strip():
+                raise ProtectedSetError(
+                    f"{path} {key} entry for {entry_path!r} carries no rationale; refusing"
+                )
+            if ".." in entry_path.split("/"):
+                raise ProtectedSetError(f"{path} entry {entry_path!r} traverses; refusing")
+            if key == "prefixes" and not entry_path.endswith("/"):
+                raise ProtectedSetError(
+                    f"{path} prefix {entry_path!r} does not end in '/'; a prefix that is a "
+                    "file matches one path and is probably a typo"
+                )
+            if key == "files" and entry_path.endswith("/"):
+                raise ProtectedSetError(
+                    f"{path} file entry {entry_path!r} is a directory; refusing"
+                )
+            if entry_path in seen:
+                raise ProtectedSetError(
+                    f"{path} names {entry_path!r} twice; one path, one entry"
+                )
+            seen.add(entry_path)
+            out.append(ProtectedEntry(entry_path, contains))
+        return tuple(out)
+
+    prefixes = entries("prefixes")
+    files = entries("files")
+    if not prefixes and not files:
+        raise ProtectedSetError(
+            f"{path} enumerates nothing. A set that protects nothing passes everything, "
+            "and a gate that passes everything is a formality (D57)"
+        )
+    return ProtectedSet(version=version, prefixes=prefixes, files=files)
+
 
 # Behaviour-changing files that are not code the reviewer reads as code.
 IMPORT_HOOK_NAMES: Final = frozenset({"conftest.py", "sitecustomize.py", "usercustomize.py"})
@@ -142,7 +248,7 @@ def _strip_prefix(token: str) -> str | None:
     return token
 
 
-def _path_findings(path: str) -> list[Finding]:
+def _path_findings(path: str, protected: ProtectedSet) -> list[Finding]:
     findings: list[Finding] = []
     pure = PurePosixPath(path)
 
@@ -152,14 +258,24 @@ def _path_findings(path: str) -> list[Finding]:
         findings.append(
             Finding("traversal", path, "the path leaves the repository through a parent reference")
         )
-    for prefix in PROTECTED_PREFIXES:
-        if path.startswith(prefix) or f"{path}/" == prefix:
+    for entry in protected.prefixes:
+        if path.startswith(entry.path) or f"{path}/" == entry.path:
             findings.append(
                 Finding(
                     "protected-path",
                     path,
-                    f"{prefix} is inspector machinery (D20); an agent editing the judge "
-                    "collapses every control beneath it with the tests still green",
+                    f"{entry.path} is protected ({entry.contains}); the set is policy "
+                    "configuration and never agent-writable (D20)",
+                )
+            )
+    for entry in protected.files:
+        if path == entry.path:
+            findings.append(
+                Finding(
+                    "protected-path",
+                    path,
+                    f"{entry.path} is protected ({entry.contains}); the set is policy "
+                    "configuration and never agent-writable (D20)",
                 )
             )
     if pure.name in IMPORT_HOOK_NAMES or pure.name.endswith(IMPORT_HOOK_SUFFIXES):
@@ -213,7 +329,11 @@ def validate_patch(diff_text: str) -> ValidationReport:
     Every finding is collected rather than raising on the first: a reviewer handed one
     refusal at a time re-runs the gate N times and learns the rule set by exhaustion,
     which is how a rule set gets treated as an obstacle instead of a boundary.
+
+    The protected set loads per call and fails closed: a missing or corrupt policy file
+    raises `ProtectedSetError` rather than narrowing the set (F25, D57).
     """
+    protected = load_protected_set()
     report = ValidationReport()
     current: str | None = None
     line_number = 0
@@ -229,7 +349,7 @@ def validate_patch(diff_text: str) -> ValidationReport:
                 current = path
                 if path not in report.paths:
                     report.paths.append(path)
-                    report.findings.extend(_path_findings(path))
+                    report.findings.extend(_path_findings(path, protected))
             continue
 
         mode = _NEW_MODE.match(raw_line)
@@ -257,6 +377,10 @@ def require_clean(diff_text: str) -> ValidationReport:
     A patch that parsed to zero files is refused rather than passed. An empty report and a
     clean report are the same object, and the difference between "nothing was wrong" and
     "nothing was read" is the difference between a gate and a formality.
+
+    A protected set that fails to load raises `ProtectedSetError` rather than falling
+    back: a gate that cannot state its own policy has no policy, and no dispatch runs on
+    it.
     """
     report = validate_patch(diff_text)
     if not report.paths:

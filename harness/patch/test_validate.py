@@ -11,8 +11,8 @@ import pytest
 
 from harness.patch.validate import (
     INSTRUCTION_FILE_NAMES,
-    PROTECTED_PREFIXES,
     PatchRefused,
+    load_protected_set,
     require_clean,
     validate_patch,
 )
@@ -65,7 +65,13 @@ def test_the_file_header_is_not_read_as_an_added_line() -> None:
 # ------------------------------------------------------------------ protected paths
 
 
-@pytest.mark.parametrize("prefix", PROTECTED_PREFIXES)
+# Loaded once, at collection: a test file that cannot state its own premise fails loudly
+# rather than parametrising over an empty set. The load semantics themselves are
+# `test_protected_set.py`'s job, against explicit paths.
+_PROTECTED_PREFIXES = [e.path for e in load_protected_set().prefixes]
+
+
+@pytest.mark.parametrize("prefix", _PROTECTED_PREFIXES)
 def test_every_protected_prefix_is_refused(prefix: str) -> None:
     assert "protected-path" in _rules(_diff_for(f"{prefix}thing.py"))
 
