@@ -16,6 +16,7 @@ import subprocess
 
 import pytest
 
+from harness.db.assert_grants import SERVICE_ROLES
 from harness.db.cluster import (
     DBNAME,
     PINNED_POSTGRES_IMAGE,
@@ -113,7 +114,12 @@ def test_ownership_is_separated_from_use(cluster: ThrowawayCluster) -> None:
     assert owners["heldout"] == "alfred_migrator_heldout"
     assert owners["migration_meta"] == "alfred_bootstrap"
 
-    running_services = {"alfred_harness", "alfred_criterion", "alfred_product", "alfred_operator", "alfred_readmodel"}
+    # Imported, not restated: SERVICE_ROLES is defined where N6 is enforced
+    # (assert_grants._explicit_checks), and this fixture's ownership check must ask the
+    # same question the grant assertion asks. A second literal would let a role added
+    # there silently escape the ownership check here — the exact drift a restated set
+    # exists to produce.
+    running_services = set(SERVICE_ROLES)
     assert running_services.isdisjoint(set(owners.values()))
 
 
