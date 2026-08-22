@@ -7,16 +7,26 @@ a boundary, an assumption key that normalizes to another one.
 
 from __future__ import annotations
 
+import json
 import math
 
 import numpy as np
+import pytest
 from hypothesis import assume, given, settings
 from hypothesis import strategies as st
 
 from metrics.reasons import DEFINED_CODE, Reason, decode_reason, reason_name
 from metrics.series import MetricSeries
-from metrics.value import METRIC_VALUE_ADAPTER, Defined, Infinite, MetricValue, same_claim
-from provenance.encoding import canonicalize, parse_strict
+from metrics.value import (
+    METRIC_VALUE_ADAPTER,
+    Defined,
+    Infinite,
+    MetricValue,
+    defined,
+    same_claim,
+    upstream,
+)
+from provenance.encoding import canonicalize, metric_value_to_acs, parse_strict
 from provenance.stamp import AssumptionSet, ResultStamp, StampedResult, Tolerance, hash_inputs
 from provenance.upstream import CorpusUpstream
 
@@ -137,3 +147,64 @@ def test_stamped_results_hash_deterministically_and_reparse(
     # And the boundary form survives a JSON round trip unchanged.
     reparsed = METRIC_VALUE_ADAPTER.validate_json(METRIC_VALUE_ADAPTER.dump_json(value))
     assert same_claim(reparsed, value)
+
+
+# ------------------------------------------------------- wire form ↔ hash form binding
+
+
+def _wire_without_nulls(form: dict[str, object]) -> dict[str, object]:
+    """The wire's `cause: null` and the hash form's absent key are the same claim.
+
+    Declared here because it is exactly where the two serializers could drift apart
+    silently: pydantic serializes an unset field, `metric_value_to_acs` omits it. A
+    consumer parsing either form must read the same value; this normalization is the
+    pinned statement of that equivalence, and the property below is what notices if
+    anything else about the two shapes ever disagrees.
+    """
+    return {k: v for k, v in form.items() if v is not None}
+
+
+@settings(max_examples=100)
+@given(value=metric_values())
+def test_wire_form_and_hash_form_are_one_shape(value: MetricValue) -> None:
+    """The pydantic boundary (what a customer parses) and the ACS preimage (what the
+    audit chain hashes) are deliberately two spellings — stamp_v1 freezes its encoders
+    so a shared one could not rewrite v1 digests. Deliberate independence is not
+    permission to drift: for every arm, both forms must carry the identical claim."""
+    wire = _wire_without_nulls(json.loads(METRIC_VALUE_ADAPTER.dump_json(value)))
+    assert wire == metric_value_to_acs(value)
+
+
+@pytest.mark.parametrize("sign", ["+", "-"])
+def test_infinite_arm_carries_the_sign_on_both_forms(sign: str) -> None:
+    """E1/E7: which infinity is asserted matters (`+` = never collides). Neither
+    serializer may lose it — pydantic's default would have turned inf into null."""
+    wire = json.loads(METRIC_VALUE_ADAPTER.dump_json(Infinite(sign=sign)))
+    assert wire == {"kind": "infinite", "sign": sign}
+    assert metric_value_to_acs(Infinite(sign=sign)) == wire
+
+
+def test_a_cause_chain_is_present_on_both_forms() -> None:
+    """Composition never absorbs (ADR-0001): UPSTREAM_UNDEFINED carries the originating
+    reason, so the chain survives on the wire as well as in the hash preimage."""
+    value = upstream(Reason.NO_DATA)
+    wire = json.loads(METRIC_VALUE_ADAPTER.dump_json(value))
+    acs = metric_value_to_acs(value)
+    expected = {
+        "kind": "undefined",
+        "reason": "UPSTREAM_UNDEFINED",
+        "cause": "NO_DATA",
+    }
+    assert wire == acs == expected
+
+
+def test_negative_zero_hashes_as_positive_zero() -> None:
+    """ADR-0001: `-0.0` is normalized to `0.0` before hashing. Both spellings of the
+    same number must therefore produce the same canonical bytes, or a re-derived
+    stamp would read as tampering on a sign-of-zero."""
+    assert canonicalize(metric_value_to_acs(defined(-0.0))) == canonicalize(
+        metric_value_to_acs(defined(0.0))
+    )
+    # The wire form keeps the value's own equality (−0.0 == 0.0) without pretending
+    # the bytes were never different before the canonicalizer saw them.
+    assert json.loads(METRIC_VALUE_ADAPTER.dump_json(defined(-0.0)))["value"] == 0.0
