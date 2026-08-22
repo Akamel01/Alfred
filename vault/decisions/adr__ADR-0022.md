@@ -22,6 +22,10 @@ generated: true
 
 **Date** 2026-08-19 · **Status** Accepted · **Supersedes** nothing · **D28 waiver:** yes
 
+## Binds
+
+- [[adr__ADR-0033|The structure fence names every top-level directory, and the vault floors it]] **see_also** → this
+
 ## Enforced by (code)
 
 - **enforced_by** → [[module__harness_selftest_test_replay|Byte-identical deterministic replay, and the control that stops it being trivial.]] — """Byte-identical deterministic replay, and the control that stops it being trivial.

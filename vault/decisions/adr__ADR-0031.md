@@ -30,6 +30,10 @@ generated: true
 |---|---|
 | `status_raw` | Accepted |
 
+## Binds
+
+- [[adr__ADR-0033|The structure fence names every top-level directory, and the vault floors it]] **see_also** → this
+
 ## Enforced by (code)
 
 - **enforced_by** → [[module__harness_patch_test_protected_set|The protected set is policy configuration, and the policy is one home (ADR-0031).]] — """The protected set is policy configuration, and the policy is one home (ADR-0031).

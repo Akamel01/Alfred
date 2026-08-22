@@ -23,14 +23,15 @@
     }
   ],
   "counts": {
-    "adr": 32,
+    "adr": 33,
     "amendment": 12,
     "decision": 57,
     "document": 63,
     "gate": 5,
     "gate-step": 49,
     "kill-criterion": 6,
-    "module": 209,
+    "layout": 14,
+    "module": 210,
     "operator-item": 8,
     "risk": 12,
     "schema": 5,
@@ -42,12 +43,12 @@
     "amended_by": 2,
     "amends": 9,
     "blocks": 32,
-    "contains": 255,
+    "contains": 256,
     "enforced_by": 318,
-    "imports": 205,
+    "imports": 209,
     "needs": 4,
     "runs": 29,
-    "see_also": 21,
+    "see_also": 23,
     "supersedes": 1
   },
   "edges": [
@@ -2778,6 +2779,19 @@
         "end_line": 1,
         "line": 1,
         "path": "tools/vaultgraph/extract/imports.py"
+      },
+      "src": "module:tools.vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.extract.layout",
+      "evidence": "tools/vaultgraph/extract/layout.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/extract/layout.py"
       },
       "src": "module:tools.vaultgraph"
     },
@@ -9660,6 +9674,19 @@
     },
     {
       "confidence": "structural",
+      "dst": "module:tools.vaultgraph.extract.layout",
+      "evidence": "tools.vaultgraph.extract.layout",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 16,
+        "line": 16,
+        "path": "tools/vaultgraph/extract/__init__.py"
+      },
+      "src": "module:tools.vaultgraph.extract.__init__"
+    },
+    {
+      "confidence": "structural",
       "dst": "module:tools.vaultgraph.extract.references",
       "evidence": "tools.vaultgraph.extract.references",
       "extractor": "imports",
@@ -10047,6 +10074,45 @@
         "path": "tools/vaultgraph/extract/imports.py"
       },
       "src": "module:tools.vaultgraph.extract.imports"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.model",
+      "evidence": "tools.vaultgraph.model.Node",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 21,
+        "line": 21,
+        "path": "tools/vaultgraph/extract/layout.py"
+      },
+      "src": "module:tools.vaultgraph.extract.layout"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.protocol",
+      "evidence": "tools.vaultgraph.protocol.Anomaly",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 22,
+        "line": 22,
+        "path": "tools/vaultgraph/extract/layout.py"
+      },
+      "src": "module:tools.vaultgraph.extract.layout"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.textio",
+      "evidence": "tools.vaultgraph.textio.read_lines",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 23,
+        "line": 23,
+        "path": "tools/vaultgraph/extract/layout.py"
+      },
+      "src": "module:tools.vaultgraph.extract.layout"
     },
     {
       "confidence": "structural",
@@ -11427,6 +11493,32 @@
       "src": "adr:ADR-0029"
     },
     {
+      "confidence": "structural",
+      "dst": "adr:ADR-0022",
+      "evidence": "**See also:** ADR-0022 (the first D28 waiver), ADR-0031 (the protected set's ghost row)",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 3637,
+        "line": 3637,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0033"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0031",
+      "evidence": "**See also:** ADR-0022 (the first D28 waiver), ADR-0031 (the protected set's ghost row)",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 3637,
+        "line": 3637,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0033"
+    },
+    {
       "confidence": "prose",
       "dst": "decision:D17",
       "evidence": "Supersedes decision 17",
@@ -11442,14 +11534,14 @@
   ],
   "extractors": [
     {
-      "edges": 29,
+      "edges": 31,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 4,
       "min_nodes": 14,
       "name": "adrs",
-      "nodes": 32,
+      "nodes": 33,
       "rejected": 0,
       "scanned": 1,
       "unparsed": 0
@@ -11481,16 +11573,16 @@
       "unparsed": 0
     },
     {
-      "edges": 143,
+      "edges": 144,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 45,
       "min_nodes": 90,
       "name": "code",
-      "nodes": 214,
+      "nodes": 215,
       "rejected": 0,
-      "scanned": 241,
+      "scanned": 242,
       "unparsed": 0
     },
     {
@@ -11520,7 +11612,7 @@
       "unparsed": 0
     },
     {
-      "edges": 205,
+      "edges": 209,
       "expect_rejected": null,
       "max_nodes": 0,
       "max_unparsed": 0,
@@ -11529,7 +11621,20 @@
       "name": "imports",
       "nodes": 0,
       "rejected": 0,
-      "scanned": 176,
+      "scanned": 177,
+      "unparsed": 0
+    },
+    {
+      "edges": 0,
+      "expect_rejected": null,
+      "max_nodes": null,
+      "max_unparsed": 0,
+      "min_edges": 0,
+      "min_nodes": 14,
+      "name": "layout",
+      "nodes": 14,
+      "rejected": 0,
+      "scanned": 1,
       "unparsed": 0
     },
     {
@@ -12249,6 +12354,27 @@
       "status": "accepted",
       "tags": [],
       "title": "Operator-plane memory is recall over the committed corpus, not a store"
+    },
+    {
+      "attrs": {
+        "date": "2026-08-21",
+        "status": "accepted",
+        "status_raw": "Accepted"
+      },
+      "body": "**Date:** 2026-08-21 · **Status:** Accepted · **Supersedes:** nothing · **Amends:** the structure fence of the coding standards · **See also:** ADR-0022 (the first D28 waiver), ADR-0031 (the protected set's ghost row) · **D28 waiver:** yes",
+      "extractor": "adrs",
+      "id": "adr:ADR-0033",
+      "kind": "adr",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 3637,
+        "line": 3637,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "accepted",
+      "tags": [],
+      "title": "The structure fence names every top-level directory, and the vault floors it"
     },
     {
       "attrs": {
@@ -17059,6 +17185,286 @@
     },
     {
       "attrs": {
+        "description": "CI — the five-job gate; protected",
+        "directory": ".github"
+      },
+      "body": "CI — the five-job gate; protected",
+      "extractor": "layout",
+      "id": "layout:.github",
+      "kind": "layout",
+      "occurrences": [],
+      "shape": "fence-line",
+      "source": {
+        "end_line": 123,
+        "line": 123,
+        "path": "docs/tier2/coding-standards.md"
+      },
+      "status": "named",
+      "tags": [],
+      "title": ".github/"
+    },
+    {
+      "attrs": {
+        "description": "Phase −1 inference measurements — immutable per-seed records",
+        "directory": "bench"
+      },
+      "body": "Phase −1 inference measurements — immutable per-seed records",
+      "extractor": "layout",
+      "id": "layout:bench",
+      "kind": "layout",
+      "occurrences": [],
+      "shape": "fence-line",
+      "source": {
+        "end_line": 124,
+        "line": 124,
+        "path": "docs/tier2/coding-standards.md"
+      },
+      "status": "named",
+      "tags": [],
+      "title": "bench/"
+    },
+    {
+      "attrs": {
+        "description": "release machinery — identity-baked image, ledger, rollback",
+        "directory": "deploy"
+      },
+      "body": "release machinery — identity-baked image, ledger, rollback",
+      "extractor": "layout",
+      "id": "layout:deploy",
+      "kind": "layout",
+      "occurrences": [],
+      "shape": "fence-line",
+      "source": {
+        "end_line": 125,
+        "line": 125,
+        "path": "docs/tier2/coding-standards.md"
+      },
+      "status": "named",
+      "tags": [],
+      "title": "deploy/"
+    },
+    {
+      "attrs": {
+        "description": "",
+        "directory": "docs"
+      },
+      "body": "",
+      "extractor": "layout",
+      "id": "layout:docs",
+      "kind": "layout",
+      "occurrences": [],
+      "shape": "fence-line",
+      "source": {
+        "end_line": 122,
+        "line": 122,
+        "path": "docs/tier2/coding-standards.md"
+      },
+      "status": "named",
+      "tags": [],
+      "title": "docs/"
+    },
+    {
+      "attrs": {
+        "description": "OUTSIDE the agent tree — CriterionRunner, egress canary, floor test",
+        "directory": "harness"
+      },
+      "body": "OUTSIDE the agent tree — CriterionRunner, egress canary, floor test",
+      "extractor": "layout",
+      "id": "layout:harness",
+      "kind": "layout",
+      "occurrences": [],
+      "shape": "fence-line",
+      "source": {
+        "end_line": 120,
+        "line": 120,
+        "path": "docs/tier2/coding-standards.md"
+      },
+      "status": "named",
+      "tags": [],
+      "title": "harness/"
+    },
+    {
+      "attrs": {
+        "description": "",
+        "directory": "migrations"
+      },
+      "body": "",
+      "extractor": "layout",
+      "id": "layout:migrations",
+      "kind": "layout",
+      "occurrences": [],
+      "shape": "fence-line",
+      "source": {
+        "end_line": 119,
+        "line": 119,
+        "path": "docs/tier2/coding-standards.md"
+      },
+      "status": "named",
+      "tags": [],
+      "title": "migrations/"
+    },
+    {
+      "attrs": {
+        "description": "the plan-of-record mirror — sha256-pinned; history, not instruction",
+        "directory": "plan"
+      },
+      "body": "the plan-of-record mirror — sha256-pinned; history, not instruction",
+      "extractor": "layout",
+      "id": "layout:plan",
+      "kind": "layout",
+      "occurrences": [],
+      "shape": "fence-line",
+      "source": {
+        "end_line": 126,
+        "line": 126,
+        "path": "docs/tier2/coding-standards.md"
+      },
+      "status": "named",
+      "tags": [],
+      "title": "plan/"
+    },
+    {
+      "attrs": {
+        "description": "machine-readable tier 4 — allowlists, denylists, the protected set",
+        "directory": "policy"
+      },
+      "body": "machine-readable tier 4 — allowlists, denylists, the protected set",
+      "extractor": "layout",
+      "id": "layout:policy",
+      "kind": "layout",
+      "occurrences": [],
+      "shape": "fence-line",
+      "source": {
+        "end_line": 127,
+        "line": 127,
+        "path": "docs/tier2/coding-standards.md"
+      },
+      "status": "named",
+      "tags": [],
+      "title": "policy/"
+    },
+    {
+      "attrs": {
+        "description": "one nested git repository per product Alfred builds — git-ignored subdirectories",
+        "directory": "projects"
+      },
+      "body": "one nested git repository per product Alfred builds — git-ignored subdirectories",
+      "extractor": "layout",
+      "id": "layout:projects",
+      "kind": "layout",
+      "occurrences": [],
+      "shape": "fence-line",
+      "source": {
+        "end_line": 130,
+        "line": 130,
+        "path": "docs/tier2/coding-standards.md"
+      },
+      "status": "named",
+      "tags": [],
+      "title": "projects/"
+    },
+    {
+      "attrs": {
+        "description": "",
+        "directory": "scripts"
+      },
+      "body": "",
+      "extractor": "layout",
+      "id": "layout:scripts",
+      "kind": "layout",
+      "occurrences": [],
+      "shape": "fence-line",
+      "source": {
+        "end_line": 121,
+        "line": 121,
+        "path": "docs/tier2/coding-standards.md"
+      },
+      "status": "named",
+      "tags": [],
+      "title": "scripts/"
+    },
+    {
+      "attrs": {
+        "description": "",
+        "directory": "src"
+      },
+      "body": "",
+      "extractor": "layout",
+      "id": "layout:src",
+      "kind": "layout",
+      "occurrences": [],
+      "shape": "fence-line",
+      "source": {
+        "end_line": 107,
+        "line": 107,
+        "path": "docs/tier2/coding-standards.md"
+      },
+      "status": "named",
+      "tags": [],
+      "title": "src/"
+    },
+    {
+      "attrs": {
+        "description": "",
+        "directory": "tests"
+      },
+      "body": "",
+      "extractor": "layout",
+      "id": "layout:tests",
+      "kind": "layout",
+      "occurrences": [],
+      "shape": "fence-line",
+      "source": {
+        "end_line": 115,
+        "line": 115,
+        "path": "docs/tier2/coding-standards.md"
+      },
+      "status": "named",
+      "tags": [],
+      "title": "tests/"
+    },
+    {
+      "attrs": {
+        "description": "vaultgraph and the generators — CI-gated, not the protected set",
+        "directory": "tools"
+      },
+      "body": "vaultgraph and the generators — CI-gated, not the protected set",
+      "extractor": "layout",
+      "id": "layout:tools",
+      "kind": "layout",
+      "occurrences": [],
+      "shape": "fence-line",
+      "source": {
+        "end_line": 128,
+        "line": 128,
+        "path": "docs/tier2/coding-standards.md"
+      },
+      "status": "named",
+      "tags": [],
+      "title": "tools/"
+    },
+    {
+      "attrs": {
+        "description": "generated read model — byte-compared in CI; never hand-edited",
+        "directory": "vault"
+      },
+      "body": "generated read model — byte-compared in CI; never hand-edited",
+      "extractor": "layout",
+      "id": "layout:vault",
+      "kind": "layout",
+      "occurrences": [],
+      "shape": "fence-line",
+      "source": {
+        "end_line": 129,
+        "line": 129,
+        "path": "docs/tier2/coding-standards.md"
+      },
+      "status": "named",
+      "tags": [],
+      "title": "vault/"
+    },
+    {
+      "attrs": {
         "is_test": "false",
         "lint_gated": "false",
         "path": ".github/workflows/gates.yml",
@@ -21670,6 +22076,30 @@
       "status": "",
       "tags": [],
       "title": "What depends on what: module -> module edges, read from import statements."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "tools/vaultgraph/extract/layout.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.vaultgraph.extract.layout",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/extract/layout.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "The top-level layout as declared in the coding-standards structure fence."
     },
     {
       "attrs": {

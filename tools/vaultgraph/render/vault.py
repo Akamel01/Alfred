@@ -35,6 +35,7 @@ FOLDERS = {
     NodeKind.SCHEMA: "code",
     NodeKind.GATE: "gates",
     NodeKind.GATE_STEP: "gates",
+    NodeKind.LAYOUT: "layout",
 }
 
 

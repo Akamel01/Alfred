@@ -3631,3 +3631,88 @@ what this tool inherits, and invariant 5 fixes it. A CI job would be a
 protected change under `.github/` for a convenience mechanism, and a gate whose only job
 is verifying a derived cache verifies the cache's freshness, not anything the product
 ships. The selftest is the floor; the gate would be theater.
+
+---
+
+## ADR-0033 — The structure fence names every top-level directory, and the vault floors it
+
+**Date:** 2026-08-21 · **Status:** Accepted · **Supersedes:** nothing · **Amends:** the structure fence of the coding standards · **See also:** ADR-0022 (the first D28 waiver), ADR-0031 (the protected set's ghost row) · **D28 waiver:** yes
+
+### Context
+
+One fact — what top-level directories the tree has — was carried in three lists that had
+drifted apart. The coding standards' structure fence (frozen, `ci-gate`) named 7 of the
+14: `src/ tests/ migrations/ harness/ scripts/ docs/ projects/`. The README's layout
+block carried 10 — it adds `bench/ policy/ deploy/` and still omits `.github`, `plan/`,
+`tools/` and `vault/`. The vault, the system map the register is read through, had no
+layout coverage at all: a directory that appeared or disappeared changed nothing the
+graph said. A fourth copy of the same list sits in the plan of record's "Files and
+structure" section inside `plan/`; that one is sealed by the manifest's sha256 — a hand
+edit fails `--check` — so it can be labeled and excluded, never amended, and it is not
+a candidate for the home.
+
+The home question is settled by decision A4 of the restructuring plan: the structure
+fence, because `pyproject.toml` already cites it — "Layout is fixed by
+docs/tier2/coding-standards.md § Structure" — and the alternatives were a second index
+(one-home violation) or inverting an existing citation. What the home question does not
+settle is enforcement. A frozen fence that names 7 of 14 is not conservative, it is
+stale: the seven unnamed directories include the plan mirror, the protected set and the
+vault itself, so the canonical document did not name the very machinery that guards it.
+The status that makes this a waiver rather than a routine edit is the document's own:
+`status: frozen`, `enforcement: ci-gate`.
+
+### Decision
+
+**The structure fence names every top-level directory, and the vault floors it.**
+
+1. **The seven absent lines land in the fence.** `.github/ bench/ deploy/ plan/ policy/
+   tools/ vault/`, one line each, in that order; the fence now names all 14 top-level
+directories, `.github` included. The ignore files are not the fence. `.gitignore` and
+   `.git/info/exclude` declare machine-local and generated state; the walked tree
+   subtracts exactly the literal `name/` patterns they declare, and a pattern with a
+glob or a subpath in it is left in: it cannot name a top-level directory either way, and
+   an undecided directory must surface, never pass silently.
+2. **The vault gains a `layout` extractor** (`tools/vaultgraph/extract/layout.py`). It
+   mints one LAYOUT node per fence line and holds a floor of 14: a fence that loses a
+   line is under the floor and the build is not current. It also walks the top-level
+directories and surfaces two anomalies — `layout-miss`, a directory that grew in and
+   the fence does not yet name; and `layout-ghost`, a fence line whose directory is not
+   there. The ghost is the protected set's ghost row wearing a layout hat — ADR-0031's
+   `lint_run_records` line, a declared file that exists nowhere, is the same shape of
+   finding: a declared thing with no referent, committed to `vault/_anomalies.md`
+   rather than resolved by the generator picking a side.
+3. **The README's layout block is retired to a pointer** at the fence. The README is the
+   human entry; it routes, it does not restate. One home per fact.
+
+This is a **D28 waiver** and counts toward the waiver total the operating principles use
+as a health metric. It is the second. The gate is the frozen status over the coding
+standards' structure fence; what it overrides is the fence's declared content — 7 of
+the 14 lines, above; the reason is the drift and the enforcement gap stated in the
+Context; and the condition that would reverse it is the falsification clause below,
+which the waiver must state or it is a note rather than a gate.
+
+### Falsifies if
+
+- a top-level directory exists in the tree and neither a fence line nor a committed
+  `layout-miss` anomaly accounts for it; or
+- a fence line names a directory that is not there and no committed `layout-ghost`
+  anomaly accounts for it; or
+- the floor is lowered, or a second list of top-level directories is carried in the
+  README or any register document.
+
+### Consequence
+
+The drift now fails in both directions instead of accumulating silently. The shrink
+direction fails the floor: delete a fence line and the vault build is red, so a fence
+cannot quietly lose a line the way it has lost seven. The growth direction is committed
+and visible: a new top-level directory produces a `layout-miss` row in
+`vault/_anomalies.md` in the same build that first sees it, a finding an operator
+closes with the line, the same way the protected set's ghost row was closed. The plan
+mirror's stale fourth copy is untouched: sealed files are labeled at the point of use,
+not edited.
+
+The change is seven fence lines, one extractor module with its registry entry, the
+README's block becoming a pointer, and this record. The extractor sits in `tools/`,
+which is agent-writable and CI-gated, not the protected set, so it is ordinary review;
+the frozen document is the part this waiver exists for, and its diff is the O9 surface
+of the change.

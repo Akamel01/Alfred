@@ -42,6 +42,7 @@ class NodeKind(StrEnum):
     GATE_STEP = "gate-step"
     TIER = "tier"
     UNRESOLVED = "unresolved"
+    LAYOUT = "layout"
 
 
 class EdgeKind(StrEnum):

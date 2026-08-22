@@ -120,6 +120,13 @@ migrations/
 harness/         OUTSIDE the agent tree — CriterionRunner, egress canary, floor test
 scripts/
 docs/
+.github/         CI — the five-job gate; protected
+bench/           Phase −1 inference measurements — immutable per-seed records
+deploy/          release machinery — identity-baked image, ledger, rollback
+plan/            the plan-of-record mirror — sha256-pinned; history, not instruction
+policy/          machine-readable tier 4 — allowlists, denylists, the protected set
+tools/           vaultgraph and the generators — CI-gated, not the protected set
+vault/           generated read model — byte-compared in CI; never hand-edited
 projects/        one nested git repository per product Alfred builds — git-ignored subdirectories
 ```
 

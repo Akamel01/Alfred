@@ -13,12 +13,15 @@ from __future__ import annotations
 from typing import Final
 
 from ..protocol import ExtractorSpec, validate_registry
-from . import (adrs, amendments, charter, code, decisions, documents, imports, references,
-               stages, workflows)
+from . import (adrs, amendments, charter, code, decisions, documents, imports, layout,
+               references, stages, workflows)
 
 EXTRACTORS: Final[tuple[ExtractorSpec, ...]] = (
     documents.SPEC,
     charter.SPEC,
+    # After `charter`: it reads the same tier the constitution sets, so the layout the
+    # fence declares is in the graph before anything that points at it.
+    layout.SPEC,
     stages.SPEC,
     # After `stages`: an ADR's `Discharges:` field names an operator item, and the only way to
     # tell "discharges O5" from "discharges an O5 nobody declares" is to ask what exists.

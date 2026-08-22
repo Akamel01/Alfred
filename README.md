@@ -31,19 +31,10 @@ No answer means it is not agent work yet.
 
 ## Layout
 
-```
-docs/            the register — 7 tiers, one file per document (see the reading map)
-harness/         OUTSIDE the agent tree; agents may improve the factory, never the inspector
-  acs/           ACS-1 canonical serialization, Python + JavaScript + the vector suite
-bench/           Phase -1 inference measurements
-policy/          machine-readable Tier 4 — network allowlist, oracle denylist
-deploy/          release artifacts; the API is the deployable unit
-scripts/         register generation and CI gates
-src/             the product — domain, metrics, provenance, thresholds, api; ingest and replay land with S5
-tests/           product tests; heldout/ and reference/ stay operator-populated
-migrations/      one directory per schema — product/, harness/, roles/
-projects/        one nested git repository per product Alfred builds (see projects/README.md)
-```
+The canonical layout is the structure fence in [coding standards](docs/tier2/coding-standards.md):
+every top-level directory, one line each. The vault's layout extractor floors it — a
+directory the fence forgets to name surfaces as an anomaly. This block is a pointer,
+not a second list: one home per fact.
 
 ## Checks
 
