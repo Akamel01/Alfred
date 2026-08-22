@@ -34,5 +34,4 @@ uv run pytest harness/stamp
 
 ## Binds
 
-- **runs** → [[module__harness_stamp|harness.stamp]]
 - [[gate__inspector|inspector (ACS-1, lane, bench)]] **contains** → this
