@@ -45,6 +45,9 @@ Inspector machinery (D20). Every assertion
 - **enforced_by** → [[module__harness_fingerprint___init__|The run fingerprint record — the declared configuration a run is measured on.]] — """The run fingerprint record — the declared configuration a run is measured on.
 
 Inspector machinery (D20). `record.py`
+- **enforced_by** → [[module__harness_lane_test_fingerprint_field_binding|Three spellings of "the lane's fields", and the two-schema reality between them.]] — """Three spellings of "the lane's fields", and the two-schema reality between them.
+
+`harness/fingerprint/record.py` `FI
 - **enforced_by** → [[module__migrations_harness_control_versions_0002_fingerprint_run_fields|control: the run-fingerprint fields the register had no column for.]] — """control: the run-fingerprint fields the register had no column for.
 
 Revision ID: 0002_fingerprint_run_fields

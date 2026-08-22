@@ -31,6 +31,7 @@ generated: true
 ## Binds
 
 - **contains** → [[module__harness_patch___init__|harness/patch/__init__.py]]
+- **contains** → [[module__harness_patch_test_import_hook_binding|The import-hook lists in `criterion.materialize` and `patch.validate` answer to each other]]
 - **contains** → [[module__harness_patch_test_protected_set|The protected set is policy configuration, and the policy is one home (ADR-0031).]]
 - **contains** → [[module__harness_patch_test_validate|Every refusal in the patch gate, planted and caught.]]
 - **contains** → [[module__harness_patch_validate|Validates a patch before anything touches a tree. Runs outside the container.]]

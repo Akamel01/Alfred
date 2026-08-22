@@ -50,6 +50,10 @@ Inspector machinery (D20). `record.py`
 A2: the container holds no VCS credent
 - **enforced_by** → [[module__harness_patch_validate|Validates a patch before anything touches a tree. Runs outside the container.]] — "configuration and never agent-writable (D20)"
 - **enforced_by** → [[module__harness_patch_validate|Validates a patch before anything touches a tree. Runs outside the container.]] — "configuration and never agent-writable (D20)"
+- **enforced_by** → [[module__scripts__lintkit|Shared machinery for the lints in `scripts/`, moved out of their siblings.]] — """Shared machinery for the lints in `scripts/`, moved out of their siblings.
+
+Each piece here ran verbatim, or near eno
+- **enforced_by** → [[module__scripts__lintkit|Shared machinery for the lints in `scripts/`, moved out of their siblings.]] — #: its own copy for the D20 reason above), so a heading one reader cannot parse is a
 - **enforced_by** → [[module__scripts_lint_ci_coverage|Two claims of CI coverage, checked against what CI actually runs.]] — """Two claims of CI coverage, checked against what CI actually runs.
 
 `gates.yml` states the rule this file generalizes:

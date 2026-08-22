@@ -44,3 +44,6 @@ Three things must agree: `policy/p
 
 A2: the container holds no VCS credent
 - **enforced_by** → [[module__harness_patch_validate|Validates a patch before anything touches a tree. Runs outside the container.]] — # The protected set as policy configuration (ADR-0031). The file is under `policy/` —
+- **enforced_by** → [[module__scripts__lintkit|Shared machinery for the lints in `scripts/`, moved out of their siblings.]] — """Shared machinery for the lints in `scripts/`, moved out of their siblings.
+
+Each piece here ran verbatim, or near eno

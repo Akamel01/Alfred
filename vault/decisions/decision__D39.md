@@ -45,6 +45,9 @@ Inspector machinery (D20). Permanently outside what agents may modify, and outsi
 - **enforced_by** → [[module__scripts_lint_verdict_boundary|D16/D39: the verdict boundary, enforced structurally rather than by convention.]] — """D16/D39: the verdict boundary, enforced structurally rather than by convention.
 
 **Why this exists as a lint and not 
+- **enforced_by** → [[module__scripts_lint_verdict_boundary|D16/D39: the verdict boundary, enforced structurally rather than by convention.]] — """Plant each violation and require the check to fire; then require it to stay quiet.
+
+    Written as a committed mode r
 - **enforced_by** → [[module__src_provenance_verify|The two-stage stamp read, and what a verifier says about a version it does not know.]] — """The two-stage stamp read, and what a verifier says about a version it does not know.
 
 ADR-0006's central property: **

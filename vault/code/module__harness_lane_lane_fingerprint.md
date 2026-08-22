@@ -36,6 +36,7 @@ generated: true
 - [[module__harness_lane|harness.lane]] **contains** → this
 - [[module__harness_containment_lane|C11 — the serving lane is the lane the run was dispatched against.]] **imports** → this
 - [[module__harness_containment_test_image_and_lane|C4 and C11 — the two rows that were blocked on a fingerprint record, and their controls.]] **imports** → this
+- [[module__harness_lane_test_fingerprint_field_binding|Three spellings of "the lane's fields", and the two-schema reality between them.]] **imports** → this
 
 ## Enforced by (code)
 

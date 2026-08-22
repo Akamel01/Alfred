@@ -43,6 +43,7 @@ generated: true
 - **contains** → [[module__harness_containment_reassert|C14 — the end-of-run re-assertion, and why a boot-time pass is not enough.]]
 - **contains** → [[module__harness_containment_shells|The executor-premise assertions, and the source read that filled their holes (O5).]]
 - **contains** → [[module__harness_containment_source_hashes|The register C15 clause 3 compares against, and the reason it had nothing to compare.]]
+- **contains** → [[module__harness_containment_test_archive_suffix_binding|Two ARCHIVE_SUFFIXES tuples, frozen verbatim, because their split is real and unexplained.]]
 - **contains** → [[module__harness_containment_test_c_assertions|C1–C15 beyond the two probes, each paired with the control that stops it reading green.]]
 - **contains** → [[module__harness_containment_test_containment|Containment assertions, each paired with the control that stops it reading green.]]
 - **contains** → [[module__harness_containment_test_image_and_lane|C4 and C11 — the two rows that were blocked on a fingerprint record, and their controls.]]

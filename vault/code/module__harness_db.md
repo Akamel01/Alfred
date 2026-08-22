@@ -35,4 +35,5 @@ generated: true
 - **contains** → [[module__harness_db_grants_declared|`migrations/roles/grants.yaml`, parsed and expanded into concrete grant tuples.]]
 - **contains** → [[module__harness_db_test_cluster|Tests of the fixture itself, before anything is asserted through it.]]
 - **contains** → [[module__harness_db_test_grants|The grant matrix, asserted two ways: by set equality, and by being refused.]]
+- **contains** → [[module__harness_db_test_pinned_postgres_image|Dev compose and the CI grant matrix must run one Postgres, and only a comment said so.]]
 - [[gate-step__database_04|Throwaway cluster, roles, grants and migrations]] **runs** → this

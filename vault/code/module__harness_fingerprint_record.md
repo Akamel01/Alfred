@@ -39,7 +39,9 @@ generated: true
 - [[module__harness_containment_test_image_and_lane|C4 and C11 — the two rows that were blocked on a fingerprint record, and their controls.]] **imports** → this
 - [[module__harness_fingerprint_test_record|The run fingerprint record, and the control that the hash covers every field.]] **imports** → this
 - [[module__harness_lane_lane_fingerprint|Fail-closed fingerprint assertion for the inference lane (D19/D40).]] **imports** → this
+- [[module__harness_lane_test_fingerprint_field_binding|Three spellings of "the lane's fields", and the two-schema reality between them.]] **imports** → this
 - [[module__harness_worker_port|The `Worker` port. A claim crosses it, or an exception does — never a verdict.]] **imports** → this
+- [[module__harness_worker_test_fake|Rehearsals of the `Worker` seam against the in-memory adaptor — interface only.]] **imports** → this
 
 ## Enforced by (code)
 

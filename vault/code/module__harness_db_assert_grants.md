@@ -34,4 +34,5 @@ generated: true
 
 - **imports** → [[module__harness_db_grants_declared|`migrations/roles/grants.yaml`, parsed and expanded into concrete grant tuples.]]
 - [[module__harness_db|harness.db]] **contains** → this
+- [[module__harness_db_test_cluster|Tests of the fixture itself, before anything is asserted through it.]] **imports** → this
 - [[module__harness_db_test_grants|The grant matrix, asserted two ways: by set equality, and by being refused.]] **imports** → this

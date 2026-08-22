@@ -36,5 +36,6 @@ generated: true
 - [[module__harness_criterion_runner|Compose one verdict, and keep the held-out half out of the environment that runs.]] **imports** → this
 - [[module__harness_criterion_test_materialize|A1, asserted as an architectural claim rather than as a list of blocked filenames.]] **imports** → this
 - [[module__harness_criterion_test_runner|Verdict composition, with the two collapses that would make the number meaningless.]] **imports** → this
+- [[module__harness_patch_test_import_hook_binding|The import-hook lists in `criterion.materialize` and `patch.validate` answer to each other]] **imports** → this
 - [[module__harness_selftest_suites|The two suites. They are one module because they are each other's vacuity control.]] **imports** → this
 - [[module__harness_selftest_test_selftest|S4. The inspector's inspector, and the controls that stop it reading green for free.]] **imports** → this

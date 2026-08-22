@@ -32,5 +32,6 @@ generated: true
 
 - **contains** → [[module__harness_lane_lane_fingerprint|Fail-closed fingerprint assertion for the inference lane (D19/D40).]]
 - **contains** → [[module__harness_lane_lane_salvage|Recovery of tool calls the serving layer rendered into the content channel.]]
+- **contains** → [[module__harness_lane_test_fingerprint_field_binding|Three spellings of "the lane's fields", and the two-schema reality between them.]]
 - **contains** → [[module__harness_lane_test_lane_controls|Tests for the two lane controls, with the negative controls that make them tests.]]
 - [[gate-step__inspector_07|Lane controls]] **runs** → this

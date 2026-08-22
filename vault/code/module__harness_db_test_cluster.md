@@ -32,5 +32,6 @@ generated: true
 
 ## Binds
 
+- **imports** → [[module__harness_db_assert_grants|Assert the cluster's grant matrix **equals** `migrations/roles/grants.yaml`.]]
 - **imports** → [[module__harness_db_cluster|Throwaway Postgres cluster: create, migrate, assert against, destroy.]]
 - [[module__harness_db|harness.db]] **contains** → this

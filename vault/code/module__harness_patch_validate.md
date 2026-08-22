@@ -33,6 +33,7 @@ generated: true
 ## Binds
 
 - [[module__harness_patch|harness.patch]] **contains** → this
+- [[module__harness_patch_test_import_hook_binding|The import-hook lists in `criterion.materialize` and `patch.validate` answer to each other]] **imports** → this
 - [[module__harness_patch_test_protected_set|The protected set is policy configuration, and the policy is one home (ADR-0031).]] **imports** → this
 - [[module__harness_patch_test_validate|Every refusal in the patch gate, planted and caught.]] **imports** → this
 

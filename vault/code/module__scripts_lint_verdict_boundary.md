@@ -44,3 +44,6 @@ generated: true
 - [[decision__D39|structural enforcement of D16/D20 (from gstack, the one idea that stands alone)]] **enforced_by** → this — """D16/D39: the verdict boundary, enforced structurally rather than by convention.
 
 **Why this exists as a lint and not 
+- [[decision__D39|structural enforcement of D16/D20 (from gstack, the one idea that stands alone)]] **enforced_by** → this — """Plant each violation and require the check to fire; then require it to stay quiet.
+
+    Written as a committed mode r

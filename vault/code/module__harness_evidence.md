@@ -37,5 +37,6 @@ generated: true
 - **contains** → [[module__harness_evidence_store|Append-only, hash-chained evidence writes.]]
 - **contains** → [[module__harness_evidence_test_restore_drill|The restore drill and the independent re-walk, each with the control that matters.]]
 - **contains** → [[module__harness_evidence_test_store|The append-only chain, asserted from both sides.]]
+- **contains** → [[module__harness_evidence_test_table_binding|Every chained table is drill-covered.]]
 - **contains** → [[module__harness_evidence_verify_chain_mjs|]]
 - [[gate-step__database_05|EvidenceStore, chain re-walk, and the D-synthetic restore drill]] **runs** → this

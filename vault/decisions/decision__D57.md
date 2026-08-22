@@ -47,6 +47,7 @@ C7, C9, C12, C13, C16 and C17 are asserte
 
     ADR-0019 recorded four unhard
 - **enforced_by** → [[module__harness_containment_source_hashes|The register C15 clause 3 compares against, and the reason it had nothing to compare.]] — # D57 at the loader rather than at the caller. A register that parsed to nothing is a
+- **enforced_by** → [[module__harness_containment_test_archive_suffix_binding|Two ARCHIVE_SUFFIXES tuples, frozen verbatim, because their split is real and unexplained.]] — """Vacuity guard (D57): two empty frozensets agree perfectly and check nothing."""
 - **enforced_by** → [[module__harness_containment_test_c_assertions|C1–C15 beyond the two probes, each paired with the control that stops it reading green.]] — """C1–C15 beyond the two probes, each paired with the control that stops it reading green.
 
 **How this suite would be sh
@@ -80,14 +81,23 @@ C7, C9, C12, C13, C16 and C17 are asserte
 - **enforced_by** → [[module__harness_db_test_grants|The grant matrix, asserted two ways: by set equality, and by being refused.]] — """The grant matrix, asserted two ways: by set equality, and by being refused.
 
 **Every denial asserts `SQLSTATE 42501` 
+- **enforced_by** → [[module__harness_db_test_pinned_postgres_image|Dev compose and the CI grant matrix must run one Postgres, and only a comment said so.]] — # Vacuity guard (D57): a parser that finds nothing agrees with nothing. The equality
 - **enforced_by** → [[module__harness_evidence_test_restore_drill|The restore drill and the independent re-walk, each with the control that matters.]] — """The restore drill and the independent re-walk, each with the control that matters.
 
 **How this suite would be shown v
 - **enforced_by** → [[module__harness_evidence_test_store|The append-only chain, asserted from both sides.]] — """The append-only chain, asserted from both sides.
 
 **How this suite would be shown vacuous** (D57). Every positive tes
+- **enforced_by** → [[module__harness_evidence_test_table_binding|Every chained table is drill-covered.]] — """Every chained table is drill-covered.
+
+The store chains exactly `CHAINED_TABLES`; the restore drill dumps, restores a
+- **enforced_by** → [[module__harness_evidence_test_table_binding|Every chained table is drill-covered.]] — # Vacuity guards first (D57): two empty collections are subsets of each other and
+- **enforced_by** → [[module__harness_lane_test_fingerprint_field_binding|Three spellings of "the lane's fields", and the two-schema reality between them.]] — """Vacuity guard (D57): empty groups agree with anything and pin nothing."""
 - **enforced_by** → [[module__harness_oracle_fingerprints|Runs INSIDE the oracle image. Emits digests and names, and never the source itself.]] — # D57. A register built from zero files would disable clause 3 while looking built.
 - **enforced_by** → [[module__harness_oracle_run|Runs the oracle image. Outside the container, and it never imports the oracle.]] — # D57. Zero vectors answered is not agreement; it is a cross-check that did not run.
+- **enforced_by** → [[module__harness_patch_test_import_hook_binding|The import-hook lists in `criterion.materialize` and `patch.validate` answer to each other]] — """Vacuity guard (D57): two empty copies agree perfectly and refuse nothing.
+
+    Equality alone would pass on two sets 
 - **enforced_by** → [[module__harness_patch_test_protected_set|The protected set is policy configuration, and the policy is one home (ADR-0031).]] — """D57. A set that enumerates nothing protects nothing, and passes everything."""
 - **enforced_by** → [[module__harness_patch_validate|Validates a patch before anything touches a tree. Runs outside the container.]] — """Read the protected set, refusing every way it can be missing.
 
@@ -102,6 +112,12 @@ C7, C9, C12, C13, C16 and C17 are asserte
 - **enforced_by** → [[module__harness_selftest_test_replay|Byte-identical deterministic replay, and the control that stops it being trivial.]] — """D57 at the product boundary.
 
     A metric over zero tracks still returns something, and that something would be stam
+- **enforced_by** → [[module__scripts__lintkit|Shared machinery for the lints in `scripts/`, moved out of their siblings.]] — """Shared machinery for the lints in `scripts/`, moved out of their siblings.
+
+Each piece here ran verbatim, or near eno
+- **enforced_by** → [[module__scripts__lintkit|Shared machinery for the lints in `scripts/`, moved out of their siblings.]] — """D57. A scan that saw nothing writes its VACUOUS line and fails; returns True then.
+
+    A guard that could pass for f
 - **enforced_by** → [[module__scripts_lint_harness_gate|How much of `harness/` the lint gate actually collects, and whether it can go red.]] — """How much of `harness/` the lint gate actually collects, and whether it can go red.
 
 `harness/` is the tree everything

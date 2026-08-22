@@ -38,6 +38,7 @@ generated: true
 
 ## Enforced by (code)
 
+- [[adr__ADR-0014|The chain is re-walked by the implementation that did not write it]] **enforced_by** → this — # The walker's stdout protocol (ADR-0014: JSONL is transport, not derivation — the
 - [[decision__D43|Evidence durability and tamper evidence]] **enforced_by** → this — """The chain head, recorded off-machine, and derived by the implementation that is not Python.
 
 D43 anchors the chain he

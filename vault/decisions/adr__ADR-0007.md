@@ -82,9 +82,14 @@ The oracle's code never cros
 
     `admissibility` defaults to `MEASUREME
 - **enforced_by** → [[module__harness_worker_port|The `Worker` port. A claim crosses it, or an exception does — never a verdict.]] — "merely misnamed (ADR-0007). Admissible for build work, not as a "
+- **enforced_by** → [[module__harness_worker_test_fake|Rehearsals of the `Worker` seam against the in-memory adaptor — interface only.]] — """The fake wires the port's own `check_handle`, at the default MEASUREMENT
+    strictness — so every refusal text is th
 - **enforced_by** → [[module__harness_worker_test_port|The Worker port's structural refusals, and the control on the check that enforces them.]] — """A worker that requires nothing has been configured to check nothing, and from
     outside that is indistinguishable f
 - **enforced_by** → [[module__policy_oracle-denylist_json|policy/oracle-denylist.json]] — "the vacuity ADR-0007 named. They are now read from importlib.metadata inside the pinned",
+- **enforced_by** → [[module__scripts__lintkit|Shared machinery for the lints in `scripts/`, moved out of their siblings.]] — """D57. A scan that saw nothing writes its VACUOUS line and fails; returns True then.
+
+    A guard that could pass for f
 - **enforced_by** → [[module__scripts_lint_harness_gate|How much of `harness/` the lint gate actually collects, and whether it can go red.]] — """How much of `harness/` the lint gate actually collects, and whether it can go red.
 
 `harness/` is the tree everything

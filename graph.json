@@ -31,7 +31,7 @@
     "gate-step": 51,
     "kill-criterion": 6,
     "layout": 14,
-    "module": 213,
+    "module": 221,
     "operator-item": 8,
     "risk": 12,
     "schema": 5,
@@ -43,9 +43,9 @@
     "amended_by": 2,
     "amends": 9,
     "blocks": 32,
-    "contains": 259,
-    "enforced_by": 318,
-    "imports": 214,
+    "contains": 266,
+    "enforced_by": 334,
+    "imports": 229,
     "needs": 4,
     "runs": 30,
     "see_also": 26,
@@ -1536,6 +1536,19 @@
     },
     {
       "confidence": "structural",
+      "dst": "module:harness.containment.test_archive_suffix_binding",
+      "evidence": "harness/containment/test_archive_suffix_binding.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/containment/test_archive_suffix_binding.py"
+      },
+      "src": "module:harness.containment"
+    },
+    {
+      "confidence": "structural",
       "dst": "module:harness.containment.test_c_assertions",
       "evidence": "harness/containment/test_c_assertions.py",
       "extractor": "code",
@@ -1744,6 +1757,19 @@
     },
     {
       "confidence": "structural",
+      "dst": "module:harness.db.test_pinned_postgres_image",
+      "evidence": "harness/db/test_pinned_postgres_image.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/db/test_pinned_postgres_image.py"
+      },
+      "src": "module:harness.db"
+    },
+    {
+      "confidence": "structural",
       "dst": "module:harness.deploy.__init__",
       "evidence": "harness/deploy/__init__.py",
       "extractor": "code",
@@ -1887,6 +1913,19 @@
     },
     {
       "confidence": "structural",
+      "dst": "module:harness.evidence.test_table_binding",
+      "evidence": "harness/evidence/test_table_binding.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/evidence/test_table_binding.py"
+      },
+      "src": "module:harness.evidence"
+    },
+    {
+      "confidence": "structural",
       "dst": "module:harness.evidence.verify_chain.mjs",
       "evidence": "harness/evidence/verify_chain.mjs",
       "extractor": "code",
@@ -1960,6 +1999,19 @@
         "end_line": 1,
         "line": 1,
         "path": "harness/lane/lane_salvage.py"
+      },
+      "src": "module:harness.lane"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.lane.test_fingerprint_field_binding",
+      "evidence": "harness/lane/test_fingerprint_field_binding.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/lane/test_fingerprint_field_binding.py"
       },
       "src": "module:harness.lane"
     },
@@ -2103,6 +2155,19 @@
         "end_line": 1,
         "line": 1,
         "path": "harness/patch/__init__.py"
+      },
+      "src": "module:harness.patch"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.patch.test_import_hook_binding",
+      "evidence": "harness/patch/test_import_hook_binding.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/patch/test_import_hook_binding.py"
       },
       "src": "module:harness.patch"
     },
@@ -2303,6 +2368,19 @@
     },
     {
       "confidence": "structural",
+      "dst": "module:harness.worker.fake",
+      "evidence": "harness/worker/fake.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/worker/fake.py"
+      },
+      "src": "module:harness.worker"
+    },
+    {
+      "confidence": "structural",
       "dst": "module:harness.worker.port",
       "evidence": "harness/worker/port.py",
       "extractor": "code",
@@ -2311,6 +2389,19 @@
         "end_line": 1,
         "line": 1,
         "path": "harness/worker/port.py"
+      },
+      "src": "module:harness.worker"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.worker.test_fake",
+      "evidence": "harness/worker/test_fake.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/worker/test_fake.py"
       },
       "src": "module:harness.worker"
     },
@@ -4063,8 +4154,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 48,
-        "line": 48,
+        "end_line": 50,
+        "line": 50,
         "path": "scripts/gen_reading_map.py"
       },
       "src": "adr:ADR-0001"
@@ -5397,6 +5488,19 @@
     },
     {
       "confidence": "derived",
+      "dst": "module:harness.worker.test_fake",
+      "evidence": "\"\"\"The fake wires the port's own `check_handle`, at the default MEASUREMENT\n    strictness — so every refusal text is the port's, including the vacuity refusal on\n    an empty requ",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 375,
+        "line": 375,
+        "path": "harness/worker/test_fake.py"
+      },
+      "src": "adr:ADR-0007"
+    },
+    {
+      "confidence": "derived",
       "dst": "module:harness.worker.test_port",
       "evidence": "\"\"\"A worker that requires nothing has been configured to check nothing, and from\n    outside that is indistinguishable from every check passing (ADR-0007).\"\"\"",
       "extractor": "references",
@@ -5418,6 +5522,19 @@
         "end_line": 18,
         "line": 18,
         "path": "policy/oracle-denylist.json"
+      },
+      "src": "adr:ADR-0007"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:scripts._lintkit",
+      "evidence": "\"\"\"D57. A scan that saw nothing writes its VACUOUS line and fails; returns True then.\n\n    A guard that could pass for free is the failure this project paid for twice over:\n    ruf",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 50,
+        "line": 50,
+        "path": "scripts/_lintkit.py"
       },
       "src": "adr:ADR-0007"
     },
@@ -5485,6 +5602,19 @@
         "path": ".github/workflows/gates.yml"
       },
       "src": "adr:ADR-0013"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:harness.evidence.anchor",
+      "evidence": "# The walker's stdout protocol (ADR-0014: JSONL is transport, not derivation — the",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 32,
+        "line": 32,
+        "path": "harness/evidence/anchor.py"
+      },
+      "src": "adr:ADR-0014"
     },
     {
       "confidence": "derived",
@@ -5813,6 +5943,19 @@
     },
     {
       "confidence": "derived",
+      "dst": "module:harness.lane.test_fingerprint_field_binding",
+      "evidence": "\"\"\"Three spellings of \"the lane's fields\", and the two-schema reality between them.\n\n`harness/fingerprint/record.py` `FIELD_GROUPS[\"lane\"]` is what a run hashes: four fields,\ninclu",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/lane/test_fingerprint_field_binding.py"
+      },
+      "src": "adr:ADR-0020"
+    },
+    {
+      "confidence": "derived",
       "dst": "module:migrations.harness.control.versions.0002_fingerprint_run_fields",
       "evidence": "\"\"\"control: the run-fingerprint fields the register had no column for.\n\nRevision ID: 0002_fingerprint_run_fields\nRevises: 0001_control_base\nCreate Date: 2026-08-19\n\n`control.finger",
       "extractor": "references",
@@ -5935,8 +6078,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 71,
-        "line": 71,
+        "end_line": 72,
+        "line": 72,
         "path": "scripts/lint_harness_gate.py"
       },
       "src": "adr:ADR-0029"
@@ -5990,6 +6133,19 @@
         "end_line": 50,
         "line": 50,
         "path": "harness/patch/validate.py"
+      },
+      "src": "adr:ADR-0031"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:scripts._lintkit",
+      "evidence": "\"\"\"Shared machinery for the lints in `scripts/`, moved out of their siblings.\n\nEach piece here ran verbatim, or near enough to smell the same, in two or more lints:\nthe Findings re",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "scripts/_lintkit.py"
       },
       "src": "adr:ADR-0031"
     },
@@ -6052,8 +6208,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 67,
-        "line": 67,
+        "end_line": 66,
+        "line": 66,
         "path": "scripts/lint_verdict_boundary.py"
       },
       "src": "decision:D16"
@@ -6328,6 +6484,32 @@
         "end_line": 278,
         "line": 278,
         "path": "harness/patch/validate.py"
+      },
+      "src": "decision:D20"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:scripts._lintkit",
+      "evidence": "\"\"\"Shared machinery for the lints in `scripts/`, moved out of their siblings.\n\nEach piece here ran verbatim, or near enough to smell the same, in two or more lints:\nthe Findings re",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "scripts/_lintkit.py"
+      },
+      "src": "decision:D20"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:scripts._lintkit",
+      "evidence": "#: its own copy for the D20 reason above), so a heading one reader cannot parse is a",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 30,
+        "line": 30,
+        "path": "scripts/_lintkit.py"
       },
       "src": "decision:D20"
     },
@@ -6730,6 +6912,19 @@
       "source": {
         "end_line": 2,
         "line": 2,
+        "path": "scripts/lint_verdict_boundary.py"
+      },
+      "src": "decision:D39"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:scripts.lint_verdict_boundary",
+      "evidence": "\"\"\"Plant each violation and require the check to fire; then require it to stay quiet.\n\n    Written as a committed mode rather than as a separate test file so it travels with\n    th",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 231,
+        "line": 231,
         "path": "scripts/lint_verdict_boundary.py"
       },
       "src": "decision:D39"
@@ -7711,6 +7906,19 @@
     },
     {
       "confidence": "derived",
+      "dst": "module:harness.containment.test_archive_suffix_binding",
+      "evidence": "\"\"\"Vacuity guard (D57): two empty frozensets agree perfectly and check nothing.\"\"\"",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 57,
+        "line": 57,
+        "path": "harness/containment/test_archive_suffix_binding.py"
+      },
+      "src": "decision:D57"
+    },
+    {
+      "confidence": "derived",
       "dst": "module:harness.containment.test_c_assertions",
       "evidence": "\"\"\"C1–C15 beyond the two probes, each paired with the control that stops it reading green.\n\n**How this suite would be shown vacuous** (D57). Nearly every test here asserts an outco",
       "extractor": "references",
@@ -7880,6 +8088,19 @@
     },
     {
       "confidence": "derived",
+      "dst": "module:harness.db.test_pinned_postgres_image",
+      "evidence": "# Vacuity guard (D57): a parser that finds nothing agrees with nothing. The equality",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 65,
+        "line": 65,
+        "path": "harness/db/test_pinned_postgres_image.py"
+      },
+      "src": "decision:D57"
+    },
+    {
+      "confidence": "derived",
       "dst": "module:harness.evidence.test_restore_drill",
       "evidence": "\"\"\"The restore drill and the independent re-walk, each with the control that matters.\n\n**How this suite would be shown vacuous** (D57). The drill's comparisons all pass on a\nrestor",
       "extractor": "references",
@@ -7906,6 +8127,45 @@
     },
     {
       "confidence": "derived",
+      "dst": "module:harness.evidence.test_table_binding",
+      "evidence": "\"\"\"Every chained table is drill-covered.\n\nThe store chains exactly `CHAINED_TABLES`; the restore drill dumps, restores and compares\nexactly `EVIDENCE_TABLES`. Nothing else keeps th",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/evidence/test_table_binding.py"
+      },
+      "src": "decision:D57"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:harness.evidence.test_table_binding",
+      "evidence": "# Vacuity guards first (D57): two empty collections are subsets of each other and",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 20,
+        "line": 20,
+        "path": "harness/evidence/test_table_binding.py"
+      },
+      "src": "decision:D57"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:harness.lane.test_fingerprint_field_binding",
+      "evidence": "\"\"\"Vacuity guard (D57): empty groups agree with anything and pin nothing.\"\"\"",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 95,
+        "line": 95,
+        "path": "harness/lane/test_fingerprint_field_binding.py"
+      },
+      "src": "decision:D57"
+    },
+    {
+      "confidence": "derived",
       "dst": "module:harness.oracle.fingerprints",
       "evidence": "# D57. A register built from zero files would disable clause 3 while looking built.",
       "extractor": "references",
@@ -7927,6 +8187,19 @@
         "end_line": 199,
         "line": 199,
         "path": "harness/oracle/run.py"
+      },
+      "src": "decision:D57"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:harness.patch.test_import_hook_binding",
+      "evidence": "\"\"\"Vacuity guard (D57): two empty copies agree perfectly and refuse nothing.\n\n    Equality alone would pass on two sets deleted together. The canonical members are\n    pinned here ",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 41,
+        "line": 41,
+        "path": "harness/patch/test_import_hook_binding.py"
       },
       "src": "decision:D57"
     },
@@ -8005,6 +8278,32 @@
         "end_line": 101,
         "line": 101,
         "path": "harness/selftest/test_replay.py"
+      },
+      "src": "decision:D57"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:scripts._lintkit",
+      "evidence": "\"\"\"Shared machinery for the lints in `scripts/`, moved out of their siblings.\n\nEach piece here ran verbatim, or near enough to smell the same, in two or more lints:\nthe Findings re",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "scripts/_lintkit.py"
+      },
+      "src": "decision:D57"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:scripts._lintkit",
+      "evidence": "\"\"\"D57. A scan that saw nothing writes its VACUOUS line and fails; returns True then.\n\n    A guard that could pass for free is the failure this project paid for twice over:\n    ruf",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 50,
+        "line": 50,
+        "path": "scripts/_lintkit.py"
       },
       "src": "decision:D57"
     },
@@ -8332,6 +8631,32 @@
         "path": "harness/containment/shells.py"
       },
       "src": "module:harness.containment.shells"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.containment.inside",
+      "evidence": "harness.containment.inside.ARCHIVE_SUFFIXES",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 22,
+        "line": 22,
+        "path": "harness/containment/test_archive_suffix_binding.py"
+      },
+      "src": "module:harness.containment.test_archive_suffix_binding"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.containment.oracle_absence",
+      "evidence": "harness.containment.oracle_absence.ARCHIVE_SUFFIXES",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 23,
+        "line": 23,
+        "path": "harness/containment/test_archive_suffix_binding.py"
+      },
+      "src": "module:harness.containment.test_archive_suffix_binding"
     },
     {
       "confidence": "structural",
@@ -8764,13 +9089,26 @@
     },
     {
       "confidence": "structural",
-      "dst": "module:harness.db.cluster",
-      "evidence": "harness.db.cluster.DBNAME",
+      "dst": "module:harness.db.assert_grants",
+      "evidence": "harness.db.assert_grants.SERVICE_ROLES",
       "extractor": "imports",
       "kind": "imports",
       "source": {
         "end_line": 19,
         "line": 19,
+        "path": "harness/db/test_cluster.py"
+      },
+      "src": "module:harness.db.test_cluster"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.db.cluster",
+      "evidence": "harness.db.cluster.DBNAME",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 20,
+        "line": 20,
         "path": "harness/db/test_cluster.py"
       },
       "src": "module:harness.db.test_cluster"
@@ -8800,6 +9138,19 @@
         "path": "harness/db/test_grants.py"
       },
       "src": "module:harness.db.test_grants"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.db.cluster",
+      "evidence": "harness.db.cluster.REPO_ROOT",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 20,
+        "line": 20,
+        "path": "harness/db/test_pinned_postgres_image.py"
+      },
+      "src": "module:harness.db.test_pinned_postgres_image"
     },
     {
       "confidence": "structural",
@@ -9024,6 +9375,32 @@
     },
     {
       "confidence": "structural",
+      "dst": "module:harness.evidence.restore_drill",
+      "evidence": "harness.evidence.restore_drill.EVIDENCE_TABLES",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 15,
+        "line": 15,
+        "path": "harness/evidence/test_table_binding.py"
+      },
+      "src": "module:harness.evidence.test_table_binding"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.evidence.store",
+      "evidence": "harness.evidence.store.CHAINED_TABLES",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 16,
+        "line": 16,
+        "path": "harness/evidence/test_table_binding.py"
+      },
+      "src": "module:harness.evidence.test_table_binding"
+    },
+    {
+      "confidence": "structural",
       "dst": "module:harness.acs.acs1",
       "evidence": "harness.acs.acs1.acs_sha256",
       "extractor": "imports",
@@ -9060,6 +9437,45 @@
         "path": "harness/lane/lane_fingerprint.py"
       },
       "src": "module:harness.lane.lane_fingerprint"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.containment.lane",
+      "evidence": "harness.containment.lane.expectation_from",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 24,
+        "line": 24,
+        "path": "harness/lane/test_fingerprint_field_binding.py"
+      },
+      "src": "module:harness.lane.test_fingerprint_field_binding"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.fingerprint.record",
+      "evidence": "harness.fingerprint.record.FIELD_GROUPS",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 25,
+        "line": 25,
+        "path": "harness/lane/test_fingerprint_field_binding.py"
+      },
+      "src": "module:harness.lane.test_fingerprint_field_binding"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.lane.lane_fingerprint",
+      "evidence": "harness.lane.lane_fingerprint.FINGERPRINT_FIELDS",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 26,
+        "line": 26,
+        "path": "harness/lane/test_fingerprint_field_binding.py"
+      },
+      "src": "module:harness.lane.test_fingerprint_field_binding"
     },
     {
       "confidence": "structural",
@@ -9151,6 +9567,32 @@
         "path": "harness/oracle/test_oracle.py"
       },
       "src": "module:harness.oracle.test_oracle"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.criterion.materialize",
+      "evidence": "harness.criterion.materialize.IMPORT_HOOK_NAMES",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 22,
+        "line": 22,
+        "path": "harness/patch/test_import_hook_binding.py"
+      },
+      "src": "module:harness.patch.test_import_hook_binding"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.patch.validate",
+      "evidence": "harness.patch.validate.IMPORT_HOOK_NAMES",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 26,
+        "line": 26,
+        "path": "harness/patch/test_import_hook_binding.py"
+      },
+      "src": "module:harness.patch.test_import_hook_binding"
     },
     {
       "confidence": "structural",
@@ -9336,6 +9778,19 @@
     },
     {
       "confidence": "structural",
+      "dst": "module:harness.worker.port",
+      "evidence": "harness.worker.port.ArtifactRef",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 57,
+        "line": 57,
+        "path": "harness/worker/fake.py"
+      },
+      "src": "module:harness.worker.fake"
+    },
+    {
+      "confidence": "structural",
       "dst": "module:harness.fingerprint.record",
       "evidence": "harness.fingerprint.record.RunFingerprint",
       "extractor": "imports",
@@ -9346,6 +9801,45 @@
         "path": "harness/worker/port.py"
       },
       "src": "module:harness.worker.port"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.fingerprint.record",
+      "evidence": "harness.fingerprint.record.RunFingerprint",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 22,
+        "line": 22,
+        "path": "harness/worker/test_fake.py"
+      },
+      "src": "module:harness.worker.test_fake"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.worker.fake",
+      "evidence": "harness.worker.fake.InMemoryWorker",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 23,
+        "line": 23,
+        "path": "harness/worker/test_fake.py"
+      },
+      "src": "module:harness.worker.test_fake"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.worker.port",
+      "evidence": "harness.worker.port.AssertionOutcome",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 24,
+        "line": 24,
+        "path": "harness/worker/test_fake.py"
+      },
+      "src": "module:harness.worker.test_fake"
     },
     {
       "confidence": "structural",
@@ -11729,16 +12223,16 @@
       "unparsed": 0
     },
     {
-      "edges": 145,
+      "edges": 152,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 45,
       "min_nodes": 90,
       "name": "code",
-      "nodes": 218,
+      "nodes": 226,
       "rejected": 0,
-      "scanned": 245,
+      "scanned": 253,
       "unparsed": 0
     },
     {
@@ -11768,7 +12262,7 @@
       "unparsed": 0
     },
     {
-      "edges": 214,
+      "edges": 229,
       "expect_rejected": null,
       "max_nodes": 0,
       "max_unparsed": 0,
@@ -11777,7 +12271,7 @@
       "name": "imports",
       "nodes": 0,
       "rejected": 0,
-      "scanned": 180,
+      "scanned": 188,
       "unparsed": 0
     },
     {
@@ -11794,7 +12288,7 @@
       "unparsed": 0
     },
     {
-      "edges": 318,
+      "edges": 334,
       "expect_rejected": null,
       "max_nodes": 0,
       "max_unparsed": 0,
@@ -11803,7 +12297,7 @@
       "name": "references",
       "nodes": 0,
       "rejected": 0,
-      "scanned": 180,
+      "scanned": 188,
       "unparsed": 0
     },
     {
@@ -18429,6 +18923,32 @@
       "attrs": {
         "is_test": "true",
         "lint_gated": "false",
+        "path": "harness/containment/test_archive_suffix_binding.py",
+        "present": "true",
+        "protected": "true",
+        "tree": "harness"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:harness.containment.test_archive_suffix_binding",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/containment/test_archive_suffix_binding.py"
+      },
+      "status": "",
+      "tags": [
+        "protected"
+      ],
+      "title": "Two ARCHIVE_SUFFIXES tuples, frozen verbatim, because their split is real and unexplained."
+    },
+    {
+      "attrs": {
+        "is_test": "true",
+        "lint_gated": "false",
         "path": "harness/containment/test_c_assertions.py",
         "present": "true",
         "protected": "true",
@@ -18893,6 +19413,32 @@
     },
     {
       "attrs": {
+        "is_test": "true",
+        "lint_gated": "false",
+        "path": "harness/db/test_pinned_postgres_image.py",
+        "present": "true",
+        "protected": "true",
+        "tree": "harness"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:harness.db.test_pinned_postgres_image",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/db/test_pinned_postgres_image.py"
+      },
+      "status": "",
+      "tags": [
+        "protected"
+      ],
+      "title": "Dev compose and the CI grant matrix must run one Postgres, and only a comment said so."
+    },
+    {
+      "attrs": {
         "lint_gated": "false",
         "namespace_package": "false",
         "present": "true",
@@ -19229,6 +19775,32 @@
     },
     {
       "attrs": {
+        "is_test": "true",
+        "lint_gated": "false",
+        "path": "harness/evidence/test_table_binding.py",
+        "present": "true",
+        "protected": "true",
+        "tree": "harness"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:harness.evidence.test_table_binding",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/evidence/test_table_binding.py"
+      },
+      "status": "",
+      "tags": [
+        "protected"
+      ],
+      "title": "Every chained table is drill-covered."
+    },
+    {
+      "attrs": {
         "is_test": "false",
         "lint_gated": "false",
         "path": "harness/evidence/verify_chain.mjs",
@@ -19432,6 +20004,32 @@
         "protected"
       ],
       "title": "Recovery of tool calls the serving layer rendered into the content channel."
+    },
+    {
+      "attrs": {
+        "is_test": "true",
+        "lint_gated": "false",
+        "path": "harness/lane/test_fingerprint_field_binding.py",
+        "present": "true",
+        "protected": "true",
+        "tree": "harness"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:harness.lane.test_fingerprint_field_binding",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/lane/test_fingerprint_field_binding.py"
+      },
+      "status": "",
+      "tags": [
+        "protected"
+      ],
+      "title": "Three spellings of \"the lane's fields\", and the two-schema reality between them."
     },
     {
       "attrs": {
@@ -19768,6 +20366,32 @@
         "protected"
       ],
       "title": "harness/patch/__init__.py"
+    },
+    {
+      "attrs": {
+        "is_test": "true",
+        "lint_gated": "false",
+        "path": "harness/patch/test_import_hook_binding.py",
+        "present": "true",
+        "protected": "true",
+        "tree": "harness"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:harness.patch.test_import_hook_binding",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/patch/test_import_hook_binding.py"
+      },
+      "status": "",
+      "tags": [
+        "protected"
+      ],
+      "title": "The import-hook lists in `criterion.materialize` and `patch.validate` answer to each other."
     },
     {
       "attrs": {
@@ -20238,6 +20862,32 @@
       "attrs": {
         "is_test": "false",
         "lint_gated": "false",
+        "path": "harness/worker/fake.py",
+        "present": "true",
+        "protected": "true",
+        "tree": "harness"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:harness.worker.fake",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/worker/fake.py"
+      },
+      "status": "",
+      "tags": [
+        "protected"
+      ],
+      "title": "The in-memory `Worker`: a scripted stand-in that rehearses the seam's semantics."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
         "path": "harness/worker/port.py",
         "present": "true",
         "protected": "true",
@@ -20259,6 +20909,32 @@
         "protected"
       ],
       "title": "The `Worker` port. A claim crosses it, or an exception does — never a verdict."
+    },
+    {
+      "attrs": {
+        "is_test": "true",
+        "lint_gated": "false",
+        "path": "harness/worker/test_fake.py",
+        "present": "true",
+        "protected": "true",
+        "tree": "harness"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:harness.worker.test_fake",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/worker/test_fake.py"
+      },
+      "status": "",
+      "tags": [
+        "protected"
+      ],
+      "title": "Rehearsals of the `Worker` seam against the in-memory adaptor — interface only."
     },
     {
       "attrs": {
@@ -20683,6 +21359,32 @@
         "protected"
       ],
       "title": "policy/protected-paths.json"
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "scripts/_lintkit.py",
+        "present": "true",
+        "protected": "true",
+        "tree": "scripts"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:scripts._lintkit",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "scripts/_lintkit.py"
+      },
+      "status": "",
+      "tags": [
+        "protected"
+      ],
+      "title": "Shared machinery for the lints in `scripts/`, moved out of their siblings."
     },
     {
       "attrs": {

@@ -29,3 +29,7 @@ generated: true
 | Field | Value |
 |---|---|
 | `status_raw` | Accepted |
+
+## Enforced by (code)
+
+- **enforced_by** → [[module__harness_evidence_anchor|The chain head, recorded off-machine, and derived by the implementation that is not Python]] — # The walker's stdout protocol (ADR-0014: JSONL is transport, not derivation — the
