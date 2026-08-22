@@ -47,7 +47,7 @@
     "enforced_by": 334,
     "imports": 229,
     "needs": 4,
-    "runs": 30,
+    "runs": 31,
     "see_also": 26,
     "supersedes": 1
   },
@@ -618,8 +618,8 @@
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 330,
-        "line": 330,
+        "end_line": 329,
+        "line": 329,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:database"
@@ -631,8 +631,8 @@
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 335,
-        "line": 335,
+        "end_line": 334,
+        "line": 334,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:database"
@@ -644,8 +644,8 @@
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 349,
-        "line": 349,
+        "end_line": 348,
+        "line": 348,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:database"
@@ -657,8 +657,8 @@
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 359,
-        "line": 359,
+        "end_line": 358,
+        "line": 358,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:database"
@@ -670,8 +670,8 @@
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 376,
-        "line": 376,
+        "end_line": 375,
+        "line": 375,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:database"
@@ -683,8 +683,8 @@
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 381,
-        "line": 381,
+        "end_line": 380,
+        "line": 380,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:database"
@@ -861,12 +861,12 @@
     {
       "confidence": "structural",
       "dst": "gate-step:inspector.14",
-      "evidence": "Stamp (version, upstream union, total verifier)",
+      "evidence": "Verdict vocabulary (words, stamp bridge table, authority bindings)",
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 316,
-        "line": 316,
+        "end_line": 315,
+        "line": 315,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:inspector"
@@ -878,8 +878,8 @@
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 319,
-        "line": 319,
+        "end_line": 318,
+        "line": 318,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:inspector"
@@ -1151,8 +1151,8 @@
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 394,
-        "line": 394,
+        "end_line": 393,
+        "line": 393,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:mutation"
@@ -1164,8 +1164,8 @@
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 399,
-        "line": 399,
+        "end_line": 398,
+        "line": 398,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:mutation"
@@ -1177,8 +1177,8 @@
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 406,
-        "line": 406,
+        "end_line": 405,
+        "line": 405,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:mutation"
@@ -1190,8 +1190,8 @@
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 421,
-        "line": 421,
+        "end_line": 420,
+        "line": 420,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:mutation"
@@ -11395,8 +11395,8 @@
       "extractor": "workflows",
       "kind": "needs",
       "source": {
-        "end_line": 325,
-        "line": 325,
+        "end_line": 324,
+        "line": 324,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:database"
@@ -11421,8 +11421,8 @@
       "extractor": "workflows",
       "kind": "needs",
       "source": {
-        "end_line": 389,
-        "line": 389,
+        "end_line": 388,
+        "line": 388,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:mutation"
@@ -11447,8 +11447,8 @@
       "extractor": "workflows",
       "kind": "runs",
       "source": {
-        "end_line": 359,
-        "line": 359,
+        "end_line": 358,
+        "line": 358,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate-step:database.04"
@@ -11460,8 +11460,8 @@
       "extractor": "workflows",
       "kind": "runs",
       "source": {
-        "end_line": 376,
-        "line": 376,
+        "end_line": 375,
+        "line": 375,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate-step:database.05"
@@ -11473,8 +11473,8 @@
       "extractor": "workflows",
       "kind": "runs",
       "source": {
-        "end_line": 381,
-        "line": 381,
+        "end_line": 380,
+        "line": 380,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate-step:database.06"
@@ -11598,13 +11598,26 @@
     },
     {
       "confidence": "structural",
+      "dst": "module:harness.verdicts",
+      "evidence": "uv run pytest harness/verdicts",
+      "extractor": "workflows",
+      "kind": "runs",
+      "source": {
+        "end_line": 315,
+        "line": 315,
+        "path": ".github/workflows/gates.yml"
+      },
+      "src": "gate-step:inspector.14"
+    },
+    {
+      "confidence": "structural",
       "dst": "module:harness.fingerprint",
       "evidence": "uv run pytest harness/fingerprint",
       "extractor": "workflows",
       "kind": "runs",
       "source": {
-        "end_line": 319,
-        "line": 319,
+        "end_line": 318,
+        "line": 318,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate-step:inspector.15"
@@ -11824,8 +11837,8 @@
       "extractor": "workflows",
       "kind": "runs",
       "source": {
-        "end_line": 421,
-        "line": 421,
+        "end_line": 420,
+        "line": 420,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate-step:mutation.04"
@@ -12314,7 +12327,7 @@
       "unparsed": 1
     },
     {
-      "edges": 85,
+      "edges": 86,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
@@ -16477,8 +16490,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 330,
-        "line": 330,
+        "end_line": 329,
+        "line": 329,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -16501,8 +16514,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 335,
-        "line": 335,
+        "end_line": 334,
+        "line": 334,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -16525,8 +16538,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 349,
-        "line": 349,
+        "end_line": 348,
+        "line": 348,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -16549,8 +16562,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 359,
-        "line": 359,
+        "end_line": 358,
+        "line": 358,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -16573,8 +16586,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 376,
-        "line": 376,
+        "end_line": 375,
+        "line": 375,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -16597,8 +16610,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 381,
-        "line": 381,
+        "end_line": 380,
+        "line": 380,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -16921,27 +16934,27 @@
     },
     {
       "attrs": {
-        "command": "uv run pytest harness/stamp",
+        "command": "uv run pytest harness/verdicts",
         "job": "inspector",
         "kind": "run",
         "ordinal": "14"
       },
-      "body": "uv run pytest harness/stamp",
+      "body": "uv run pytest harness/verdicts",
       "extractor": "workflows",
       "id": "gate-step:inspector.14",
       "kind": "gate-step",
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 316,
-        "line": 316,
+        "end_line": 315,
+        "line": 315,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
       "tags": [
         "protected"
       ],
-      "title": "Stamp (version, upstream union, total verifier)"
+      "title": "Verdict vocabulary (words, stamp bridge table, authority bindings)"
     },
     {
       "attrs": {
@@ -16957,8 +16970,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 319,
-        "line": 319,
+        "end_line": 318,
+        "line": 318,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -17461,8 +17474,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 394,
-        "line": 394,
+        "end_line": 393,
+        "line": 393,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -17485,8 +17498,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 399,
-        "line": 399,
+        "end_line": 398,
+        "line": 398,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -17509,8 +17522,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 406,
-        "line": 406,
+        "end_line": 405,
+        "line": 405,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -17533,8 +17546,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 421,
-        "line": 421,
+        "end_line": 420,
+        "line": 420,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -17699,8 +17712,8 @@
       "occurrences": [],
       "shape": "job",
       "source": {
-        "end_line": 323,
-        "line": 323,
+        "end_line": 322,
+        "line": 322,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -17765,8 +17778,8 @@
       "occurrences": [],
       "shape": "job",
       "source": {
-        "end_line": 387,
-        "line": 387,
+        "end_line": 386,
+        "line": 386,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",

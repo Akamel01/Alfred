@@ -41,7 +41,7 @@ generated: true
 - **contains** → [[gate-step__inspector_11|Deploy and rollback (ledger, identity, refusals)]]
 - **contains** → [[gate-step__inspector_12|Worker port (claim/fault split, containment refusals)]]
 - **contains** → [[gate-step__inspector_13|Patch gate (protected paths, A10 invisibles, import hooks)]]
-- **contains** → [[gate-step__inspector_14|Stamp (version, upstream union, total verifier)]]
+- **contains** → [[gate-step__inspector_14|Verdict vocabulary (words, stamp bridge table, authority bindings)]]
 - **contains** → [[gate-step__inspector_15|Run fingerprint record (field set, derived digest, register agreement)]]
 - **needs** → [[gate__integrity|integrity (fixtures and register)]]
 - [[gate__mutation|mutation control (the suite's own negative control)]] **needs** → this
