@@ -13,12 +13,12 @@ ground truth the factory needs to measure itself.
 |---|---|
 | **[Reading map](docs/READING-MAP.md)** | **What to read, when, and whether it binds the code you are writing.** Start here for any build work. |
 | [Register index](docs/README.md) | What exists: every document by tier, with status and enforcement. |
+| [Vault overview](vault/Overview.md) | The generated system map: every document, decision, module and gate, and how they connect. |
 | [Architecture decisions](docs/tier1/adr-log.md) | The ADR log. Binding on implementation and easy to miss, since they share one file. |
 | [Charter and non-goals](docs/tier0/charter-and-non-goals.md) | What this is, what it will not do, and the kill criteria. |
 
-The architecture plan of record lives outside this repository, at
-`~/.claude/plans/handoff-autonomous-software-engineering-fizzy-dahl.md`. It carries the
-decision history, the measurements, and the phase sequence. The documents here are its
+The architecture plan of record is mirrored at `plan/` (sha256-pinned by its manifest; CI
+verifies the hash on every runner); its origin is append-only history. `docs/` is the
 normative form; where they disagree, the documents win.
 
 ## The rule everything follows

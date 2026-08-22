@@ -3,8 +3,14 @@
 One directory per product Alfred builds. **Each is its own git repository, and none of
 them is a submodule of this one.**
 
-Nothing lives here yet. The first entry will be the collision-risk quantification
-product (D1, D2), which Phase 0 hand-builds.
+Nothing lives here yet. In the single-product era (Phase 0–1) the first product — the
+collision-risk quantification product (D1, D2), which Phase 0 hand-builds — is built *inside
+this repository* (`src/`, `tests/`, `bench/`), in the plan of record's "Files and structure"
+form. The blast-radius separation a separate repository would give is held *in place* by
+physical controls instead: the dispatch mount, the protected set, and the patch gate (D20/A1
+— boundaries, not convention). At the dated trigger — the first customer-container build that
+must exclude factory code, or the second product (D21) — extraction proceeds per
+["Adding a project"](#adding-a-project) below, and this directory gains its first entry.
 
 ## Why separate repositories rather than a monorepo
 
