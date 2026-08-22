@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import math
+from typing import Literal, cast
 
 import numpy as np
 import pytest
@@ -179,9 +180,10 @@ def test_wire_form_and_hash_form_are_one_shape(value: MetricValue) -> None:
 def test_infinite_arm_carries_the_sign_on_both_forms(sign: str) -> None:
     """E1/E7: which infinity is asserted matters (`+` = never collides). Neither
     serializer may lose it — pydantic's default would have turned inf into null."""
-    wire = json.loads(METRIC_VALUE_ADAPTER.dump_json(Infinite(sign=sign)))
+    tagged = cast("Literal['+', '-']", sign)
+    wire = json.loads(METRIC_VALUE_ADAPTER.dump_json(Infinite(sign=tagged)))
     assert wire == {"kind": "infinite", "sign": sign}
-    assert metric_value_to_acs(Infinite(sign=sign)) == wire
+    assert metric_value_to_acs(Infinite(sign=tagged)) == wire
 
 
 def test_a_cause_chain_is_present_on_both_forms() -> None:
@@ -205,6 +207,6 @@ def test_negative_zero_hashes_as_positive_zero() -> None:
     assert canonicalize(metric_value_to_acs(defined(-0.0))) == canonicalize(
         metric_value_to_acs(defined(0.0))
     )
-    # The wire form keeps the value's own equality (−0.0 == 0.0) without pretending
+    # The wire form keeps the value's own equality (-0.0 == 0.0) without pretending
     # the bytes were never different before the canonicalizer saw them.
     assert json.loads(METRIC_VALUE_ADAPTER.dump_json(defined(-0.0)))["value"] == 0.0
