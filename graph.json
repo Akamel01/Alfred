@@ -23,7 +23,7 @@
     }
   ],
   "counts": {
-    "adr": 34,
+    "adr": 35,
     "amendment": 12,
     "decision": 57,
     "document": 63,
@@ -48,7 +48,7 @@
     "imports": 209,
     "needs": 4,
     "runs": 31,
-    "see_also": 23,
+    "see_also": 26,
     "supersedes": 1
   },
   "edges": [
@@ -11571,6 +11571,45 @@
       "src": "adr:ADR-0033"
     },
     {
+      "confidence": "structural",
+      "dst": "adr:ADR-0022",
+      "evidence": "**See also:** ADR-0022 (the first D28 waiver), ADR-0033 (the second), ADR-0031 (the protected set)",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 3790,
+        "line": 3790,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0035"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0031",
+      "evidence": "**See also:** ADR-0022 (the first D28 waiver), ADR-0033 (the second), ADR-0031 (the protected set)",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 3790,
+        "line": 3790,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0035"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0033",
+      "evidence": "**See also:** ADR-0022 (the first D28 waiver), ADR-0033 (the second), ADR-0031 (the protected set)",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 3790,
+        "line": 3790,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0035"
+    },
+    {
       "confidence": "prose",
       "dst": "decision:D17",
       "evidence": "Supersedes decision 17",
@@ -11586,14 +11625,14 @@
   ],
   "extractors": [
     {
-      "edges": 31,
+      "edges": 34,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 4,
       "min_nodes": 14,
       "name": "adrs",
-      "nodes": 34,
+      "nodes": 35,
       "rejected": 0,
       "scanned": 1,
       "unparsed": 0
@@ -12448,6 +12487,27 @@
       "status": "accepted",
       "tags": [],
       "title": "The ADR number claim lint: a branch may not claim a number the base has issued"
+    },
+    {
+      "attrs": {
+        "date": "2026-08-21",
+        "status": "accepted",
+        "status_raw": "Accepted"
+      },
+      "body": "**Date:** 2026-08-21 · **Status:** Accepted · **Supersedes:** nothing · **Amends:** the protected paths policy · **See also:** ADR-0022 (the first D28 waiver), ADR-0033 (the second), ADR-0031 (the protected set) · **D28 waiver:** yes",
+      "extractor": "adrs",
+      "id": "adr:ADR-0035",
+      "kind": "adr",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 3790,
+        "line": 3790,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "accepted",
+      "tags": [],
+      "title": "The protected set's single home names its fourth shape as a projection, not a second authority"
     },
     {
       "attrs": {

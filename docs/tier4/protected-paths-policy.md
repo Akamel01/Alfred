@@ -40,7 +40,8 @@ equality between the file and this table in both directions: a row in this table
 no entry in the file protects nothing, and an entry with no row protects something no
 one was told about. The `control.policy_protected_path` table carries the same policy
 per tenant for runtime enforcement; its writer is a later stage, and nothing here
-claims the sync.
+claims the sync. It is a projection of this policy, not a second authority:
+the single home is the file.
 
 ## The protected set
 

@@ -3784,3 +3784,64 @@ append-only log keeps its numbering discipline enforced rather than stated.
 
 This is a `.github/` change — the protected set — and a `scripts/` addition, so the O9
 line-by-line review and this record are the price, per major-fix #8.
+
+---
+
+## ADR-0035 — The protected set's single home names its fourth shape as a projection, not a second authority
+
+**Date:** 2026-08-21 · **Status:** Accepted · **Supersedes:** nothing · **Amends:** the protected paths policy · **See also:** ADR-0022 (the first D28 waiver), ADR-0033 (the second), ADR-0031 (the protected set) · **D28 waiver:** yes
+
+### Context
+
+The protected set has four shapes: the frozen table in the policy document, the hardcoded
+prefixes in the patch validator, the machine-readable `policy/protected-paths.json`, and
+the `control.policy_protected_path` database table. The first three became one when
+ADR-0031 landed: the JSON is the machine-readable home, the validator loads it failing
+closed, and the test asserts set equality between the file and the table in both
+directions. The fourth shape — the database table, whose DDL and grants landed with the
+control schema — was named in the policy's provenance section as carrying the same policy
+per tenant for runtime enforcement, its writer a later stage, no sync claimed.
+
+What the single-home statement did not yet say is what the table *is* in the home
+hierarchy. A table that carries the policy per tenant can read as a second authority: a
+place the policy also lives, that could drift from the file and be cited as ground truth.
+The read-model governance ruling (the restructuring plan's W6) requires the single-home
+statement to name the fourth shape as a runtime per-tenant projection, not a second
+authority, with the sync obligation attaching at its writer stage. The policy document is
+`status: frozen`, `enforcement: ci-gate`; the line that completes the statement is a
+change to a frozen document, which is what this waiver exists for.
+
+### Decision
+
+**The single-home statement names the fourth shape as a projection, not a second authority.**
+
+The policy's provenance section gains one line: the `control.policy_protected_path` table
+is a projection of the policy, not a second authority — the single home is the file. The
+sync obligation stays attached to the table's writer stage, a later one; nothing in the
+file claims it, and a projection cannot become a competing source of truth because the
+home it projects from is the only place the policy is authored.
+
+This is a **D28 waiver** and counts toward the waiver total the operating principles use
+as a health metric. It is the **third**. The gate is the frozen status over the protected
+paths policy; what it overrides is the policy's declared content — the single-home
+statement, above; the reason is that the fourth shape of the protected set must be named
+as a projection rather than left to read as a second authority; and the condition that
+would reverse it is the falsification clause below, which the waiver must state or it is
+a note rather than a gate.
+
+### Falsifies if
+
+- the `control.policy_protected_path` table is cited as a source of the protected set
+  rather than as a projection of the file; or
+- a writer for the table lands and the file is not the source it projects from; or
+- a second machine-readable home for the protected set appears beside
+  `policy/protected-paths.json`.
+
+### Consequence
+
+The four shapes are now one home with a named projection. The file is the single
+machine-readable authority; the table is its per-tenant runtime projection, and the
+statement says so at the point where a reader would otherwise infer a second authority.
+The sync obligation stays with the writer stage, a later one, so the projection cannot be
+cited as ground truth before it has a writer to be in sync with. The change is one line
+in a frozen document and this record; the line is the O9 surface of the change.
