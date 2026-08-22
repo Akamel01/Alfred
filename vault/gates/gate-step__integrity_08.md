@@ -1,19 +1,19 @@
 ---
 kind: gate-step
 id: "gate-step:integrity.08"
-title: "Verdict boundary lint detects planted violations"
+title: "Migrations are additive-only"
 shape: "step"
 job: "integrity"
 source: ".github/workflows/gates.yml:84"
 extractor: "workflows"
 tags: [protected]
 aliases:
-  - "Verdict boundary lint detects planted violations"
+  - "Migrations are additive-only"
   - "integrity.08"
 generated: true
 ---
 
-# Verdict boundary lint detects planted violations
+# Migrations are additive-only
 
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
@@ -22,17 +22,17 @@ generated: true
 
 ## Statement
 
-python3 scripts/lint_verdict_boundary.py --self-test
+python3 scripts/lint_migrations.py
 
 ## Fields
 
 | Field | Value |
 |---|---|
-| `command` | python3 scripts/lint_verdict_boundary.py --self-test |
+| `command` | python3 scripts/lint_migrations.py |
 | `kind` | run |
 | `ordinal` | 8 |
 
 ## Binds
 
-- **runs** → [[module__scripts_lint_verdict_boundary|D16/D39: the verdict boundary, enforced structurally rather than by convention.]]
+- **runs** → [[module__scripts_lint_migrations|Additive-only lint over the evidence and held-out migration directories.]]
 - [[gate__integrity|integrity (fixtures and register)]] **contains** → this

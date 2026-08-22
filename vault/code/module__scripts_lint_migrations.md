@@ -32,4 +32,4 @@ generated: true
 
 ## Binds
 
-- [[gate-step__integrity_06|Migrations are additive-only]] **runs** → this
+- [[gate-step__integrity_08|Migrations are additive-only]] **runs** → this

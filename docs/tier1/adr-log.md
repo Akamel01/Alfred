@@ -3716,3 +3716,71 @@ README's block becoming a pointer, and this record. The extractor sits in `tools
 which is agent-writable and CI-gated, not the protected set, so it is ordinary review;
 the frozen document is the part this waiver exists for, and its diff is the O9 surface
 of the change.
+
+---
+
+## ADR-0034 — The ADR number claim lint: a branch may not claim a number the base has issued
+
+**Date:** 2026-08-21 · **Status:** Accepted · **Supersedes:** none
+
+### Context
+
+The register's self-hygiene item. The ADR log is append-only, and its preamble states the
+numbering discipline: sequential, and never reused. Nothing had ever enforced the *claim*
+half of it. A collision is discovered at merge, when two branches land on the same number,
+and it is paid for by hand — a renumbering note, corrected in-repo references, and a vault
+rename, per the `fa62b4b` precedent. That cost was paid twice in one week when the four ADR
+branches landed under the operator's merge-order ruling: the protected-set record renumbered
+0029 to 0031, its note having reasoned from main's numbering without seeing the m1 claim;
+the agentdb record renumbered 0031 to 0032, pre-authorized by its own note but still a hand
+edit at merge. Both renumbers were correct, and neither was caught before merge.
+
+### Decision
+
+**A branch may not claim a number the base has issued.** `scripts/lint_adr_numbers.py`,
+run in the integrity job after the reading-map check, compares the log as the branch has
+it against the log the base ref has (`origin/$GITHUB_BASE_REF` in CI, else `origin/main`,
+else `main`, else `HEAD`) and reports:
+
+- a **re-claim** — the base has issued a number and the branch carries a different record
+  under it — as a failure, and a number twice in the branch log as a failure; the merge
+  of two records under one number is the collision the log's discipline forbids;
+- a **gap** in the branch log as a print, never a failure: a record may deliberately take
+  a number it expects to lose at merge (the agentdb record took 0031 knowing 0029 was
+  contested), and the vault already surfaces gaps as the declared `adr-numbering-gap`
+  anomaly, which is the committed home for that fact. A gate that reds on a deliberate
+  skip is a gate branches work around;
+- a base that resolves to nothing, or a log that parses to no heading, as a failure: a
+  claim check with nothing to check against is the vacuity class.
+
+The comparison is over the heading and the decision text. A trailing renumbering note is
+excluded from it: the note travels with the record it reconciles, and the merge that
+renumbers a record is the same merge that rewrites the note, so the note cannot take part
+in the comparison. The self-test plants a new number (passes), a re-claim (fails), a
+deliberate skip (prints, passes), an in-branch duplicate (fails), and a heading-less log
+(fails), and runs with no git repository at all, because a check whose negative control
+needs a repository runs only where a repository happens to be.
+
+The record also closes the other half of the self-hygiene item. The retired Phase 0.5 row
+is out of the reading map (retired 2026-08-14, folded into 0.75 per the plan of record),
+and the eight-entry manifest discipline is already on main, so those halves needed no
+change beyond the generator table this lint stands beside.
+
+### Falsifies if
+
+- a branch lands a number the base has issued without the lint failing at the branch tip;
+  or
+- the lint reds on a deliberate gap, or on a record whose only difference from the base's
+  copy is a renumbering note; or
+- the self-test passes with any guard unwired.
+
+### Consequence
+
+The collision is found where the fix is still cheap: at the branch tip, a renumber with a
+note per the `fa62b4b` precedent, instead of at merge, where it is a note plus corrected
+in-repo references plus a vault rename. The vault keeps surfacing gaps as declared
+anomalies, so a deliberate reservation stays visible without being a failure, and the
+append-only log keeps its numbering discipline enforced rather than stated.
+
+This is a `.github/` change — the protected set — and a `scripts/` addition, so the O9
+line-by-line review and this record are the price, per major-fix #8.

@@ -62,6 +62,20 @@ jobs:
       - name: Reading map current
         run: python3 scripts/gen_reading_map.py --check
 
+      # ADR number claim lint. The log is append-only and its numbers never reuse,
+      # but the claim half of that discipline was enforced nowhere: the collision was
+      # discovered at merge and paid for by hand — the fa62b4b collision paid twice in
+      # one week (0029 to 0031, 0031 to 0032). This fails a branch that re-claims a
+      # number the base has issued, or carries one twice, and prints — never fails — a
+      # deliberate gap, whose committed home is the vault's adr-numbering-gap anomaly.
+      - name: ADR numbers are claimed once
+        run: python3 scripts/lint_adr_numbers.py
+
+      # Its own negative control, run first-class rather than trusted, for the same
+      # reason the verdict-boundary lint's is.
+      - name: ADR number lint detects planted collisions
+        run: python3 scripts/lint_adr_numbers.py --self-test
+
       # Additive-only over migrations/harness/{evidence,heldout}/versions/. Second
       # layer over the grant matrix: the grant makes the destructive write impossible
       # for every role that runs; this catches the migration that would grant itself

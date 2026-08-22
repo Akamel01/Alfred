@@ -32,8 +32,8 @@ generated: true
 
 ## Binds
 
-- [[gate-step__integrity_09|CI coverage (test directories, failure register)]] **runs** → this
-- [[gate-step__integrity_10|CI coverage lint detects planted violations]] **runs** → this
+- [[gate-step__integrity_11|CI coverage (test directories, failure register)]] **runs** → this
+- [[gate-step__integrity_12|CI coverage lint detects planted violations]] **runs** → this
 
 ## Enforced by (code)
 

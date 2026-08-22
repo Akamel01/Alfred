@@ -182,7 +182,8 @@ Binding on implementation and easy to miss, since they live inside one document.
 | [ADR-0031](tier1/adr-log.md) | The protected set is one file, and the gate protects its own policy | Accepted |
 | [ADR-0032](tier1/adr-log.md) | Operator-plane memory is recall over the committed corpus, not a store | Accepted |
 | [ADR-0033](tier1/adr-log.md) | The structure fence names every top-level directory, and the vault floors it | Accepted |
+| [ADR-0034](tier1/adr-log.md) | The ADR number claim lint: a branch may not claim a number the base has issued | Accepted |
 
 ---
 
-**63 documents mapped** · 43 binding · 13 context · 7 record · 33 architecture decisions
+**63 documents mapped** · 43 binding · 13 context · 7 record · 34 architecture decisions

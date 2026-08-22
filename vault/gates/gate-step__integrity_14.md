@@ -1,38 +1,38 @@
 ---
 kind: gate-step
 id: "gate-step:integrity.14"
-title: "Stage gate lint detects planted violations"
+title: "Harness gate detects planted violations"
 shape: "step"
 job: "integrity"
-source: ".github/workflows/gates.yml:136"
+source: ".github/workflows/gates.yml:138"
 extractor: "workflows"
 tags: [protected]
 aliases:
-  - "Stage gate lint detects planted violations"
+  - "Harness gate detects planted violations"
   - "integrity.14"
 generated: true
 ---
 
-# Stage gate lint detects planted violations
+# Harness gate detects planted violations
 
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `.github/workflows/gates.yml:136`
+**Source** · `.github/workflows/gates.yml:138`
 
 ## Statement
 
-python3 scripts/lint_stage_gates.py --self-test
+python3 scripts/lint_harness_gate.py --self-test
 
 ## Fields
 
 | Field | Value |
 |---|---|
-| `command` | python3 scripts/lint_stage_gates.py --self-test |
+| `command` | python3 scripts/lint_harness_gate.py --self-test |
 | `kind` | run |
 | `ordinal` | 14 |
 
 ## Binds
 
-- **runs** → [[module__scripts_lint_stage_gates|The stage gate, as a check rather than as a sentence somebody reads.]]
+- **runs** → [[module__scripts_lint_harness_gate|How much of `harness/` the lint gate actually collects, and whether it can go red.]]
 - [[gate__integrity|integrity (fixtures and register)]] **contains** → this

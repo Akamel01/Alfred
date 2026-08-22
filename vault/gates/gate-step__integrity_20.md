@@ -1,38 +1,38 @@
 ---
 kind: gate-step
-id: "gate-step:integrity.13"
-title: "Harness lint coverage"
+id: "gate-step:integrity.20"
+title: "Vault generator suites"
 shape: "step"
 job: "integrity"
-source: ".github/workflows/gates.yml:132"
+source: ".github/workflows/gates.yml:195"
 extractor: "workflows"
 tags: [protected]
 aliases:
-  - "Harness lint coverage"
-  - "integrity.13"
+  - "Vault generator suites"
+  - "integrity.20"
 generated: true
 ---
 
-# Harness lint coverage
+# Vault generator suites
 
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `.github/workflows/gates.yml:132`
+**Source** · `.github/workflows/gates.yml:195`
 
 ## Statement
 
-python3 scripts/lint_harness_gate.py
+uv run pytest tools/tests
 
 ## Fields
 
 | Field | Value |
 |---|---|
-| `command` | python3 scripts/lint_harness_gate.py |
+| `command` | uv run pytest tools/tests |
 | `kind` | run |
-| `ordinal` | 13 |
+| `ordinal` | 20 |
 
 ## Binds
 
-- **runs** → [[module__scripts_lint_harness_gate|How much of `harness/` the lint gate actually collects, and whether it can go red.]]
+- **runs** → [[module__tools_tests|tools.tests]]
 - [[gate__integrity|integrity (fixtures and register)]] **contains** → this
