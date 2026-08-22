@@ -51,11 +51,10 @@ import ast
 import sys
 import tempfile
 from collections import deque
-from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Final
 
-REPO_ROOT: Final = Path(__file__).resolve().parents[1]
+from _lintkit import REPO_ROOT, Findings, self_test_exit, vacuity_guard
 
 # The agent-writable tree. `src` is the package root, so `src/metrics/value.py` is the
 # module `metrics.value` — matching [tool.pyright].extraPaths and the documented layout.
@@ -73,12 +72,6 @@ VERDICT_FIELDS: Final = frozenset({"verdict", "held_out_result", "indeterminate_
 # it is called, so the name check alone would miss `-> Literal["pass", "fail",
 # "indeterminate"]` on a function named `classify`.
 VERDICT_LITERALS: Final = frozenset({"pass", "fail", "indeterminate"})
-
-
-@dataclass
-class Findings:
-    scanned: int = 0
-    violations: list[str] = field(default_factory=list)
 
 
 def _module_name(path: Path, root: Path, *, strip_root: bool) -> str:
@@ -240,6 +233,12 @@ def self_test() -> int:
     Written as a committed mode rather than as a separate test file so it travels with
     the lint: a negative control in another repository directory is a control someone
     deletes without noticing what it was for.
+
+    The I and R controls below are the two checks whose absence was this file's own
+    stated purpose gap: until they landed the self-test planted V violations only, so
+    the import-graph checks — the reason D39 gives this lint its job, and the half a
+    one-hop review of the tree cannot do — fired on nothing but whatever the live tree
+    happened to contain.
     """
     failures: list[str] = []
 
@@ -273,15 +272,59 @@ def self_test() -> int:
         if check_vocabulary((Path("nothing-here"),), scratch).scanned != 0:
             failures.append("empty-tree scan did not report zero files")
 
-    if failures:
-        for line in failures:
-            sys.stdout.write(f"SELF-TEST FAILED {line}\n")
-        return 1
-    sys.stdout.write(
-        f"OK self-test — {len(SELF_TEST_CASES)} planted violations detected, "
-        f"control clean, vacuity guard reports zero\n"
+    # --- I and R, planted against fabricated graphs rather than files: `check_imports`
+    # is pure over `(graph, origin)`, so the fixtures need no tempdir and no tree at all,
+    # the same property `lint_adr_numbers.py` claims for its planted logs.
+
+    # The reverse check's predicate asks which directories exist under src/, so the plant
+    # names one that does, read at run time rather than hard-coded.
+    agent_dir = next(p.name for p in (REPO_ROOT / AGENT_TREE).iterdir() if p.is_dir())
+
+    def origin(paths: dict[str, str]) -> dict[str, Path]:
+        return {name: REPO_ROOT / rel for name, rel in paths.items()}
+
+    # I planted: an agent node reaching a verdict module through a helper — exactly the
+    # second hop that makes this check transitive rather than one-hop.
+    forward_planted, reverse_quiet = check_imports(
+        {"src.node": {"helpers"}, "helpers": {"harness.evidence.store"}},
+        origin({"src.node": "src/node.py", "helpers": "helpers.py",
+                "harness.evidence.store": "harness/evidence/store.py"}),
     )
-    return 0
+    if not forward_planted.violations:
+        failures.append("I did not fire on an agent module transitively reaching a verdict module")
+    if forward_planted.scanned != 1:
+        failures.append(f"I scanned {forward_planted.scanned} agent modules, expected 1")
+    if reverse_quiet.violations:
+        failures.append(f"R fired on a verdict module importing nothing: {reverse_quiet.violations}")
+
+    # R planted: a verdict-writing module reaching the agent tree — the direction that
+    # would put candidate code inside the process holding the `heldout` credential.
+    _, reverse_planted = check_imports(
+        {"harness.criterion.runner": {f"{agent_dir}.candidate"}},
+        origin({"harness.criterion.runner": "harness/criterion/runner.py",
+                f"{agent_dir}.candidate": f"src/{agent_dir}/candidate.py"}),
+    )
+    if not reverse_planted.violations:
+        failures.append("R did not fire on a verdict module reaching the agent tree")
+    if reverse_planted.scanned != 1:
+        failures.append(f"R scanned {reverse_planted.scanned} verdict modules, expected 1")
+
+    # I control: the same node importing nothing verdict-shaped must stay quiet — the arm
+    # that separates "the boundary holds" from "the check reports red unconditionally".
+    forward_control, _ = check_imports(
+        {"src.node": {"json"}},
+        origin({"src.node": "src/node.py"}),
+    )
+    if forward_control.violations:
+        failures.append(f"I fired on an agent module importing only stdlib: {forward_control.violations}")
+
+    planted_count = len(SELF_TEST_CASES) + 2  # the I and R plants above
+    return self_test_exit(
+        failures,
+        f"OK self-test — {planted_count} planted violations detected "
+        f"(V vocabulary, I forward reach, R reverse reach), "
+        f"control clean, vacuity guard reports zero\n",
+    )
 
 
 # --------------------------------------------------------------------------- main
@@ -309,10 +352,7 @@ def main() -> int:
         for violation in findings.violations:
             sys.stdout.write(f"{violation}\n")
             failed = True
-        if findings.scanned == 0:
-            # Not a pass. A check with nothing to check reports the same thing as a check
-            # that passed, and this project has paid for that confusion more than once.
-            sys.stdout.write(f"VACUOUS {label}: scanned 0 files\n")
+        if vacuity_guard(findings.scanned, f"VACUOUS {label}: scanned 0 files\n"):
             failed = True
 
     if failed:

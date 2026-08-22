@@ -19,6 +19,8 @@ import re
 import sys
 from pathlib import Path
 
+from _lintkit import ADR_HEADING
+
 ROOT = Path(__file__).resolve().parent.parent
 DOCS = ROOT / "docs"
 MAP = DOCS / "READING-MAP.md"
@@ -164,7 +166,7 @@ def read_adrs() -> list[tuple[str, str, str]]:
         return []
     adrs: list[tuple[str, str, str]] = []
     text = ADR_LOG.read_text()
-    for match in re.finditer(r"^## (ADR-\d+) — (.+)$", text, re.MULTILINE):
+    for match in ADR_HEADING.finditer(text):
         tail = text[match.end():match.end() + 400]
         status = ""
         sm = re.search(r"\*\*Status:\*\* (\w+)", tail)

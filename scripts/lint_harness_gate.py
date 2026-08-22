@@ -63,7 +63,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Final
 
-REPO_ROOT: Final = Path(__file__).resolve().parents[1]
+from _lintkit import REPO_ROOT, self_test_exit, vacuity_guard
+
 HARNESS: Final = REPO_ROOT / "harness"
 
 # The number of `.py` files under `harness/` that `ruff` collects under the committed
@@ -245,16 +246,12 @@ def self_test() -> int:
 
         failures.extend(check_detection(scratch))
 
-    if failures:
-        for line in failures:
-            sys.stdout.write(f"SELF-TEST FAILED {line}\n")
-        return 1
-    sys.stdout.write(
+    return self_test_exit(
+        failures,
         "OK self-test — C fires on a tree ruff collects nothing from, stays quiet on a "
         "covered one, and reports zero on an empty one; D reports the planted "
-        f"{_PROBE_RULE} in a collected harness file and stays quiet without it\n"
+        f"{_PROBE_RULE} in a collected harness file and stays quiet without it\n",
     )
-    return 0
 
 
 def main() -> int:
@@ -270,9 +267,10 @@ def main() -> int:
     for violation in result.violations:
         sys.stdout.write(f"{violation}\n")
         failed = True
-    if result.on_disk == 0:
-        # Not a pass. A check with nothing to check reports what a passing check reports.
-        sys.stdout.write("VACUOUS C: found 0 .py files under harness/ — the tree moved, or the scan broke\n")
+    if vacuity_guard(
+        result.on_disk,
+        "VACUOUS C: found 0 .py files under harness/ — the tree moved, or the scan broke\n",
+    ):
         failed = True
 
     if failed:

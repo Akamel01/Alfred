@@ -48,12 +48,14 @@ import subprocess
 import sys
 from pathlib import Path
 
+from _lintkit import ADR_HEADING as _HEADING
+from _lintkit import self_test_exit
+
 LOG = Path("docs/tier1/adr-log.md")
 
-#: The grammar the log declares. The em dash is the same grammar
-#: `gen_reading_map.py` and the vault's `adrs` extractor already read, so a
-#: heading this lint cannot parse is a record the register does not own either.
-_HEADING = re.compile(r"^## (ADR-\d{4}) — ")
+# The heading grammar is `_lintkit.ADR_HEADING`, the same shape `gen_reading_map.py`
+# reads and the one the vault's `adrs` extractor already used, so a heading this lint
+# cannot parse is a record the register does not own either.
 _H2 = re.compile(r"^## ")
 
 BASE_CANDIDATES = ("origin/main", "main", "HEAD")
@@ -237,18 +239,15 @@ def self_test() -> int:
     vacuous = audit(base, "")
     expect(vacuous[0], "a heading-less log passed — the vacuity guard is not wired")
 
-    for message in failures:
-        print(f"FAIL self-test: {message}", file=sys.stderr)
-    if failures:
-        print(f"\n{len(failures)} self-test failure(s)", file=sys.stderr)
-        return 1
-    print(
+    return self_test_exit(
+        failures,
         "OK self-test — a new number passes, a re-claim fails, a deliberate skip prints "
         "without failing, an in-branch duplicate fails, and a heading-less log fails "
-        "rather than passing"
+        "rather than passing\n",
+        failures_stream=sys.stderr,
+        prefix="FAIL self-test:",
+        tally=True,
     )
-    return 0
-
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="ADR number claim lint over the ADR log.")

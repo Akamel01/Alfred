@@ -53,11 +53,17 @@ import json
 import re
 import sys
 import tempfile
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Final
 
-REPO_ROOT: Final = Path(__file__).resolve().parents[1]
+from _lintkit import (
+    REPO_ROOT,
+    Findings as _Findings,
+    load_register,
+    self_test_exit,
+    vacuity_guard,
+)
 
 WORKFLOW: Final = Path(".github/workflows/gates.yml")
 TEST_ROOTS: Final = (Path("harness"), Path("tests"))
@@ -84,9 +90,7 @@ TABLE_ROW: Final = re.compile(r"^\|\s*(F\d+)\s*\|")
 
 
 @dataclass
-class Findings:
-    scanned: int = 0
-    violations: list[str] = field(default_factory=list)
+class Findings(_Findings):
     # Reported on every run so the number going down is a change a reader sees.
     covered: int = 0
 
@@ -163,15 +167,9 @@ def document_row_ids(base: Path = REPO_ROOT, doc: Path = FAILURE_DOC) -> list[st
 def check_failure_register(base: Path = REPO_ROOT) -> Findings:
     findings = Findings()
 
-    register_path = base / FAILURE_REGISTER
-    if not register_path.is_file():
-        findings.violations.append(f"F missing register: {FAILURE_REGISTER}")
-        return findings
-    try:
-        register = json.loads(register_path.read_text(encoding="utf-8"))
-    except json.JSONDecodeError as exc:
-        # Fail closed. An unreadable register is not an empty one.
-        findings.violations.append(f"F register does not parse: {exc}")
+    register, error = load_register(base / FAILURE_REGISTER, display=FAILURE_REGISTER)
+    if error is not None:
+        findings.violations.append(f"F {error}")
         return findings
 
     rows: dict[str, dict[str, str]] = register.get("rows", {})
@@ -295,16 +293,12 @@ def self_test() -> int:
 
         failures.extend(_self_test_register(scratch))
 
-    if failures:
-        for line in failures:
-            sys.stdout.write(f"SELF-TEST FAILED {line}\n")
-        return 1
-    sys.stdout.write(
+    return self_test_exit(
+        failures,
         "OK self-test — T fires on an unnamed directory, honours parent steps, and reports "
         "zero on an empty tree; F fires on a missing row, an orphan entry, absent evidence "
-        "and a stale count; both controls clean\n"
+        "and a stale count; both controls clean\n",
     )
-    return 0
 
 
 _DOC_HEAD = "| id | Condition | Disposition |\n|---|---|---|\n"
@@ -398,9 +392,7 @@ def main() -> int:
         for violation in findings.violations:
             sys.stdout.write(f"{violation}\n")
             failed = True
-        if findings.scanned == 0:
-            # Not a pass. A check with nothing to check reports what a passing check reports.
-            sys.stdout.write(f"VACUOUS {label}: scanned 0\n")
+        if vacuity_guard(findings.scanned, f"VACUOUS {label}: scanned 0\n"):
             failed = True
 
     if failed:

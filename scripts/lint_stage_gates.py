@@ -49,11 +49,17 @@ import json
 import re
 import sys
 import tempfile
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Final
 
-REPO_ROOT: Final = Path(__file__).resolve().parents[1]
+from _lintkit import (
+    REPO_ROOT,
+    Findings as _Findings,
+    load_register,
+    self_test_exit,
+    vacuity_guard,
+)
 
 GATE_DOC: Final = Path("docs/tier2/stage-gate-definitions.md")
 GATE_REGISTER: Final = Path("harness/selftest/stage_gate_register.json")
@@ -70,9 +76,7 @@ PHASE_OF: Final = re.compile(r"^P(?P<phase>\d+)-\d+$")
 
 
 @dataclass
-class Findings:
-    scanned: int = 0
-    violations: list[str] = field(default_factory=list)
+class Findings(_Findings):
     met: int = 0
 
 
@@ -92,17 +96,6 @@ def _phase_key(criterion_id: str) -> str:
     return f"phase{match.group('phase')}" if match else ""
 
 
-def load_register(base: Path = REPO_ROOT) -> tuple[dict[str, Any], str | None]:
-    path = base / GATE_REGISTER
-    if not path.is_file():
-        return {}, f"missing register: {GATE_REGISTER}"
-    try:
-        return json.loads(path.read_text(encoding="utf-8")), None
-    except json.JSONDecodeError as exc:
-        # Fail closed. An unreadable register is not an empty one.
-        return {}, f"register does not parse: {exc}"
-
-
 def registered_criteria(register: dict[str, Any]) -> dict[str, dict[str, str]]:
     """Flatten `phases.<phase>.criteria` into one id-keyed mapping."""
     flat: dict[str, dict[str, str]] = {}
@@ -115,7 +108,7 @@ def registered_criteria(register: dict[str, Any]) -> dict[str, dict[str, str]]:
 def check_integrity(base: Path = REPO_ROOT) -> Findings:
     findings = Findings()
 
-    register, error = load_register(base)
+    register, error = load_register(base / GATE_REGISTER, display=GATE_REGISTER)
     if error is not None:
         findings.violations.append(error)
         return findings
@@ -178,7 +171,7 @@ def check_integrity(base: Path = REPO_ROOT) -> Findings:
 def check_gate(phase: str, base: Path = REPO_ROOT) -> Findings:
     findings = Findings()
 
-    register, error = load_register(base)
+    register, error = load_register(base / GATE_REGISTER, display=GATE_REGISTER)
     if error is not None:
         findings.violations.append(error)
         return findings
@@ -320,16 +313,12 @@ def self_test() -> int:
         if check_gate("phase9", base=passing).scanned != 0:
             failures.append("gate on an unknown phase did not report zero criteria")
 
-    if failures:
-        for line in failures:
-            sys.stdout.write(f"SELF-TEST FAILED {line}\n")
-        return 1
-    sys.stdout.write(
+    return self_test_exit(
+        failures,
         "OK self-test — integrity fires on a missing criterion, an orphan entry, unresolvable "
         "evidence, illegal status and kind, and a reasonless unmet or blocked; the gate refuses "
-        "both unmet and blocked and passes only on all-met; both vacuity guards report zero\n"
+        "both unmet and blocked and passes only on all-met; both vacuity guards report zero\n",
     )
-    return 0
 
 
 # --------------------------------------------------------------------------- main
@@ -348,8 +337,7 @@ def main() -> int:
         findings = check_gate(args.gate)
         for violation in findings.violations:
             sys.stdout.write(f"{violation}\n")
-        if findings.scanned == 0:
-            sys.stdout.write(f"VACUOUS gate {args.gate}: no criteria registered\n")
+        if vacuity_guard(findings.scanned, f"VACUOUS gate {args.gate}: no criteria registered\n"):
             return 1
         if findings.violations:
             sys.stdout.write(
@@ -363,9 +351,7 @@ def main() -> int:
     findings = check_integrity()
     for violation in findings.violations:
         sys.stdout.write(f"{violation}\n")
-    if findings.scanned == 0:
-        # Not a pass. A register with nothing in it reports what a complete one reports.
-        sys.stdout.write("VACUOUS stage gates: scanned 0 criteria\n")
+    if vacuity_guard(findings.scanned, "VACUOUS stage gates: scanned 0 criteria\n"):
         return 1
     if findings.violations:
         return 1
