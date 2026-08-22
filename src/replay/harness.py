@@ -30,7 +30,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING, Final, cast
 
 from domain.trajectory import AgentTrack
 from ingest.port import ScenarioRef, TrajectorySource
@@ -66,25 +66,6 @@ class StampContext:
     assumption_set: AssumptionSet
     tolerance: Tolerance
     upstream: UpstreamToolchain
-
-
-def _track_to_acs(track: AgentTrack) -> dict[str, AcsValue]:
-    """One track in the form the input hash is taken over.
-
-    Every field that can change a measurement is here, and the arrays are included in full
-    rather than by length or by summary. A digest over shapes would be identical for two
-    scenarios with the same number of samples, which is the collision a determinism check
-    would then be unable to see.
-    """
-    return {
-        "agent_ref": track.agent_ref,
-        "agent_type": track.agent_type,
-        "length_m": track.length_m,
-        "width_m": track.width_m,
-        "t": [float(v) for v in track.t.tolist()],
-        "x": [float(v) for v in track.x.tolist()],
-        "y": [float(v) for v in track.y.tolist()],
-    }
 
 
 class DeterministicReplay:
@@ -129,7 +110,13 @@ class DeterministicReplay:
             # Sorted by the dataset's own identifier, not by load order: a source free to
             # return tracks in any order would otherwise produce a different digest per run
             # and fail the determinism check for a reason that is not about determinism.
-            "tracks": [_track_to_acs(t) for t in sorted(tracks, key=lambda t: t.agent_ref)],
+            #
+            # The field list lives on `AgentTrack.measurement_view` — this seam only re-types
+            # it for ACS-1, so a schema change cannot silently omit itself from the digest.
+            "tracks": [
+                cast("dict[str, AcsValue]", t.measurement_view())
+                for t in sorted(tracks, key=lambda t: t.agent_ref)
+            ],
         }
 
         stamp = ResultStampV1(

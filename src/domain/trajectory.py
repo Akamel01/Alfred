@@ -13,7 +13,7 @@ track and a lone agent are all legal inputs, answered downstream with an explici
 
 from __future__ import annotations
 
-from typing import Self
+from typing import ClassVar, Self
 from uuid import UUID
 
 import numpy as np
@@ -53,7 +53,19 @@ class AgentTrack(Tenanted):
     seconds. E29 is the reason the frame is local: differencing UTM-scale
     coordinates to resolve sub-metre separations loses precision silently, so the
     translation to a local origin happens at ingest, not inside a metric.
+
+    The class declares its own **measurement view**: which fields can change a
+    measurement and therefore enter `input_hash`. The subset is named here — on
+    the model, next to the schema it projects — rather than re-spelled by every
+    hasher, so a schema change and its digest consequence are adjacent lines.
     """
+
+    MEASUREMENT_FIELDS: ClassVar[frozenset[str]] = frozenset(
+        {"agent_ref", "agent_type", "length_m", "width_m", "t", "x", "y"}
+    )
+    EXCLUDED_FROM_MEASUREMENT: ClassVar[frozenset[str]] = frozenset(
+        {"track_id", "org_id", "project_id", "schema_version", "created_at", "caused_by"}
+    )
 
     track_id: UUID
     agent_ref: str = Field(min_length=1, description="Stable identifier in the source dataset.")
@@ -85,6 +97,31 @@ class AgentTrack(Tenanted):
     @property
     def n_samples(self) -> int:
         return int(self.t.size)
+
+    def measurement_view(self) -> dict[str, object]:
+        """The fields that can change a measurement, in the form `input_hash` covers.
+
+        The partition is total and exclusive: every `model_fields` key lands in exactly one
+        of `MEASUREMENT_FIELDS` / `EXCLUDED_FROM_MEASUREMENT`, and a test fails otherwise —
+        so neither failure mode is silent. A new field omitted from the view would change
+        measurements its digest never sees; deriving inclusion instead of declaring it would
+        drag tenancy, identity and wall-clock fields into a digest that must be identical
+        across two loads of the same scenario (`created_at` defaults to `utc_now()`,
+        `track_id` is minted per instance, tenancy is not a property of the measurement).
+
+        The arrays are included in full rather than by length or by summary: a digest over
+        shapes would be identical for two scenarios with the same number of samples, which
+        is the collision a determinism check would then be unable to see.
+        """
+        return {
+            "agent_ref": self.agent_ref,
+            "agent_type": self.agent_type,
+            "length_m": self.length_m,
+            "width_m": self.width_m,
+            "t": [float(v) for v in self.t.tolist()],
+            "x": [float(v) for v in self.x.tolist()],
+            "y": [float(v) for v in self.y.tolist()],
+        }
 
     def observed_window(self) -> ObservedWindow:
         """The window this track covers. Empty tracks report a zero-width window
