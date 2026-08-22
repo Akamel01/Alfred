@@ -31,4 +31,8 @@ generated: true
 
 ## Enforced by (code)
 
+- [[adr__ADR-0001|Representation of undefined and infinite metric values]] **enforced_by** → this — """Composition never absorbs (ADR-0001): UPSTREAM_UNDEFINED carries the originating
+    reason, so the chain survives on
+- [[adr__ADR-0001|Representation of undefined and infinite metric values]] **enforced_by** → this — """ADR-0001: `-0.0` is normalized to `0.0` before hashing. Both spellings of the
+    same number must therefore produce 
 - [[adr__ADR-0002|Reason-code width, and what the integer is allowed to be]] **enforced_by** → this — """The invariant ADR-0002 exists for: no integer decodes to DEFINED unless it is 0."""

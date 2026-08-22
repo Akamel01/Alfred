@@ -83,6 +83,10 @@ One enum for the whole system. Codes enumerate *kinds
 - **enforced_by** → [[module__src_replay_harness|The replay harness: load, evaluate, stamp, and produce a digest two runs are compared on.]] — """The replay harness: load, evaluate, stamp, and produce a digest two runs are compared on.
 
 Domain-neutral throughout.
+- **enforced_by** → [[module__tests_properties_test_metric_properties|Property tests over the representation types.]] — """Composition never absorbs (ADR-0001): UPSTREAM_UNDEFINED carries the originating
+    reason, so the chain survives on
+- **enforced_by** → [[module__tests_properties_test_metric_properties|Property tests over the representation types.]] — """ADR-0001: `-0.0` is normalized to `0.0` before hashing. Both spellings of the
+    same number must therefore produce 
 - **enforced_by** → [[module__tests_test_metric_series|`MetricSeries`, the internal form, and the single conversion point (ADR-0001).]] — """`MetricSeries`, the internal form, and the single conversion point (ADR-0001)."""
 - **enforced_by** → [[module__tests_test_metric_value|`MetricValue`, the boundary form (ADR-0001).]] — """`MetricValue`, the boundary form (ADR-0001).
 

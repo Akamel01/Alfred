@@ -31,7 +31,7 @@
     "gate-step": 51,
     "kill-criterion": 6,
     "layout": 14,
-    "module": 212,
+    "module": 213,
     "operator-item": 8,
     "risk": 12,
     "schema": 5,
@@ -43,9 +43,9 @@
     "amended_by": 2,
     "amends": 9,
     "blocks": 32,
-    "contains": 258,
-    "enforced_by": 318,
-    "imports": 209,
+    "contains": 259,
+    "enforced_by": 320,
+    "imports": 210,
     "needs": 4,
     "runs": 31,
     "see_also": 26,
@@ -2654,6 +2654,19 @@
     },
     {
       "confidence": "structural",
+      "dst": "module:tools.tests.test_protected_binding",
+      "evidence": "tools/tests/test_protected_binding.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/tests/test_protected_binding.py"
+      },
+      "src": "module:tools.tests"
+    },
+    {
+      "confidence": "structural",
       "dst": "module:tools.tests.test_render",
       "evidence": "tools/tests/test_render.py",
       "extractor": "code",
@@ -4201,6 +4214,32 @@
     },
     {
       "confidence": "derived",
+      "dst": "module:tests.properties.test_metric_properties",
+      "evidence": "\"\"\"Composition never absorbs (ADR-0001): UPSTREAM_UNDEFINED carries the originating\n    reason, so the chain survives on the wire as well as in the hash preimage.\"\"\"",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 188,
+        "line": 188,
+        "path": "tests/properties/test_metric_properties.py"
+      },
+      "src": "adr:ADR-0001"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:tests.properties.test_metric_properties",
+      "evidence": "\"\"\"ADR-0001: `-0.0` is normalized to `0.0` before hashing. Both spellings of the\n    same number must therefore produce the same canonical bytes, or a re-derived\n    stamp would re",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 202,
+        "line": 202,
+        "path": "tests/properties/test_metric_properties.py"
+      },
+      "src": "adr:ADR-0001"
+    },
+    {
+      "confidence": "derived",
       "dst": "module:tests.test_metric_series",
       "evidence": "\"\"\"`MetricSeries`, the internal form, and the single conversion point (ADR-0001).\"\"\"",
       "extractor": "references",
@@ -4401,8 +4440,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 30,
-        "line": 30,
+        "end_line": 40,
+        "line": 40,
         "path": "tests/properties/test_metric_properties.py"
       },
       "src": "adr:ADR-0002"
@@ -9336,6 +9375,19 @@
     },
     {
       "confidence": "structural",
+      "dst": "module:tools.vaultgraph.extract.code",
+      "evidence": "tools.vaultgraph.extract.code.PROTECTED",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 23,
+        "line": 23,
+        "path": "tools/tests/test_protected_binding.py"
+      },
+      "src": "module:tools.tests.test_protected_binding"
+    },
+    {
+      "confidence": "structural",
       "dst": "module:tools.vaultgraph.model",
       "evidence": "tools.vaultgraph.model.NodeKind",
       "extractor": "imports",
@@ -11664,16 +11716,16 @@
       "unparsed": 0
     },
     {
-      "edges": 144,
+      "edges": 145,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 45,
       "min_nodes": 90,
       "name": "code",
-      "nodes": 217,
+      "nodes": 218,
       "rejected": 0,
-      "scanned": 244,
+      "scanned": 245,
       "unparsed": 0
     },
     {
@@ -11703,7 +11755,7 @@
       "unparsed": 0
     },
     {
-      "edges": 209,
+      "edges": 210,
       "expect_rejected": null,
       "max_nodes": 0,
       "max_unparsed": 0,
@@ -11712,7 +11764,7 @@
       "name": "imports",
       "nodes": 0,
       "rejected": 0,
-      "scanned": 179,
+      "scanned": 180,
       "unparsed": 0
     },
     {
@@ -11729,7 +11781,7 @@
       "unparsed": 0
     },
     {
-      "edges": 318,
+      "edges": 320,
       "expect_rejected": null,
       "max_nodes": 0,
       "max_unparsed": 0,
@@ -21996,6 +22048,30 @@
       "status": "",
       "tags": [],
       "title": "tools.tests"
+    },
+    {
+      "attrs": {
+        "is_test": "true",
+        "lint_gated": "false",
+        "path": "tools/tests/test_protected_binding.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.tests.test_protected_binding",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/tests/test_protected_binding.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "The vault's `protected` node flag answers to the policy file, not to a hand copy."
     },
     {
       "attrs": {
