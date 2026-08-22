@@ -29,6 +29,21 @@ from typing import Final
 WALKER: Final = Path(__file__).resolve().parent / "verify_chain.mjs"
 ANCHOR_FORMAT_VERSION: Final = 1
 
+# The walker's stdout protocol (ADR-0014: JSONL is transport, not derivation — the
+# re-walk stays an implementation that did not write the chain). One JSON object per
+# line; every field name is fixed here so a walker that drifts fails this parser instead
+# of being reinterpreted by it.
+EVENT_FIELDS: Final[frozenset[str]] = frozenset({"walk", "head", "anchor", "error"})
+EVENT_KEYS: Final[dict[str, frozenset[str]]] = {
+    "walk": frozenset({"table", "chain_id", "rows"}),
+    "head": frozenset({"sha"}),
+    "anchor": frozenset({"state"}),
+    "error": frozenset({"message"}),
+}
+ANCHOR_STATES: Final[frozenset[str]] = frozenset(
+    {"absent", "equal", "reachable-and-extended"}
+)
+
 
 class AnchorError(RuntimeError):
     """The anchor could not be derived or verified. Fail closed."""
@@ -64,12 +79,69 @@ class WalkResult:
     anchor_state: str
 
 
+def _parse_verdict(stdout: str) -> WalkResult:
+    """Dispatch the walker's JSONL verdict, refusing anything unrecognized.
+
+    Fail closed by construction: a line that is not JSON, not an object, of an unknown
+    type, carrying unexpected fields, repeated, or missing entirely is an `AnchorError`,
+    never an ignored line — a verdict assembled from partial output would be a verdict
+    the walker never issued. The head arrives truncated to 16 characters because
+    `derive` checks the caller's full digest against it.
+    """
+    seen: dict[str, dict[str, object]] = {}
+    for raw in stdout.splitlines():
+        if not raw.strip():
+            continue
+        try:
+            event = json.loads(raw)
+        except json.JSONDecodeError as exc:
+            raise AnchorError(f"walker line is not JSON: {raw!r}") from exc
+        if not isinstance(event, dict):
+            raise AnchorError(f"walker line is not an event object: {raw!r}")
+        kind = event.get("type")
+        if not isinstance(kind, str) or kind not in EVENT_FIELDS:
+            raise AnchorError(f"walker emitted an unrecognized event: {raw!r}")
+        if set(event) - {"type"} != set(EVENT_KEYS[kind]):
+            raise AnchorError(f"walker event {kind!r} has unexpected fields: {raw!r}")
+        if kind in seen:
+            raise AnchorError(f"walker repeated its {kind!r} event: {raw!r}")
+        seen[kind] = event
+
+    if "error" in seen:
+        message = seen["error"]["message"]
+        raise AnchorError(f"walker refused the chain: {message}")
+
+    missing = (EVENT_FIELDS - {"error"}) - seen.keys()
+    if missing:
+        raise AnchorError(
+            f"walker verdict incomplete; no {sorted(missing)} event in {stdout.strip()!r}"
+        )
+
+    walk_event = seen["walk"]
+    rows = walk_event["rows"]
+    if not isinstance(rows, int) or isinstance(rows, bool):
+        raise AnchorError(f"walker 'rows' is not an integer: {walk_event['rows']!r}")
+    for kind, field in (("walk", "table"), ("walk", "chain_id"), ("head", "sha")):
+        if not isinstance(seen[kind][field], str):
+            raise AnchorError(f"walker {kind}.{field} is not a string: {seen[kind][field]!r}")
+    state = seen["anchor"]["state"]
+    if not isinstance(state, str) or state not in ANCHOR_STATES:
+        raise AnchorError(f"walker anchor state is not recognized: {state!r}")
+
+    return WalkResult(
+        length=rows,
+        head_sha256=str(seen["head"]["sha"]),
+        anchor_state=state,
+    )
+
+
 def run_walker(export_path: Path, anchor_path: Path | None = None) -> WalkResult:
-    """Run the JavaScript re-walk and parse its verdict.
+    """Run the JavaScript re-walk and parse its typed verdict.
 
     Shelling out to `node` rather than reimplementing the walk in Python is the entire
     point. A Python re-walk of a Python-written chain checks the chain against the encoder
-    that produced it, which is not a check.
+    that produced it, which is not a check. The walker reports one JSON event per line on
+    stdout; a nonzero exit is a refusal regardless of what stdout carries.
     """
     argv = ["node", str(WALKER), str(export_path)]
     if anchor_path is not None:
@@ -83,16 +155,7 @@ def run_walker(export_path: Path, anchor_path: Path | None = None) -> WalkResult
         raise AnchorError(
             f"chain re-walk failed: {(completed.stderr or completed.stdout).strip()}"
         )
-
-    line = completed.stdout.strip()
-    # `OK <table>/<chain>: <n> rows, one path, head <prefix>, anchor <state>`
-    try:
-        rows = int(line.split(": ", 1)[1].split(" rows", 1)[0])
-        head = line.split("head ", 1)[1].split(",", 1)[0].strip()
-        state = line.rsplit("anchor ", 1)[1].strip()
-    except (IndexError, ValueError) as exc:
-        raise AnchorError(f"walker output not understood: {line!r}") from exc
-    return WalkResult(length=rows, head_sha256=head, anchor_state=state)
+    return _parse_verdict(completed.stdout)
 
 
 def derive(export_path: Path, *, full_head: str) -> Anchor:

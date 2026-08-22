@@ -28,6 +28,23 @@
  * from a separator Python chose. Two maps that disagree make every digest mismatch, which
  * is the loud failure and the right one.
  *
+ * **stdout is JSONL: one typed event per line, and JSONL is transport, not derivation**
+ * (ADR-0014). Typing the verdict changes how it travels, not who computes it — the re-walk
+ * stays an implementation that did not write the chain, and no digest is ever read from a
+ * message Python sent. `harness/evidence/anchor.py` dispatches on `type` and refuses any
+ * line it does not recognize, so a walker and its parser fail loudly when they drift
+ * instead of parsing prose with string surgery. The event vocabulary:
+ *
+ *   {"type":"walk","table":T,"chain_id":C,"rows":N}   what was handed in and walked
+ *   {"type":"head","sha":S}                           reachable head, first 16 chars only
+ *   {"type":"anchor","state":A}                       absent | equal | reachable-and-extended
+ *   {"type":"error","message":M}                      any refusal; exit code is nonzero
+ *
+ * A successful walk emits `walk`, then `head`, then `anchor`. A refusal emits `error`.
+ * The head stays truncated here on purpose: `derive()` in anchor.py requires the caller's
+ * full digest to agree with this prefix, and an anchor built from a truncated claim is a
+ * weaker claim that nothing would notice.
+ *
  *   node harness/evidence/verify_chain.mjs <export.json> [anchor.json]
  */
 
@@ -153,23 +170,35 @@ export function walk(exported, anchor = null) {
   return { table, chainId, length: reachable.size, head, anchorState };
 }
 
+function emit(event) {
+  process.stdout.write(`${JSON.stringify(event)}\n`);
+}
+
 function main(argv) {
   const [exportPath, anchorPath] = argv;
   if (!exportPath) {
     process.stderr.write("usage: verify_chain.mjs <export.json> [anchor.json]\n");
     return 2;
   }
-  const exported = JSON.parse(readFileSync(exportPath, "utf8"));
-  const anchor = anchorPath ? JSON.parse(readFileSync(anchorPath, "utf8")) : null;
+  let exported;
+  let anchor = null;
+  try {
+    exported = JSON.parse(readFileSync(exportPath, "utf8"));
+    if (anchorPath) anchor = JSON.parse(readFileSync(anchorPath, "utf8"));
+  } catch (error) {
+    // Every refusal speaks the protocol, including the ones before any row is read.
+    emit({ type: "error", message: `input could not be read: ${error.message}` });
+    return 1;
+  }
   try {
     const result = walk(exported, anchor);
-    process.stdout.write(
-      `OK ${result.table}/${result.chainId}: ${result.length} rows, one path, ` +
-        `head ${result.head.slice(0, 16)}, anchor ${result.anchorState}\n`,
-    );
+    emit({ type: "walk", table: result.table, chain_id: result.chainId, rows: result.length });
+    emit({ type: "head", sha: result.head.slice(0, 16) });
+    emit({ type: "anchor", state: result.anchorState });
     return 0;
   } catch (error) {
     if (error instanceof ChainError) {
+      emit({ type: "error", message: error.message });
       process.stderr.write(`CHAIN FAILED ${error.message}\n`);
       return 1;
     }
