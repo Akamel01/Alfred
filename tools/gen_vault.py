@@ -7,8 +7,10 @@
 
 Lives in `tools/` and not `scripts/` deliberately. `scripts/`, `.github/workflows/`, `policy/`,
 `migrations/roles/` and `harness/` are inspector machinery under D20 — agents may improve the
-factory and never the inspector. A generator landed in `scripts/` would trigger major-fix #8:
-line-by-line human review plus a mandatory ADR, for a documentation tool that needs neither.
+factory and never the inspector. Its true status: generator of the vault read model; CI-gated
+(integrity self-test + `--check`); D51 read-model class, not inspector; never feeds a verdict;
+never enters a dispatch workspace. It is gated read-model machinery, not the inspector — the
+paid D20 crossing that wired it into the integrity job is what makes it CI-gated at all.
 """
 
 from __future__ import annotations

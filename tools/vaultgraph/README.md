@@ -1,10 +1,12 @@
 # Domain language
 
+This file is the vault's own vocabulary; it is a reference for the layer it documents.
+
 Terms this repository uses in a specific sense, so a reader — or a later architecture review —
 does not have to re-derive them from the code.
 
 This file is **authored**, unlike `vault/`, `graph.json` and `docs-graph.html`, which are
-generated and byte-compared. It sits at the repository root rather than in `docs/` because
+generated and byte-compared. It sits in `tools/vaultgraph/` rather than in `docs/` because
 `docs/` is the register: every file there carries a frontmatter contract, an index entry and a
 falsification condition, and this is a glossary rather than a claim.
 
@@ -36,6 +38,19 @@ already (ADR-0012, ADR-0013).
 in stroke. `structural` is a fixed grammar, `derived` is a mechanical match inside a comment or
 docstring span, `prose` is a reading of free text that no one has adjudicated. Flattening the
 three would be the graph asserting something it does not know.
+
+---
+
+## Judgements
+
+**Verdict** — the criterion's three-valued judgement on a candidate attempt: `pass`, `fail`
+or `indeterminate`. The vocabulary is frozen and every autonomy gate reads it. A worker never
+returns one — it returns claims; the deciding belongs downstream of dispatch.
+
+**Assertion outcome** — how a containment control concluded: `passed`, `failed`, or
+`not_executed`. Not a verdict and not spelled like one: an unproven control is failed, never
+passed. Distinct from a verdict on purpose — one judges the agent's work, the other judges
+whether the instrument ran at all.
 
 ---
 
@@ -103,3 +118,18 @@ default rather than silently absent.
 
 `draw` and the rail stay wide on purpose: a canvas painter and a control panel touch every
 concept by nature, and pretending otherwise buys nothing.
+
+---
+
+## Status
+
+Generator of the vault read model; CI-gated (integrity self-test + `--check`); D51 read-model
+class, not inspector; never feeds a verdict; never enters a dispatch workspace.
+
+---
+
+## The register contract does not apply here
+
+Vault notes carry `kind`/`title`/`generated` frontmatter — an adjacent schema outside `docs/`;
+the register contract does not apply below `docs/`. The two glossaries (tier0 = constitutional,
+vault = implementation) are disjoint and cross-checked at regeneration.
