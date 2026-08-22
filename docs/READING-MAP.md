@@ -66,14 +66,6 @@ Product skeleton. The largest reading set, because Phase 0 builds what cannot be
 | 22 | [Risk Register](tier0/risk-register.md) | context | provisional | open risks with revisit triggers; check before assuming something is handled |
 | 23 | [Criterion Authoring Guide](tier2/criterion-authoring-guide.md) | context | stub | stub — promote once real criteria have been authored |
 
-## Phase 0.5
-
-Data licensing gate. Blocks any prospect-facing demo.
-
-| # | Document | Kind | Status | Why now |
-|---|---|---|---|---|
-| 1 | [Data Classification and Handling](tier4/data-classification-and-handling.md) | binding | stub | stub — this phase supplies its evidence |
-
 ## Phase 0.75
 
 Demand gate. Needs no code and no data licence.
@@ -82,6 +74,7 @@ Demand gate. Needs no code and no data licence.
 |---|---|---|---|---|
 | 1 | [Product Requirements](tier5/product-requirements.md) | context | stub | directional until named buyers say otherwise |
 | 2 | [Customer Documentation](tier5/customer-documentation.md) | context | stub | directional — what a customer needs to reproduce a number |
+| 3 | [Data Classification and Handling](tier4/data-classification-and-handling.md) | binding | stub | stub — the data licensing gate: blocks any prospect-facing demo until this phase supplies its evidence |
 
 ## Phase 1
 

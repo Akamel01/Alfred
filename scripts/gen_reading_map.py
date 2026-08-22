@@ -66,12 +66,10 @@ PHASES: list[tuple[str, str, list[tuple[str, str, str]]]] = [
         ("risk-register", CONTEXT, "open risks with revisit triggers; check before assuming something is handled"),
         ("criterion-authoring-guide", CONTEXT, "stub — promote once real criteria have been authored"),
     ]),
-    ("phase 0.5", "Data licensing gate. Blocks any prospect-facing demo.", [
-        ("data-classification-and-handling", BINDING, "stub — this phase supplies its evidence"),
-    ]),
     ("phase 0.75", "Demand gate. Needs no code and no data licence.", [
         ("product-requirements", CONTEXT, "directional until named buyers say otherwise"),
         ("customer-documentation", CONTEXT, "directional — what a customer needs to reproduce a number"),
+        ("data-classification-and-handling", BINDING, "stub — the data licensing gate: blocks any prospect-facing demo until this phase supplies its evidence"),
     ]),
     ("phase 1", "One agent, one task, human gate.", [
         ("worker-port-contract", BINDING, "what crosses into the execution plane; claim vs fault, read recording, containment preconditions"),
