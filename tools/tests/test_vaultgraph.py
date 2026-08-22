@@ -227,6 +227,21 @@ def test_an_absent_origin_fails_only_when_the_operator_asks(monkeypatch: pytest.
     assert mirror.check(require_origin=True)[0] == 1
 
 
+def test_refresh_skips_the_sync_step_where_the_origin_is_absent(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """The control that keeps /refresh usable off one laptop. The serve surface asks
+    `origin_reachable` before offering a sync step; with every origin missing — the
+    condition of every CI runner and clean clone — it must rebuild from the sealed
+    mirror instead of failing on a file it never had."""
+    sources = mirror.load_manifest()
+    assert sources, "the repo ships a non-empty plan manifest"
+    assert mirror.origin_reachable(sources) is True  # this machine has the live plan
+
+    monkeypatch.setattr(mirror, "origin_path", lambda source: Path("/nonexistent/plan.md"))
+    assert mirror.origin_reachable(sources) is False
+
+
 def test_a_drifted_origin_fails(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     drifted = tmp_path / "drifted.md"
     drifted.write_text("not the plan", encoding="utf-8")

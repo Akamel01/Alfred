@@ -85,6 +85,19 @@ def origin_path(source: Source) -> Path:
     return Path(source.origin).expanduser()
 
 
+def origin_reachable(sources: list[Source]) -> bool:
+    """True when every declared origin exists on this machine.
+
+    The serve surface's refresh asks this before offering a sync step: syncing copies
+    FROM the live plan, so on any machine without it — every CI runner — there is
+    nothing to copy and `sync` rightly refuses. Refusing to rebuild too would make
+    refresh unusable off the operator's laptop; rebuilding from the committed mirror is
+    exactly what "absence is never a failure" buys, because the manifest seal still
+    guarantees the bytes being rebuilt from.
+    """
+    return all(origin_path(s).is_file() for s in sources)
+
+
 def sync(origin: str = DEFAULT_ORIGIN, source_id: str = "handoff-plan") -> tuple[int, str]:
     """Copy the origin in verbatim and re-stamp the manifest. The only mode that writes."""
     live = Path(origin).expanduser()

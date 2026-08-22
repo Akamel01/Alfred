@@ -182,11 +182,17 @@ class Handler(BaseHTTPRequestHandler):
 
 def regenerate() -> tuple[int, str]:
     """Sync the plan mirror, then rebuild — as a subprocess, so this surface runs exactly what
-    CI runs rather than a second code path that can drift from it."""
-    steps = (
-        ("plan mirror", [sys.executable, "tools/gen_vault.py", "--sync-plan"]),
-        ("vault", [sys.executable, "tools/gen_vault.py"]),
-    )
+    CI runs rather than a second code path that can drift from it.
+
+    The sync step is offered only where the live origin exists. On any other machine
+    (every CI runner) `sync` rightly refuses — there is nothing to copy from — and
+    rebuilding from the committed, seal-verified mirror is both sufficient and the
+    documented semantics: absence of the origin is never itself a failure.
+    """
+    steps: list[tuple[str, list[str]]] = []
+    if mirror.origin_reachable(mirror.load_manifest()):
+        steps.append(("plan mirror", [sys.executable, "tools/gen_vault.py", "--sync-plan"]))
+    steps.append(("vault", [sys.executable, "tools/gen_vault.py"]))
     lines: list[str] = []
     for label, command in steps:
         finished = subprocess.run(command, cwd=ROOT, capture_output=True, text=True)

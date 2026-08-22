@@ -10095,8 +10095,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 291,
-        "line": 291,
+        "end_line": 306,
+        "line": 306,
         "path": "tools/tests/test_vaultgraph.py"
       },
       "src": "module:tools.tests.test_vaultgraph"
