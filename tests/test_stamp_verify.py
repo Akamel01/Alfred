@@ -1,7 +1,7 @@
 """The two-stage read, its five outcomes, and the bridge to failure semantics (ADR-0006).
 
 Every row of the ADR's verdict table is exercised here, and the mapping onto
-`pass`/`fail`/`indeterminate` is checked against `harness/stamp/verdict_map.py` — the
+`pass`/`fail`/`indeterminate` is checked against `harness/verdicts` — the
 one place that may import both trees, because `harness/` imports nothing from `src` and the
 lint forbids `src/` from returning the verdict vocabulary.
 
@@ -16,7 +16,7 @@ import json
 from typing import Final
 
 import pytest
-from harness.stamp.verdict_map import VERDICT_FOR_VERIFICATION, verdict_for
+from harness.verdicts import VERDICT_FOR_VERIFICATION, verdict_for
 
 from provenance.encoding import AcsValue, canonicalize
 from provenance.stamp import AssumptionSet, ResultStampV1, Tolerance

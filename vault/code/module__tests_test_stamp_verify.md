@@ -31,7 +31,7 @@ generated: true
 
 ## Binds
 
-- **imports** → [[module__harness_stamp_verdict_map|ADR-0006's verdict table, as data rather than as prose.]]
+- **imports** → [[module__harness_verdicts|harness.verdicts]]
 
 ## Enforced by (code)
 

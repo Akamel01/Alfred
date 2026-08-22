@@ -45,6 +45,7 @@ generated: true
 - [[module__harness_containment_test_c_assertions|C1–C15 beyond the two probes, each paired with the control that stops it reading green.]] **imports** → this
 - [[module__harness_containment_test_containment|Containment assertions, each paired with the control that stops it reading green.]] **imports** → this
 - [[module__harness_containment_test_image_and_lane|C4 and C11 — the two rows that were blocked on a fingerprint record, and their controls.]] **imports** → this
+- [[module__harness_containment_test_outcome_binding|The two assertion-outcome enums are bound, though deliberately separate.]] **imports** → this
 
 ## Enforced by (code)
 

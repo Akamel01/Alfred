@@ -101,7 +101,7 @@ the stamp exists to prevent from the writer into the reader.
 
 The verifier therefore returns its own vocabulary, and this table is the only place it is
 mapped onto the three verdicts. `provenance/verify.py` never returns a verdict word: D16/D39
-forbid it from `src/`, and the mapping lives in `harness/stamp/verdict_map.py`.
+forbid it from `src/`, and the mapping lives in `harness/verdicts`.
 
 | Condition | Verification | Verdict |
 |---|---|---|

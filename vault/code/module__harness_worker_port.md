@@ -36,6 +36,8 @@ generated: true
 - [[module__harness_worker|harness.worker]] **contains** → this
 - [[module__harness_containment_handle|The one crossing from probe vocabulary to handle vocabulary.]] **imports** → this
 - [[module__harness_containment_test_c_assertions|C1–C15 beyond the two probes, each paired with the control that stops it reading green.]] **imports** → this
+- [[module__harness_containment_test_outcome_binding|The two assertion-outcome enums are bound, though deliberately separate.]] **imports** → this
+- [[module__harness_verdicts_test_verdicts|The verdict vocabulary's bindings: every other spelling answers to this module.]] **imports** → this
 - [[module__harness_worker_test_port|The Worker port's structural refusals, and the control on the check that enforces them.]] **imports** → this
 
 ## Enforced by (code)

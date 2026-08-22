@@ -31,7 +31,7 @@
     "gate-step": 51,
     "kill-criterion": 6,
     "layout": 14,
-    "module": 213,
+    "module": 214,
     "operator-item": 8,
     "risk": 12,
     "schema": 5,
@@ -44,8 +44,8 @@
     "amends": 9,
     "blocks": 32,
     "contains": 259,
-    "enforced_by": 320,
-    "imports": 210,
+    "enforced_by": 318,
+    "imports": 214,
     "needs": 4,
     "runs": 31,
     "see_also": 26,
@@ -1575,6 +1575,19 @@
     },
     {
       "confidence": "structural",
+      "dst": "module:harness.containment.test_outcome_binding",
+      "evidence": "harness/containment/test_outcome_binding.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/containment/test_outcome_binding.py"
+      },
+      "src": "module:harness.containment"
+    },
+    {
+      "confidence": "structural",
       "dst": "module:harness.criterion.__init__",
       "evidence": "harness/criterion/__init__.py",
       "extractor": "code",
@@ -2251,42 +2264,29 @@
     },
     {
       "confidence": "structural",
-      "dst": "module:harness.stamp.__init__",
-      "evidence": "harness/stamp/__init__.py",
+      "dst": "module:harness.verdicts.__init__",
+      "evidence": "harness/verdicts/__init__.py",
       "extractor": "code",
       "kind": "contains",
       "source": {
         "end_line": 1,
         "line": 1,
-        "path": "harness/stamp/__init__.py"
+        "path": "harness/verdicts/__init__.py"
       },
-      "src": "module:harness.stamp"
+      "src": "module:harness.verdicts"
     },
     {
       "confidence": "structural",
-      "dst": "module:harness.stamp.test_verdict_map",
-      "evidence": "harness/stamp/test_verdict_map.py",
+      "dst": "module:harness.verdicts.test_verdicts",
+      "evidence": "harness/verdicts/test_verdicts.py",
       "extractor": "code",
       "kind": "contains",
       "source": {
         "end_line": 1,
         "line": 1,
-        "path": "harness/stamp/test_verdict_map.py"
+        "path": "harness/verdicts/test_verdicts.py"
       },
-      "src": "module:harness.stamp"
-    },
-    {
-      "confidence": "structural",
-      "dst": "module:harness.stamp.verdict_map",
-      "evidence": "harness/stamp/verdict_map.py",
-      "extractor": "code",
-      "kind": "contains",
-      "source": {
-        "end_line": 1,
-        "line": 1,
-        "path": "harness/stamp/verdict_map.py"
-      },
-      "src": "module:harness.stamp"
+      "src": "module:harness.verdicts"
     },
     {
       "confidence": "structural",
@@ -4618,7 +4618,7 @@
     {
       "confidence": "derived",
       "dst": "module:src.provenance.stamp_types",
-      "evidence": "\"\"\"The input hash of a metric evaluation: ACS-1 over the declared inputs.\n\n    Trajectory arrays are *artifacts* and are content-addressed as stored bytes\n    (ADR-0003); what pass",
+      "evidence": "\"\"\"The input hash of a metric evaluation: ACS-1 over the declared inputs.\n\n    The preimage today is the full structured description of what was loaded:\n    harness/source/scenario",
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
@@ -4864,27 +4864,14 @@
     },
     {
       "confidence": "derived",
-      "dst": "module:harness.stamp.test_verdict_map",
+      "dst": "module:harness.verdicts.test_verdicts",
       "evidence": "# The five rows ADR-0006 specifies, restated here rather than read from the module under",
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 22,
-        "line": 22,
-        "path": "harness/stamp/test_verdict_map.py"
-      },
-      "src": "adr:ADR-0006"
-    },
-    {
-      "confidence": "derived",
-      "dst": "module:harness.stamp.verdict_map",
-      "evidence": "\"\"\"ADR-0006's verdict table, as data rather than as prose.\n\nThe table maps what a stamp verifier concluded onto Alfred's three-valued failure\nsemantics. It lives here, outside the ",
-      "extractor": "references",
-      "kind": "enforced_by",
-      "source": {
-        "end_line": 1,
-        "line": 1,
-        "path": "harness/stamp/verdict_map.py"
+        "end_line": 37,
+        "line": 37,
+        "path": "harness/verdicts/test_verdicts.py"
       },
       "src": "adr:ADR-0006"
     },
@@ -6034,14 +6021,14 @@
     },
     {
       "confidence": "derived",
-      "dst": "module:harness.stamp.verdict_map",
-      "evidence": "\"\"\"ADR-0006's verdict table, as data rather than as prose.\n\nThe table maps what a stamp verifier concluded onto Alfred's three-valued failure\nsemantics. It lives here, outside the ",
+      "dst": "module:harness.verdicts.__init__",
+      "evidence": "\"\"\"The harness's verdict vocabulary: the words, the stamp bridge table, one home.\n\n`pass`, `fail`, `indeterminate` — failure-semantics' three-valued vocabulary — used to be\nspelled",
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
         "end_line": 1,
         "line": 1,
-        "path": "harness/stamp/verdict_map.py"
+        "path": "harness/verdicts/__init__.py"
       },
       "src": "decision:D16"
     },
@@ -6507,8 +6494,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 202,
-        "line": 202,
+        "end_line": 203,
+        "line": 203,
         "path": "harness/criterion/runner.py"
       },
       "src": "decision:D33"
@@ -6624,8 +6611,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 304,
-        "line": 304,
+        "end_line": 305,
+        "line": 305,
         "path": "harness/criterion/runner.py"
       },
       "src": "decision:D39"
@@ -6671,14 +6658,14 @@
     },
     {
       "confidence": "derived",
-      "dst": "module:harness.stamp.verdict_map",
-      "evidence": "\"\"\"ADR-0006's verdict table, as data rather than as prose.\n\nThe table maps what a stamp verifier concluded onto Alfred's three-valued failure\nsemantics. It lives here, outside the ",
+      "dst": "module:harness.verdicts.__init__",
+      "evidence": "\"\"\"The harness's verdict vocabulary: the words, the stamp bridge table, one home.\n\n`pass`, `fail`, `indeterminate` — failure-semantics' three-valued vocabulary — used to be\nspelled",
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
         "end_line": 1,
         "line": 1,
-        "path": "harness/stamp/verdict_map.py"
+        "path": "harness/verdicts/__init__.py"
       },
       "src": "decision:D39"
     },
@@ -7066,8 +7053,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 200,
-        "line": 200,
+        "end_line": 201,
+        "line": 201,
         "path": "harness/criterion/runner.py"
       },
       "src": "decision:D49"
@@ -7222,8 +7209,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 304,
-        "line": 304,
+        "end_line": 305,
+        "line": 305,
         "path": "harness/criterion/runner.py"
       },
       "src": "decision:D5"
@@ -7378,8 +7365,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 265,
-        "line": 265,
+        "end_line": 262,
+        "line": 262,
         "path": "harness/evidence/store.py"
       },
       "src": "decision:D51"
@@ -8023,19 +8010,6 @@
     },
     {
       "confidence": "derived",
-      "dst": "module:harness.stamp.test_verdict_map",
-      "evidence": "\"\"\"D57. A mapping with no rows would pass every row-wise test below for free.\"\"\"",
-      "extractor": "references",
-      "kind": "enforced_by",
-      "source": {
-        "end_line": 34,
-        "line": 34,
-        "path": "harness/stamp/test_verdict_map.py"
-      },
-      "src": "decision:D57"
-    },
-    {
-      "confidence": "derived",
       "dst": "module:scripts.lint_harness_gate",
       "evidence": "\"\"\"How much of `harness/` the lint gate actually collects, and whether it can go red.\n\n`harness/` is the tree everything else in this repository is verified *by*: the criterion\nrun",
       "extractor": "references",
@@ -8608,6 +8582,32 @@
     },
     {
       "confidence": "structural",
+      "dst": "module:harness.containment.assertions",
+      "evidence": "harness.containment.assertions.AssertionOutcome",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 19,
+        "line": 19,
+        "path": "harness/containment/test_outcome_binding.py"
+      },
+      "src": "module:harness.containment.test_outcome_binding"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.worker.port",
+      "evidence": "harness.worker.port.AssertionOutcome",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 20,
+        "line": 20,
+        "path": "harness/containment/test_outcome_binding.py"
+      },
+      "src": "module:harness.containment.test_outcome_binding"
+    },
+    {
+      "confidence": "structural",
       "dst": "module:harness.criterion.execute",
       "evidence": "harness.criterion.execute.Execution",
       "extractor": "imports",
@@ -8641,6 +8641,19 @@
       "source": {
         "end_line": 51,
         "line": 51,
+        "path": "harness/criterion/runner.py"
+      },
+      "src": "module:harness.criterion.runner"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.verdicts",
+      "evidence": "harness.verdicts.Verdict",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 52,
+        "line": 52,
         "path": "harness/criterion/runner.py"
       },
       "src": "module:harness.criterion.runner"
@@ -9297,16 +9310,29 @@
     },
     {
       "confidence": "structural",
-      "dst": "module:harness.stamp.verdict_map",
-      "evidence": "harness.stamp.verdict_map.VERDICT_FOR_VERIFICATION",
+      "dst": "module:harness.verdicts",
+      "evidence": "harness.verdicts.VERDICTS",
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 15,
-        "line": 15,
-        "path": "harness/stamp/test_verdict_map.py"
+        "end_line": 27,
+        "line": 27,
+        "path": "harness/verdicts/test_verdicts.py"
       },
-      "src": "module:harness.stamp.test_verdict_map"
+      "src": "module:harness.verdicts.test_verdicts"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.worker.port",
+      "evidence": "harness.worker.port.VERDICT_VOCABULARY",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 81,
+        "line": 81,
+        "path": "harness/verdicts/test_verdicts.py"
+      },
+      "src": "module:harness.verdicts.test_verdicts"
     },
     {
       "confidence": "structural",
@@ -9362,8 +9388,8 @@
     },
     {
       "confidence": "structural",
-      "dst": "module:harness.stamp.verdict_map",
-      "evidence": "harness.stamp.verdict_map.VERDICT_FOR_VERIFICATION",
+      "dst": "module:harness.verdicts",
+      "evidence": "harness.verdicts.VERDICT_FOR_VERIFICATION",
       "extractor": "imports",
       "kind": "imports",
       "source": {
@@ -11723,9 +11749,9 @@
       "min_edges": 45,
       "min_nodes": 90,
       "name": "code",
-      "nodes": 218,
+      "nodes": 219,
       "rejected": 0,
-      "scanned": 245,
+      "scanned": 246,
       "unparsed": 0
     },
     {
@@ -11755,7 +11781,7 @@
       "unparsed": 0
     },
     {
-      "edges": 210,
+      "edges": 214,
       "expect_rejected": null,
       "max_nodes": 0,
       "max_unparsed": 0,
@@ -11781,7 +11807,7 @@
       "unparsed": 0
     },
     {
-      "edges": 320,
+      "edges": 318,
       "expect_rejected": null,
       "max_nodes": 0,
       "max_unparsed": 0,
@@ -18492,6 +18518,32 @@
     },
     {
       "attrs": {
+        "is_test": "true",
+        "lint_gated": "false",
+        "path": "harness/containment/test_outcome_binding.py",
+        "present": "true",
+        "protected": "true",
+        "tree": "harness"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:harness.containment.test_outcome_binding",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/containment/test_outcome_binding.py"
+      },
+      "status": "",
+      "tags": [
+        "protected"
+      ],
+      "title": "The two assertion-outcome enums are bound, though deliberately separate."
+    },
+    {
+      "attrs": {
         "lint_gated": "false",
         "namespace_package": "false",
         "present": "true",
@@ -20070,7 +20122,7 @@
     {
       "attrs": {
         "lint_gated": "false",
-        "namespace_package": "false",
+        "namespace_package": "true",
         "present": "true",
         "protected": "true",
         "tree": "harness"
@@ -20094,81 +20146,80 @@
     },
     {
       "attrs": {
-        "is_test": "false",
         "lint_gated": "false",
-        "path": "harness/stamp/__init__.py",
+        "namespace_package": "false",
         "present": "true",
         "protected": "true",
         "tree": "harness"
       },
       "body": "",
       "extractor": "code",
-      "id": "module:harness.stamp.__init__",
+      "id": "module:harness.verdicts",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "package",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/verdicts"
+      },
+      "status": "",
+      "tags": [
+        "protected"
+      ],
+      "title": "harness.verdicts"
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "harness/verdicts/__init__.py",
+        "present": "true",
+        "protected": "true",
+        "tree": "harness"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:harness.verdicts.__init__",
       "kind": "module",
       "occurrences": [],
       "shape": "module",
       "source": {
         "end_line": 1,
         "line": 1,
-        "path": "harness/stamp/__init__.py"
+        "path": "harness/verdicts/__init__.py"
       },
       "status": "",
       "tags": [
         "protected"
       ],
-      "title": "Inspector-side reading of product result stamps."
+      "title": "The harness's verdict vocabulary: the words, the stamp bridge table, one home."
     },
     {
       "attrs": {
         "is_test": "true",
         "lint_gated": "false",
-        "path": "harness/stamp/test_verdict_map.py",
+        "path": "harness/verdicts/test_verdicts.py",
         "present": "true",
         "protected": "true",
         "tree": "harness"
       },
       "body": "",
       "extractor": "code",
-      "id": "module:harness.stamp.test_verdict_map",
+      "id": "module:harness.verdicts.test_verdicts",
       "kind": "module",
       "occurrences": [],
       "shape": "module",
       "source": {
         "end_line": 1,
         "line": 1,
-        "path": "harness/stamp/test_verdict_map.py"
+        "path": "harness/verdicts/test_verdicts.py"
       },
       "status": "",
       "tags": [
         "protected"
       ],
-      "title": "The verdict table's own tests, including its vacuity control."
-    },
-    {
-      "attrs": {
-        "is_test": "false",
-        "lint_gated": "false",
-        "path": "harness/stamp/verdict_map.py",
-        "present": "true",
-        "protected": "true",
-        "tree": "harness"
-      },
-      "body": "",
-      "extractor": "code",
-      "id": "module:harness.stamp.verdict_map",
-      "kind": "module",
-      "occurrences": [],
-      "shape": "module",
-      "source": {
-        "end_line": 1,
-        "line": 1,
-        "path": "harness/stamp/verdict_map.py"
-      },
-      "status": "",
-      "tags": [
-        "protected"
-      ],
-      "title": "ADR-0006's verdict table, as data rather than as prose."
+      "title": "The verdict vocabulary's bindings: every other spelling answers to this module."
     },
     {
       "attrs": {

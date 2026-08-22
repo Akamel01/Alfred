@@ -35,9 +35,9 @@ generated: true
 
 Inspector machinery (D20). Permanently outside what agents may modify, and outside the
 
-- **enforced_by** → [[module__harness_stamp_verdict_map|ADR-0006's verdict table, as data rather than as prose.]] — """ADR-0006's verdict table, as data rather than as prose.
+- **enforced_by** → [[module__harness_verdicts___init__|The harness's verdict vocabulary: the words, the stamp bridge table, one home.]] — """The harness's verdict vocabulary: the words, the stamp bridge table, one home.
 
-The table maps what a stamp verifier concluded onto Alfred's
+`pass`, `fail`, `indeterminate` — fai
 - **enforced_by** → [[module__migrations_harness_evidence_versions_0001_evidence_base|evidence: run records, verdicts, operator actions, artifacts, defect escapes.]] — # Sole author is CriterionRunner (D5, D39), and that is a grant, not a check in
 - **enforced_by** → [[module__migrations_roles_002_grants_sql|migrations/roles/002_grants.sql]] — Sole author of verdicts is CriterionRunner (D5, D39). The harness may
 - **enforced_by** → [[module__migrations_roles_002_grants_sql|migrations/roles/002_grants.sql]] — read them and may not write them, which is the separation D39 makes

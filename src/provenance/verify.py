@@ -19,7 +19,7 @@ any `src/` module returning `Literal["pass","fail","indeterminate"]` (D16/D39). 
 is that "I cannot check this" and "this failed the check" are different findings, and here
 the difference is between *upgrade your verifier* and *you have been tampered with*. The
 mapping onto failure semantics lives outside the product tree, in
-`harness/stamp/verdict_map.py`.
+`harness/verdicts`.
 """
 
 from __future__ import annotations

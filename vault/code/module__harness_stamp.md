@@ -25,12 +25,9 @@ generated: true
 
 | Field | Value |
 |---|---|
-| `namespace_package` | false |
+| `namespace_package` | true |
 | `tree` | harness |
 
 ## Binds
 
-- **contains** → [[module__harness_stamp___init__|Inspector-side reading of product result stamps.]]
-- **contains** → [[module__harness_stamp_test_verdict_map|The verdict table's own tests, including its vacuity control.]]
-- **contains** → [[module__harness_stamp_verdict_map|ADR-0006's verdict table, as data rather than as prose.]]
 - [[gate-step__inspector_14|Stamp (version, upstream union, total verifier)]] **runs** → this

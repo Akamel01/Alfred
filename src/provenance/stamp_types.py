@@ -45,9 +45,14 @@ RECORD_TYPE_STAMPED_RESULT: Final[str] = "alfred.stamped_result"
 def hash_inputs(payload: AcsValue) -> str:
     """The input hash of a metric evaluation: ACS-1 over the declared inputs.
 
-    Trajectory arrays are *artifacts* and are content-addressed as stored bytes
-    (ADR-0003); what passes through here is the structured description that names
-    them — artifact digests, pair identity, evaluation window, parameters.
+    The preimage today is the full structured description of what was loaded:
+    harness/source/scenario identities, the metric's own declaration and citation,
+    and each track's measurement view (`AgentTrack.measurement_view`) with arrays
+    inlined in full, sorted by `agent_ref` so load order cannot move the digest.
+    Nothing names an artifact by digest yet: there is no artifact store to address
+    into. ADR-0003's split — hashing stored bytes as stored — is where this goes if
+    such a store ever lands, and it would change both this contract and the replay
+    payload together under a `stamp_schema_version` bump, never silently.
     """
     return acs_sha256(RECORD_TYPE_INPUT, payload)
 

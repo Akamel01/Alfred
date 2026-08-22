@@ -46,4 +46,5 @@ generated: true
 - **contains** → [[module__harness_containment_test_c_assertions|C1–C15 beyond the two probes, each paired with the control that stops it reading green.]]
 - **contains** → [[module__harness_containment_test_containment|Containment assertions, each paired with the control that stops it reading green.]]
 - **contains** → [[module__harness_containment_test_image_and_lane|C4 and C11 — the two rows that were blocked on a fingerprint record, and their controls.]]
+- **contains** → [[module__harness_containment_test_outcome_binding|The two assertion-outcome enums are bound, though deliberately separate.]]
 - [[gate-step__inspector_08|Containment (C6, C7 probes; C8-C15; and the O5 shells that must not pass)]] **runs** → this

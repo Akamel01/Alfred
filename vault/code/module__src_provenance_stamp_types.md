@@ -40,4 +40,4 @@ generated: true
 These are **not** versioned, and n
 - [[adr__ADR-0003|Canonical serialization for hashed structures (ACS-1)]] **enforced_by** → this — """The input hash of a metric evaluation: ACS-1 over the declared inputs.
 
-    Trajectory arrays are *artifacts* and are
+    The preimage today is the full structured

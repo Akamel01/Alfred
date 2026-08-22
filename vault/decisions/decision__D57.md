@@ -102,7 +102,6 @@ C7, C9, C12, C13, C16 and C17 are asserte
 - **enforced_by** → [[module__harness_selftest_test_replay|Byte-identical deterministic replay, and the control that stops it being trivial.]] — """D57 at the product boundary.
 
     A metric over zero tracks still returns something, and that something would be stam
-- **enforced_by** → [[module__harness_stamp_test_verdict_map|The verdict table's own tests, including its vacuity control.]] — """D57. A mapping with no rows would pass every row-wise test below for free."""
 - **enforced_by** → [[module__scripts_lint_harness_gate|How much of `harness/` the lint gate actually collects, and whether it can go red.]] — """How much of `harness/` the lint gate actually collects, and whether it can go red.
 
 `harness/` is the tree everything

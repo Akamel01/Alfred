@@ -49,10 +49,11 @@ from harness.criterion.materialize import (
     materialize,
 )
 from harness.evidence.store import Appended, EvidenceStore
+from harness.verdicts import Verdict
 
 HARVEST_FILENAME: Final = "criterion_harvest.json"
 
-type VerdictValue = Literal["pass", "fail", "indeterminate"]
+type VerdictValue = Verdict
 
 
 class CriterionError(RuntimeError):

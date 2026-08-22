@@ -64,7 +64,7 @@ Product code hashes structures through this module and nowhere else.
 These are **not** versioned, and n
 - **enforced_by** → [[module__src_provenance_stamp_types|Shared stamp vocabulary: record types, tolerance, assumption set, the input hash.]] — """The input hash of a metric evaluation: ACS-1 over the declared inputs.
 
-    Trajectory arrays are *artifacts* and are
+    The preimage today is the full structured
 - **enforced_by** → [[module__tests_test_one_encoder|ADR-0003: "A CI check asserts no code path hashes a structure through any encoder]] — """ADR-0003: "A CI check asserts no code path hashes a structure through any encoder
 but this one."
 

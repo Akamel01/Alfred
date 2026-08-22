@@ -62,9 +62,6 @@ OPERATOR_ACTION_RECORD_TYPE: Final = "alfred.evidence.operator_action.v1"
 
 CHAINED_TABLES: Final = frozenset({"run_record", "verdict", "operator_action"})
 
-VERDICT_VALUES: Final = frozenset({"pass", "fail", "indeterminate"})
-
-
 class EvidenceError(RuntimeError):
     """A write could not be made, or a chain does not hold."""
 

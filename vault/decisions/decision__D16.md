@@ -32,9 +32,9 @@ generated: true
 ## Enforced by (code)
 
 - **enforced_by** → [[module___github_workflows_gates_yml|.github/workflows/gates.yml]] — D16/D39. LangGraph raises only on *concurrent* unreducered writes, so a
-- **enforced_by** → [[module__harness_stamp_verdict_map|ADR-0006's verdict table, as data rather than as prose.]] — """ADR-0006's verdict table, as data rather than as prose.
+- **enforced_by** → [[module__harness_verdicts___init__|The harness's verdict vocabulary: the words, the stamp bridge table, one home.]] — """The harness's verdict vocabulary: the words, the stamp bridge table, one home.
 
-The table maps what a stamp verifier concluded onto Alfred's
+`pass`, `fail`, `indeterminate` — fai
 - **enforced_by** → [[module__scripts_lint_verdict_boundary|D16/D39: the verdict boundary, enforced structurally rather than by convention.]] — """D16/D39: the verdict boundary, enforced structurally rather than by convention.
 
 **Why this exists as a lint and not 

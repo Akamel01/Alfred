@@ -41,10 +41,7 @@ generated: true
 ## Enforced by (code)
 
 - **enforced_by** → [[module__harness_acs_gen_vectors|Generate the ACS-1 test-vector suite (ADR-0003).]] — # ================================================ ADR-0006: the v1 result stamp
-- **enforced_by** → [[module__harness_stamp_test_verdict_map|The verdict table's own tests, including its vacuity control.]] — # The five rows ADR-0006 specifies, restated here rather than read from the module under
-- **enforced_by** → [[module__harness_stamp_verdict_map|ADR-0006's verdict table, as data rather than as prose.]] — """ADR-0006's verdict table, as data rather than as prose.
-
-The table maps what a stamp verifier concluded onto Alfred's
+- **enforced_by** → [[module__harness_verdicts_test_verdicts|The verdict vocabulary's bindings: every other spelling answers to this module.]] — # The five rows ADR-0006 specifies, restated here rather than read from the module under
 - **enforced_by** → [[module__migrations_product_versions_0001_product_base|product: scenarios, trajectories, metric results, result stamps.]] — # The ten keys, frozen by D55 / ADR-0006. `stamp_schema_version` is in the
 - **enforced_by** → [[module__src_provenance___init__|Result stamping and the one ACS-1 door (ADR-0003, ADR-0004, ADR-0006).]] — """Result stamping and the one ACS-1 door (ADR-0003, ADR-0004, ADR-0006).
 
