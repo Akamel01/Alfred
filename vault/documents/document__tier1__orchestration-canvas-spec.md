@@ -38,7 +38,7 @@ generated: true
 
 **evidence**
 
-> none — written as destination deliverable of wayfinder map #8; generated evidence is orchestration/topology.json + policy/node-palette.json + tools/orchestration/gen_canvas.py + scripts/lint_topology.py (draft)
+> none — written as destination deliverable of wayfinder map #8; generated evidence is orchestration/topology.json + policy/node-palette.json + tools/orchestration/gen_canvas.py + scripts/lint_topology.py
 
 ## Binds
 

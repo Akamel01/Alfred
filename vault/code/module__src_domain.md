@@ -32,4 +32,5 @@ generated: true
 - **contains** → [[module__src_domain_arrays|Array-valued fields for Pydantic boundary models.]]
 - **contains** → [[module__src_domain_base|Base model and the invariants every persisted record carries.]]
 - **contains** → [[module__src_domain_errors|Error taxonomy (docs/tier1/failure-semantics.md).]]
+- **contains** → [[module__src_domain_ids|Typed, sortable identifiers (cross-stage invariant I4).]]
 - **contains** → [[module__src_domain_trajectory|Trajectory schemas — the load-bearing abstraction everything downstream reads.]]

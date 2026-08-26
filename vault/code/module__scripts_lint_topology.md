@@ -29,8 +29,3 @@ generated: true
 | `is_test` | false |
 | `path` | scripts/lint_topology.py |
 | `tree` | scripts |
-
-## Binds
-
-- [[gate-step__integrity_21|Topology lint checks its own vacuity]] **runs** → this
-- [[gate-step__integrity_22|Topology file is valid]] **runs** → this
