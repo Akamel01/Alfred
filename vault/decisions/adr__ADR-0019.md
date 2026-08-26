@@ -37,6 +37,7 @@ generated: true
 - **see_also** → [[adr__ADR-0017|A containment assertion with an unread premise is a hole, and a hole never passes]]
 - **see_also** → [[adr__ADR-0018|The executor moved, and eleven of thirteen premises were wrong]]
 - [[adr__ADR-0020|The run fingerprint record, and the two assertions that were waiting on it]] **see_also** → this
+- [[adr__ADR-0036|Run Fingerprint Record Schema & Production]] **see_also** → this
 
 ## Enforced by (code)
 

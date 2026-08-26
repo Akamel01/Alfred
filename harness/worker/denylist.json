@@ -1,0 +1,24 @@
+{
+  "version": "2026-08-25.1",
+  "denied_distributions": [
+    "commonroad-crime",
+    "commonroad-drivability-checker",
+    "commonroad-reach",
+    "commonroad-clcs"
+  ],
+  "denied_modules": [
+    "commonroad_crime",
+    "commonroad_drivability_checker",
+    "commonroad_reach",
+    "commonroad_clcs"
+  ],
+  "permitted_substrate": [
+    "numpy",
+    "scipy",
+    "pandas",
+    "matplotlib",
+    "shapely",
+    "pyyaml",
+    "lxml"
+  ]
+}

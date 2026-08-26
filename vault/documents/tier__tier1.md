@@ -28,6 +28,7 @@ generated: true
 - **contains** → [[document__tier1__failure-semantics|Failure Semantics and Error Handling]]
 - **contains** → [[document__tier1__mission-control-design|Mission Control Design]]
 - **contains** → [[document__tier1__mission-control-specification|Mission Control Specification]]
+- **contains** → [[document__tier1__orchestration-canvas-spec|Orchestration Canvas Specification]]
 - **contains** → [[document__tier1__port-catalog|Port Catalog]]
 - **contains** → [[document__tier1__state-and-graph-specification|State and Graph Specification]]
 - **contains** → [[document__tier1__system-blueprint|System Blueprint]]

@@ -78,6 +78,7 @@ PHASES: list[tuple[str, str, list[tuple[str, str, str]]]] = [
         ("run-instrumentation-specification", BINDING, "what every run emits; must exist BEFORE Phase 1 starts, not after"),
         ("mission-control-specification", BINDING, "the operator surface; the human gate is unrecorded and unmeasured without it"),
         ("mission-control-design", BINDING, "how that surface is built: reachability ladder, routes, forms, and the timing instrument's failure modes"),
+        ("orchestration-canvas-spec", BINDING, "operator-local interactive topology editor: palette, contract vocabulary, file format, generator and lint contracts"),
         ("agent-definition-standard", BINDING, "an agent is a contract, never a job title"),
         ("agent-catalog", BINDING, "one specification per capability"),
         ("tool-specification-standard", BINDING, "contract, side effects, blast radius, idempotency"),

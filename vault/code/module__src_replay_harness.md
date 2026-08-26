@@ -41,6 +41,7 @@ Domain-neutral throughout.
 - [[adr__ADR-0002|Reason-code width, and what the integer is allowed to be]] **enforced_by** → this — """The replay harness: load, evaluate, stamp, and produce a digest two runs are compared on.
 
 Domain-neutral throughout.
+- [[adr__ADR-0037|`arity` Semantics in Replay Harness]] **enforced_by** → this — # (per ADR-0037 / ACS-1 MetricValue docstring). len(series) is the actual
 - [[decision__D40|fingerprint extension (final form)]] **enforced_by** → this — """The replay harness: load, evaluate, stamp, and produce a digest two runs are compared on.
 
 Domain-neutral throughout.

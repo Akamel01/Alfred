@@ -160,8 +160,7 @@ def upgrade() -> None:
             "verdict IN ('pass', 'fail', 'indeterminate')", name="ck_verdict_vocabulary"
         ),
         sa.CheckConstraint(
-            "held_out_result IS NULL OR "
-            "held_out_result IN ('pass', 'fail', 'indeterminate')",
+            "held_out_result IS NULL OR held_out_result IN ('pass', 'fail', 'indeterminate')",
             name="ck_verdict_heldout_vocabulary",
         ),
         sa.CheckConstraint(
@@ -214,8 +213,7 @@ def upgrade() -> None:
         # instrument fault, and it would bias the capacity ledger in the direction that
         # flatters it.
         sa.CheckConstraint(
-            "attended_ms IS NULL OR attended_ms_upper IS NULL OR "
-            "attended_ms_upper >= attended_ms",
+            "attended_ms IS NULL OR attended_ms_upper IS NULL OR attended_ms_upper >= attended_ms",
             name="ck_operator_action_bracket_ordered",
         ),
         sa.CheckConstraint(

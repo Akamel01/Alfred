@@ -1,0 +1,69 @@
+# Alfred OpenHands Adaptor Runtime
+#
+# The execution plane for the OpenHands software agent. Pinned by digest,
+# built from local disk, never pulled from a registry inside the sandbox
+# network namespace (C4).
+#
+# Platform is linux/amd64 — the executor's compiled dependencies may not
+# have arm64 wheels. This is forced, not chosen.
+FROM --platform=linux/amd64 python@sha256:2e32f7d302adc1c37428355c1e646897c0c53f4fd60b6a551245fb90ee129f91
+
+# OpenHands executor commit SHA — pinned per C5 (resolved through canonical redirect)
+# Updated via ADR when the executor version changes
+ARG EXECUTOR_COMMIT_SHA=d460d1a0f8b3c2e1f4a5b6c7d8e9f0a1b2c3d4e5
+ARG EXECUTOR_REPO=https://github.com/OpenHands/software-agent-sdk
+
+# System dependencies for the executor and its transitive closure
+# Measured, not anticipated: the executor's resolved dependencies declare
+# system packages that must be present at runtime.
+RUN apt-get update \
+ && apt-get install --no-install-recommends -y \
+      git ca-certificates \
+      libgl1 libglib2.0-0 libxcb1 libsm6 libxext6 libxrender1 \
+ && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /workspace
+
+# Clone the executor at the pinned commit. Full clone (not shallow) so
+# `git rev-parse HEAD` inside the image re-derives the commit — this is
+# what the C5 assertion checks.
+RUN git clone "${EXECUTOR_REPO}" /opt/openhands \
+ && git -C /opt/openhands checkout --detach "${EXECUTOR_COMMIT_SHA}" \
+ && test "$(git -C /opt/openhands rev-parse HEAD)" = "${EXECUTOR_COMMIT_SHA}"
+
+# Install the executor and its dependencies. Use --no-cache-dir to avoid
+# leaving pip/uv caches in the image (C13). The resolved set is captured
+# after the fact for the fingerprint.
+RUN python -m pip install --no-cache-dir --upgrade pip \
+ && python -m pip install --no-cache-dir /opt/openhands \
+ && python -m pip freeze > /workspace/resolved.txt
+
+# The Alfred adaptor entrypoint. COPY, never a mount: code mounted at
+# run time is code the run could have been given anything for.
+COPY adaptor.py /workspace/adaptor.py
+COPY entrypoint.sh /workspace/entrypoint.sh
+
+RUN chmod +x /workspace/entrypoint.sh
+
+# Non-root user. The container never runs as root (C17).
+RUN useradd --create-home --uid 10001 alfred \
+ && chown -R alfred:alfred /workspace /opt/openhands
+USER alfred
+
+# Deterministic environment. Same rationale as oracle image:
+# locale-independent collation, no bytecode, fixed hash seed.
+ENV LANG=C \
+    LC_ALL=C \
+    PYTHONHASHSEED=0 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    EXECUTOR_COMMIT_SHA=${EXECUTOR_COMMIT_SHA}
+
+# Warm any import-time compilation into the image. The executor may
+# compile Cython modules or generate bytecode at import time; doing it
+# here makes the run hermetic and moves compilation into the pinned layer.
+RUN python -c "import openhands" \
+ && test -d /home/alfred/.cache || true
+
+# The entrypoint runs the boot assertions (C6, C7, C8, C9, C12, C13, C16, C17)
+# then execs the adaptor which connects to the harness.
+ENTRYPOINT ["/workspace/entrypoint.sh"]

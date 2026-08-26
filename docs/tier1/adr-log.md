@@ -3845,3 +3845,151 @@ statement says so at the point where a reader would otherwise infer a second aut
 The sync obligation stays with the writer stage, a later one, so the projection cannot be
 cited as ground truth before it has a writer to be in sync with. The change is one line
 in a frozen document and this record; the line is the O9 surface of the change.
+
+---
+
+## ADR-0036 — Run Fingerprint Record Schema & Production
+
+**Date:** 2026-08-24 · **Status:** Accepted · **Supersedes:** none · **See also:** ADR-0018, ADR-0019 (C4/C11 blocked on this record)
+
+### Context
+
+Containment assertions C4 (runtime image digest) and C11 (serving lane) compare live observations against a declared `RunFingerprint`. The schema exists in code (`harness/fingerprint/record.py`: 27 frozen fields across 4 groups D19/D40/lane/worker) but **no real record is produced or stored** in the repository. Both assertions currently report `NOT_EXECUTED` because there is no truth to compare against.
+
+The `bench/` directory holds per-seed evidence but has no writer for fingerprint records. The `bench/bench_infer.py` captures a partial `Fingerprint` (model_id, server, engine, quantization, arch, context_length) for benchmark runs, but this lacks the 27 fields C4/C11 need.
+
+### Decision
+
+1. **Add `scripts/capture_run_fingerprint.py`** (factory-owned, single responsibility):
+   - Collects all 27 `RunFingerprint` fields from live sources:
+     - `orchestrator_sha` ← `git rev-parse HEAD`
+     - `runtime_image_digest` ← `docker image inspect alfred-api:r1 --format '{{.RepoDigests}}'`
+     - `lockfile_sha256` ← `sha256sum uv.lock`
+     - Lane fields (`model_id`, `quantization`, `loaded_context_length`, `parallel_slots`) ← serving `/v1/models` + `lms version`
+     - `adaptor_version` ← `harness/worker/port.py` version constant
+     - Remaining fields from CI/env (`server_version`, `inference_runtime_version`, `harness_identity`, `criterion_set_version`, `quant_artifact_sha256`, `oracle_denylist_version`, `tool_description_sha256`, `seed_layer_order_sha256`)
+   - Constructs `RunFingerprint` (validates all 27 fields present, no defaults)
+   - Computes `fingerprint_sha256` via `acs_sha256("run_fingerprint", record.as_mapping())`
+   - Writes `bench/fingerprints/<seed>.json` with structure:
+   ```json
+   {
+     "seed": 3355,
+     "record": { /* 27 fields */ },
+     "fingerprint_sha256": "<ACS-1 digest>",
+     "captured_at": "ISO8601",
+     "source": "factory-dispatch|bench-infer|manual"
+   }
+   ```
+2. **Add `just fingerprint` target** (or `make fingerprint`) to run the script.
+3. **CI job** on every `main` push: runs capture, publishes `bench/fingerprints/*.json` as artifact (90-day retention).
+4. **`bench/` stays pure evidence** — no writers in repo; this script is factory-owned, not bench-owned.
+
+### Consequences
+
+- C4/C11 positive controls become integration tests against truth (real record in `bench/fingerprints/`).
+- Negative controls unchanged (`NOT_EXECUTED` paths still tested).
+- `bench/fingerprints/` becomes immutable input to containment assertions — the measurement contract.
+- No schema change to existing `bench/results/*.json` (they remain per-task evidence).
+
+### Enforcement
+
+- CI asserts `bench/fingerprints/` artifact exists on every `main` push.
+- `policy/protected-paths.json` entry for `bench/fingerprints/` (append-only) — see ADR-0038.
+
+---
+
+## ADR-0037 — `arity` Semantics in Replay Harness
+
+**Date:** 2026-08-24 · **Status:** Accepted · **Supersedes:** none
+
+### Context
+
+`src/replay/harness.py:94` asserts `metric.arity != len(series)` but `arity` has **no documented meaning** in the codebase. The field exists in `MetricValue` wire type (`harness/acs/acs1.py` `MetricValue` includes `arity: int`) but is never defined — is it expected series length? max depth? schema version? A metric definition cannot declare what `arity` it expects.
+
+### Decision
+
+**Define `arity` as: "the number of independent observations a metric aggregates."**
+
+Examples:
+- A 3-hop chain metric (TTC through 3 obstacles) → `arity = 3`
+- A single-point collision check → `arity = 1`
+- A derived metric combining 2 base metrics → `arity = 2`
+
+`len(series)` is the *actual* observations collected in the replay run. Mismatch (`metric.arity != len(series)`) = data loss or injector bug — the harness should fail fast rather than compute on incomplete data.
+
+**Implementation:**
+- Update `MetricValue` docstring in `harness/acs/acs1.py` with the definition.
+- Update `src/replay/harness.py:94` comment to reference the definition.
+- **No wire change** — `arity` remains `int` in the ACS-1 payload.
+
+### Consequences
+
+- Future metrics must declare `arity` at definition (in metric catalog / criterion).
+- Replay harness validates collection completeness via the mismatch check.
+- Removes silent mismatch class where wrong-length series silently produced wrong results.
+
+---
+
+## ADR-0038 — bench Immutability: Convention → Git-Level Control
+
+**Date:** 2026-08-24 · **Status:** Accepted · **Supersedes:** none · **See also:** Issue #4 (review output)
+
+### Context
+
+`bench/results/` holds per-seed evidence (immutable by convention). Currently no writer exists in the repo; CI only reads. Issue #4 asks to harden or accept the convention.
+
+### Decision
+
+**Harden with git-level control:**
+
+1. Add `bench/results/` and `bench/fingerprints/` to `policy/protected-paths.json` as **append-only** prefixes (no rewrite, no delete).
+2. CI step: `git diff --name-only HEAD~1 -- bench/results/ bench/fingerprints/` — fails if any file shows as modified (only `A` added status allowed).
+3. No schema change — existing JSON stands; future records follow same format.
+
+### Consequences
+
+- Accidental overwrite caught in CI (not at audit time).
+- Intentional rewrite requires ADR (raises cost, creates record).
+- Evidence integrity guaranteed by the same gate that protects the vault and register.
+
+### Enforcement
+
+- `scripts/lint_protected_paths.py` (existing) asserts no modified files under protected prefixes.
+- CI runs lint on every push.
+
+---
+
+## ADR-0039 — Orchestration Canvas: Protected Topology Source & Palette Binding
+
+**Date:** 2026-08-26 · **Status:** Accepted · **Supersedes:** none · **See also:** docs/tier1/orchestration-canvas-spec.md, ADR-0031 (protected-set as policy), D51
+
+### Context
+
+Prototype #13 shipped palette (`policy/node-palette.json`, 21 entries, v1) and topology (`orchestration/topology.json`, 8 nodes/7 edges) with generator and lint in commit e04544a on `feat/orchestration-canvas`. Two open decisions: where to seat the canvas, and which artifacts to harden.
+
+**Seat.** Two surfaces offered: a served page (new origin, auth, CSP, D51 split extended) and an **operator-local generated artifact** (single-file HTML, `file://` origin, no server). Served reads as the more capable surface and is the more expensive one: it reopens D51's overlay model (ADR-0008) — agent-authored fragment positioned over a verdict — and requires a second origin, credential handling, and a content policy for a file whose sole author is the operator and whose write frequency is low. Operator-local follows a proven precedent — `docs-graph.html` via `tools/vaultgraph/render/` (vanilla JS, zero deps, JSON-in-`<script type="application/json">`, `<` escaped to `\u003c`) — with no network requests, no external resources, and no new trust boundary. **Choosing served would have meant D51 touched; choosing local means it is untouched and no new attack class is introduced.** Trade-off accepted: no collaborative editing, no remote access. Correct for an artifact whose author set is exactly one human.
+
+**Sources.** Both JSON files are hand-authored and operator-owned. Palette was already protected — `policy/` prefix in `policy/protected-paths.json` covers it — but topology was not: its directory `orchestration/` had no entry, so an agent patch could rewrite the graph that the canvas and the lint both trust. An unprotected source that two validators read without recomputing is a source nobody protects.
+
+### Decision
+
+1. **Protect `orchestration/topology.json` by adding `orchestration/` as a protected prefix** in `policy/protected-paths.json` (ADR-0031). Entry carries rationale referencing this ADR and version stays 1. Any diff touching `orchestration/**` is now refused by `harness/patch/validate.py` before it reaches a tree.
+
+2. **Palette stays under `policy/` (no new prefix).** `policy/node-palette.json` was already covered; this ADR records that coverage explicitly so a future move out of `policy/` cannot be treated as uncovered without an ADR of its own.
+
+3. **Binding lint is paired to the source.** `scripts/lint_topology.py` (TOP001–TOP009) enforces topology↔palette coherence; `tools/tests/test_orchestration.py` extends the `test_protected_binding` pattern — every code-side node-kind spelling must be bijective with a palette `id`, one spelling each, drift fails CI. The gate that refuses the edit and the lint that rejects the drift are different controls on the same invariant (no silent palette/topology divergence).
+
+### Consequences
+
+- Edits to topology or palette now require the protected-path gate — operator commit, ADR if intent changes. Factory agents cannot land a topology rewrite through a patch.
+- `docs/tier4/protected-paths-policy.md` gains the `orchestration/` row; `harness/patch/test_protected_set.py` gains the matching `ROW_COVERAGE` entry (`orchestration/ → orchestration/`). The doc↔set equality asserted there fails on any mismatch in either direction.
+- Generator (`tools/orchestration/gen_canvas.py`) remains pure — deterministic function of the two sources — so protecting the inputs protects the output without protecting the generated HTML.
+- Cost: one more prefix in the gate's hot path (negligible) and one more table row. Benefit: the hand-authored graph is no longer the single place an agent can redefine what the system thinks its own orchestration is.
+
+### Enforcement
+
+- `harness/patch/validate.py` → `load_protected_set()` fails closed on missing/corrupt set (F25/D57).
+- `harness/patch/test_protected_set.py` → set-equality in both directions (ADR-0009 precedent).
+- `scripts/lint_topology.py` + `tools/tests/test_orchestration.py` → structural and binding checks, including `--self-test`.
+- `tools/orchestration/gen_canvas.py --check` → generated canvas matches sources.
+

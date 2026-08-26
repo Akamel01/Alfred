@@ -44,10 +44,10 @@ def _result():
 # ---- counts against the real repo -------------------------------------------------------
 
 def test_the_register_yields_sixty_three_documents() -> None:
-    # 63, not the 65 the handoff quoted: docs/README.md and docs/READING-MAP.md are generated
+    # 64, not the 65 the handoff quoted: docs/README.md and docs/READING-MAP.md are generated
     # and excluded, exactly as scripts/lint_docs.py:169-174 excludes them.
     result = _result()
-    assert sum(1 for n in result.nodes if n.kind is NodeKind.DOCUMENT) == 63
+    assert sum(1 for n in result.nodes if n.kind is NodeKind.DOCUMENT) == 64
 
 
 def test_every_tier_directory_becomes_one_node() -> None:
@@ -56,19 +56,19 @@ def test_every_tier_directory_becomes_one_node() -> None:
 
 
 def test_every_falsification_condition_in_the_corpus_is_data() -> None:
-    # 63 in document frontmatter, 5 in decision cells. This is the relation the graph exists
+    # 64 in document frontmatter, 5 in decision cells. This is the relation the graph exists
     # to make queryable and it existed as prose in two formats and as data nowhere.
     result = _result()
     docs = [n for n in result.nodes
             if n.kind is NodeKind.DOCUMENT and n.attrs.get("falsifies_if")]
     decisions = [n for n in result.nodes
                  if n.kind is NodeKind.DECISION and n.attrs.get("falsifies_if")]
-    assert len(docs) == 63
+    assert len(docs) == 64
     assert sorted(n.attrs["number"] for n in decisions) == ["30", "48", "49", "51", "55"]
 
 
 def test_every_document_carries_a_falsification_condition() -> None:
-    # The relation the graph exists to make visible. All 63 state one; a parser that stopped
+    # The relation the graph exists to make visible. All 64 state one; a parser that stopped
     # reading frontmatter would drop this to zero and this assertion is what would say so.
     result = _result()
     docs = [n for n in result.nodes if n.kind is NodeKind.DOCUMENT]

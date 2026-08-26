@@ -42,6 +42,7 @@ generated: true
 - [[module__harness_lane_test_fingerprint_field_binding|Three spellings of "the lane's fields", and the two-schema reality between them.]] **imports** → this
 - [[module__harness_worker_port|The `Worker` port. A claim crosses it, or an exception does — never a verdict.]] **imports** → this
 - [[module__harness_worker_test_fake|Rehearsals of the `Worker` seam against the in-memory adaptor — interface only.]] **imports** → this
+- [[module__scripts_capture_run_fingerprint|Factory-owned script that collects all RunFingerprint fields from live sources,]] **imports** → this
 
 ## Enforced by (code)
 

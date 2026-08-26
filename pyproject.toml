@@ -18,6 +18,8 @@ dependencies = [
     "sqlalchemy>=2.0",
     "fastapi>=0.141.1",
     "uvicorn[standard]>=0.52.3",
+    "httpx2>=2.12.0",
+    "docker>=7.1",
 ]
 
 [project.optional-dependencies]
@@ -96,6 +98,7 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["S101"]          # assert is the point of a test
+"tests/parser/test_grants_declared.py" = ["S101", "E501"]  # yaml fixtures exceed line length
 "migrations/*" = ["ANN", "I"] # alembic templates own their own shape
 
 [tool.ruff.lint.isort]

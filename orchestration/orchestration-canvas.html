@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Orchestration Canvas — Production</title>
+<style>
+:root{--bg:#f8f6f1;--ink:#1a1a1a;--ink-faint:#9a9590;--ground:#ffffff;--border:#e8e2d9;--accent:#3b82f6;--panel:#fdfcfa}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font:13px/1.4 ui-sans,system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--ink)}
+#app{display:flex;flex-direction:column;height:100%}
+#toolbar{display:flex;gap:8px;padding:8px 12px;border-bottom:1px solid var(--border);background:var(--panel);align-items:center;flex-wrap:wrap}
+#toolbar button,#toolbar label.btn{font:12px ui-monospace,monospace;padding:6px 10px;border:1px solid var(--border);background:var(--ground);border-radius:6px;cursor:pointer}
+#toolbar .hint{font:11px ui-monospace,monospace;color:var(--ink-faint);margin-left:auto}
+#main{flex:1;display:flex;min-height:0}
+#palette{width:220px;min-width:180px;border-right:1px solid var(--border);background:var(--panel);overflow:auto;padding:10px;display:flex;flex-direction:column;gap:12px}
+#palette h2{font:11px ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint)}
+.cat{border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--ground)}
+.cat-head{font:11px ui-monospace,monospace;padding:6px 8px;background:var(--bg);border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.04em}
+.cat-items{display:flex;flex-direction:column}
+.p-item{display:flex;align-items:center;gap:8px;padding:7px 8px;cursor:grab;border-bottom:1px solid #f0ece5;font-size:12px}
+#stage-wrap{flex:1;position:relative;overflow:hidden;background:var(--bg)}
+#stage-canvas{position:absolute;inset:0;width:100%;height:100%;outline:none}
+#status{padding:6px 12px;border-top:1px solid var(--border);background:var(--panel);font:11px ui-monospace,monospace;color:var(--ink-faint);display:flex;gap:16px}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="toolbar">
+    <button id="btn-save">Save</button>
+    <button id="btn-download">Export</button>
+    <label class="btn">Import<input id="file-input" type="file" accept=".json,application/json" hidden></label>
+    <button id="btn-copy">Copy JSON</button>
+    <span id="save-hint" class="hint">Production canvas — generated</span>
+  </div>
+  <div id="main"><div id="palette"></div><div id="stage-wrap"><canvas id="stage-canvas" tabindex="0"></canvas></div></div>
+  <div id="status"><span id="stat-nodes"></span><span id="stat-edges"></span><span id="stat-msg">generated from orchestration/topology.json</span></div>
+</div>
+<script type="application/json" id="topology-data">{"edges":[{"contract":"delegates-to","id":"e1","label":"","source":"n1","source_port":"delegates-to","target":"n4","target_port":"delegates-to"},{"contract":"delegates-to","id":"e2","label":"","source":"n2","source_port":"delegates-to","target":"n5","target_port":"delegates-to"},{"contract":"reviews","id":"e3","label":"","source":"n3","source_port":"reviews","target":"n4","target_port":"reviews"},{"contract":"hands-off-to","id":"e4","label":"","source":"n5","source_port":"hands-off-to","target":"n6","target_port":"hands-off-to"},{"contract":"hands-off-to","id":"e5","label":"","source":"n4","source_port":"hands-off-to","target":"n7","target_port":"hands-off-to"},{"contract":"hands-off-to","id":"e6","label":"","source":"n6","source_port":"hands-off-to","target":"n8","target_port":"hands-off-to"},{"contract":"reviews","id":"e7","label":"","source":"n8","source_port":"reviews","target":"n4","target_port":"reviews"}],"metadata":{"author":"operator","created_at":"2026-08-26T00:00:00Z","description":"Canonical orchestration topology — production sample","updated_at":"2026-08-26T00:00:00Z"},"nodes":[{"id":"n1","kind":"planner","label":"Planner","position":{"x":-300,"y":-200}},{"id":"n2","kind":"wayfinder","label":"Wayfinder","position":{"x":-300,"y":0}},{"id":"n3","kind":"architect","label":"Architect","position":{"x":-100,"y":-100}},{"id":"n4","kind":"code-writer","label":"Code Writer","position":{"x":150,"y":-200}},{"id":"n5","kind":"researcher","label":"Researcher","position":{"x":150,"y":0}},{"id":"n6","kind":"drafter","label":"Drafter","position":{"x":150,"y":200}},{"id":"n7","kind":"reviewer","label":"Reviewer","position":{"x":400,"y":-100}},{"id":"n8","kind":"verifier","label":"Verifier","position":{"x":400,"y":100}}],"version":1}</script>
+<script type="application/json" id="palette-data">{"nodes":[{"category":"planning","defaults":{"out:delegates-to":"delegates-to"},"description":"Plans the work breakdown and sequences tasks","icon":"📋","id":"planner","label":"Planner","ports":{"in":[],"out":["delegates-to"]}},{"category":"planning","defaults":{"out:delegates-to":"delegates-to"},"description":"Charts the decision path through fog","icon":"🧭","id":"wayfinder","label":"Wayfinder","ports":{"in":[],"out":["delegates-to"]}},{"category":"planning","defaults":{"out:delegates-to":"delegates-to","out:reviews":"reviews"},"description":"Designs system structure and reviews implementation","icon":"🏗️","id":"architect","label":"Architect","ports":{"in":["feeds"],"out":["delegates-to","reviews"]}},{"category":"planning","defaults":{"out:delegates-to":"delegates-to"},"description":"Owns product scope and prioritization","icon":"📦","id":"product-manager","label":"Product Manager","ports":{"in":["feeds"],"out":["delegates-to"]}},{"category":"execution","defaults":{"out:hands-off-to":"hands-off-to"},"description":"Implements features and fixes","icon":"💻","id":"code-writer","label":"Code Writer","ports":{"in":["delegates-to","reviews"],"out":["hands-off-to"]}},{"category":"execution","defaults":{"out:hands-off-to":"hands-off-to"},"description":"Investigates and documents findings","icon":"🔬","id":"researcher","label":"Researcher","ports":{"in":["delegates-to"],"out":["hands-off-to"]}},{"category":"execution","defaults":{"out:hands-off-to":"hands-off-to"},"description":"Creates initial artifacts and drafts","icon":"✍️","id":"drafter","label":"Drafter","ports":{"in":["delegates-to","hands-off-to"],"out":["hands-off-to"]}},{"category":"execution","defaults":{"out:hands-off-to":"hands-off-to"},"description":"Provides deep domain knowledge","icon":"🎓","id":"domain-expert","label":"Domain Expert","ports":{"in":["delegates-to"],"out":["hands-off-to"]}},{"category":"review","defaults":{"out:reviews":"reviews"},"description":"Reviews work products for quality","icon":"👁️","id":"reviewer","label":"Reviewer","ports":{"in":["hands-off-to"],"out":["reviews"]}},{"category":"review","defaults":{"out:reviews":"reviews"},"description":"Verifies correctness against criteria","icon":"✅","id":"verifier","label":"Verifier","ports":{"in":["feeds","hands-off-to"],"out":["reviews"]}},{"category":"review","defaults":{"out:reviews":"reviews"},"description":"Validates evidence and outcomes","icon":"✓","id":"validator","label":"Validator","ports":{"in":["feeds"],"out":["reviews"]}},{"category":"review","defaults":{"out:reviews":"reviews"},"description":"Examines artifacts for compliance","icon":"🔍","id":"examiner","label":"Examiner","ports":{"in":["feeds"],"out":["reviews"]}},{"category":"review","defaults":{"out:reviews":"reviews"},"description":"Executes tests and reports results","icon":"🧪","id":"tester","label":"Tester","ports":{"in":["feeds"],"out":["reviews"]}},{"category":"operator","defaults":{"out:feeds":"feeds"},"description":"Runs criterion evaluations","icon":"⚖️","id":"criterion-runner","label":"Criterion Runner","ports":{"in":[],"out":["feeds"]}},{"category":"operator","defaults":{},"description":"Stores and serves evidence artifacts","icon":"📚","id":"evidence-store","label":"Evidence Store","ports":{"in":["feeds"],"out":[]}},{"category":"operator","defaults":{"out:feeds":"feeds"},"description":"Captures run fingerprints for containment","icon":"👆","id":"fingerprint-capture","label":"Fingerprint Capture","ports":{"in":[],"out":["feeds"]}},{"category":"operator","defaults":{"out:delegates-to":"delegates-to"},"description":"Executes harness test suites","icon":"🏃","id":"harness-runner","label":"Harness Runner","ports":{"in":[],"out":["delegates-to"]}},{"category":"operator","defaults":{},"description":"Human-in-the-loop decision gate","icon":"🚪","id":"operator-gate","label":"Operator Gate","ports":{"in":["reviews"],"out":[]}},{"category":"operator","defaults":{},"description":"Worker protocol interface","icon":"🔌","id":"worker-port","label":"Worker Port","ports":{"in":["delegates-to"],"out":[]}},{"category":"operator","defaults":{},"description":"Runs mutation testing suite","icon":"🧬","id":"mutation-controller","label":"Mutation Controller","ports":{"in":["feeds"],"out":[]}},{"category":"operator","defaults":{},"description":"Executes restore verification drills","icon":"🔄","id":"restore-drill","label":"Restore Drill","ports":{"in":["feeds"],"out":[]}}],"version":1}</script>
+<script>
+'use strict';
+const TOPO = JSON.parse(document.getElementById('topology-data').textContent);
+const PAL = JSON.parse(document.getElementById('palette-data').textContent);
+const paletteById = new Map(PAL.nodes.map(n=>[n.id,n]));
+const nodes = TOPO.nodes.map(n=>({id:n.id,kind:n.kind,label:n.label||n.kind,x:n.position.x,y:n.position.y}));
+const edges = TOPO.edges.map(e=>({id:e.id,source:e.source,target:e.target,contract:e.contract}));
+const byId = new Map(nodes.map(n=>[n.id,n]));
+const canvas = document.getElementById('stage-canvas');
+const ctx = canvas.getContext('2d');
+const CONTRACT_COLOR = {"delegates-to":"#2563eb","hands-off-to":"#059669","reviews":"#d97706","feeds":"#7c3aed"};
+const CATEGORY_COLOR = {"planning":"#3b82f6","execution":"#059669","review":"#d97706","operator":"#7c3aed"};
+let tx=0,ty=0,scale=1;
+function fit(){ if(!nodes.length) return; const xs=nodes.map(n=>n.x), ys=nodes.map(n=>n.y); const minX=Math.min(...xs), maxX=Math.max(...xs), minY=Math.min(...ys), maxY=Math.max(...ys); const w=canvas.clientWidth,h=canvas.clientHeight; const sx=(w-80)/((maxX-minX)||200), sy=(h-80)/((maxY-minY)||200); scale=Math.min(sx,sy,2.4); tx=w/2-((maxX+minX)/2)*scale; ty=h/2-((maxY+minY)/2)*scale; }
+function draw(){ const ratio=window.devicePixelRatio||1; const w=canvas.clientWidth,h=canvas.clientHeight; if(canvas.width!==w*ratio||canvas.height!==h*ratio){canvas.width=w*ratio;canvas.height=h*ratio;} ctx.setTransform(ratio,0,0,ratio,0,0); ctx.clearRect(0,0,w,h); ctx.save(); ctx.translate(tx,ty); ctx.scale(scale,scale);
+  edges.forEach(e=>{ const s=byId.get(e.source), t=byId.get(e.target); if(!s||!t) return; const col=CONTRACT_COLOR[e.contract]||'#999'; ctx.beginPath(); ctx.moveTo(s.x,s.y); const mx=(s.x+t.x)/2,my=(s.y+t.y)/2, dx=t.x-s.x, dy=t.y-s.y, len=Math.hypot(dx,dy)||1, nx=-dy/len, ny=dx/len; const cx=mx+nx*len*0.15, cy=my+ny*len*0.15; ctx.quadraticCurveTo(cx,cy,t.x,t.y); ctx.strokeStyle=col; ctx.lineWidth=1.4/scale; ctx.stroke(); });
+  nodes.forEach(n=>{ const pal=paletteById.get(n.kind); const col=CATEGORY_COLOR[pal?pal.category:'']||'#6b7280'; ctx.beginPath(); ctx.arc(n.x,n.y,16,0,Math.PI*2); ctx.fillStyle=col; ctx.fill(); ctx.fillStyle='#fff'; ctx.font='700 10px system-ui'; ctx.textAlign='center'; ctx.fillText((n.label||n.kind).slice(0,14),n.x,n.y+3); });
+  ctx.restore();
+}
+function refresh(){ document.getElementById('stat-nodes').textContent=nodes.length+' nodes'; document.getElementById('stat-edges').textContent=edges.length+' edges'; }
+canvas.addEventListener('wheel', e=>{ e.preventDefault(); const rect=canvas.getBoundingClientRect(); const f=Math.exp(-e.deltaY*0.0016); const nx=Math.min(6,Math.max(0.18,scale*f)); tx=e.clientX-rect.left-(e.clientX-rect.left-tx)*(nx/scale); ty=e.clientY-rect.top-(e.clientY-rect.top-ty)*(nx/scale); scale=nx; draw(); },{passive:false});
+let drag=null; canvas.addEventListener('pointerdown', e=>{drag={x:e.clientX,y:e.clientY}; canvas.setPointerCapture(e.pointerId);}); canvas.addEventListener('pointermove', e=>{if(!drag) return; tx+=e.clientX-drag.x; ty+=e.clientY-drag.y; drag.x=e.clientX; drag.y=e.clientY; draw();}); canvas.addEventListener('pointerup', ()=>{drag=null;});
+document.getElementById('btn-download').addEventListener('click', ()=>{ const blob=new Blob([JSON.stringify(TOPO,null,2)],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='topology.json'; a.click(); setTimeout(()=>URL.revokeObjectURL(url),500);});
+document.getElementById('btn-copy').addEventListener('click', async()=>{ const txt=JSON.stringify(TOPO,null,2); try{await navigator.clipboard.writeText(txt);}catch(_e){} });
+document.getElementById('btn-save').addEventListener('click', async()=>{ const data=JSON.stringify(TOPO,null,2); if('showSaveFilePicker' in window){try{const h=await window.showSaveFilePicker({suggestedName:'topology.json',types:[{description:'JSON',accept:{'application/json':['.json']}}]}); const w=await h.createWritable(); await w.write(data); await w.close(); return;}catch(_e){}} document.getElementById('btn-download').click(); });
+(function(){ const pal=document.getElementById('palette'); const cats={}; PAL.nodes.forEach(n=>{(cats[n.category]=cats[n.category]||[]).push(n);}); Object.entries(cats).forEach(([cat,items])=>{const box=document.createElement('div'); box.className='cat'; const head=document.createElement('div'); head.className='cat-head'; head.textContent=cat; box.append(head); const list=document.createElement('div'); list.className='cat-items'; items.forEach(it=>{const row=document.createElement('div'); row.className='p-item'; row.textContent=it.icon+' '+it.label; row.title=it.description; list.append(row);}); box.append(list); pal.append(box);});})();
+refresh(); fit(); draw(); window.addEventListener('resize', ()=>{fit();draw();});
+</script>
+</body>
+</html>

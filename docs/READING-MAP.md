@@ -86,16 +86,17 @@ One agent, one task, human gate.
 | 2 | [Run Instrumentation Specification](tier3/run-instrumentation-specification.md) | binding | provisional | what every run emits; must exist BEFORE Phase 1 starts, not after |
 | 3 | [Mission Control Specification](tier1/mission-control-specification.md) | binding | provisional | the operator surface; the human gate is unrecorded and unmeasured without it |
 | 4 | [Mission Control Design](tier1/mission-control-design.md) | binding | provisional | how that surface is built: reachability ladder, routes, forms, and the timing instrument's failure modes |
-| 5 | [Agent Definition Standard](tier3/agent-definition-standard.md) | binding | stub | an agent is a contract, never a job title |
-| 6 | [Agent Catalog](tier3/agent-catalog.md) | binding | stub | one specification per capability |
-| 7 | [Tool Specification Standard](tier3/tool-specification-standard.md) | binding | stub | contract, side effects, blast radius, idempotency |
-| 8 | [State and Graph Specification](tier1/state-and-graph-specification.md) | binding | stub | field ownership, reducers, projections |
-| 9 | [Context Engineering Guide](tier3/context-engineering-guide.md) | binding | stub | seed layering; prefix order is architecture, not tuning |
-| 10 | [Instruction and Prompt Standard](tier3/instruction-and-prompt-standard.md) | binding | stub | prompts are versioned and enter the fingerprint |
-| 11 | [Escalation Protocol](tier3/escalation-protocol.md) | binding | stub | structural triggers; the agent cannot declare itself blocked |
-| 12 | [Handoff Contract Standard](tier3/handoff-contract-standard.md) | binding | stub | evidence refs travel, agent-authored summaries do not |
-| 13 | [Review Protocol](tier2/review-protocol.md) | context | stub | criterion-first review; what the human checks that the harness cannot |
-| 14 | [Build Protocol](tier2/build-protocol.md) | context | stub | how work moves from intent to merge |
+| 5 | [Orchestration Canvas Specification](tier1/orchestration-canvas-spec.md) | binding | provisional | operator-local interactive topology editor: palette, contract vocabulary, file format, generator and lint contracts |
+| 6 | [Agent Definition Standard](tier3/agent-definition-standard.md) | binding | stub | an agent is a contract, never a job title |
+| 7 | [Agent Catalog](tier3/agent-catalog.md) | binding | stub | one specification per capability |
+| 8 | [Tool Specification Standard](tier3/tool-specification-standard.md) | binding | stub | contract, side effects, blast radius, idempotency |
+| 9 | [State and Graph Specification](tier1/state-and-graph-specification.md) | binding | stub | field ownership, reducers, projections |
+| 10 | [Context Engineering Guide](tier3/context-engineering-guide.md) | binding | stub | seed layering; prefix order is architecture, not tuning |
+| 11 | [Instruction and Prompt Standard](tier3/instruction-and-prompt-standard.md) | binding | stub | prompts are versioned and enter the fingerprint |
+| 12 | [Escalation Protocol](tier3/escalation-protocol.md) | binding | stub | structural triggers; the agent cannot declare itself blocked |
+| 13 | [Handoff Contract Standard](tier3/handoff-contract-standard.md) | binding | stub | evidence refs travel, agent-authored summaries do not |
+| 14 | [Review Protocol](tier2/review-protocol.md) | context | stub | criterion-first review; what the human checks that the harness cannot |
+| 15 | [Build Protocol](tier2/build-protocol.md) | context | stub | how work moves from intent to merge |
 
 ## Phase 2
 
@@ -184,7 +185,11 @@ Binding on implementation and easy to miss, since they live inside one document.
 | [ADR-0033](tier1/adr-log.md) | The structure fence names every top-level directory, and the vault floors it | Accepted |
 | [ADR-0034](tier1/adr-log.md) | The ADR number claim lint: a branch may not claim a number the base has issued | Accepted |
 | [ADR-0035](tier1/adr-log.md) | The protected set's single home names its fourth shape as a projection, not a second authority | Accepted |
+| [ADR-0036](tier1/adr-log.md) | Run Fingerprint Record Schema & Production | Accepted |
+| [ADR-0037](tier1/adr-log.md) | `arity` Semantics in Replay Harness | Accepted |
+| [ADR-0038](tier1/adr-log.md) | bench Immutability: Convention → Git-Level Control | Accepted |
+| [ADR-0039](tier1/adr-log.md) | Orchestration Canvas: Protected Topology Source & Palette Binding | Accepted |
 
 ---
 
-**63 documents mapped** · 43 binding · 13 context · 7 record · 35 architecture decisions
+**64 documents mapped** · 44 binding · 13 context · 7 record · 39 architecture decisions

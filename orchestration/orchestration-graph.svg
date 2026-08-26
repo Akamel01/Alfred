@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="600" viewBox="0 0 900 600">
+<rect width="100%" height="100%" fill="#f8f6f1"/>
+<path d="M70.8,83.3 Q314.6,141.8 558.3,83.3" fill="none" stroke="#2563eb" stroke-width="2" opacity="0.85"/>
+<polygon points="558.3,83.3 547.2,79.8 550.0,91.5" fill="#2563eb"/>
+<g transform="translate(314.6,112.6)"><rect x="-30" y="-8" width="60" height="10" rx="3" fill="white" opacity="0.9"/><text text-anchor="middle" font-size="7" font-family="ui-monospace,monospace" fill="#2563eb">delegates-to</text></g>
+<path d="M70.8,300.0 Q314.6,358.5 558.3,300.0" fill="none" stroke="#2563eb" stroke-width="2" opacity="0.85"/>
+<polygon points="558.3,300.0 547.2,296.5 550.0,308.2" fill="#2563eb"/>
+<g transform="translate(314.6,329.2)"><rect x="-30" y="-8" width="60" height="10" rx="3" fill="white" opacity="0.9"/><text text-anchor="middle" font-size="7" font-family="ui-monospace,monospace" fill="#2563eb">delegates-to</text></g>
+<path d="M287.5,191.7 Q435.9,170.0 558.3,83.3" fill="none" stroke="#d97706" stroke-width="2" opacity="0.85"/>
+<polygon points="558.3,83.3 546.7,84.2 553.6,94.0" fill="#d97706"/>
+<g transform="translate(429.4,153.8)"><rect x="-30" y="-8" width="60" height="10" rx="3" fill="white" opacity="0.9"/><text text-anchor="middle" font-size="7" font-family="ui-monospace,monospace" fill="#d97706">reviews</text></g>
+<path d="M558.3,300.0 Q532.3,408.3 558.3,516.7" fill="none" stroke="#059669" stroke-width="2" opacity="0.85"/>
+<polygon points="558.3,516.7 561.8,505.5 550.2,508.3" fill="#059669"/>
+<g transform="translate(545.3,408.3)"><rect x="-30" y="-8" width="60" height="10" rx="3" fill="white" opacity="0.9"/><text text-anchor="middle" font-size="7" font-family="ui-monospace,monospace" fill="#059669">hands-off-to</text></g>
+<path d="M558.3,83.3 Q680.8,170.0 829.2,191.7" fill="none" stroke="#059669" stroke-width="2" opacity="0.85"/>
+<polygon points="829.2,191.7 820.1,184.3 818.4,196.2" fill="#059669"/>
+<g transform="translate(687.2,153.8)"><rect x="-30" y="-8" width="60" height="10" rx="3" fill="white" opacity="0.9"/><text text-anchor="middle" font-size="7" font-family="ui-monospace,monospace" fill="#059669">hands-off-to</text></g>
+<path d="M558.3,516.7 Q706.8,495.0 829.2,408.3" fill="none" stroke="#059669" stroke-width="2" opacity="0.85"/>
+<polygon points="829.2,408.3 817.5,409.2 824.5,419.0" fill="#059669"/>
+<g transform="translate(700.2,478.8)"><rect x="-30" y="-8" width="60" height="10" rx="3" fill="white" opacity="0.9"/><text text-anchor="middle" font-size="7" font-family="ui-monospace,monospace" fill="#059669">hands-off-to</text></g>
+<path d="M829.2,408.3 Q732.8,213.3 558.3,83.3" fill="none" stroke="#d97706" stroke-width="2" opacity="0.85"/>
+<polygon points="558.3,83.3 562.8,94.1 569.9,84.5" fill="#d97706"/>
+<g transform="translate(713.2,229.6)"><rect x="-30" y="-8" width="60" height="10" rx="3" fill="white" opacity="0.9"/><text text-anchor="middle" font-size="7" font-family="ui-monospace,monospace" fill="#d97706">reviews</text></g>
+<circle cx="70.8" cy="83.3" r="18" fill="#3b82f6" stroke="white" stroke-width="2"/>
+<text x="70.8" y="83.3" text-anchor="middle" dy="4" font-size="8" font-family="system-ui" font-weight="700" fill="white">Planner</text>
+<text x="70.8" y="107.3" text-anchor="middle" font-size="6" font-family="ui-monospace,monospace" fill="#6b7280">planner</text>
+<circle cx="70.8" cy="300.0" r="18" fill="#3b82f6" stroke="white" stroke-width="2"/>
+<text x="70.8" y="300.0" text-anchor="middle" dy="4" font-size="8" font-family="system-ui" font-weight="700" fill="white">Wayfinder</text>
+<text x="70.8" y="324.0" text-anchor="middle" font-size="6" font-family="ui-monospace,monospace" fill="#6b7280">wayfinder</text>
+<circle cx="287.5" cy="191.7" r="18" fill="#3b82f6" stroke="white" stroke-width="2"/>
+<text x="287.5" y="191.7" text-anchor="middle" dy="4" font-size="8" font-family="system-ui" font-weight="700" fill="white">Architect</text>
+<text x="287.5" y="215.7" text-anchor="middle" font-size="6" font-family="ui-monospace,monospace" fill="#6b7280">architect</text>
+<circle cx="558.3" cy="83.3" r="18" fill="#059669" stroke="white" stroke-width="2"/>
+<text x="558.3" y="83.3" text-anchor="middle" dy="4" font-size="8" font-family="system-ui" font-weight="700" fill="white">Code Writer</text>
+<text x="558.3" y="107.3" text-anchor="middle" font-size="6" font-family="ui-monospace,monospace" fill="#6b7280">code-writer</text>
+<circle cx="558.3" cy="300.0" r="18" fill="#059669" stroke="white" stroke-width="2"/>
+<text x="558.3" y="300.0" text-anchor="middle" dy="4" font-size="8" font-family="system-ui" font-weight="700" fill="white">Researcher</text>
+<text x="558.3" y="324.0" text-anchor="middle" font-size="6" font-family="ui-monospace,monospace" fill="#6b7280">researcher</text>
+<circle cx="558.3" cy="516.7" r="18" fill="#059669" stroke="white" stroke-width="2"/>
+<text x="558.3" y="516.7" text-anchor="middle" dy="4" font-size="8" font-family="system-ui" font-weight="700" fill="white">Drafter</text>
+<text x="558.3" y="540.7" text-anchor="middle" font-size="6" font-family="ui-monospace,monospace" fill="#6b7280">drafter</text>
+<circle cx="829.2" cy="191.7" r="18" fill="#d97706" stroke="white" stroke-width="2"/>
+<text x="829.2" y="191.7" text-anchor="middle" dy="4" font-size="8" font-family="system-ui" font-weight="700" fill="white">Reviewer</text>
+<text x="829.2" y="215.7" text-anchor="middle" font-size="6" font-family="ui-monospace,monospace" fill="#6b7280">reviewer</text>
+<circle cx="829.2" cy="408.3" r="18" fill="#d97706" stroke="white" stroke-width="2"/>
+<text x="829.2" y="408.3" text-anchor="middle" dy="4" font-size="8" font-family="system-ui" font-weight="700" fill="white">Verifier</text>
+<text x="829.2" y="432.3" text-anchor="middle" font-size="6" font-family="ui-monospace,monospace" fill="#6b7280">verifier</text>
+</svg>

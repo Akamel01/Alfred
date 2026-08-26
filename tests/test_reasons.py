@@ -61,9 +61,7 @@ def test_a_renamed_code_is_rejected() -> None:
 
 
 def test_no_member_allocates_a_reserved_code() -> None:
-    reserved = {
-        member.name for member in Reason if int(member) in (DEFINED_CODE, UNKNOWN_CODE)
-    }
+    reserved = {member.name for member in Reason if int(member) in (DEFINED_CODE, UNKNOWN_CODE)}
     assert reserved == {"DEFINED", "UNKNOWN_CODE"}
 
 

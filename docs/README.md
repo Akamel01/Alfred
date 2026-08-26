@@ -6,7 +6,7 @@ Documents are classified by what stops them from lying, never by topic. See
 [Documentation Standard](tier7/documentation-standard.md) for the header contract,
 the stub policy, and the authorship boundary.
 
-**63 documents** · 30 written, 33 stubs · 35 executable or generated (55%)
+**64 documents** · 31 written, 33 stubs · 35 executable or generated (54%)
 
 ## Tier 0 — Constitution
 
@@ -29,6 +29,7 @@ the stub policy, and the authorship boundary.
 | [Failure Semantics and Error Handling](tier1/failure-semantics.md) | frozen | executable | `ci-gate` | full |
 | [Mission Control Design](tier1/mission-control-design.md) | provisional | executable | `ci-gate` | full |
 | [Mission Control Specification](tier1/mission-control-specification.md) | provisional | executable | `schema` | full |
+| [Orchestration Canvas Specification](tier1/orchestration-canvas-spec.md) | provisional | human | `review-cadence` | full |
 | [Port Catalog](tier1/port-catalog.md) | provisional | generated | `generated` | stub |
 | [State and Graph Specification](tier1/state-and-graph-specification.md) | provisional | executable | `schema` | stub |
 | [System Blueprint](tier1/system-blueprint.md) | provisional | human | `review-cadence` | stub |

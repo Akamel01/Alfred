@@ -32,6 +32,7 @@ depends_on: str | Sequence[str] | None = None
 
 SCHEMA = "control"
 
+
 # Each column and the change it exists to detect. Grouped as the record groups them, so a
 # reader can match this table to `harness/fingerprint/record.py` without inference.
 def _columns() -> tuple[sa.Column[object], ...]:

@@ -70,6 +70,9 @@ ROW_COVERAGE: dict[str, tuple[str, ...]] = {
     "policy/": ("policy/",),
     ".github/": (".github/",),
     "docs/tier0/": ("docs/tier0/",),
+    "bench/results/": ("bench/results/",),
+    "bench/fingerprints/": ("bench/fingerprints/",),
+    "orchestration/": ("orchestration/",),
     "pyproject.toml, uv.lock": ("pyproject.toml", "uv.lock"),
     # Conceptual rows: the thing, not a path. Each resolves to the prefix that covers it.
     "fingerprint tracker": ("migrations/harness/",),

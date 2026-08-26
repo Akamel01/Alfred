@@ -1,0 +1,124 @@
+{
+  "version": 1,
+  "metadata": {
+    "created_at": "2026-08-26T00:00:00Z",
+    "updated_at": "2026-08-26T00:00:00Z",
+    "author": "operator",
+    "description": "Canonical orchestration topology — production sample"
+  },
+  "nodes": [
+    {
+      "id": "n1",
+      "kind": "planner",
+      "label": "Planner",
+      "position": { "x": -300, "y": -200 }
+    },
+    {
+      "id": "n2",
+      "kind": "wayfinder",
+      "label": "Wayfinder",
+      "position": { "x": -300, "y": 0 }
+    },
+    {
+      "id": "n3",
+      "kind": "architect",
+      "label": "Architect",
+      "position": { "x": -100, "y": -100 }
+    },
+    {
+      "id": "n4",
+      "kind": "code-writer",
+      "label": "Code Writer",
+      "position": { "x": 150, "y": -200 }
+    },
+    {
+      "id": "n5",
+      "kind": "researcher",
+      "label": "Researcher",
+      "position": { "x": 150, "y": 0 }
+    },
+    {
+      "id": "n6",
+      "kind": "drafter",
+      "label": "Drafter",
+      "position": { "x": 150, "y": 200 }
+    },
+    {
+      "id": "n7",
+      "kind": "reviewer",
+      "label": "Reviewer",
+      "position": { "x": 400, "y": -100 }
+    },
+    {
+      "id": "n8",
+      "kind": "verifier",
+      "label": "Verifier",
+      "position": { "x": 400, "y": 100 }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "source": "n1",
+      "source_port": "delegates-to",
+      "target": "n4",
+      "target_port": "delegates-to",
+      "contract": "delegates-to",
+      "label": ""
+    },
+    {
+      "id": "e2",
+      "source": "n2",
+      "source_port": "delegates-to",
+      "target": "n5",
+      "target_port": "delegates-to",
+      "contract": "delegates-to",
+      "label": ""
+    },
+    {
+      "id": "e3",
+      "source": "n3",
+      "source_port": "reviews",
+      "target": "n4",
+      "target_port": "reviews",
+      "contract": "reviews",
+      "label": ""
+    },
+    {
+      "id": "e4",
+      "source": "n5",
+      "source_port": "hands-off-to",
+      "target": "n6",
+      "target_port": "hands-off-to",
+      "contract": "hands-off-to",
+      "label": ""
+    },
+    {
+      "id": "e5",
+      "source": "n4",
+      "source_port": "hands-off-to",
+      "target": "n7",
+      "target_port": "hands-off-to",
+      "contract": "hands-off-to",
+      "label": ""
+    },
+    {
+      "id": "e6",
+      "source": "n6",
+      "source_port": "hands-off-to",
+      "target": "n8",
+      "target_port": "hands-off-to",
+      "contract": "hands-off-to",
+      "label": ""
+    },
+    {
+      "id": "e7",
+      "source": "n8",
+      "source_port": "reviews",
+      "target": "n4",
+      "target_port": "reviews",
+      "contract": "reviews",
+      "label": ""
+    }
+  ]
+}

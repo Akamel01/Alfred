@@ -57,6 +57,9 @@ the single home is the file.
 | `.github/`, CI configuration, hooks | the gate that runs before any human sees a change |
 | fingerprint tracker | the identity every autonomy grant is keyed to |
 | `docs/tier0/` | the constitution — permanently human-authored |
+| `bench/results/` | per-seed benchmark evidence — immutable, append-only (ADR-0038) |
+| `bench/fingerprints/` | run fingerprint records — immutable, append-only (ADR-0038) |
+| `orchestration/` | hand-authored orchestration topology — operator-local canvas source, operator-only edits (ADR-0039) |
 | `pyproject.toml`, `uv.lock` | the dependency closure. A change here can make the oracle importable inside the container, which converts merge rate into a measurement of delegation. Dependency additions are an escalation, not an agent edit. |
 | oracle environment and its pin | the only place the oracle's code exists. Its outputs cross the boundary as data; its code never crosses it at all. |
 | oracle denylist configuration | what the boot-time absence assertion checks against. A denylist an agent can weaken is not a denylist, and its version is a fingerprint field. |

@@ -35,3 +35,9 @@ generated: true
 - **see_also** → [[adr__ADR-0022|Phase 0's exit, narrowed along the ownership seam, with the residue dated]]
 - **see_also** → [[adr__ADR-0031|The protected set is one file, and the gate protects its own policy]]
 - **see_also** → [[adr__ADR-0033|The structure fence names every top-level directory, and the vault floors it]]
+
+## Enforced by (code)
+
+- **enforced_by** → [[module__harness_containment_test_dispatch_mount|Tests for dispatch mount exclusion (C12/C13).]] — """Tests for dispatch mount exclusion (C12/C13).
+
+Prototype for ADR-0035: dispatch mount must be excluded from "no unexp

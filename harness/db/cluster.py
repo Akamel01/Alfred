@@ -53,7 +53,9 @@ PINNED_POSTGRES_TAG = "postgres:17.6-alpine"
 # Overridable only so a future arm64/amd64 or version bump can be measured before it is
 # pinned. An override is recorded in the run's fingerprint by the caller; it is not a
 # way to run the suite against an unpinned image quietly.
-POSTGRES_IMAGE = os.environ.get("ALFRED_TEST_POSTGRES_IMAGE") or PINNED_POSTGRES_IMAGE
+def _postgres_image() -> str:
+    """Get the Postgres image, reading env at call time for test isolation."""
+    return os.environ.get("ALFRED_TEST_POSTGRES_IMAGE") or PINNED_POSTGRES_IMAGE
 
 DBNAME = "alfred_test"
 SUPERUSER = "alfred_test_super"
@@ -142,7 +144,7 @@ def _run(argv: list[str], *, input_text: str | None = None, check: bool = True) 
     return result
 
 
-def _psql(cluster_port: int, password: str, sql: str, *, variables: dict[str, str] | None = None) -> str:
+def _psql(container: str, password: str, sql: str, *, variables: dict[str, str] | None = None) -> str:
     """Run SQL as the superuser through the container's own psql.
 
     Through the container rather than a host client, so the test does not depend on a
@@ -152,7 +154,7 @@ def _psql(cluster_port: int, password: str, sql: str, *, variables: dict[str, st
     argv = [
         "docker", "exec", "-i",
         "-e", f"PGPASSWORD={password}",
-        _container_for_port(cluster_port),
+        _container_for_port(container),
         "psql", "-v", "ON_ERROR_STOP=1", "-U", SUPERUSER, "-d", DBNAME,
     ]
     for key, value in (variables or {}).items():
@@ -160,14 +162,9 @@ def _psql(cluster_port: int, password: str, sql: str, *, variables: dict[str, st
     return _run(argv, input_text=sql).stdout
 
 
-_PORT_TO_CONTAINER: dict[int, str] = {}
-
-
-def _container_for_port(port: int) -> str:
-    try:
-        return _PORT_TO_CONTAINER[port]
-    except KeyError as exc:
-        raise ClusterError(f"no container registered for port {port}") from exc
+def _container_for_port(container: str) -> str:
+    """Return the container name directly; no global registry needed."""
+    return container
 
 
 def _assert_throwaway(container: str, port: int) -> None:
@@ -183,8 +180,6 @@ def _assert_throwaway(container: str, port: int) -> None:
     inspect = _run(["docker", "inspect", "--format", "{{.Config.Labels.alfred_throwaway}}", container])
     if inspect.stdout.strip() != "true":
         raise ClusterError(f"refusing to operate on container {container!r}: missing alfred_throwaway=true label")
-    if _PORT_TO_CONTAINER.get(port) != container:
-        raise ClusterError(f"port {port} is not registered to {container!r}")
 
 
 # The postgres entrypoint runs a *temporary* server on a unix socket to run initdb and
@@ -236,7 +231,7 @@ def _wait_ready(container: str, superuser_password: str, timeout_s: float = STAR
     raise ClusterError(f"cluster {container!r} not ready within {timeout_s}s: {last_error}")
 
 
-def _set_role_passwords(port: int, superuser_password: str) -> dict[str, str]:
+def _set_role_passwords(container: str, superuser_password: str) -> dict[str, str]:
     """Assign a per-run password to every role.
 
     `001_roles.sql` deliberately sets no password: a literal there would be a credential
@@ -251,16 +246,16 @@ def _set_role_passwords(port: int, superuser_password: str) -> dict[str, str]:
         f"ALTER ROLE {role} WITH PASSWORD '{password}';"
         for role, password in passwords.items()
     )
-    _psql(port, superuser_password, statements)
+    _psql(container, superuser_password, statements)
     return passwords
 
 
-def _apply_roles_and_grants(port: int, superuser_password: str) -> None:
+def _apply_roles_and_grants(container: str, superuser_password: str) -> None:
     for filename in ("001_roles.sql", "002_grants.sql"):
         path = ROLES_DIR / filename
         if not path.is_file():
             raise ClusterError(f"{path} does not exist")
-        _psql(port, superuser_password, path.read_text(encoding="utf-8"), variables={"DBNAME": DBNAME})
+        _psql(container, superuser_password, path.read_text(encoding="utf-8"), variables={"DBNAME": DBNAME})
 
 
 def _apply_migrations(cluster: ThrowawayCluster) -> None:
@@ -296,7 +291,7 @@ def _apply_migrations(cluster: ThrowawayCluster) -> None:
     # has no grants until the file is re-run. Applying it only before migrations would
     # leave every new table ungranted, which reads as a working boundary right up to
     # the moment something needs to read the table.
-    _psql(cluster.port, cluster.superuser_password, (ROLES_DIR / "002_grants.sql").read_text(encoding="utf-8"))
+    _psql(cluster.container, cluster.superuser_password, (ROLES_DIR / "002_grants.sql").read_text(encoding="utf-8"))
 
 
 @contextmanager
@@ -327,19 +322,18 @@ def throwaway_cluster(*, keep: bool = False) -> Iterator[ThrowawayCluster]:
             "--env", f"POSTGRES_DB={DBNAME}",
             # Durability is worthless for a cluster that is deleted in a minute, and
             # fsync off makes migrations markedly faster.
-            POSTGRES_IMAGE,
+            _postgres_image(),
             "-c", "fsync=off",
             "-c", "full_page_writes=off",
             "-c", "synchronous_commit=off",
         ]
     )
-    _PORT_TO_CONTAINER[port] = container
 
     try:
         _assert_throwaway(container, port)
         _wait_ready(container, superuser_password)
-        _apply_roles_and_grants(port, superuser_password)
-        role_passwords = _set_role_passwords(port, superuser_password)
+        _apply_roles_and_grants(container, superuser_password)
+        role_passwords = _set_role_passwords(container, superuser_password)
         cluster = ThrowawayCluster(
             container=container,
             host="127.0.0.1",
@@ -351,6 +345,5 @@ def throwaway_cluster(*, keep: bool = False) -> Iterator[ThrowawayCluster]:
         _apply_migrations(cluster)
         yield cluster
     finally:
-        _PORT_TO_CONTAINER.pop(port, None)
         if not keep:
             _run(["docker", "rm", "--force", "--volumes", container], check=False)

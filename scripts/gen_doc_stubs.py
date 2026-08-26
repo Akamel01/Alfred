@@ -56,6 +56,8 @@ NOT_GENERATED: frozenset[str] = frozenset({
     "tier1/worker-port-contract",
     # The standard the generator implements. A stub of it would be circular.
     "tier7/documentation-standard",
+    # Orchestration canvas spec — hand-authored destination deliverable of wayfinder map #8.
+    "tier1/orchestration-canvas-spec",
 })
 
 

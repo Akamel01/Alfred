@@ -56,6 +56,7 @@ The serving stack auto-unloads an idle model and
 
 Revision ID: 0002_fingerprint_run_fields
 Revises
+- **enforced_by** → [[module__scripts_capture_run_fingerprint|Factory-owned script that collects all RunFingerprint fields from live sources,]] — # D19
 
 ## Stated in prose — unverified
 

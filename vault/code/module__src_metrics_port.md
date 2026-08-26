@@ -38,3 +38,6 @@ generated: true
 - [[adr__ADR-0001|Representation of undefined and infinite metric values]] **enforced_by** → this — """The `Metric` port — what a measure is, and the one shape it may return in.
 
 One of the three S5 ports. Factory: this 
+- [[adr__ADR-0037|`arity` Semantics in Replay Harness]] **enforced_by** → this — """The number of independent observations a metric aggregates.
+
+        This is the declared arity, not inferred from th

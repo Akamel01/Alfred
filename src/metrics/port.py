@@ -45,7 +45,16 @@ class Metric(Protocol):
 
     @property
     def arity(self) -> int:
-        """How many tracks `evaluate` takes. 1 for a single-agent measure, 2 for a pair."""
+        """The number of independent observations a metric aggregates.
+
+        This is the declared arity, not inferred from the input. Examples:
+        - 3-hop chain metric → arity = 3
+        - Single-point collision check → arity = 1
+        - Derived metric combining 2 base metrics → arity = 2
+
+        The harness asserts `metric.arity == len(series)` (per ADR-0037). A mismatch
+        means data loss or an injector bug.
+        """
         ...
 
     def citation(self) -> Mapping[str, str]:

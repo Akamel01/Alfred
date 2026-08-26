@@ -33,6 +33,8 @@ generated: true
 ## Binds
 
 - **imports** → [[module__harness_containment_assertions|Three outcomes for a containment assertion, and the third is the dangerous one.]]
+- **imports** → [[module__harness_containment_dispatch_mount|Dispatch mount exclusion for C12/C13 containment assertions.]]
 - [[module__harness_containment|harness.containment]] **contains** → this
 - [[module__harness_containment_test_archive_suffix_binding|Two ARCHIVE_SUFFIXES tuples, frozen verbatim, because their split is real and unexplained.]] **imports** → this
 - [[module__harness_containment_test_c_assertions|C1–C15 beyond the two probes, each paired with the control that stops it reading green.]] **imports** → this
+- [[module__harness_containment_test_dispatch_mount|Tests for dispatch mount exclusion (C12/C13).]] **imports** → this

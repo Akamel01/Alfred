@@ -38,6 +38,7 @@ generated: true
 - [[module__harness_evidence_test_store|The append-only chain, asserted from both sides.]] **imports** → this
 - [[module__harness_fingerprint_record|The run fingerprint record: what a run was measured on, stated once and hashed.]] **imports** → this
 - [[module__harness_oracle_load|Carries oracle values across the boundary as data, and refuses when they are not clean.]] **imports** → this
+- [[module__scripts_capture_run_fingerprint|Factory-owned script that collects all RunFingerprint fields from live sources,]] **imports** → this
 - [[module__src_provenance_encoding|The single door to ACS-1 (ADR-0003, ADR-0004).]] **imports** → this
 
 ## Enforced by (code)

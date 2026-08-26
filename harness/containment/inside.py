@@ -26,6 +26,10 @@ from pathlib import Path
 from typing import Final
 
 from harness.containment.assertions import Assertion, AssertionOutcome
+from harness.containment.dispatch_mount import (
+    filter_dispatch_mounts,
+    filter_dispatch_from_c13_roots,
+)
 
 __all__ = [
     "ARCHIVE_SUFFIXES",
@@ -236,6 +240,7 @@ def assert_writable_set(
     *,
     writable_roots: Sequence[str],
     interpreter_paths: Sequence[str],
+    dispatch_roots: Sequence[str] = (),
 ) -> Assertion:
     """C12 — writable is exactly the repo tree and the patch volume; interpreters read-only.
 
@@ -247,6 +252,9 @@ def assert_writable_set(
     them **outside** a writable root must be mounted read-only; one inside a writable root is
     a finding in its own right, because an interpreter the agent can rewrite is an import
     hook with extra steps.
+
+    `dispatch_roots` are the mount paths where the factory emits patches. Writable paths
+    under these roots are expected and excluded from "unexpected writable" findings.
     """
     if not observed:
         return Assertion(
@@ -274,6 +282,8 @@ def assert_writable_set(
     unexpected_writable = sorted(
         m.path for m in observed if not m.read_only and not _under_a_root(m.path)
     )
+    if dispatch_roots:
+        unexpected_writable = filter_dispatch_mounts(unexpected_writable, dispatch_roots=dispatch_roots)
     if unexpected_writable:
         problems.append(f"writable outside the declared roots: {unexpected_writable}")
 
@@ -359,7 +369,11 @@ CACHE_DIR_NAMES: Final[frozenset[str]] = frozenset(
 )
 
 
-def assert_no_archives_or_caches(roots: Sequence[Path]) -> Assertion:
+def assert_no_archives_or_caches(
+    roots: Sequence[Path],
+    *,
+    dispatch_roots: Sequence[str] = (),
+) -> Assertion:
     """C13 — no package archives and no resolver caches under any mount.
 
     The point is acquisition closure, not tidiness. C6 stops the oracle being fetched
@@ -370,7 +384,12 @@ def assert_no_archives_or_caches(roots: Sequence[Path]) -> Assertion:
     A cache directory counts on its **name**, not on its contents: an empty `pip` cache
     directory is a resolver that has been configured to have one, and the next thing it does
     is fill it.
+
+    `dispatch_roots` are the mount paths where the factory emits patches. Patch files
+    (archives) under these roots are expected and excluded from C13 scan.
     """
+    if dispatch_roots:
+        roots = filter_dispatch_from_c13_roots(roots, dispatch_roots=dispatch_roots)
     if not roots:
         return Assertion(
             assertion_id=ASSERTION_C13,

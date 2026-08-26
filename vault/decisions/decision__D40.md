@@ -47,6 +47,7 @@ The serving stack auto-unloads an idle model and
 
 Revision ID: 0002_fingerprint_run_fields
 Revises
+- **enforced_by** → [[module__scripts_capture_run_fingerprint|Factory-owned script that collects all RunFingerprint fields from live sources,]] — # D40
 - **enforced_by** → [[module__src_replay_harness|The replay harness: load, evaluate, stamp, and produce a digest two runs are compared on.]] — """The replay harness: load, evaluate, stamp, and produce a digest two runs are compared on.
 
 Domain-neutral throughout.

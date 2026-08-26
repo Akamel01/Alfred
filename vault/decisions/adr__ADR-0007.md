@@ -82,6 +82,9 @@ The oracle's code never cros
 
     `admissibility` defaults to `MEASUREME
 - **enforced_by** → [[module__harness_worker_port|The `Worker` port. A claim crosses it, or an exception does — never a verdict.]] — "merely misnamed (ADR-0007). Admissible for build work, not as a "
+- **enforced_by** → [[module__harness_worker_provisioning|Provisioning for the OpenHands adaptor runtime.]] — """Run boot-time containment assertions inside the container.
+
+    These assertions MUST execute inside the container an
 - **enforced_by** → [[module__harness_worker_test_fake|Rehearsals of the `Worker` seam against the in-memory adaptor — interface only.]] — """The fake wires the port's own `check_handle`, at the default MEASUREMENT
     strictness — so every refusal text is th
 - **enforced_by** → [[module__harness_worker_test_port|The Worker port's structural refusals, and the control on the check that enforces them.]] — """A worker that requires nothing has been configured to check nothing, and from

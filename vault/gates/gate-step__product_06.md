@@ -4,7 +4,7 @@ id: "gate-step:product.06"
 title: "pytest — product"
 shape: "step"
 job: "product"
-source: ".github/workflows/gates.yml:229"
+source: ".github/workflows/gates.yml:250"
 extractor: "workflows"
 tags: [protected]
 aliases:
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `.github/workflows/gates.yml:229`
+**Source** · `.github/workflows/gates.yml:250`
 
 ## Statement
 

@@ -83,8 +83,7 @@ class AgentTrack(Tenanted):
         n = self.t.size
         if self.x.size != n or self.y.size != n:
             raise LengthMismatch(
-                f"track {self.agent_ref}: t/x/y lengths differ "
-                f"({n}, {self.x.size}, {self.y.size})"
+                f"track {self.agent_ref}: t/x/y lengths differ ({n}, {self.x.size}, {self.y.size})"
             )
         if n > 1 and not bool(np.all(np.diff(self.t) > 0.0)):
             # E20. Duplicate timestamps fail the same check as unsorted ones,

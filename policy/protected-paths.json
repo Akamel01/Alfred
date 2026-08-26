@@ -41,6 +41,18 @@
     {
       "path": "docs/tier0/",
       "contains": "the constitution — permanently human-authored (ADR-0005)"
+    },
+    {
+      "path": "bench/results/",
+      "contains": "per-seed benchmark evidence — immutable, append-only (ADR-0038)"
+    },
+    {
+      "path": "bench/fingerprints/",
+      "contains": "run fingerprint records — immutable, append-only (ADR-0038)"
+    },
+    {
+      "path": "orchestration/",
+      "contains": "hand-authored orchestration topology — operator-local canvas source, operator-only edits (ADR-0039)"
     }
   ],
   "files": [

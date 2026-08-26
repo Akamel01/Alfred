@@ -91,6 +91,9 @@ class DeterministicReplay:
             )
 
         series = metric.evaluate(tracks)
+        # arity is the declared number of independent observations the metric aggregates
+        # (per ADR-0037 / ACS-1 MetricValue docstring). len(series) is the actual
+        # observations collected. Mismatch = data loss or injector bug.
         if metric.arity != len(series):
             raise ReplayContractViolation(
                 f"metric {metric.metric_id} declares arity {metric.arity} and returned "

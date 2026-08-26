@@ -95,9 +95,7 @@ class _Harness:
     def identity(self) -> Mapping[str, str]:
         return {"harness": "stub", "version": "0"}
 
-    def replay(
-        self, source: TrajectorySource, ref: ScenarioRef, metric: Metric
-    ) -> ReplayResult:
+    def replay(self, source: TrajectorySource, ref: ScenarioRef, metric: Metric) -> ReplayResult:
         raise NotImplementedError(
             f"{metric.metric_id} over {ref.scenario_id} from {source.identity()['dataset']}"
         )
@@ -197,13 +195,12 @@ def test_the_ports_name_no_dataset_and_no_measure() -> None:
         # Signatures and type names only. The module docstrings cite the decisions these
         # ports come from, and citing S5's exit condition is not naming a measure in the API.
         api = [
-            line for line in inspect.getsource(module).splitlines()
+            line
+            for line in inspect.getsource(module).splitlines()
             if line.lstrip().startswith(("def ", "class "))
         ]
         assert api, f"{module.__name__}: no signatures found; this control did not run"
-        assert not any(term in line.lower() for line in api for term in forbidden), (
-            module.__name__
-        )
+        assert not any(term in line.lower() for line in api for term in forbidden), module.__name__
 
 
 def test_the_port_modules_carry_no_implementation() -> None:

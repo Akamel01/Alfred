@@ -155,3 +155,55 @@ def load(path: Path = DEFAULT_PATH) -> Denylist:
         permitted_substrate=substrate,
         sha256=acs_sha256(DENYLIST_RECORD_TYPE, digest_input),
     )
+
+
+def probe_imports(denied_modules: tuple[str, ...]) -> bool:
+    """Check that no denied module is importable.
+
+    Uses importlib.util.find_spec (not import) to avoid executing
+    module-level code inside the sandbox.
+
+    Returns True if all denied modules are NOT importable.
+    """
+    import importlib.util
+
+    for module_name in denied_modules:
+        spec = importlib.util.find_spec(module_name)
+        if spec is not None:
+            return False
+    return True
+
+
+def scan_paths(denied_modules: tuple[str, ...], search_paths: list[Path]) -> bool:
+    """Walk search paths for denied module names, dist-info, .pth files.
+
+    Returns True if no denied artifacts found.
+    """
+    import os
+    import re
+
+    denied_pattern = re.compile(r"^(" + "|".join(re.escape(m) for m in denied_modules) + r")($|\.|-)")
+
+    for search_path in search_paths:
+        if not search_path.exists():
+            continue
+        for root, dirs, files in os.walk(search_path):
+            # Check directory names (for dist-info, egg-info)
+            for d in dirs:
+                if denied_pattern.match(d):
+                    return False
+                # Check for .dist-info / .egg-info naming a denied distribution
+                if d.endswith(".dist-info") or d.endswith(".egg-info"):
+                    for denied_dist in ("commonroad-crime", "commonroad-drivability-checker", "commonroad-reach", "commonroad-clcs"):
+                        if denied_dist in d:
+                            return False
+
+            # Check file names
+            for f in files:
+                if denied_pattern.match(f):
+                    return False
+                # Check .pth files and sitecustomize
+                if f.endswith(".pth") or f == "sitecustomize.py":
+                    # Would need to read and parse — for now flag presence
+                    return False
+    return True

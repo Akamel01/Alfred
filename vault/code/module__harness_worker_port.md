@@ -38,7 +38,10 @@ generated: true
 - [[module__harness_containment_test_c_assertions|C1–C15 beyond the two probes, each paired with the control that stops it reading green.]] **imports** → this
 - [[module__harness_containment_test_outcome_binding|The two assertion-outcome enums are bound, though deliberately separate.]] **imports** → this
 - [[module__harness_verdicts_test_verdicts|The verdict vocabulary's bindings: every other spelling answers to this module.]] **imports** → this
+- [[module__harness_worker_adapters_open_hands|OpenHands adaptor implementing the `Worker` protocol over the pinned SDK.]] **imports** → this
+- [[module__harness_worker_adaptor|Alfred OpenHands Adaptor — the Worker implementation for the OpenHands executor.]] **imports** → this
 - [[module__harness_worker_fake|The in-memory `Worker`: a scripted stand-in that rehearses the seam's semantics.]] **imports** → this
+- [[module__harness_worker_provisioning|Provisioning for the OpenHands adaptor runtime.]] **imports** → this
 - [[module__harness_worker_test_fake|Rehearsals of the `Worker` seam against the in-memory adaptor — interface only.]] **imports** → this
 - [[module__harness_worker_test_port|The Worker port's structural refusals, and the control on the check that enforces them.]] **imports** → this
 

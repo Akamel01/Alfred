@@ -34,3 +34,4 @@ generated: true
 - [[module__src_api|src.api]] **contains** → this
 - [[module__harness_deploy_test_deploy|S8. Deploy and rollback, verified by observation rather than by exit code.]] **imports** → this
 - [[module__src_api___init__|The deployable unit. Deliberately almost empty.]] **imports** → this
+- [[module__tests_api_test_routes|API route tests using TestClient with build_identity injection.]] **imports** → this
