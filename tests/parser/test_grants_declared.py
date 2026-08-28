@@ -149,7 +149,7 @@ def test_parse_minimal_valid(tmp_path: Path) -> None:
 
 
 def test_parse_full_example(tmp_path: Path) -> None:  # noqa: ARG001 — fixture required for test harness isolation
-    path = Path("/Users/akamel/Alfred/migrations/roles/grants.yaml")
+    path = Path(__file__).resolve().parents[2] / "migrations" / "roles" / "grants.yaml"
     decl = parse(path)
 
     assert decl.version == 3

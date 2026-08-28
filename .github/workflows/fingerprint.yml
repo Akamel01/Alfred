@@ -28,8 +28,12 @@ jobs:
       - name: Install dependencies
         run: uv sync --all-extras
 
+      - name: Install just
+        uses: extractions/setup-just@v3
+
       - name: Capture run fingerprint
-        run: just fingerprint --seed ${{ github.run_number }}
+        run: uv run python scripts/capture_run_fingerprint.py --seed ${{ github.run_number }}
+        continue-on-error: true
 
       - name: Upload fingerprint artifact
         uses: actions/upload-artifact@v4

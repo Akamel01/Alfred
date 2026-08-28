@@ -1,5 +1,4 @@
 # Alfred factory commands
-export PYTHONPATH := "/Users/akamel/Alfred"
 
 # Capture run fingerprint from live sources
 # Usage: just fingerprint [seed=3355]
