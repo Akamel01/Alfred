@@ -32,3 +32,4 @@ generated: true
 ## Binds
 
 - [[module__tools_orchestration|tools.orchestration]] **contains** → this
+- [[gate-step__integrity_23|Orchestration canvas is current]] **runs** → this
