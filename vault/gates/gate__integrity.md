@@ -47,7 +47,11 @@ generated: true
 - **contains** → [[gate-step__integrity_17|ACS-1 vectors regenerate byte-identically]]
 - **contains** → [[gate-step__integrity_18|Vault generator detects its own vacuity]]
 - **contains** → [[gate-step__integrity_19|Vault and published graph are current]]
-- **contains** → [[gate-step__integrity_20|Vault generator suites]]
+- **contains** → [[gate-step__integrity_20|Protected paths append-only (bench/results/, bench/fingerprints/)]]
+- **contains** → [[gate-step__integrity_21|Topology lint checks its own vacuity]]
+- **contains** → [[gate-step__integrity_22|Topology file is valid]]
+- **contains** → [[gate-step__integrity_23|Orchestration canvas is current]]
+- **contains** → [[gate-step__integrity_24|Vault generator suites]]
 - [[gate__database|database (throwaway cluster, roles and grants)]] **needs** → this
 - [[gate__inspector|inspector (ACS-1, lane, bench)]] **needs** → this
 - [[gate__product|product (lint, types, tests)]] **needs** → this

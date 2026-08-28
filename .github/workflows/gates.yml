@@ -192,6 +192,27 @@ jobs:
       - name: Vault and published graph are current
         run: python3 tools/gen_vault.py --check
 
+      - name: Protected paths append-only (bench/results/, bench/fingerprints/)
+        run: |
+          set -euo pipefail
+          modified=$(git diff --name-only HEAD~1 -- bench/results/ bench/fingerprints/ 2>/dev/null || true)
+          if [ -n "$modified" ]; then
+            echo "Protected paths modified (not just added):"
+            echo "$modified"
+            echo "Only new files (status 'A') are allowed under bench/results/ and bench/fingerprints/ (ADR-0038)."
+            exit 1
+          fi
+          echo "No modifications to append-only protected paths."
+
+      - name: Topology lint checks its own vacuity
+        run: python3 scripts/lint_topology.py --self-test
+
+      - name: Topology file is valid
+        run: python3 scripts/lint_topology.py
+
+      - name: Orchestration canvas is current
+        run: python3 tools/orchestration/gen_canvas.py --check
+
       - name: Vault generator suites
         # By explicit path: pyproject's testpaths is `tests`, and a documentation generator
         # must not be able to red the product gate.
