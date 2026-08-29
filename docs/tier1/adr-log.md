@@ -3014,7 +3014,7 @@ the same shape in `lane/`, a `Final` redeclared in a subclass at
 `selftest/test_replay.py:119`, and a register helper nothing calls at
 `containment/test_c_assertions.py:1346`. One is a real latent crash: `acs/mutate.py:541`
 calls `__doc__.splitlines()`, which is an `AttributeError` under `python -OO`. The full
-classification is `_archive/CLASSIFICATION-M1.md`.
+classification is `CLASSIFICATION-M1.md`.
 
 The finding that matters more than any of those counts:
 
@@ -3988,10 +3988,10 @@ Prototype #13 shipped palette (`policy/node-palette.json`, 21 entries, v1) and t
 
 ### Enforcement
 
- - `harness/patch/validate.py` → `load_protected_set()` fails closed on missing/corrupt set (F25/D57).
- - `harness/patch/test_protected_set.py` → set-equality in both directions (ADR-0009 precedent).
- - `scripts/lint_topology.py` + `tools/tests/test_orchestration.py` → structural and binding checks, including `--self-test`.
- - `tools/orchestration/gen_canvas.py --check` → generated canvas matches sources.
+- `harness/patch/validate.py` → `load_protected_set()` fails closed on missing/corrupt set (F25/D57).
+- `harness/patch/test_protected_set.py` → set-equality in both directions (ADR-0009 precedent).
+- `scripts/lint_topology.py` + `tools/tests/test_orchestration.py` → structural and binding checks, including `--self-test`.
+- `tools/orchestration/gen_canvas.py --check` → generated canvas matches sources.
 
 ---
 

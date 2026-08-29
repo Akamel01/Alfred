@@ -17,6 +17,10 @@ One job: numbered pipeline `01_s0` … `10_s9` — the build order materialized 
 
 - `stages/*/output/exit.md` — evidence for DONE stages (S0–S4, S8 backfilled); `stages/06_s5_product-path/output/README.md` empty-in-progress marker.
 
+## Token budget
+
+Entry (`CLAUDE.md` ~550 tok) + one stage contract (~340 tok) + execution-order § Stages (~7k tok whole file, ~100–200 tok per section) sits at the 8k ceiling when the file is counted whole and at ~1k when a section slice is counted. Count the whole file for the ceiling (ADR-0041 walk-test band 2k–8k assumes file, not transitory adr-log). See walk-test ticket C.
+
 ## Human check
 
 Can a cold agent derive stage status by listing `stages/` and reading `execution-order.md` with no disagreement, and does the vault see every DONE without evidence as `stage-evidence-miss`?
