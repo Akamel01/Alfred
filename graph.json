@@ -1,25 +1,20 @@
 {
   "anomalies": [
     {
-      "detail": "top-level directory orchestration/ is not named in the coding-standards structure fence",
-      "kind": "layout-miss",
-      "refs": []
-    },
-    {
       "detail": "top-level directory prototype/ is not named in the coding-standards structure fence",
       "kind": "layout-miss",
       "refs": []
     }
   ],
   "counts": {
-    "adr": 39,
+    "adr": 44,
     "amendment": 12,
     "decision": 57,
     "document": 64,
     "gate": 5,
     "gate-step": 55,
     "kill-criterion": 6,
-    "layout": 14,
+    "layout": 18,
     "module": 236,
     "operator-item": 9,
     "risk": 12,
@@ -30,7 +25,7 @@
   },
   "edge_counts": {
     "amended_by": 2,
-    "amends": 9,
+    "amends": 10,
     "blocks": 32,
     "contains": 279,
     "discharges": 1,
@@ -38,7 +33,7 @@
     "imports": 239,
     "needs": 4,
     "runs": 34,
-    "see_also": 29,
+    "see_also": 38,
     "supersedes": 1
   },
   "edges": [
@@ -145,6 +140,19 @@
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0019"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0033",
+      "evidence": "**Amends:** the structure fence of the coding standards (ADR-0033)",
+      "extractor": "adrs",
+      "kind": "amends",
+      "source": {
+        "end_line": 3998,
+        "line": 3998,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0040"
     },
     {
       "confidence": "prose",
@@ -12640,6 +12648,123 @@
       "src": "adr:ADR-0039"
     },
     {
+      "confidence": "structural",
+      "dst": "adr:ADR-0031",
+      "evidence": "**See also:** ADR-0033 (the fence's first full enumeration), ADR-0039 (orchestration/ as protected prefix), ADR-0031 (protected set as single home)",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 3998,
+        "line": 3998,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0040"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0033",
+      "evidence": "**See also:** ADR-0033 (the fence's first full enumeration), ADR-0039 (orchestration/ as protected prefix), ADR-0031 (protected set as single home)",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 3998,
+        "line": 3998,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0040"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0039",
+      "evidence": "**See also:** ADR-0033 (the fence's first full enumeration), ADR-0039 (orchestration/ as protected prefix), ADR-0031 (protected set as single home)",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 3998,
+        "line": 3998,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0040"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0039",
+      "evidence": "**See also:** ADR-0039 (topology canvas as protected source), ADR-0040 (fence v2, `stages/`), docs/tier2/stage-gate-definitions.md",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 4048,
+        "line": 4048,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0041"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0040",
+      "evidence": "**See also:** ADR-0039 (topology canvas as protected source), ADR-0040 (fence v2, `stages/`), docs/tier2/stage-gate-definitions.md",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 4048,
+        "line": 4048,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0041"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0041",
+      "evidence": "**See also:** ADR-0041 (stages pipeline, `stages/`), tools/vaultgraph/README.md (vault vocabulary), `docs/README.md` (register as document catalog)",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 4096,
+        "line": 4096,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0042"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0040",
+      "evidence": "**See also:** ADR-0040 (fence v2, `_archive/` + `_templates/`), ADR-0041 (stage contracts from templates), Issue #1 (O9 review; the root files are its provenance until O9 completes)",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 4142,
+        "line": 4142,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0043"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0041",
+      "evidence": "**See also:** ADR-0040 (fence v2, `_archive/` + `_templates/`), ADR-0041 (stage contracts from templates), Issue #1 (O9 review; the root files are its provenance until O9 completes)",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 4142,
+        "line": 4142,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0043"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0018",
+      "evidence": "**See also:** ADR-0018 (executor source read, Discharges O5), docs/tier0/risk-register.md, docs/tier2/execution-order.md § Operator-owned, tools/vaultgraph/extract/stages.py, tools/vaultgraph/extract/",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 4195,
+        "line": 4195,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0044"
+    },
+    {
       "confidence": "prose",
       "dst": "decision:D17",
       "evidence": "Supersedes decision 17",
@@ -12655,14 +12780,14 @@
   ],
   "extractors": [
     {
-      "edges": 38,
+      "edges": 48,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 4,
       "min_nodes": 14,
       "name": "adrs",
-      "nodes": 39,
+      "nodes": 44,
       "rejected": 0,
       "scanned": 1,
       "unparsed": 0
@@ -12751,9 +12876,9 @@
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 0,
-      "min_nodes": 14,
+      "min_nodes": 18,
       "name": "layout",
-      "nodes": 14,
+      "nodes": 18,
       "rejected": 0,
       "scanned": 1,
       "unparsed": 0
@@ -13622,6 +13747,111 @@
       "status": "accepted",
       "tags": [],
       "title": "Orchestration Canvas: Protected Topology Source & Palette Binding"
+    },
+    {
+      "attrs": {
+        "date": "2026-08-29",
+        "status": "accepted",
+        "status_raw": "Accepted"
+      },
+      "body": "**Date:** 2026-08-29 · **Status:** Accepted · **Supersedes:** none · **Amends:** the structure fence of the coding standards (ADR-0033) · **See also:** ADR-0033 (the fence's first full enumeration), ADR-0039 (orchestration/ as protected prefix), ADR-0031 (protected set as single home) · **D28 waiver:** yes",
+      "extractor": "adrs",
+      "id": "adr:ADR-0040",
+      "kind": "adr",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 3998,
+        "line": 3998,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "accepted",
+      "tags": [],
+      "title": "The structure fence grows to eighteen"
+    },
+    {
+      "attrs": {
+        "date": "2026-08-29",
+        "status": "accepted",
+        "status_raw": "Accepted"
+      },
+      "body": "**Date:** 2026-08-29 · **Status:** Accepted · **Supersedes:** none · **Amends:** `docs/tier2/execution-order.md` § Stages and § What must not be built yet (graph-editor line) · **See also:** ADR-0039 (topology canvas as protected source), ADR-0040 (fence v2, `stages/`), docs/tier2/stage-gate-definitions.md",
+      "extractor": "adrs",
+      "id": "adr:ADR-0041",
+      "kind": "adr",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 4048,
+        "line": 4048,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "accepted",
+      "tags": [],
+      "title": "The S0–S9 build materialized as a numbered pipeline"
+    },
+    {
+      "attrs": {
+        "date": "2026-08-29",
+        "status": "accepted",
+        "status_raw": "Accepted"
+      },
+      "body": "**Date:** 2026-08-29 · **Status:** Accepted · **Supersedes:** none · **See also:** ADR-0041 (stages pipeline, `stages/`), tools/vaultgraph/README.md (vault vocabulary), `docs/README.md` (register as document catalog)",
+      "extractor": "adrs",
+      "id": "adr:ADR-0042",
+      "kind": "adr",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 4096,
+        "line": 4096,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "accepted",
+      "tags": [],
+      "title": "The vault gains verbs and effects"
+    },
+    {
+      "attrs": {
+        "date": "2026-08-29",
+        "status": "accepted",
+        "status_raw": "Accepted"
+      },
+      "body": "**Date:** 2026-08-29 · **Status:** Accepted · **Supersedes:** none · **See also:** ADR-0040 (fence v2, `_archive/` + `_templates/`), ADR-0041 (stage contracts from templates), Issue #1 (O9 review; the root files are its provenance until O9 completes)",
+      "extractor": "adrs",
+      "id": "adr:ADR-0043",
+      "kind": "adr",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 4142,
+        "line": 4142,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "accepted",
+      "tags": [],
+      "title": "Dead material archived and templates shelved"
+    },
+    {
+      "attrs": {
+        "date": "2026-08-29",
+        "status": "accepted",
+        "status_raw": "Accepted"
+      },
+      "body": "**Date:** 2026-08-29 · **Status:** Accepted · **Supersedes:** none · **See also:** ADR-0018 (executor source read, Discharges O5), docs/tier0/risk-register.md, docs/tier2/execution-order.md § Operator-owned, tools/vaultgraph/extract/stages.py, tools/vaultgraph/extract/charter.py",
+      "extractor": "adrs",
+      "id": "adr:ADR-0044",
+      "kind": "adr",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 4195,
+        "line": 4195,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "accepted",
+      "tags": [],
+      "title": "Register drift reconciled"
     },
     {
       "attrs": {
@@ -18627,6 +18857,46 @@
     },
     {
       "attrs": {
+        "description": "dead material superseded but kept for provenance — not the protected set",
+        "directory": "_archive"
+      },
+      "body": "dead material superseded but kept for provenance — not the protected set",
+      "extractor": "layout",
+      "id": "layout:_archive",
+      "kind": "layout",
+      "occurrences": [],
+      "shape": "fence-line",
+      "source": {
+        "end_line": 131,
+        "line": 131,
+        "path": "docs/tier2/coding-standards.md"
+      },
+      "status": "named",
+      "tags": [],
+      "title": "_archive/"
+    },
+    {
+      "attrs": {
+        "description": "blank templates instantiated by copy — never edited in place",
+        "directory": "_templates"
+      },
+      "body": "blank templates instantiated by copy — never edited in place",
+      "extractor": "layout",
+      "id": "layout:_templates",
+      "kind": "layout",
+      "occurrences": [],
+      "shape": "fence-line",
+      "source": {
+        "end_line": 132,
+        "line": 132,
+        "path": "docs/tier2/coding-standards.md"
+      },
+      "status": "named",
+      "tags": [],
+      "title": "_templates/"
+    },
+    {
+      "attrs": {
         "description": "Phase −1 inference measurements — immutable per-seed records",
         "directory": "bench"
       },
@@ -18727,6 +18997,26 @@
     },
     {
       "attrs": {
+        "description": "protected topology source (ADR-0039) — hand-authored, palette-bound",
+        "directory": "orchestration"
+      },
+      "body": "protected topology source (ADR-0039) — hand-authored, palette-bound",
+      "extractor": "layout",
+      "id": "layout:orchestration",
+      "kind": "layout",
+      "occurrences": [],
+      "shape": "fence-line",
+      "source": {
+        "end_line": 133,
+        "line": 133,
+        "path": "docs/tier2/coding-standards.md"
+      },
+      "status": "named",
+      "tags": [],
+      "title": "orchestration/"
+    },
+    {
+      "attrs": {
         "description": "the plan-of-record mirror — sha256-pinned; history, not instruction",
         "directory": "plan"
       },
@@ -18824,6 +19114,26 @@
       "status": "named",
       "tags": [],
       "title": "src/"
+    },
+    {
+      "attrs": {
+        "description": "numbered pipeline 01_s0 … 10_s9 — one folder per stage, evidence in output/exit.md",
+        "directory": "stages"
+      },
+      "body": "numbered pipeline 01_s0 … 10_s9 — one folder per stage, evidence in output/exit.md",
+      "extractor": "layout",
+      "id": "layout:stages",
+      "kind": "layout",
+      "occurrences": [],
+      "shape": "fence-line",
+      "source": {
+        "end_line": 134,
+        "line": 134,
+        "path": "docs/tier2/coding-standards.md"
+      },
+      "status": "named",
+      "tags": [],
+      "title": "stages/"
     },
     {
       "attrs": {

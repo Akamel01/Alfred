@@ -26,9 +26,9 @@ NAME = "layout"
 STANDARDS = "docs/tier2/coding-standards.md"
 HEADING = "## Structure"
 
-#: ADR-0033's floor: every tracked top-level directory is named in the fence.
-#: Fourteen on the restructured tree, `.github` included.
-EXPECTED = 14
+#: ADR-0040's floor: every tracked top-level directory is named in the fence.
+#: Eighteen on the ICM workspace (fence v2, ADR-0040), `.github` included.
+EXPECTED = 18
 
 # Machine-local state the in-repo ignore files do not name: `.git` is the repository
 # itself, and `.claude` holds parked worktrees (its contents are excluded in

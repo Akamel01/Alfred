@@ -33,3 +33,5 @@ generated: true
 ## Binds
 
 - **see_also** → [[adr__ADR-0031|The protected set is one file, and the gate protects its own policy]]
+- [[adr__ADR-0040|The structure fence grows to eighteen]] **see_also** → this
+- [[adr__ADR-0041|The S0–S9 build materialized as a numbered pipeline]] **see_also** → this

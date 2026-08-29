@@ -39,6 +39,7 @@ generated: true
 - [[adr__ADR-0019|D38's sandbox rationale, verified: true of one configuration, false of the default]] **see_also** → this
 - [[adr__ADR-0020|The run fingerprint record, and the two assertions that were waiting on it]] **see_also** → this
 - [[adr__ADR-0036|Run Fingerprint Record Schema & Production]] **see_also** → this
+- [[adr__ADR-0044|Register drift reconciled]] **see_also** → this
 
 ## Enforced by (code)
 

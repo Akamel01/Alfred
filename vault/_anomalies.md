@@ -15,7 +15,6 @@ Discrepancies the generator found and deliberately did not resolve. A generator 
 
 | Kind | Detail |
 |---|---|
-| `layout-miss` | top-level directory orchestration/ is not named in the coding-standards structure fence |
 | `layout-miss` | top-level directory prototype/ is not named in the coding-standards structure fence |
 
 ## Not parsed

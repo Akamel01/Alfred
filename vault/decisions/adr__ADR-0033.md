@@ -34,4 +34,6 @@ generated: true
 
 - **see_also** → [[adr__ADR-0022|Phase 0's exit, narrowed along the ownership seam, with the residue dated]]
 - **see_also** → [[adr__ADR-0031|The protected set is one file, and the gate protects its own policy]]
+- [[adr__ADR-0040|The structure fence grows to eighteen]] **amends** → this
 - [[adr__ADR-0035|The protected set's single home names its fourth shape as a projection, not a second autho]] **see_also** → this
+- [[adr__ADR-0040|The structure fence grows to eighteen]] **see_also** → this
