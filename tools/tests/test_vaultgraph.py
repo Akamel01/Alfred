@@ -454,9 +454,11 @@ def test_kill_criteria_and_risks_come_from_tier_zero_not_the_plan() -> None:
 
 
 def test_the_risk_register_being_out_of_order_is_surfaced() -> None:
-    # R12 sits between R10 and R11. Surfaced, not silently sorted.
+    # R11/R12 were out of order and surfaced as `risk-register-order` (vault 535→ordered in 535→ordered in ADR-0044).
+    # Fixed in `c699ce6` (R11 before R12). The extractor still surfaces the anomaly when out of order
+    # — proved by the planted charter fixture in `selftest.py` — but the real register is now ordered.
     result = _result()
-    assert any(a.kind == "risk-register-order" for a in result.anomalies)
+    assert not any(a.kind == "risk-register-order" for a in result.anomalies)
 
 
 def test_prose_edges_never_claim_structural_confidence() -> None:
