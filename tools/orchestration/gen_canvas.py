@@ -138,7 +138,7 @@ def _build_html(topology: dict, palette: dict) -> str:
     """Minimal faithful HTML shell embedding JSONs."""
     topo_json = _embed(topology)
     pal_json = _embed(palette)
-    # Reuse prototype canvas JS? For now embed lean viewer + reuse camera pattern inline.
+    # Prototype canvas was _archive/prototype/orchestration-canvas.html; reuse not needed — embed lean viewer + reuse camera pattern inline.
     # Keep zero deps, inline CSS, vanilla JS.
     return f"""<!DOCTYPE html>
 <html lang="en">

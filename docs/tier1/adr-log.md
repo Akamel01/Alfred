@@ -3014,7 +3014,7 @@ the same shape in `lane/`, a `Final` redeclared in a subclass at
 `selftest/test_replay.py:119`, and a register helper nothing calls at
 `containment/test_c_assertions.py:1346`. One is a real latent crash: `acs/mutate.py:541`
 calls `__doc__.splitlines()`, which is an `AttributeError` under `python -OO`. The full
-classification is `CLASSIFICATION-M1.md`.
+classification is `_archive/CLASSIFICATION-M1.md`.
 
 The finding that matters more than any of those counts:
 

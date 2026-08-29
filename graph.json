@@ -1,11 +1,5 @@
 {
-  "anomalies": [
-    {
-      "detail": "top-level directory prototype/ is not named in the coding-standards structure fence",
-      "kind": "layout-miss",
-      "refs": []
-    }
-  ],
+  "anomalies": [],
   "counts": {
     "adr": 44,
     "amendment": 12,
@@ -12867,7 +12861,7 @@
       "name": "imports",
       "nodes": 0,
       "rejected": 0,
-      "scanned": 200,
+      "scanned": 201,
       "unparsed": 0
     },
     {

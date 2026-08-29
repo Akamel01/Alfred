@@ -46,7 +46,10 @@ STUB_SENTINEL = "**Status: stub.**"
 def _document_paths(docs: Path) -> list[Path]:
     """Sorted, generated files excluded — the same enumeration `lint_docs.main` performs."""
     skip = {docs / name for name in GENERATED}
-    return sorted(p for p in docs.rglob("*.md") if p not in skip)
+    return sorted(
+        p for p in docs.rglob("*.md")
+        if p not in skip and p.name != "CONTEXT.md"
+    )
 
 
 def extract(ctx: Context) -> Harvest:

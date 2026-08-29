@@ -13,9 +13,7 @@ Discrepancies the generator found and deliberately did not resolve. A generator 
 
 ## Surfaced
 
-| Kind | Detail |
-|---|---|
-| `layout-miss` | top-level directory prototype/ is not named in the coding-standards structure fence |
+None.
 
 ## Not parsed
 

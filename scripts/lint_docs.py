@@ -226,9 +226,12 @@ def main() -> None:
     args = parser.parse_args()
 
     # Generated navigation carries no frontmatter: it is derived from the register
-    # rather than being part of it.
+    # rather than being part of it. Working-folder contracts (ICM invariant 4) are
+    # not register documents — `CONTEXT.md` in any tier or in `docs/` itself is a
+    # task contract, not a tier document, and must not be checked against the header
+    # contract or the stub register.
     generated = {INDEX, DOCS / "READING-MAP.md"}
-    paths = sorted(p for p in DOCS.rglob("*.md") if p not in generated)
+    paths = sorted(p for p in DOCS.rglob("*.md") if p not in generated and p.name != "CONTEXT.md")
     if not paths:
         print("no documents found", file=sys.stderr)
         raise SystemExit(1)

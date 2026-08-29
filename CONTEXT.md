@@ -1,7 +1,7 @@
-# Alfred — CONTEXT.md (Glossary)
+# Alfred — CONTEXT.md (Glossary — factory + workflow)
 
-**Generated:** 2026-08-24  
-**Authority:** This file is the project's single glossary. Terms defined here are canonical; code and docs must agree. When a term is resolved in discussion, update this file immediately.
+**Generated:** 2026-08-24 · **Updated:** 2026-08-29  
+**Authority:** This file is the factory + workflow glossary (volatile, evolves with the factory). Architecture + domain terms live in `docs/tier0/glossary.md` (frozen, human, binding across the register). Where they disagree on a shared term, `docs/tier0/glossary.md` wins. Terms defined here are canonical for factory/workflow; code and docs must agree. When a term is resolved in discussion, update this file immediately.
 
 ---
 
@@ -17,7 +17,7 @@
 | **Real OpenHands Adaptor** | Production `Worker` implementation wrapping `OpenHands/software-agent-sdk@d460d1a0` (pinned by ADR-0018). |
 | **Mission-Control Command Surface** | Operator-built (D51) CLI/API over the Worker port; separate from adaptor. |
 | **arity** | "The number of independent observations a metric aggregates" (ADR-0037). `len(series)` is actual observations collected; mismatch = data loss/injector bug. |
-| **Protected Paths** | Files/directories an agent may never write. Enforced by `policy/protected-paths.json` and `scripts/lint_protected_paths.py`. Includes `docs/tier0/`, `docs/tier1/adr-log.md`, `harness/acs/`, `bench/results/`, `bench/fingerprints/`. |
+| **Protected Paths** | The single set `policy/protected-paths.json` (ADR-0031/0035) — prefixes `harness/`, `src/provenance/`, `src/thresholds/`, `tests/heldout/`, `migrations/harness/`, `migrations/roles/`, `scripts/`, `policy/`, `.github/`, `docs/tier0/`, `bench/results/`, `bench/fingerprints/`, `orchestration/` + files `pyproject.toml`, `uv.lock`. Enforced by `harness/patch/validate.py`. |
 | **Append-Only Path** | Protected path where only new files may be added; modifications/deletions fail CI. |
 | **ACS-1** | Alfred Canonical Serialization v1 — JSON with floats as normalized scientific strings, keys UTF-8 byte-sorted, no whitespace, NFC-normalized strings, domain-separated hashing. Implemented in `harness/acs/acs1.py` + `harness/acs/acs1.mjs`. |
 
@@ -30,7 +30,7 @@
 | **S9 — Phase 1 Build** | Worker port + OpenHands adaptor + boot assertions C1–C15 + mission-control command surface. Blocked by O1. |
 | **Phase 0** | Architecture & governance (ADRs, vault, register, plan mirror, protected paths). Complete. |
 | **Phase −1** | Local-model benchmarking (`bench/`). Evidence only. |
-| **O1–O6** | Obligations with deadlines (O1 capacity gate, O3/O4/O6 2026-09-09). |
+| **O1–O9** | Operator-owned obligations in `docs/tier2/execution-order.md` § Operator-owned, non-delegable: O1 capacity gate (blocks S9), O2 defect-escape window, O3 D49 P3, O4 Phase 0 exit, O5 discharged (ADR-0018, 2026-08-18), O6 company formation, O7 EU register lookup, O8 discovery conversations, O9 line-by-line inspector review. Deadlines per that table. |
 
 ---
 
