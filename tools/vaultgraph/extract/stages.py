@@ -209,6 +209,45 @@ def extract(ctx: Context) -> Harvest:
                 kind=f"{label.replace(' ', '-')}-count",
                 detail=f"{len(seen)} {label}s found, {expected} declared in the execution order",
             ))
+
+    # ---- Stage pipeline cross-check (ADR-0041/0042): DONE ↔ output/exit.md
+    stages_root = ctx.root / "stages"
+    if stages_root.is_dir():
+        harvest.scanned += 1
+        # Map S-id → exit record presence
+        exit_present: set[str] = set()
+        for child in stages_root.iterdir():
+            if not child.is_dir():
+                continue
+            # child is NN_sN_slug — extract sN
+            sid = None
+            for part in child.name.split("_"):
+                if part.startswith("s") and part[1:].isdigit():
+                    sid = f"S{part[1:]}"
+                    break
+                if part.startswith("S") and part[1:].isdigit():
+                    sid = part
+                    break
+            if not sid:
+                continue
+            if (child / "output" / "exit.md").is_file():
+                exit_present.add(sid)
+            elif (child / "output" / "README.md").is_file():
+                # In-progress marker — not a DONE evidence, but not an orphan either
+                pass
+        for sid, node_id in stage_ids.items():
+            stage_node = next((n for n in harvest.nodes if n.id == node_id), None)
+            if stage_node is None:
+                continue
+            is_doneish = stage_node.status in ("done", "partial")
+            if is_doneish and sid not in exit_present:
+                harvest.anomalies.append(Anomaly(
+                    kind="stage-evidence-miss",
+                    detail=f"{sid} is {stage_node.status} in {ORDER} but stages/*/output/exit.md is absent",
+                    refs=(stage_node.source,),
+                ))
+            if not is_doneish and sid in exit_present:
+                pass
     return harvest
 
 

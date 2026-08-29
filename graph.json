@@ -5,12 +5,14 @@
     "amendment": 12,
     "decision": 57,
     "document": 64,
+    "effect": 5,
     "gate": 5,
     "gate-step": 55,
     "kill-criterion": 6,
     "layout": 18,
-    "module": 236,
+    "module": 238,
     "operator-item": 9,
+    "process": 7,
     "risk": 12,
     "schema": 5,
     "stage": 10,
@@ -21,10 +23,10 @@
     "amended_by": 2,
     "amends": 10,
     "blocks": 32,
-    "contains": 279,
+    "contains": 281,
     "discharges": 1,
     "enforced_by": 340,
-    "imports": 239,
+    "imports": 246,
     "needs": 4,
     "runs": 34,
     "see_also": 38,
@@ -3049,6 +3051,19 @@
     },
     {
       "confidence": "structural",
+      "dst": "module:tools.vaultgraph.extract.effect",
+      "evidence": "tools/vaultgraph/extract/effect.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/extract/effect.py"
+      },
+      "src": "module:tools.vaultgraph"
+    },
+    {
+      "confidence": "structural",
       "dst": "module:tools.vaultgraph.extract.imports",
       "evidence": "tools/vaultgraph/extract/imports.py",
       "extractor": "code",
@@ -3070,6 +3085,19 @@
         "end_line": 1,
         "line": 1,
         "path": "tools/vaultgraph/extract/layout.py"
+      },
+      "src": "module:tools.vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.extract.process",
+      "evidence": "tools/vaultgraph/extract/process.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/extract/process.py"
       },
       "src": "module:tools.vaultgraph"
     },
@@ -10641,6 +10669,19 @@
     },
     {
       "confidence": "structural",
+      "dst": "module:tools.vaultgraph.extract.effect",
+      "evidence": "tools.vaultgraph.extract.effect",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 16,
+        "line": 16,
+        "path": "tools/vaultgraph/extract/__init__.py"
+      },
+      "src": "module:tools.vaultgraph.extract.__init__"
+    },
+    {
+      "confidence": "structural",
       "dst": "module:tools.vaultgraph.extract.imports",
       "evidence": "tools.vaultgraph.extract.imports",
       "extractor": "imports",
@@ -10656,6 +10697,19 @@
       "confidence": "structural",
       "dst": "module:tools.vaultgraph.extract.layout",
       "evidence": "tools.vaultgraph.extract.layout",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 16,
+        "line": 16,
+        "path": "tools/vaultgraph/extract/__init__.py"
+      },
+      "src": "module:tools.vaultgraph.extract.__init__"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.extract.process",
+      "evidence": "tools.vaultgraph.extract.process",
       "extractor": "imports",
       "kind": "imports",
       "source": {
@@ -11019,6 +11073,32 @@
     {
       "confidence": "structural",
       "dst": "module:tools.vaultgraph.model",
+      "evidence": "tools.vaultgraph.model.Node",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 20,
+        "line": 20,
+        "path": "tools/vaultgraph/extract/effect.py"
+      },
+      "src": "module:tools.vaultgraph.extract.effect"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.protocol",
+      "evidence": "tools.vaultgraph.protocol.Context",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 21,
+        "line": 21,
+        "path": "tools/vaultgraph/extract/effect.py"
+      },
+      "src": "module:tools.vaultgraph.extract.effect"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.model",
       "evidence": "tools.vaultgraph.model.Confidence",
       "extractor": "imports",
       "kind": "imports",
@@ -11093,6 +11173,45 @@
         "path": "tools/vaultgraph/extract/layout.py"
       },
       "src": "module:tools.vaultgraph.extract.layout"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.model",
+      "evidence": "tools.vaultgraph.model.Node",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 15,
+        "line": 15,
+        "path": "tools/vaultgraph/extract/process.py"
+      },
+      "src": "module:tools.vaultgraph.extract.process"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.protocol",
+      "evidence": "tools.vaultgraph.protocol.Context",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 16,
+        "line": 16,
+        "path": "tools/vaultgraph/extract/process.py"
+      },
+      "src": "module:tools.vaultgraph.extract.process"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.textio",
+      "evidence": "tools.vaultgraph.textio.read_lines",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 17,
+        "line": 17,
+        "path": "tools/vaultgraph/extract/process.py"
+      },
+      "src": "module:tools.vaultgraph.extract.process"
     },
     {
       "confidence": "structural",
@@ -12813,16 +12932,16 @@
       "unparsed": 0
     },
     {
-      "edges": 160,
+      "edges": 162,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 45,
       "min_nodes": 90,
       "name": "code",
-      "nodes": 241,
+      "nodes": 243,
       "rejected": 0,
-      "scanned": 268,
+      "scanned": 270,
       "unparsed": 0
     },
     {
@@ -12852,7 +12971,20 @@
       "unparsed": 0
     },
     {
-      "edges": 239,
+      "edges": 0,
+      "expect_rejected": null,
+      "max_nodes": null,
+      "max_unparsed": 0,
+      "min_edges": 0,
+      "min_nodes": 5,
+      "name": "effect",
+      "nodes": 5,
+      "rejected": 0,
+      "scanned": 5,
+      "unparsed": 0
+    },
+    {
+      "edges": 246,
       "expect_rejected": null,
       "max_nodes": 0,
       "max_unparsed": 0,
@@ -12861,7 +12993,7 @@
       "name": "imports",
       "nodes": 0,
       "rejected": 0,
-      "scanned": 201,
+      "scanned": 203,
       "unparsed": 0
     },
     {
@@ -12875,6 +13007,19 @@
       "nodes": 18,
       "rejected": 0,
       "scanned": 1,
+      "unparsed": 0
+    },
+    {
+      "edges": 0,
+      "expect_rejected": null,
+      "max_nodes": null,
+      "max_unparsed": 0,
+      "min_edges": 0,
+      "min_nodes": 6,
+      "name": "process",
+      "nodes": 7,
+      "rejected": 0,
+      "scanned": 8,
       "unparsed": 0
     },
     {
@@ -12900,7 +13045,7 @@
       "name": "stages",
       "nodes": 22,
       "rejected": 0,
-      "scanned": 1,
+      "scanned": 2,
       "unparsed": 1
     },
     {
@@ -17272,6 +17417,101 @@
         "review-cadence"
       ],
       "title": "Onboarding Guide"
+    },
+    {
+      "attrs": {
+        "path": "docs/tier1/adr-log.md"
+      },
+      "body": "Open: vault/decisions/*, graph edges (Amends/See also/Discharges), docs/README.md tier index, vault stages (Discharges)",
+      "extractor": "effect",
+      "id": "effect:adr-log",
+      "kind": "effect",
+      "occurrences": [],
+      "shape": "board",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Effect: edit docs/tier1/adr-log.md"
+    },
+    {
+      "attrs": {
+        "path": "docs/tier2/coding-standards.md"
+      },
+      "body": "Open: tools/vaultgraph/extract/layout.py:31, vault/layout/*, graph.json (layout nodes 18), docs-graph.html",
+      "extractor": "effect",
+      "id": "effect:coding-standards-fence",
+      "kind": "effect",
+      "occurrences": [],
+      "shape": "board",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "docs/tier2/coding-standards.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Effect: edit docs/tier2/coding-standards.md § Structure"
+    },
+    {
+      "attrs": {
+        "path": "docs/tier2/execution-order.md"
+      },
+      "body": "Open: tools/vaultgraph/extract/stages.py:1, vault/execution/*, stages/*/CONTEXT.md, stages/*/output/exit.md, vault/processes/stage-evidence",
+      "extractor": "effect",
+      "id": "effect:execution-order-stages",
+      "kind": "effect",
+      "occurrences": [],
+      "shape": "board",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Effect: edit docs/tier2/execution-order.md § Stages"
+    },
+    {
+      "attrs": {
+        "path": "policy/protected-paths.json"
+      },
+      "body": "Open: docs/tier4/protected-paths-policy.md:1, harness/patch/validate.py:1, harness/patch/test_protected_set.py:1, vault/code/* (protected extractor), gates.yml:192 (vault --check)",
+      "extractor": "effect",
+      "id": "effect:policy-protected-paths",
+      "kind": "effect",
+      "occurrences": [],
+      "shape": "board",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "policy/protected-paths.json"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Effect: edit policy/protected-paths.json"
+    },
+    {
+      "attrs": {
+        "path": "tools/vaultgraph/extract"
+      },
+      "body": "Open: graph.json, vault/*, docs-graph.html, tools/gen_vault.py --self-test (vacuity), tools/tests/test_vaultgraph.py",
+      "extractor": "effect",
+      "id": "effect:vault-extractors",
+      "kind": "effect",
+      "occurrences": [],
+      "shape": "board",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/extract"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Effect: edit tools/vaultgraph/extract/*"
     },
     {
       "attrs": {
@@ -24442,6 +24682,30 @@
       "attrs": {
         "is_test": "false",
         "lint_gated": "false",
+        "path": "tools/vaultgraph/extract/effect.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.vaultgraph.extract.effect",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/extract/effect.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Change-impact index — \"if you change X, open these cards\" — derived from in-edges."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
         "path": "tools/vaultgraph/extract/imports.py",
         "present": "true",
         "protected": "false",
@@ -24485,6 +24749,30 @@
       "status": "",
       "tags": [],
       "title": "The top-level layout as declared in the coding-standards structure fence."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "tools/vaultgraph/extract/process.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.vaultgraph.extract.process",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/extract/process.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Verbs the repository runs — one node per runnable, with path:line provenance."
     },
     {
       "attrs": {
@@ -25274,6 +25562,139 @@
       "status": "open",
       "tags": [],
       "title": "Line-by-line review of inspector patches — ACS-1 `operator_action` vector, `lint_tier0_adr.py`"
+    },
+    {
+      "attrs": {
+        "path": "scripts/capture_run_fingerprint.py"
+      },
+      "body": "python3 scripts/capture_run_fingerprint.py — RunFingerprint 27 fields, hash via ACS-1 (never supplied)",
+      "extractor": "process",
+      "id": "process:bench-run",
+      "kind": "process",
+      "occurrences": [],
+      "shape": "process",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "scripts/capture_run_fingerprint.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Bench capture"
+    },
+    {
+      "attrs": {
+        "path": "tools/orchestration/gen_canvas.py"
+      },
+      "body": "python3 tools/orchestration/gen_canvas.py --check — topology (orchestration/topology.json) + palette (policy/node-palette.json) → HTML",
+      "extractor": "process",
+      "id": "process:canvas-gen",
+      "kind": "process",
+      "occurrences": [],
+      "shape": "process",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/orchestration/gen_canvas.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Canvas generation"
+    },
+    {
+      "attrs": {
+        "path": "harness/worker/port.py"
+      },
+      "body": "Worker port + harness/patch/validate.py (A2/A10) — privileged-side diff read, protected-prefix refusal, A10 scan",
+      "extractor": "process",
+      "id": "process:dispatch",
+      "kind": "process",
+      "occurrences": [],
+      "shape": "process",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/worker/port.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Dispatch + patch gate"
+    },
+    {
+      "attrs": {
+        "path": "scripts/gen_reading_map.py"
+      },
+      "body": "python3 scripts/gen_reading_map.py --check + python3 scripts/lint_docs.py --check — reading map + register index",
+      "extractor": "process",
+      "id": "process:doc-gen",
+      "kind": "process",
+      "occurrences": [],
+      "shape": "process",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "scripts/gen_reading_map.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Doc generation"
+    },
+    {
+      "attrs": {
+        "path": "tools/gen_agents.py"
+      },
+      "body": "python3 tools/gen_agents.py --check — CLAUDE.md → AGENTS.md byte-identical twin (ICM naming)",
+      "extractor": "process",
+      "id": "process:entry-twin",
+      "kind": "process",
+      "occurrences": [],
+      "shape": "process",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/gen_agents.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Entry-file twin"
+    },
+    {
+      "attrs": {
+        "path": ".github/workflows/gates.yml"
+      },
+      "body": "push/PR → integrity → product/inspector/database/mutation — enforcement: ci-gate, review-cadence, schema",
+      "extractor": "process",
+      "id": "process:gate-run",
+      "kind": "process",
+      "occurrences": [],
+      "shape": "process",
+      "source": {
+        "end_line": 15,
+        "line": 15,
+        "path": ".github/workflows/gates.yml"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Gate run (five jobs)"
+    },
+    {
+      "attrs": {
+        "path": "tools/gen_vault.py"
+      },
+      "body": "python3 tools/gen_vault.py && python3 tools/gen_vault.py --check — build graph.json + vault/ (one extraction, several renderers)",
+      "extractor": "process",
+      "id": "process:vault-regen",
+      "kind": "process",
+      "occurrences": [],
+      "shape": "process",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/gen_vault.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Vault regeneration"
     },
     {
       "attrs": {

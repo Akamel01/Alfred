@@ -40,8 +40,10 @@ generated: true
 - [[module__tools_vaultgraph_extract_code|The engineered half of the graph: packages, modules, schemas, and what D20 protects.]] **imports** → this
 - [[module__tools_vaultgraph_extract_decisions|D1-D57, which the plan encodes four different ways, two of them traps.]] **imports** → this
 - [[module__tools_vaultgraph_extract_documents|The 63 documents under `docs/tier0`…`tier7`, and the eight tiers that hold them.]] **imports** → this
+- [[module__tools_vaultgraph_extract_effect|Change-impact index — "if you change X, open these cards" — derived from in-edges.]] **imports** → this
 - [[module__tools_vaultgraph_extract_imports|What depends on what: module -> module edges, read from import statements.]] **imports** → this
 - [[module__tools_vaultgraph_extract_layout|The top-level layout as declared in the coding-standards structure fence.]] **imports** → this
+- [[module__tools_vaultgraph_extract_process|Verbs the repository runs — one node per runnable, with path:line provenance.]] **imports** → this
 - [[module__tools_vaultgraph_extract_references|Where decisions are enforced in code, read out of comments and docstrings.]] **imports** → this
 - [[module__tools_vaultgraph_extract_stages|S0-S9 and O1-O9, and the dependency clauses that make them a DAG.]] **imports** → this
 - [[module__tools_vaultgraph_extract_workflows|The gates: five jobs and every step they run, read out of `.github/workflows/gates.yml`.]] **imports** → this
