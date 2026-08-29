@@ -2,6 +2,7 @@
 kind: operator-item
 id: "operator-item:O8"
 title: "Three Track-1 discovery conversations"
+status: "open"
 shape: "table-row"
 due: "2026-10-07"
 number: "O8"

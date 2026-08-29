@@ -2,6 +2,7 @@
 kind: operator-item
 id: "operator-item:O2"
 title: "Defect-escape **observation window**"
+status: "open"
 shape: "table-row"
 due: "Before Phase 2 exit"
 number: "O2"

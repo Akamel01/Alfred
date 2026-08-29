@@ -2,6 +2,7 @@
 kind: operator-item
 id: "operator-item:O9"
 title: "Line-by-line review of inspector patches — ACS-1 `operator_action` vector, `lint_tier0_adr.py`"
+status: "open"
 shape: "table-row"
 due: "Rolling"
 number: "O9"

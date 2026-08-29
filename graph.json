@@ -1,17 +1,6 @@
 {
   "anomalies": [
     {
-      "detail": "ADR-0018 declares **Discharges:** O5, and no operator-item by that name is declared",
-      "kind": "discharge-target-absent",
-      "refs": [
-        {
-          "end_line": 1731,
-          "line": 1731,
-          "path": "docs/tier1/adr-log.md"
-        }
-      ]
-    },
-    {
       "detail": "top-level directory orchestration/ is not named in the coding-standards structure fence",
       "kind": "layout-miss",
       "refs": []
@@ -19,16 +8,6 @@
     {
       "detail": "top-level directory prototype/ is not named in the coding-standards structure fence",
       "kind": "layout-miss",
-      "refs": []
-    },
-    {
-      "detail": "8 operator items found, 9 declared in the execution order",
-      "kind": "operator-item-count",
-      "refs": []
-    },
-    {
-      "detail": "the risk register is not in numeric order: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R12, R11",
-      "kind": "risk-register-order",
       "refs": []
     }
   ],
@@ -42,7 +21,7 @@
     "kill-criterion": 6,
     "layout": 14,
     "module": 236,
-    "operator-item": 8,
+    "operator-item": 9,
     "risk": 12,
     "schema": 5,
     "stage": 10,
@@ -54,6 +33,7 @@
     "amends": 9,
     "blocks": 32,
     "contains": 279,
+    "discharges": 1,
     "enforced_by": 340,
     "imports": 239,
     "needs": 4,
@@ -4247,6 +4227,19 @@
         "path": "docs/tier7/onboarding-guide.md"
       },
       "src": "tier:tier7"
+    },
+    {
+      "confidence": "structural",
+      "dst": "operator-item:O5",
+      "evidence": "**Discharges:** O5",
+      "extractor": "adrs",
+      "kind": "discharges",
+      "source": {
+        "end_line": 1731,
+        "line": 1731,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0018"
     },
     {
       "confidence": "derived",
@@ -10833,8 +10826,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 17,
-        "line": 17,
+        "end_line": 18,
+        "line": 18,
         "path": "tools/vaultgraph/extract/charter.py"
       },
       "src": "module:tools.vaultgraph.extract.charter"
@@ -10846,8 +10839,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 18,
-        "line": 18,
+        "end_line": 19,
+        "line": 19,
         "path": "tools/vaultgraph/extract/charter.py"
       },
       "src": "module:tools.vaultgraph.extract.charter"
@@ -10859,8 +10852,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 19,
-        "line": 19,
+        "end_line": 20,
+        "line": 20,
         "path": "tools/vaultgraph/extract/charter.py"
       },
       "src": "module:tools.vaultgraph.extract.charter"
@@ -10872,8 +10865,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 20,
-        "line": 20,
+        "end_line": 21,
+        "line": 21,
         "path": "tools/vaultgraph/extract/charter.py"
       },
       "src": "module:tools.vaultgraph.extract.charter"
@@ -12662,7 +12655,7 @@
   ],
   "extractors": [
     {
-      "edges": 37,
+      "edges": 38,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
@@ -12786,7 +12779,7 @@
       "min_edges": 20,
       "min_nodes": 19,
       "name": "stages",
-      "nodes": 21,
+      "nodes": 22,
       "rejected": 0,
       "scanned": 1,
       "unparsed": 1
@@ -24806,7 +24799,7 @@
         "line": 390,
         "path": "docs/tier2/execution-order.md"
       },
-      "status": "",
+      "status": "open",
       "tags": [],
       "title": "`F` (fixed weekly obligations, min/week) and target `n` (tasks/day, **stated as dispatched or merged**)"
     },
@@ -24827,7 +24820,7 @@
         "line": 391,
         "path": "docs/tier2/execution-order.md"
       },
-      "status": "",
+      "status": "open",
       "tags": [],
       "title": "Defect-escape **observation window**"
     },
@@ -24848,7 +24841,7 @@
         "line": 392,
         "path": "docs/tier2/execution-order.md"
       },
-      "status": "",
+      "status": "open",
       "tags": [],
       "title": "D49 P3: validate, or take the stated degradation to the 10 strong P1 measures"
     },
@@ -24869,9 +24862,30 @@
         "line": 393,
         "path": "docs/tier2/execution-order.md"
       },
-      "status": "",
+      "status": "open",
       "tags": [],
       "title": "Phase 0 exit: move the date under a waiver ADR, or narrow the exit"
+    },
+    {
+      "attrs": {
+        "blocks": "—",
+        "due": "DONE 2026-08-18. ADR-0018. The executor had moved: `OpenHands/software-agent-sdk` at `d460d1a0…`, not the repository D38 names. Eleven of thirteen premises corrected.",
+        "number": "O5"
+      },
+      "body": "~~Read OpenHands at the pinned SHA~~",
+      "extractor": "stages",
+      "id": "operator-item:O5",
+      "kind": "operator-item",
+      "occurrences": [],
+      "shape": "table-row",
+      "source": {
+        "end_line": 394,
+        "line": 394,
+        "path": "docs/tier2/execution-order.md"
+      },
+      "status": "discharged",
+      "tags": [],
+      "title": "~~Read OpenHands at the pinned SHA~~"
     },
     {
       "attrs": {
@@ -24890,7 +24904,7 @@
         "line": 395,
         "path": "docs/tier2/execution-order.md"
       },
-      "status": "",
+      "status": "open",
       "tags": [],
       "title": "Company formation — entity, liability-capped pilot template, insurance quote"
     },
@@ -24911,7 +24925,7 @@
         "line": 396,
         "path": "docs/tier2/execution-order.md"
       },
-      "status": "",
+      "status": "open",
       "tags": [],
       "title": "EU 2022/1426 approval-register lookup (~1 hr)"
     },
@@ -24932,7 +24946,7 @@
         "line": 397,
         "path": "docs/tier2/execution-order.md"
       },
-      "status": "",
+      "status": "open",
       "tags": [],
       "title": "Three Track-1 discovery conversations"
     },
@@ -24953,7 +24967,7 @@
         "line": 398,
         "path": "docs/tier2/execution-order.md"
       },
-      "status": "",
+      "status": "open",
       "tags": [],
       "title": "Line-by-line review of inspector patches — ACS-1 `operator_action` vector, `lint_tier0_adr.py`"
     },
@@ -25009,8 +25023,8 @@
       "occurrences": [],
       "shape": "heading",
       "source": {
-        "end_line": 205,
-        "line": 205,
+        "end_line": 186,
+        "line": 186,
         "path": "docs/tier0/risk-register.md"
       },
       "status": "open",
@@ -25029,8 +25043,8 @@
       "occurrences": [],
       "shape": "heading",
       "source": {
-        "end_line": 186,
-        "line": 186,
+        "end_line": 197,
+        "line": 197,
         "path": "docs/tier0/risk-register.md"
       },
       "status": "open",

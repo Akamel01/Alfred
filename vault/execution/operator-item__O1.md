@@ -2,6 +2,7 @@
 kind: operator-item
 id: "operator-item:O1"
 title: "`F` (fixed weekly obligations, min/week) and target `n` (tasks/day, **stated as dispatched or merged**)"
+status: "open"
 shape: "table-row"
 due: "Before Phase 1"
 number: "O1"

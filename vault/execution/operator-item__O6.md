@@ -2,6 +2,7 @@
 kind: operator-item
 id: "operator-item:O6"
 title: "Company formation — entity, liability-capped pilot template, insurance quote"
+status: "open"
 shape: "table-row"
 due: "2026-09-09"
 number: "O6"

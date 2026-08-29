@@ -183,6 +183,17 @@ indefinitely without learning whether anyone wants what it builds. The job is re
 **K6** rather than deleted. If K6 is ever waived, this risk is live again and the waiver ADR
 must say so.
 
+## R11 — Documentation as a corruption vector
+
+Agents read documentation as context, so a stale document is a corrupted instruction propagating
+into every task that reads it. Three of 49 studied agent skills *degraded* performance by up to
+−10% through version-mismatched guidance.
+
+- **Control:** header contract with declared evidence basis and required falsification condition;
+  stubs by default; CI doc lint; Tier 0 permanently human-authored.
+- **Trigger:** any document found stale during a phase review whose `review_after` had not yet
+  elapsed — meaning the review cadence itself is mis-set.
+
 ## R12 — The data licence is unaffordable, so the wedge must not require one
 
 The cash line is under $5k. Entity formation, a liability-capped pilot template and an
@@ -201,14 +212,3 @@ independent argument.
 - **Trigger:** any Phase 0.75 conversation in which the buyer's stated blocker is that
   results are not demonstrated on licensed commercial data. Two such answers falsify the
   open-data path and force either capital or a different wedge.
-
-## R11 — Documentation as a corruption vector
-
-Agents read documentation as context, so a stale document is a corrupted instruction propagating
-into every task that reads it. Three of 49 studied agent skills *degraded* performance by up to
-−10% through version-mismatched guidance.
-
-- **Control:** header contract with declared evidence basis and required falsification condition;
-  stubs by default; CI doc lint; Tier 0 permanently human-authored.
-- **Trigger:** any document found stale during a phase review whose `review_after` had not yet
-  elapsed — meaning the review cadence itself is mis-set.
