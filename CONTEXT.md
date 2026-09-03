@@ -90,8 +90,6 @@
 | **Topology Source** | The hand-authored `orchestration/topology.json` file — the single source of truth for the graph. |
 | **Canvas Artifact** | The generated interactive HTML file (`orchestration-canvas.html`) that edits the topology source. |
 
-ENDOADR
-
 ---
 
 ## Execution Lifecycle Terms
@@ -146,4 +144,3 @@ Resolved 2026-09-02 in [ticket #43](https://github.com/Akamel01/Alfred/issues/43
 | **Explicit Override** | Alfred passes the model on every spawn; the vendored ECC default is never consulted. There is no generated projection and therefore no sync obligation. |
 | **Loud Default** | The vendored fallback model, set to fail expensively rather than cheaply, so an omitted override surfaces instead of hiding. |
 
-ENDOADR
