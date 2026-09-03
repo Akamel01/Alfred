@@ -93,10 +93,11 @@ One agent, one task, human gate.
 | 9 | [State and Graph Specification](tier1/state-and-graph-specification.md) | binding | stub | field ownership, reducers, projections |
 | 10 | [Context Engineering Guide](tier3/context-engineering-guide.md) | binding | stub | seed layering; prefix order is architecture, not tuning |
 | 11 | [Instruction and Prompt Standard](tier3/instruction-and-prompt-standard.md) | binding | stub | prompts are versioned and enter the fingerprint |
-| 12 | [Escalation Protocol](tier3/escalation-protocol.md) | binding | stub | structural triggers; the agent cannot declare itself blocked |
-| 13 | [Handoff Contract Standard](tier3/handoff-contract-standard.md) | binding | stub | evidence refs travel, agent-authored summaries do not |
-| 14 | [Review Protocol](tier2/review-protocol.md) | context | stub | criterion-first review; what the human checks that the harness cannot |
-| 15 | [Build Protocol](tier2/build-protocol.md) | context | stub | how work moves from intent to merge |
+| 12 | [Execution Lifecycle](tier3/execution-lifecycle.md) | context | provisional | the seven phases a task walks; front half method, back half gated by DoD |
+| 13 | [Escalation Protocol](tier3/escalation-protocol.md) | binding | stub | structural triggers; the agent cannot declare itself blocked |
+| 14 | [Handoff Contract Standard](tier3/handoff-contract-standard.md) | binding | stub | evidence refs travel, agent-authored summaries do not |
+| 15 | [Review Protocol](tier2/review-protocol.md) | context | stub | criterion-first review; what the human checks that the harness cannot |
+| 16 | [Build Protocol](tier2/build-protocol.md) | context | stub | how work moves from intent to merge |
 
 ## Phase 2
 
@@ -206,4 +207,4 @@ Binding on implementation and easy to miss, since they live inside one document.
 
 ---
 
-**71 documents mapped** · 44 binding · 13 context · 14 record · 46 architecture decisions
+**72 documents mapped** · 44 binding · 14 context · 14 record · 46 architecture decisions
