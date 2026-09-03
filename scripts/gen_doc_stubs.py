@@ -58,6 +58,16 @@ NOT_GENERATED: frozenset[str] = frozenset({
     "tier7/documentation-standard",
     # Orchestration canvas spec — hand-authored destination deliverable of wayfinder map #8.
     "tier1/orchestration-canvas-spec",
+    # Wayfinder research and decision records for map #41 (Alfred x ECC). Hand-authored
+    # findings and resolutions, not stubs: each states a verdict that already rests on
+    # something read, so a generated placeholder would be less true than the file.
+    "tier7/ecc-capability-audit",
+    "tier7/ecc-memory-boundary",
+    "tier7/ecc-claude-code-install",
+    "tier7/ticket-42-execution-lifecycle-decision",
+    "tier7/ticket-43-role-bindings-decision",
+    "tier7/ticket-45-state-authority-decision",
+    "tier7/ticket-46-model-routing-decision",
 })
 
 

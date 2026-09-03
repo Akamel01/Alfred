@@ -1,3 +1,12 @@
+---
+status:        provisional
+owner:         human
+enforcement:   none
+evidence:      A read of the ECC unified-memory implementation at commit ca185ef — schemas/memory.schema.json, scripts/lib/memory-vault.js, and scripts/hooks/session-start.js — against ADR-0032's three invariants. Findings cite line ranges in that source, not the schema's self-description.
+falsifies_if:  A mirrored record is found in Alfred's evidence chain without a canonical source pointer, or the instincts injection path is found active on a machine this project drives.
+review_after:  the ECC2 reuse boundary decision
+---
+
 # ECC memory boundary against ADR-0032
 
 Research ticket: [Alfred#50](https://github.com/Akamel01/Alfred/issues/50), child of

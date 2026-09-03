@@ -1,3 +1,12 @@
+---
+status:        provisional
+owner:         human
+enforcement:   none
+evidence:      A read of ECC 2.2.1 at commit ca185ef (286 skills, 68 agents, 11 JSON schemas, the ecc2 Rust control plane, the AutoForge workspace) against Alfred's register as of 2026-09-02. Classification is from what the source does, never from what its documentation claims.
+falsifies_if:  A capability classified ECC-NATIVE turns out to require an Alfred-side adapter to be usable, or a capability classified REMOVE/REPLACE is found to be load-bearing for something Alfred already depends on.
+review_after:  the ECC2 reuse boundary decision
+---
+
 # ECC capability classification
 
 Research audit for [issue #48](https://github.com/Akamel01/Alfred/issues/48), a child of the
