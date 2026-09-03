@@ -57,6 +57,9 @@ The serving stack auto-unloads an idle model and
 Revision ID: 0002_fingerprint_run_fields
 Revises
 - **enforced_by** → [[module__scripts_capture_run_fingerprint|Factory-owned script that collects all RunFingerprint fields from live sources,]] — # D19
+- **enforced_by** → [[module__scripts_lint_model_routing|MR001-MR005: model routing policy conformance, checked before any spawn.]] — """MR001-MR005: model routing policy conformance, checked before any spawn.
+
+**Why a static lint can enforce this at all
 
 ## Stated in prose — unverified
 

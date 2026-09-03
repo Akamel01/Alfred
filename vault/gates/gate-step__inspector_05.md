@@ -4,7 +4,7 @@ id: "gate-step:inspector.05"
 title: "ACS-1 — JavaScript conformance"
 shape: "step"
 job: "inspector"
-source: ".github/workflows/gates.yml:283"
+source: ".github/workflows/gates.yml:289"
 extractor: "workflows"
 tags: [protected]
 aliases:
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `.github/workflows/gates.yml:283`
+**Source** · `.github/workflows/gates.yml:289`
 
 ## Statement
 

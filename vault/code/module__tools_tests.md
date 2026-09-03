@@ -34,4 +34,4 @@ generated: true
 - **contains** → [[module__tools_tests_test_render|The renderers: the vault tree, and the published artifact.]]
 - **contains** → [[module__tools_tests_test_serve|The local refresh surface, and the four controls that keep it from being a liability.]]
 - **contains** → [[module__tools_tests_test_vaultgraph|The generator's own guards, asserted from outside the generator.]]
-- [[gate-step__integrity_24|Vault generator suites]] **runs** → this
+- [[gate-step__integrity_26|Vault generator suites]] **runs** → this

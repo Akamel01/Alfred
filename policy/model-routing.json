@@ -1,0 +1,86 @@
+{
+  "version": 1,
+  "authority": "docs/tier7/ticket-46-model-routing-decision.md. Protected by policy/ in protected-paths.json. A change here moves model_version, a D19 fingerprint field, and the glossary suspends every autonomy grant on a fingerprint change.",
+  "notes": [
+    "The routing key is capability_id, declared in policy/role-bindings.json. Not palette kind: the frozen task specification standard requires the task field `capability` and calls it 'Never a role', and the glossary calls a capability 'Never a job title'. Not task class: that term already names the product's schedulable CriMe class.",
+    "`inherit` is forbidden. It defers model_version to a UI dropdown, so a fingerprint would change when someone changes a setting, silently suspending every grant measured on it. Every key resolves to a pinned identity.",
+    "The `trivial` class is defined here and is EMPTY at Phase 0. A capability enters it only through measurement, on the autonomy-grant evidence path. Until then every capability routes to a capable model and gpt-5-nano runs nothing.",
+    "Alfred passes the model explicitly on every spawn. The vendored ECC autoforge/model-policy.yaml default is never consulted; see loud_default below for what happens if a spawn omits the override."
+  ],
+  "forbidden": {
+    "inherit": "any unpinned or session-derived model identity",
+    "gpt-5-nano": [
+      "architecture",
+      "requirements",
+      "contracts",
+      "security",
+      "state machines",
+      "schema",
+      "refactors",
+      "debugging",
+      "validation authority",
+      "final review",
+      "conflict resolution"
+    ]
+  },
+  "loud_default": {
+    "model": "claude-opus-5",
+    "reason": "The fallback when a spawn omits its explicit override. Set to fail expensively rather than cheaply: a wrong-but-expensive default surfaces the omission on the invoice, while a wrong-but-cheap one hides it until a validator has been running on a trivial model for a month. This is the direction scripts/lint_ci_coverage.py's docstring names — an enumeration drifts silently, in the direction that reads green."
+  },
+  "trivial_class": {
+    "members": [],
+    "entry_condition": "Measured merge rate on the cheap model, on a stated fingerprint, meeting the threshold docs/tier3/autonomy-graduation-policy.md will set. That document is a deliberate stub with evidence 'none'; until it has content, nothing enters this list.",
+    "empty_because": "No measurement exists of any model against any Alfred capability. An allowlist authored today would rest on nothing — which is how the vendored AutoForge policy arrived at validator: gpt-5-nano, requirements-griller: gpt-5-nano and investigator: gpt-5-nano."
+  },
+  "routes": [
+    {
+      "capability_id": "capability:researcher@1",
+      "model": "claude-sonnet-5",
+      "provider": "anthropic",
+      "trivial": false,
+      "reason": "Discovery reads and summarizes; it authors no contract and holds no authority."
+    },
+    {
+      "capability_id": "capability:examiner@1",
+      "model": "claude-opus-5",
+      "provider": "anthropic",
+      "trivial": false,
+      "reason": "Requirements grilling. Explicitly on the forbidden list for the cheap model."
+    },
+    {
+      "capability_id": "capability:architect@1",
+      "model": "claude-opus-5",
+      "provider": "anthropic",
+      "trivial": false,
+      "reason": "Architecture. The most expensive error class available and the one a harness cannot check."
+    },
+    {
+      "capability_id": "capability:planner@1",
+      "model": "claude-opus-5",
+      "provider": "anthropic",
+      "trivial": false,
+      "reason": "Planning, and it carries the independent critique pass that makes plan auto-approval safe."
+    },
+    {
+      "capability_id": "capability:code-writer@1",
+      "model": "claude-sonnet-5",
+      "provider": "anthropic",
+      "trivial": false,
+      "reason": "Execution against an already-decided plan, under an executable criterion."
+    },
+    {
+      "capability_id": "capability:reviewer@1",
+      "model": "claude-opus-5",
+      "provider": "anthropic",
+      "trivial": false,
+      "reason": "Final review. Explicitly on the forbidden list for the cheap model."
+    },
+    {
+      "capability_id": "capability:validator@1",
+      "model": "claude-opus-5",
+      "provider": "anthropic",
+      "trivial": false,
+      "reason": "Validation authority. The thesis is that the thing checking the work is not the thing doing it, which a trivial model defeats."
+    }
+  ]
+}
