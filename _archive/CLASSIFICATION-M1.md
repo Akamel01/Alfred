@@ -5,7 +5,7 @@
 **Base** `main` @ `fa62b4b` · **Measured** 2026-08-19 · venv from
 `uv sync --frozen --all-extras --dev`
 
-This is Step 2 of `PLAN-M1.md`, widened to cover `ruff` as well as `pyright`, because the
+This is Step 2 of `_archive/PLAN-M1.md`, widened to cover `ruff` as well as `pyright`, because the
 corrected ruff measurement turned the "cheap gate" into a second scope question of the same
 shape as OBSERVER-1.
 
@@ -168,7 +168,7 @@ real numbers it is not cheap, and it is the same *kind* of decision as OBSERVER-
   `harness/patch/` (**forbidden to every module**). I cannot make ruff green over `harness/`
   without writing into two other live modules' territory and one tree nobody may touch.
 
-That last line is decisive on its own. Per `PLAN-M1.md` Step 3 — *"if any fix would change
+That last line is decisive on its own. Per `_archive/PLAN-M1.md` Step 3 — *"if any fix would change
 harness behaviour, it does not land here"* — and per the observer's instruction that Step 3
 stops rather than landing a gate propped up by per-file-ignores, **the ruff include does not
 land in this module.** It becomes part of the OBSERVER-1 answer.

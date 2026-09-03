@@ -276,13 +276,23 @@
     },
     {
       "color": "6",
+      "file": "vault/execution/operator-item__O5.md",
+      "height": 120,
+      "id": "dfe15253c92976c9",
+      "type": "file",
+      "width": 330,
+      "x": 0,
+      "y": 760
+    },
+    {
+      "color": "6",
       "file": "vault/execution/operator-item__O6.md",
       "height": 120,
       "id": "f4ebac9df2eecf6d",
       "type": "file",
       "width": 330,
       "x": 0,
-      "y": 760
+      "y": 950
     },
     {
       "color": "6",
@@ -292,7 +302,7 @@
       "type": "file",
       "width": 330,
       "x": 0,
-      "y": 950
+      "y": 1140
     },
     {
       "color": "6",
@@ -302,7 +312,7 @@
       "type": "file",
       "width": 330,
       "x": 0,
-      "y": 1140
+      "y": 1330
     },
     {
       "color": "6",
@@ -312,7 +322,7 @@
       "type": "file",
       "width": 330,
       "x": 0,
-      "y": 1330
+      "y": 1520
     },
     {
       "color": "4",

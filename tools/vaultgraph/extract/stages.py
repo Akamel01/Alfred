@@ -25,7 +25,7 @@ from __future__ import annotations
 
 import re
 
-from ..mdscan import expand_range, split_row
+from ..mdscan import expand_range, split_row, strip_strikethrough
 from ..model import Confidence, Edge, EdgeKind, Node, NodeKind, SourceRef
 from ..protocol import Anomaly, Context, ExtractorSpec, Harvest, Unparsed
 from ..textio import read_lines, slug
@@ -36,7 +36,10 @@ EXPECTED_STAGES = 10
 EXPECTED_OPERATOR_ITEMS = 9
 
 _STAGE = re.compile(r"^### (S\d)\s+—\s+(.+)$")
-_OPERATOR_ROW = re.compile(r"^\|\s*(O\d)\s*\|")
+#: `~{0,2}` admits the struck-through form: a discharged item is still a declared one, and the
+#: count must see it. O5 is the instance — `| ~~O5~~ |` — struck through when ADR-0018 closed
+#: it, which is also why the ADR's `Discharges: O5` must resolve rather than dangle.
+_OPERATOR_ROW = re.compile(r"^\|\s*~{0,2}(O\d)~{0,2}\s*\|")
 _CLAUSE = re.compile(r"\*([^*]+)\*")
 #: `**DONE 2026-08-17**`, `**PROBES DONE ...**`, `**D-SYNTHETIC DONE ...**`. The marker may
 #: begin with the word DONE itself, which an anchored `[A-Z]` prefix could not match.
@@ -146,9 +149,13 @@ def extract(ctx: Context) -> Harvest:
             item_id = operator.group(1)
             node_id = ctx.minter.mint(NodeKind.OPERATOR_ITEM, item_id, src)
             operator_ids[item_id] = node_id
+            # A struck-through id is a discharged item: still declared (the count sees it),
+            # no longer open. The withdrawal is the status, not the absence of a row.
+            _, withdrawn = strip_strikethrough(cells[0])
             harvest.nodes.append(Node(
                 id=node_id, kind=NodeKind.OPERATOR_ITEM, title=cells[1][:200], source=src,
                 shape="table-row", body=cells[1],
+                status="discharged" if withdrawn else "open",
                 attrs={"blocks": cells[2], "due": cells[3].replace("**", ""),
                        "number": item_id},
                 extractor=NAME,
@@ -202,6 +209,45 @@ def extract(ctx: Context) -> Harvest:
                 kind=f"{label.replace(' ', '-')}-count",
                 detail=f"{len(seen)} {label}s found, {expected} declared in the execution order",
             ))
+
+    # ---- Stage pipeline cross-check (ADR-0041/0042): DONE ↔ output/exit.md
+    stages_root = ctx.root / "stages"
+    if stages_root.is_dir():
+        harvest.scanned += 1
+        # Map S-id → exit record presence
+        exit_present: set[str] = set()
+        for child in stages_root.iterdir():
+            if not child.is_dir():
+                continue
+            # child is NN_sN_slug — extract sN
+            sid = None
+            for part in child.name.split("_"):
+                if part.startswith("s") and part[1:].isdigit():
+                    sid = f"S{part[1:]}"
+                    break
+                if part.startswith("S") and part[1:].isdigit():
+                    sid = part
+                    break
+            if not sid:
+                continue
+            if (child / "output" / "exit.md").is_file():
+                exit_present.add(sid)
+            elif (child / "output" / "README.md").is_file():
+                # In-progress marker — not a DONE evidence, but not an orphan either
+                pass
+        for sid, node_id in stage_ids.items():
+            stage_node = next((n for n in harvest.nodes if n.id == node_id), None)
+            if stage_node is None:
+                continue
+            is_doneish = stage_node.status in ("done", "partial")
+            if is_doneish and sid not in exit_present:
+                harvest.anomalies.append(Anomaly(
+                    kind="stage-evidence-miss",
+                    detail=f"{sid} is {stage_node.status} in {ORDER} but stages/*/output/exit.md is absent",
+                    refs=(stage_node.source,),
+                ))
+            if not is_doneish and sid in exit_present:
+                pass
     return harvest
 
 

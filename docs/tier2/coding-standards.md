@@ -128,6 +128,10 @@ policy/          machine-readable tier 4 — allowlists, denylists, the protecte
 tools/           vaultgraph and the generators — CI-gated, not the protected set
 vault/           generated read model — byte-compared in CI; never hand-edited
 projects/        one nested git repository per product Alfred builds — git-ignored subdirectories
+_archive/        dead material superseded but kept for provenance — not the protected set
+_templates/      blank templates instantiated by copy — never edited in place
+orchestration/   protected topology source (ADR-0039) — hand-authored, palette-bound
+stages/          numbered pipeline 01_s0 … 10_s9 — one folder per stage, evidence in output/exit.md
 ```
 
 `harness/` sits outside the agent tree deliberately and is in the protected set. No file

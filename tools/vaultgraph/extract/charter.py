@@ -4,10 +4,11 @@ The plan references kill criteria and risks constantly and defines neither. K1-K
 rows in the charter; R1-R12 are `## Rn — title` headings in the risk register. Reading them
 from the plan would have produced six and twelve empty shells.
 
-The risk register is **not in numeric order** -- R12 sits between R10 and R11, because R12 was
-added when the licensing question closed and appended where the argument put it rather than
-where the numbering would. A parser that assumed ordering would have been right until it
-wasn't; this one reads headings wherever they fall and reports gaps separately.
+The risk register is in numeric order. (R12 was originally appended where the argument put it,
+between R10 and R11, when the licensing question closed; it was moved to its numeric position
+when the register's order was reconciled.) The parser does not assume the order: it reads
+`## Rn` headings wherever they fall, and reports both numbering gaps and order drift as
+anomalies, so a future out-of-order addition surfaces rather than being silently absorbed.
 """
 
 from __future__ import annotations

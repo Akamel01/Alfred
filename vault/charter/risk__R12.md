@@ -5,7 +5,7 @@ title: "The data licence is unaffordable, so the wedge must not require one"
 status: "open"
 shape: "heading"
 number: "R12"
-source: "docs/tier0/risk-register.md:186"
+source: "docs/tier0/risk-register.md:197"
 extractor: "charter"
 aliases:
   - "R12"
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `docs/tier0/risk-register.md:186`
+**Source** · `docs/tier0/risk-register.md:197`
 
 ## Fields
 

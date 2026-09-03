@@ -2,6 +2,7 @@
 kind: operator-item
 id: "operator-item:O7"
 title: "EU 2022/1426 approval-register lookup (~1 hr)"
+status: "open"
 shape: "table-row"
 due: "Before O8"
 number: "O7"

@@ -32,12 +32,14 @@ generated: true
 
 ## Binds
 
+- **discharges** → [[operator-item__O5|~~Read OpenHands at the pinned SHA~~]]
 - **see_also** → [[adr__ADR-0007|Executor-premise assertions may pass vacuously, and that is a third outcome]]
 - **see_also** → [[adr__ADR-0017|A containment assertion with an unread premise is a hole, and a hole never passes]]
 - [[adr__ADR-0019|D38's sandbox rationale, verified: true of one configuration, false of the default]] **amends** → this
 - [[adr__ADR-0019|D38's sandbox rationale, verified: true of one configuration, false of the default]] **see_also** → this
 - [[adr__ADR-0020|The run fingerprint record, and the two assertions that were waiting on it]] **see_also** → this
 - [[adr__ADR-0036|Run Fingerprint Record Schema & Production]] **see_also** → this
+- [[adr__ADR-0044|Register drift reconciled]] **see_also** → this
 
 ## Enforced by (code)
 

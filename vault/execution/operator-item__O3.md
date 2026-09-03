@@ -2,6 +2,7 @@
 kind: operator-item
 id: "operator-item:O3"
 title: "D49 P3: validate, or take the stated degradation to the 10 strong P1 measures"
+status: "open"
 shape: "table-row"
 due: "2026-09-09"
 number: "O3"

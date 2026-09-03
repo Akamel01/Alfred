@@ -10,6 +10,7 @@ __pycache__/
 
 # Tooling state that is machine-local, not project state.
 .claude-flow/
+.autoforge/
 .DS_Store
 
 # Secrets never enter the repository (docs/tier4/secrets-management-policy.md).

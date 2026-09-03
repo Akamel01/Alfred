@@ -2,6 +2,7 @@
 kind: operator-item
 id: "operator-item:O4"
 title: "Phase 0 exit: move the date under a waiver ADR, or narrow the exit"
+status: "open"
 shape: "table-row"
 due: "2026-09-09"
 number: "O4"

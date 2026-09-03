@@ -3993,3 +3993,245 @@ Prototype #13 shipped palette (`policy/node-palette.json`, 21 entries, v1) and t
 - `scripts/lint_topology.py` + `tools/tests/test_orchestration.py` → structural and binding checks, including `--self-test`.
 - `tools/orchestration/gen_canvas.py --check` → generated canvas matches sources.
 
+---
+
+## ADR-0040 — The structure fence grows to eighteen
+
+**Date:** 2026-08-29 · **Status:** Accepted · **Supersedes:** none · **Amends:** the structure fence of the coding standards (ADR-0033) · **See also:** ADR-0033 (the fence's first full enumeration), ADR-0039 (orchestration/ as protected prefix), ADR-0031 (protected set as single home) · **D28 waiver:** yes
+
+### Context
+
+ADR-0033 made the structure fence in `docs/tier2/coding-standards.md` the one home for "what top-level directories the tree has" and floored it at fourteen, with a vault `layout` extractor that surfaces `layout-miss` (directory exists, fence does not name it) and `layout-ghost` (fence names a directory that is not there). At that point the tree and the fence agreed at fourteen.
+
+Three facts have since diverged from that agreement, two by drift and one by design.
+
+**Drift — `orchestration/` exists and is protected but not fenced.** Commit `e04544a` (`feat/orchestration-canvas`) added `orchestration/topology.json` and ADR-0039 added `orchestration/` as a protected prefix in `policy/protected-paths.json`. The fence was not updated in either change, so every `gen_vault.py` run since has carried `layout-miss: orchestration/` in `vault/_anomalies.md` and `graph.json`. The directory is not transient — it holds the hand-authored topology source that two validators read — and the anomaly is not a discovery, it is a debt the record left open.
+
+**Drift — `prototype/` is dead and its anomaly is the same shape in reverse.** `prototype/` was the wayfinder map #8 prototype (#13) that shipped the palette and the topology before they were promoted to `policy/` and `orchestration/`. It is not built, not imported, and not deployed. Its only live referrer is a comment in `tools/orchestration/gen_canvas.py:141` ("Reuse prototype canvas JS?"). The fence does not name it, so it also surfaces as `layout-miss: prototype/`. The intended end state is not to fence it but to remove it from the walked set (ADR-0043).
+
+**Design — the ICM workspace adds three shelves the fence must name or it will re-break the floor the next build.** Numbered pipeline `stages/`, template shelf `_templates/`, and archive `_archive/` are top-level directories by construction: they sit beside `src/` and `docs/`, they are not subdirectories of an existing fence entry, and the layout extractor walks `ctx.root.iterdir()` minus exactly the literal `name/` patterns from `.gitignore` and `.git/info/exclude` plus `_MACHINE_LOCAL`. A directory that is not ignored and not named is a `layout-miss` by definition — the extractor has no third option and no silent pass. Landing any of the three without a fence line recreates the same anomaly this ADR is closing, one commit later.
+
+`.autoforge/` and `.claude-flow/` are not in this count. Both are machine-local tooling state, gitignored (`.gitignore` literal `name/` patterns), and therefore subtracted before the walk. The former was added to `.gitignore` in `c699ce6` precisely so it does not count.
+
+The home question is already settled by ADR-0033: the fence is the one home. The question this ADR answers is the new enumeration, the constant that floors it, and the ordering that keeps history legible.
+
+### Decision
+
+**The structure fence names eighteen top-level directories, and the vault floors at eighteen.**
+
+1. **Four lines land in the fence in `docs/tier2/coding-standards.md § Structure`, in this order, after the existing fourteen which are left untouched:** `_archive/` — dead material that the register superseded but must keep for provenance; `_templates/` — blank templates instantiated by copy, never edited in place; `orchestration/` — protected topology source (ADR-0039), already on disk; `stages/` — numbered pipeline `01_s0` … `10_s9` (ADR-0041). The fourteen existing lines keep their order; the four new lines are appended as a contiguous block. No line is reordered, no description is rewritten. A fence whose history is a pure append is a fence whose diff is reviewable without reconstructing a sort.
+
+2. **`tools/vaultgraph/extract/layout.py:31` `EXPECTED = 14` becomes `18`, and the comment "Fourteen on the restructured tree" becomes "Eighteen on the ICM workspace (fence v2, ADR-0040)".** The floor and the fence move together in the same commit; a floor that moves without its fence, or a fence that moves without its floor, is the drift this mechanism exists to catch. `_MACHINE_LOCAL` is not changed — it continues to hold only `.git` and `.claude`; `.autoforge` and `.claude-flow` remain ignored via `.gitignore`, which is the correct layer for tooling state.
+
+3. **No other top-level list is carried.** The plan mirror's "Files and structure" block inside `plan/` is sealed by `plan/manifest.json:8` sha256 and is labeled and excluded, never amended (ADR-0033). CI workflows (`.github/workflows/gates.yml`, `fingerprint.yml`) name only existing subtrees (`harness/*`, `bench/*`, `scripts/*`, `tools/*`, `tests/`) and carry no top-level directory list. Any future list of top-level directories outside the fence is a defect, not a second home.
+
+This is a **D28 waiver** and counts toward the waiver total the operating principles use as a health metric. It is the third. The gate is the frozen status over the coding standards' structure fence; what it overrides is the fence's declared content — four of the eighteen lines; the reason is the drift and the workspace design stated in the Context; and the condition that would reverse it is the falsification clause below.
+
+### Falsifies if
+
+ - a top-level directory exists in the tree and neither a fence line nor a committed `layout-miss` anomaly accounts for it; or
+ - a fence line names a directory that is not there and no committed `layout-ghost` anomaly accounts for it; or
+ - the floor is lowered, or a second list of top-level directories is carried in the README or any register document.
+
+### Consequence
+
+The two committed `layout-miss` anomalies (`orchestration/`, `prototype/`) stop being anomalies for different reasons in the same build: `orchestration/` because the fence now names it; `prototype/` because ADR-0043 moves it under `_archive/` and the fence names `_archive/` instead. `stages/` and `_templates/` land fenced from their first commit and never surface. A new top-level directory added without a fence line again fails in both directions — the shrink direction fails the floor, the growth direction commits a visible `layout-miss` — rather than accumulating silently.
+
+### Enforcement
+
+ - `tools/vaultgraph/extract/layout.py` → floor 18, walk minus ignored, `layout-miss`/`layout-ghost` anomalies.
+ - `vault/_anomalies.md` + `graph.json` + `docs-graph.html` → byte-compared in CI (`gen_vault.py --check` in `gates.yml:192-193`); a hand edit fails the check.
+ - `docs/tier2/coding-standards.md` → frozen, `ci-gate`; this ADR is the waiver that authorizes its diff.
+
+---
+
+## ADR-0041 — The S0–S9 build materialized as a numbered pipeline
+
+**Date:** 2026-08-29 · **Status:** Accepted · **Supersedes:** none · **Amends:** `docs/tier2/execution-order.md` § Stages and § What must not be built yet (graph-editor line) · **See also:** ADR-0039 (topology canvas as protected source), ADR-0040 (fence v2, `stages/`), docs/tier2/stage-gate-definitions.md
+
+### Context
+
+`docs/tier2/execution-order.md` orders what gets built by what it unblocks. Its central fact is the stage sequence S0 (backlog) through S9 (Phase 1 build), with S0–S4 and S8 marked **DONE** (2026-08-17/18), S5 in progress, S6/S7 probes done with enforcement outstanding, and four operator items blocking S9. That order is the project's spine: every gate, every waiver, and every "blocks" edge in the vault stages extractor reads it.
+
+What the spine does not have is a place. Stages are declared in one document and realized — when they are realized — in whatever directory their output happens to land (`harness/`, `src/`, `deploy/`, …). There is no folder a newcomer can open to learn whether S3 is done, what it produced, or what residue it left; no folder an agent can write that is unambiguously *the work of S5* rather than a file in `src/` that happens to have been written during S5. A build whose order exists only as prose is a build whose order an agent reconstructs from prose, and that reconstruction is where sequence errors enter.
+
+ICM invariant 3 makes the missing shape explicit: *numbered pipeline* — one folder per stage, in build order, each with an explicit contract (inputs, process, outputs, one human check). The workshop's number is not a second numbering: `NN` is build order and `sN` is the stage id the register and the vault already use. Both travel in the directory name so a filesystem listing and the register agree without a lookup table.
+
+Two related ambiguities must be settled in the same decision or they will be settled by assumption.
+
+**Where stage status lives.** The naïve answer is a status file in each stage folder. That duplicates a truth the register already owns: `execution-order.md` declares each stage DONE/provisional/blocked, and `harness/selftest/stage_gate_register.json` records each gate. A second status that can disagree with the first is a second source of truth, and a vault that reads both must pick a side or surface a disagreement that a writer should never have created. Status belongs in one place; evidence that the status is honest belongs in another.
+
+**What "No graph editor" forbids.** `execution-order.md` § What must not be built yet carries: "No graph editor. The graph definition declares field ownership and verdict-node placement, so a GUI writing it is a second authoring path around the D16/D39 lint." Prototype #13 shipped `orchestration-canvas.html` — a single-file HTML page that edits `orchestration/topology.json` (8 nodes / 7 edges, palette-bound). Taken literally, the prohibition and the canvas contradict: the canvas is a graph editor. The contradiction is terminological, not substantive. The state graph (`docs/tier1/state-and-graph-specification.md`, `harness/` graph definition) declares field ownership and verdict placement and is guarded by `scripts/lint_verdict_boundary.py` (D16/D39). The orchestration graph (`orchestration/topology.json`, `policy/node-palette.json`) declares which roles exist and how they hand off, guarded by `scripts/lint_topology.py` and `tools/tests/test_orchestration.py` (ADR-0039). One forbids a GUI writing the state graph; the other authorizes a local page editing the topology source. The line must be scoped or the canvas must be removed — and the canvas is the operator's chosen surface for an artifact whose author set is one human.
+
+### Decision
+
+**Stages S0–S9 are materialized as `stages/01_s0_backlog` … `10_s9_phase1`, with a single evidence record per stage and a scoped prohibition on the graph editor.**
+
+1. **Folders.** `stages/` (fenced by ADR-0040) holds ten directories, lexically sorted equals build order:
+   `01_s0_backlog`, `02_s1_db-foundation`, `03_s2_oracle-env`, `04_s3_inspector-core`, `05_s4_suites-together`, `06_s5_product-path`, `07_s6_containment`, `08_s7_durability`, `09_s8_deploy-rollback`, `10_s9_phase1-build`.
+   `NN` is zero-padded build order; `sN` is the stage id from `execution-order.md` and the vault `stage` nodes; slug is the stage's short name from the same document. The register's S-ids do not change; the filesystem carries them.
+
+2. **Per-stage contract and evidence.** Each `stages/NN_sN_slug/` holds `CONTEXT.md` (the stage's working contract — one job, Inputs with exact paths, Process as numbered steps, Outputs, exactly one human check; instantiated from `_templates/stage-contract.md` per ADR-0043), an `input/` directory (empty unless the stage stages material), and `output/exit.md` (the stage's evidence record). `output/exit.md` is the *only* stage-scoped evidence: what was done, the commit that landed it, the ADRs it produced or amended, the register-entry pointer where the fact now lives, and the residue it left. Agent-drafted as a claim; the human confirms at the stage gate; real outputs stay in canonical homes (`src/`, `harness/`, `docs/`, `bench/`) and the exit record points, never copies. No other status file is carried in the folder.
+
+3. **Where status lives and how it is checked.** Status is `execution-order.md` § Stages — the line that says **DONE**, **PROBES DONE**, or **blocked by** — and nowhere else. The vault `stages` extractor (extended by ADR-0042) cross-checks each DONE declaration against `stages/NN_sN_slug/output/exit.md` and the register entry the exit record points to; a DONE stage without an exit record, or an exit record whose commit/ADR/register pointer does not resolve, surfaces as an anomaly. The exit record is evidence, not a second status; a mismatch fails the vault rather than creating a disagreement between two files an operator must reconcile by hand.
+
+4. **Backfill.** All completed stages (S0–S4, S8) are backfilled with a one-paragraph `output/exit.md` citing the commit, ADR, and register entry from `git log` and the vault at the time of landing. No gate is re-run — a gate is a point-in-time check and re-running it rewrites history. S5 (in progress, "Product path to a reproduced number") gets an empty `output/` with a `README.md` stating it is in progress and naming its unblockers. S6/S7 keep their "probes done, enforcement outstanding" shape; their exit records record that shape and its residue. The walk test (ADR gate) is the check that the backfill is honest: a cold agent derives stage status by scanning `stages/` and `execution-order.md` and the two agree.
+
+5. **Scoped prohibition.** `execution-order.md` § What must not be built yet, line "No graph editor. The graph definition declares field ownership and verdict-node placement, so a GUI writing it is a second authoring path around the D16/D39 lint." is amended to: "No **state-graph** editor. The state graph (`docs/tier1/state-and-graph-specification.md` and the `harness/` graph definition) declares field ownership and verdict-node placement; a GUI writing it is a second authoring path around the D16/D39 lint and is forbidden. The **orchestration canvas** (`orchestration/topology.json` via `tools/orchestration/gen_canvas.py`, ADR-0039) is a topology editor over a different artifact (`policy/node-palette.json` + `orchestration/topology.json`), protected and lint-bound, and is not in scope of this line." The canvas is not an exception; it is a different graph.
+
+### Consequences
+
+ - A newcomer learns stage order by listing `stages/` and learns stage state by reading `execution-order.md`; the two agree by construction and a third read (`output/exit.md`) tells what the stage actually left behind. The 2k–8k token band the walk test measures is entry (`CLAUDE.md`) + one stage contract (`stages/NN_sN_slug/CONTEXT.md`) + its inputs.
+ - `execution-order.md` remains the one home for order and status; `stages/*/output/exit.md` is the one home for stage evidence; the vault is the one home for the cross-check. No second status file can drift from the first because no second status file exists.
+ - The "No graph editor" line no longer contradicts the shipped canvas. The state graph remains without a GUI authoring path; the topology graph remains editable through the single-file local page the operator chose. A future GUI for `state-and-graph-specification.md` is still forbidden and the lint still guards it.
+
+### Enforcement
+
+ - `docs/tier2/execution-order.md` → provisional, `review-cadence`; this ADR is the amendment that authorizes its diff (no D28 waiver — the document is not frozen).
+ - `tools/vaultgraph/extract/stages.py` (ADR-0042) → reads `execution-order.md` § Stages and `stages/*/output/exit.md`; DONE without evidence or evidence without DONE surfaces as an anomaly.
+ - `scripts/lint_verdict_boundary.py` → D16/D39 still guards the state graph; the topology canvas remains guarded by `scripts/lint_topology.py` + `tools/tests/test_orchestration.py` (ADR-0039).
+
+---
+
+## ADR-0042 — The vault gains verbs and effects
+
+**Date:** 2026-08-29 · **Status:** Accepted · **Supersedes:** none · **See also:** ADR-0041 (stages pipeline, `stages/`), tools/vaultgraph/README.md (vault vocabulary), `docs/README.md` (register as document catalog)
+
+### Context
+
+The vault is the single generated system map the register is read through. It currently answers noun questions well — what documents exist, what decisions were made, what stages block what, what modules depend on what, what the layout floor is — because its node kinds name nouns: DOCUMENT, ADR, STAGE, OPERATOR_ITEM, RISK, MODULE, SCHEMA, GATE, LAYOUT, and its edges name the relations between them.
+
+Two noun-adjacent questions it does not answer, and both are asked at the point of change rather than at the point of reading:
+
+**"What process do I run to change this, and where does it live?"** Vault regen, gate run (`gates.yml`'s five jobs), dispatch (`harness/worker/` + `harness/patch/validate.py`), bench run, canvas generation (`tools/orchestration/gen_canvas.py`), fingerprint capture (`scripts/capture_run_fingerprint.py`), doc generation (`scripts/gen_reading_map.py`) — these are the verbs the repository actually runs, and they live in `scripts/`, `harness/`, `.github/workflows/`, `justfile`, and the README Checks code block. Today they are not nodes. A map that names every document but not the process that regenerates it is a map that cannot answer "what do I run after I edit this."
+
+**"If I change X, what cards should I open?"** The vault already computes in-edges per node, but it renders them only as backlinks on each note. There is no index that inverts the question — no board that says "change `policy/protected-paths.json` → open the protected-paths doc, the D20 lint, the patch validator, the vault code extractor, and the gates job that runs it." That index is derivable from the graph the vault already builds; it is not a new extraction so much as a rendering of an existing relation. Carrying it as a hand-authored `map/` shelf would be a second map that can disagree with the first.
+
+A third, smaller gap is stage-aware: once `stages/` exists (ADR-0041), the stages extractor must read it. Today it reads only `docs/tier2/execution-order.md`; after the pipeline lands it must also read `stages/*/output/exit.md` for the DONE-vs-evidence cross-check, or the pipeline and the register will be two lists that agree only because nothing checks whether they do.
+
+The user's decision, recorded in grilling, is one generated map layer, no hand-authored `map/` shelf.
+
+### Decision
+
+**The vault gains two node kinds — PROCESS and EFFECT — and the stages extractor reads `stages/`.**
+
+1. **`NodeKind.PROCESS` → `vault/processes/`.** One node per verb the repository actually runs: vault regeneration (`python3 tools/gen_vault.py` / `--check` / `--self-test`), gate run (the five `gates.yml` jobs and `fingerprint.yml`), dispatch (worker port + patch validation), bench run, canvas generation, fingerprint capture, doc generation, reading-map generation. Extracted from `scripts/*.py`, `harness/**/*.py`, `.github/workflows/*.yml`, `justfile`, and the README Checks block, with `path:line` citations on every node (the provenance a walk test reads to find the runnable). A process node names its inputs (the trees it reads), its outputs (what it writes or gates), and the command that runs it. Source authority per verb — which file is the home for which process — is recorded on the node; the detailed per-verb authority table graduates as `stages/10_s9_phase1` is worked (the Not yet specified item from the grilling), and until then the extractor's `TREES`/`FLAT_TREES`/`WATCHED_TREES` constants are the authority.
+
+2. **`NodeKind.EFFECT` → `vault/effects/` (also rendered as a board).** The change-impact index — "if you change X, open these cards" — derived from the vault's own in-edges, not from a new extraction. For each node, its EFFECT board lists the nodes that point at it, grouped by kind and rendered with the `path:line` of the edge's source. A hand-authored `map/` shelf is not created; the board is a view over the graph, recomputed on every `gen_vault.py` run, so it cannot disagree with the graph it inverts.
+
+3. **`FOLDERS` += the two kinds.** `tools/vaultgraph/render/vault.py:23` `FOLDERS` gains `NodeKind.PROCESS: "processes"` and `NodeKind.EFFECT: "effects"` (the EFFECT board is also rendered via `render/dataview.py` + `render/canvas.py` as a board, not just as notes; the folder holds the per-node effect cards). No existing folder mapping changes.
+
+4. **Stage extractor reads `stages/`.** `tools/vaultgraph/extract/stages.py` gains a walk over `stages/*/output/exit.md` (ADR-0041). For each `execution-order.md` § Stages row marked DONE, it expects an exit record; for each exit record it resolves the cited commit, ADR, and register entry; mismatch in either direction — DONE without evidence, evidence without DONE, or evidence pointing at a non-existent commit/ADR/register entry — surfaces as an anomaly (`stage-evidence-miss` / `stage-evidence-orphan`). The floors remain as today (`min_nodes = EXPECTED` stages) plus the new kinds' floors.
+
+### Consequences
+
+ - The vault answers the verb question from the same place it answers the noun question. "What do I run after I edit `docs/tier2/coding-standards.md`?" resolves to the PROCESS node whose inputs include `docs/` and whose outputs include the layout floor — `gen_vault.py` and the doc lint — with the exact command on the card.
+ - The change-impact question is answered without a second map. A hand-authored `map/` would have to be kept in sync with the vault; a board derived from in-edges cannot drift because there is nothing to drift from.
+ - Stage status remains in one place (`execution-order.md`); stage evidence remains in one place (`stages/*/output/exit.md`); the vault is the cross-check that the two agree. The pipeline cannot quietly add a DONE stage without evidence, nor leave evidence for a stage the register does not claim is done.
+
+### Enforcement
+
+ - `tools/vaultgraph/model.py` → new `NodeKind` members `PROCESS`, `EFFECT`.
+ - `tools/vaultgraph/extract/process.py` (new) + `tools/vaultgraph/extract/effect.py` (new, or board-only in `render/`) → PROCESS nodes from the verb sources, EFFECT boards from in-edges.
+ - `tools/vaultgraph/render/vault.py` → `FOLDERS` extended; `gen_vault.py --self-test` asserts the new extractors' floors and that `render/` does not import `extract/`.
+ - `tools/vaultgraph/extract/stages.py` → reads `stages/*/output/exit.md` in addition to `execution-order.md`.
+ - `vault/` + `graph.json` + `docs-graph.html` → byte-compared in CI (`gen_vault.py --check`).
+
+---
+
+## ADR-0043 — Dead material archived and templates shelved
+
+**Date:** 2026-08-29 · **Status:** Accepted · **Supersedes:** none · **See also:** ADR-0040 (fence v2, `_archive/` + `_templates/`), ADR-0041 (stage contracts from templates), Issue #1 (O9 review; the root files are its provenance until O9 completes)
+
+### Context
+
+Two shelves are missing and one shelf is dead.
+
+**Dead shelf — `prototype/`** is the wayfinder map #8 prototype that shipped `orchestration-canvas.html` and `sample-topology.json` before they were promoted to `orchestration/topology.json` and `policy/node-palette.json`. It is not imported, not deployed, and not the home for any fact the register names. Its only live referrer is a comment in `tools/orchestration/gen_canvas.py:141`. Its generated anomaly (`layout-miss: prototype/`) is not a finding to keep — it is a directory that should not be in the walked set at all. The correct end state is not to fence it but to move it out of the walk.
+
+**Dead files — `PLAN-M1.md`, `PLAN-M2.md`, `CLASSIFICATION-M1.md`** sit at the repo root, outside `docs/` and outside any fence entry. `PLAN-M1.md` and `PLAN-M2.md` are the M1 plan (MUSE.md-sourced rule tightening, widened to `ruff` plus `pyright`); `CLASSIFICATION-M1.md` is the full harness classification the stage gate and `scripts/lint_harness_gate.py:74` cite. The latter two are referenced: `docs/tier1/adr-log.md:3017` (ADR-0029: "The full classification is `CLASSIFICATION-M1.md`.") and `scripts/lint_harness_gate.py:74` (`… See CLASSIFICATION-M1.md.`). The plan files are also the provenance for issue #1 (O9 line-by-line review of inspector patches — the operator item that says "if any fix would change…" and the review the plan records as owed). While #1 is open, the files are live provenance even though they are dead product. The move must happen after O9 completes or carry O9's sign-off in the same change — otherwise the review's source is moved before the review is done.
+
+**Missing shelf — `_templates/`** — ICM invariant 10 is *instantiate-by-copy*: a new task, ADR, criterion, or stage contract is created by copying a blank template named for what it produces, not by recalling a shape from an old file. Today there is no shelf. Agents copy the last ADR's heading and inherit its `See also` by accident; criteria are written against no template at all.
+
+A move without a discipline is a move that breaks sibling-path references, case-folded destinations on macOS, and the walk test's "every pre-move reference still resolves" check. The apparent cheapness of `git mv` is why the reference-integrity survey (Issue #28 / T1) exists before this ADR lands.
+
+### Decision
+
+**Dead material moves to `_archive/` by copy-verify-remove; blank templates land in `_templates/` by copy.**
+
+1. **`prototype/` → `_archive/prototype/`.** Copy-verify-remove: `cp -R prototype _archive/prototype`, verify file count and content hash parity (every file identical, no file left behind), then `rm -rf prototype`. In the same commit, update the one live referrer — the comment in `tools/orchestration/gen_canvas.py:141` — to point at `_archive/prototype/` (or remove the speculative "reuse" note if the decision is not to reuse). The fence does not gain a `prototype/` line; it gains `_archive/` (ADR-0040), and `_archive/prototype/` is not a top-level directory so it does not participate in the layout walk.
+
+2. **`PLAN-M1.md`, `PLAN-M2.md`, `CLASSIFICATION-M1.md` → `_archive/`.** Same discipline, same commit, after O9 (issue #1) completes — or, if O9 and this move land together, with O9's sign-off as the gate for the same change. Verify parity, then remove from root. Update every referrer in the same change:
+   - `docs/tier1/adr-log.md:3017` → `_archive/CLASSIFICATION-M1.md`
+   - `scripts/lint_harness_gate.py:74` → `_archive/CLASSIFICATION-M1.md`
+   `CLASSIFICATION-M1.md:8,171` references `PLAN-M1.md` (outbound from a mover); both files move together so the relative pairing survives, but the root-relative spelling goes stale — update to `_archive/PLAN-M1.md` inside the archived copy. `PLAN-M2.md` has no inbound referrers (T1 finding) and needs no referrer update.
+
+   Before any copy, check for case-folded collisions on the destination: `_archive/` is new, but a file named `plan-m1.md` or `classification-m1.md` differing only in case would be the same file on macOS and two files on Linux. The check is `python3 -c "assert len({p.casefold() for p in dests}) == len(dests)"` over the destination basenames.
+
+3. **`_templates/` shelf.** Five blank templates, each named for what it produces and each carrying a one-line purpose and a `path:line` example:
+   - `_templates/task-spec.md` — the task specification shape (from `docs/tier2/task-specification-standard.md`).
+   - `_templates/adr.md` — the ADR shape (Context / Decision / Consequences / Enforcement / Falsifies if), with the `Date · Status · Supersedes · See also · D28 waiver` header.
+   - `_templates/criterion.md` — visible/held-out criterion shape (interface signature + threshold provenance, per cross-stage-invariants).
+   - `_templates/stage-contract.md` — the per-stage `CONTEXT.md` shape (one job, Inputs with exact paths, Process as numbered steps, Outputs, exactly one human check) that `stages/*/CONTEXT.md` instantiates (ADR-0041).
+   - `_templates/run-fingerprint.md` — the Run Fingerprint record shape (27 fields, hash derived via ACS-1, groups D19/D40/lane/worker, per `CONTEXT.md` Core Terms).
+   Templates are instantiated by copy, never edited in place; a template edited in place is a second home for the shape it defines.
+
+4. **Fence and ignore.** `_archive/` and `_templates/` are fenced by ADR-0040 and therefore not ignored. No new `.gitignore` line is added for them. `_archive/` is ordinary history, not a second protected set — it is not added to `policy/protected-paths.json`.
+
+### Consequences
+
+ - The walked set loses `prototype/` and gains `_archive/` and `_templates/`; the fence gains the same, so no new `layout-miss` or `layout-ghost` surfaces. The `prototype/` anomaly is closed by the move, not by a fence line that would have enshrined a dead shelf.
+ - Dead material remains reachable at a stable archived path, case-fold safe, with every in-repo referrer updated in the same commit. An external consumer (other repo, agent config, Obsidian vault) pointing at `prototype/` or a root file is the human-gate question at PR review — the in-repo survey (T1) is not an unbounded grep of other systems, and the review is where the operator answers it.
+ - New work starts from a blank template named for its product rather than from the last file of that kind, which is how accidental `See also` edges and stale headers enter the vault.
+
+### Enforcement
+
+ - Move discipline: copy, verify count + hash, remove, update referrers, check case-fold — all in one commit. A move that leaves the source behind or updates a referrer in a follow-up is a move that broke the walk test for one commit and relied on a second commit to repair it.
+ - `docs/tier2/coding-standards.md` § Structure (fence v2) → `_archive/` and `_templates/` are fence lines; the walk test asserts every pre-move reference still resolves after the move.
+ - `_templates/*.md` → not generated, not gated, but instantiated by copy; a template edited in place rather than copied is a drift the vault cannot see and review must catch.
+
+---
+
+## ADR-0044 — Register drift reconciled
+
+**Date:** 2026-08-29 · **Status:** Accepted · **Supersedes:** none · **See also:** ADR-0018 (executor source read, Discharges O5), docs/tier0/risk-register.md, docs/tier2/execution-order.md § Operator-owned, tools/vaultgraph/extract/stages.py, tools/vaultgraph/extract/charter.py
+
+### Context
+
+Three finding kinds committed in `vault/_anomalies.md` on `main` were not discoveries about the domain — they were the register disagreeing with itself, and the vault faithfully reporting the disagreement rather than picking a side.
+
+**1. Risk register out of numeric order.** `docs/tier0/risk-register.md` listed R12 before R11 — a transposition in a table whose ids are the stable handles every other document cites. The register is `status: provisional`, `enforcement: review-cadence`, `owner: human` (Tier 0), so its content is under Gate D when it touches protected premises, and this fix does: the diff reorders two adjacent blocks (R11: `commonroad-reach compiles Cython at import time`; R12: `polygon3 is sdist-only and needs a compiler`) with no text change to either. The anomaly kind was `risk-register-order`; the detail named the two rows.
+
+**2. Operator-item count: 8 found, 9 declared.** `docs/tier2/execution-order.md` § Operator-owned, non-delegable declares nine items O1–O9. The vault `stages` extractor walks that table and mints one `operator-item` node per data row; it found eight. The ninth row exists but is struck through: `| ~~O5~~ | ~~Read OpenHands at the pinned SHA~~ | — | **DONE 2026-08-18.** ADR-0018. … |`. The extractor's row pattern `^\|\s*(O\d)\s*\|` does not match `~~O5~~`, so the row was invisible and the floor failed. The defect is not in the document — the strikethrough is the correct way to mark a discharged item done — it is in the extractor, which had no rule for a discharged row.
+
+**3. Discharge target absent: ADR-0018 Discharges O5.** ADR-0018's `Discharges: O5` edge points at `operator-item:O5`. The node did not exist (see 2), so the edge was unresolvable and the vault surfaced `discharge-target-absent`. The ADR's history must not be edited after publication (`adr-log.md` preamble: "An ADR is edited after publication rather than superseded" falsifies the log). The fix cannot be to edit ADR-0018's `Discharges` line, nor to remove the strikethrough from the execution order to make the row match.
+
+All three are register drift — a document, an extractor, and an ADR that should agree and do not. The vault's job is to surface the drift, not to resolve it by preferring one source over the others.
+
+### Decision
+
+**The drift is reconciled at source, in one commit, without editing ADR history.**
+
+1. **Risk register reordered — `docs/tier0/risk-register.md`.** Swap the two adjacent blocks so the ids run strictly R1–R12 in numeric order, R11 before R12. No text inside either block changes; the ids, bodies, and line counts are preserved. This is the tier0 touch of this effort and the Gate D surface: the diff is two blocks swapped and nothing else, and it is staged but not merged until the operator confirms line-by-line that the reorder is exact and no wording changed. The Gate is satisfied in this ADR's review, not in a later one.
+
+2. **Stages extractor reads the struck-through row — `tools/vaultgraph/extract/stages.py`.** Import `strip_strikethrough` from `tools/vaultgraph/mdscan.py`, change the row pattern to `^\|\s*~{0,2}(O\d)~{0,2}\s*\|`, and mint the node with `status="discharged" if withdrawn else "open"`. `~~O5~~` is now a node (status discharged), the operator count sees nine of nine, and the DISCHARGES edge resolves. No document is rewritten to make the extractor pass; the extractor is taught to read the document as it is written.
+
+3. **Charter extractor docstring corrected — `tools/vaultgraph/extract/charter.py`.** The module docstring's ordering example is updated from the stale order to the numeric order, so the docstring no longer describes a different order than the file it documents. No logic change.
+
+4. **Machine-local `.autoforge/` gitignored — `.gitignore`.** `.autoforge/` (ephemeral agent tooling state, created externally 2026-08-29) added as a literal `name/` pattern beside `.claude-flow/`, so the layout extractor's `_ignored_dirs` subtracts it. It is not a project directory and is not fenced. This was not one of the three committed anomalies but a fourth `layout-miss` that appeared on the same walk; handling it in the same commit keeps the vault wave atomic.
+
+Regenerated: 535 nodes, 970 edges, 541 notes (17 changed) in `c699ce6`. The three committed anomalies no longer surface; the two `layout-miss` that remain (`orchestration/`, `prototype/`) are by design and resolve with ADR-0040/0043. Final regeneration after those lands → 0 anomalies and `gen_vault.py --check` clean.
+
+### Consequences
+
+ - The risk register is numerically ordered and the vault's `risk-register-order` check passes without special-casing. A future transposition again surfaces as an anomaly rather than being tolerated by a looser check.
+ - Operator items are nine of nine, with O5 carried as a discharged node. ADR-0018's `Discharges: O5` resolves, and the vault renders O5 as discharged rather than absent — the register's strikethrough and the graph's status agree.
+ - ADR history is untouched. An ADR that turns out to point at a discharged item is not edited; the extractor is taught to read the discharged form. The log's "never edited after publication" invariant holds.
+
+### Enforcement
+
+ - `tools/vaultgraph/extract/stages.py` → struck-through row pattern + `status="discharged"`; unit coverage via the extractor's own tests and the committed vault's 9-found/9-declared.
+ - `tools/vaultgraph/extract/charter.py` → docstring matches the file's numeric order.
+ - `docs/tier0/risk-register.md` → provisional, `review-cadence`; this ADR is the Gate D record for the reorder — the diff is staged, reviewed line-by-line, and merged only on confirmation.
+ - `vault/_anomalies.md` + `graph.json` + `docs-graph.html` → byte-compared in CI (`gen_vault.py --check`); the three drift anomalies no longer appear.
+

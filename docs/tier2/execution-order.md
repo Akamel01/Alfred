@@ -426,6 +426,5 @@ Named so that being ready is never mistaken for being due.
 - **No workflow engine** before a work item genuinely spans multiple irreversible steps.
 - **No retrieval index** before the miss rate measurably costs verdicts or the repo passes
   ~1000 files.
-- **No graph editor.** The graph definition declares field ownership and verdict-node
-  placement, so a GUI writing it is a second authoring path around the D16/D39 lint.
+ - **No state-graph editor.** The state graph (`docs/tier1/state-and-graph-specification.md` and the `harness/` graph definition) declares field ownership and verdict-node placement, so a GUI writing it is a second authoring path around the D16/D39 lint and is forbidden. The **orchestration canvas** (`orchestration/topology.json` via `tools/orchestration/gen_canvas.py`, ADR-0039) is a topology editor over a different artifact (`policy/node-palette.json` + `orchestration/topology.json`), protected and lint-bound, and is not in scope of this line.
 - **No AV-specific investment** if K2 fires — while factory stages proceed regardless.

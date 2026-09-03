@@ -21,6 +21,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from tools import gen_agents                                 # noqa: E402
 from tools.vaultgraph import mirror                          # noqa: E402
 from tools.vaultgraph.runner import run                      # noqa: E402
 from tools.vaultgraph.selftest import self_test               # noqa: E402
@@ -63,12 +64,33 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     if args.selftest:
-        return self_test()
+        code = self_test()
+        if code:
+            return code
+        # Twin check self-test — proves the AGENTS.md guard fires
+        ag_code = gen_agents.self_test()
+        if ag_code:
+            return ag_code
+        # Layering: render must not import extract (existing vaultgraph self-test covers),
+        # plus AGENTS twin must be current (so self-test never passes with a drifted twin).
+        tw_code, tw_msg = gen_agents.check()
+        print(f"  {tw_msg}")
+        return tw_code
 
     if args.sync_plan:
         code, message = mirror.sync()
         print(message)
         return code
+
+    # Entry-file twin integrity. AGENTS.md is a byte-identical twin of CLAUDE.md (ICM
+    # naming convention). A drifted twin is the same class as a hand-edited vault note:
+    # two homes for one fact, one stale. Checked here so the existing integrity job
+    # (`Vault generator detects its own vacuity` + `Vault and published graph are current`)
+    # fails on drift without a new workflow job or a protected-file edit.
+    tw_code, tw_msg = gen_agents.check()
+    print(f"  {tw_msg}")
+    if tw_code:
+        return tw_code
 
     # Mirror integrity first. A graph built from a corrupted or drifted snapshot is worse than
     # no graph, because its source pointers still look like they resolve.

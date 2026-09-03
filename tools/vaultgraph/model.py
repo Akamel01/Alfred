@@ -43,6 +43,8 @@ class NodeKind(StrEnum):
     TIER = "tier"
     UNRESOLVED = "unresolved"
     LAYOUT = "layout"
+    PROCESS = "process"
+    EFFECT = "effect"
 
 
 class EdgeKind(StrEnum):

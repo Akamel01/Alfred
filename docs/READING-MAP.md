@@ -189,7 +189,12 @@ Binding on implementation and easy to miss, since they live inside one document.
 | [ADR-0037](tier1/adr-log.md) | `arity` Semantics in Replay Harness | Accepted |
 | [ADR-0038](tier1/adr-log.md) | bench Immutability: Convention → Git-Level Control | Accepted |
 | [ADR-0039](tier1/adr-log.md) | Orchestration Canvas: Protected Topology Source & Palette Binding | Accepted |
+| [ADR-0040](tier1/adr-log.md) | The structure fence grows to eighteen | Accepted |
+| [ADR-0041](tier1/adr-log.md) | The S0–S9 build materialized as a numbered pipeline | Accepted |
+| [ADR-0042](tier1/adr-log.md) | The vault gains verbs and effects | Accepted |
+| [ADR-0043](tier1/adr-log.md) | Dead material archived and templates shelved | Accepted |
+| [ADR-0044](tier1/adr-log.md) | Register drift reconciled | Accepted |
 
 ---
 
-**64 documents mapped** · 44 binding · 13 context · 7 record · 39 architecture decisions
+**64 documents mapped** · 44 binding · 13 context · 7 record · 44 architecture decisions

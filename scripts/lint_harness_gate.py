@@ -71,7 +71,7 @@ HARNESS: Final = REPO_ROOT / "harness"
 # `[tool.ruff].include`. 0 on `main` @ `fa62b4b`, against 74 files on disk. Held at 0 by
 # ADR-0029 pending OBSERVER-1: closing the gap needs 120 hand edits, 55 suppressions and 17
 # judgement calls, 45 of them in M2's `harness/containment/`, 8 in M3's `harness/selftest/`
-# and 2 in `harness/patch/`, which no module may touch. See CLASSIFICATION-M1.md.
+ # and 2 in `harness/patch/`, which no module may touch. See _archive/CLASSIFICATION-M1.md.
 # This number may go up. It may not go down.
 COVERAGE_FLOOR: Final = 0
 

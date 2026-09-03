@@ -35,6 +35,7 @@ generated: true
 - [[adr__ADR-0033|The structure fence names every top-level directory, and the vault floors it]] **see_also** → this
 - [[adr__ADR-0035|The protected set's single home names its fourth shape as a projection, not a second autho]] **see_also** → this
 - [[adr__ADR-0039|Orchestration Canvas: Protected Topology Source & Palette Binding]] **see_also** → this
+- [[adr__ADR-0040|The structure fence grows to eighteen]] **see_also** → this
 
 ## Enforced by (code)
 

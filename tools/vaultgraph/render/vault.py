@@ -36,6 +36,8 @@ FOLDERS = {
     NodeKind.GATE: "gates",
     NodeKind.GATE_STEP: "gates",
     NodeKind.LAYOUT: "layout",
+    NodeKind.PROCESS: "processes",
+    NodeKind.EFFECT: "effects",
 }
 
 

@@ -13,8 +13,8 @@ from __future__ import annotations
 from typing import Final
 
 from ..protocol import ExtractorSpec, validate_registry
-from . import (adrs, amendments, charter, code, decisions, documents, imports, layout,
-               references, stages, workflows)
+from . import (adrs, amendments, charter, code, decisions, documents, effect, imports, layout,
+               process, references, stages, workflows)
 
 EXTRACTORS: Final[tuple[ExtractorSpec, ...]] = (
     documents.SPEC,
@@ -36,6 +36,8 @@ EXTRACTORS: Final[tuple[ExtractorSpec, ...]] = (
     # Last: it mints nothing and only relates what the others minted, so every endpoint it
     # names already exists by the time it runs.
     references.SPEC,
+    process.SPEC,
+    effect.SPEC,
 )
 
 #: The registry has its own floor, for the same reason each extractor does: a registry that
