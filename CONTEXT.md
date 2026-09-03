@@ -91,3 +91,21 @@
 | **Canvas Artifact** | The generated interactive HTML file (`orchestration-canvas.html`) that edits the topology source. |
 
 ENDOADR
+
+---
+
+## Execution Lifecycle Terms
+
+Resolved 2026-09-02 in [ticket #42](https://github.com/Akamel01/Alfred/issues/42).
+
+| Term | Definition |
+|---|---|
+| **Execution Lifecycle** | The seven-phase sequence a task walks: Discover → Grill → Architect → Plan → Execute → Review → Validate. Method, not machinery — `enforcement: review-cadence`. It owns the *sequence*; it does not restate the merge gate. |
+| **Phase** | One step of the lifecycle. A phase terminates when its required artifact exists and validates. It does not terminate because the executing agent says it is done. |
+| **Phase termination check** | The verification that a phase's required artifact exists and validates. Performed by the **orchestrator**, never by the child that produced the artifact. |
+| **Front half / back half** | Discover · Grill · Architect · Plan are the front half (method, ungated). Execute · Review · Validate are the back half, gated by the twelve Definition-of-Done conditions. The lifecycle document cites DoD; it never restates it. |
+| **Critique pass** | The independent challenge of a plan, folded into the Plan phase rather than carried as a separate phase. It is what makes plan auto-approval safe: the check on a plan is a reviewer role, not a human gate. |
+| **Re-entry** | A phase moving **backward** after a downstream failure. Distinct from escalation. A static default table gives the re-entry point; the reviewer or validator that found the failure may override it **upstream only**, recording the reason. A finder may never send work downstream of the default. |
+| **Escalation** | The run **stopping** and a human being summoned. Distinct from re-entry. Triggers are structural and owned by `docs/tier3/escalation-protocol.md` (`enforcement: schema`), not by agent discretion. Agent-initiated escalation is a budget optimization, never load-bearing. |
+| **Task class** | The declared class assigned to a task **by the orchestrator before dispatch**, never chosen by the executing agent. It scales the front half; the back half is unconditional. The `trivial` class definition is owned by [ticket #46](https://github.com/Akamel01/Alfred/issues/46). |
+| **Never authoritative** | A capability that may inform a reviewer but may never be a gate. `agent-self-evaluation` is classified this way: a self-reported verdict from the executing session is the failure the execution/review separation exists to prevent. |
