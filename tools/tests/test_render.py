@@ -296,8 +296,9 @@ def test_the_artifact_reports_the_same_counts_as_the_graph() -> None:
     page = render_html.render(result.nodes, result.edges, result.anomalies, result.unparsed)
     assert f"<dd>{len(result.nodes)}</dd>" in page
     assert f"<dd>{len(result.edges)}</dd>" in page
-    # 69 falsification conditions is the headline number and the reason the graph exists.
-    assert "<dd>69</dd>" in page
+    # 76 falsification conditions is the headline number and the reason the graph exists:
+    # 71 in document frontmatter plus 5 in decision cells.
+    assert "<dd>76</dd>" in page
 
 
 # ---- clustering -----------------------------------------------------------------
