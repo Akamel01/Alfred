@@ -53,6 +53,8 @@ The vectors are the specification. ACS-1 is deliberately not a publ
 - **enforced_by** → [[module__harness_evidence_store|Append-only, hash-chained evidence writes.]] — """Append-only, hash-chained evidence writes.
 
 **The evidence plane is never written by the agent.** That single rule dr
+- **enforced_by** → [[module__harness_fingerprint_factory|The factory fingerprint: what an *agent* run was measured on, as opposed to a lane.]] — #: record type as its domain separator (ADR-0003), so a factory record and a lane record
+- **enforced_by** → [[module__harness_fingerprint_test_factory|The factory fingerprint, and the two claims about it that a docstring cannot keep true.]] — # ACS-1 takes the record type as its domain separator (ADR-0003). Two record types
 - **enforced_by** → [[module__migrations_harness_evidence_versions_0001_evidence_base|evidence: run records, verdicts, operator actions, artifacts, defect escapes.]] — # hash, over ACS-1, and ADR-0003 treats them as two different problems.
 - **enforced_by** → [[module__src_provenance___init__|Result stamping and the one ACS-1 door (ADR-0003, ADR-0004, ADR-0006).]] — """Result stamping and the one ACS-1 door (ADR-0003, ADR-0004, ADR-0006).
 
