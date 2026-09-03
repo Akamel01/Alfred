@@ -210,6 +210,12 @@ jobs:
       - name: Topology file is valid
         run: python3 scripts/lint_topology.py
 
+      - name: Model routing lint checks its own vacuity
+        run: python3 scripts/lint_model_routing.py --self-test
+
+      - name: Model routing policy conforms to the bindings
+        run: python3 scripts/lint_model_routing.py
+
       - name: Orchestration canvas is current
         run: python3 tools/orchestration/gen_canvas.py --check
 
