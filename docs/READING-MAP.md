@@ -87,16 +87,17 @@ One agent, one task, human gate.
 | 3 | [Mission Control Specification](tier1/mission-control-specification.md) | binding | provisional | the operator surface; the human gate is unrecorded and unmeasured without it |
 | 4 | [Mission Control Design](tier1/mission-control-design.md) | binding | provisional | how that surface is built: reachability ladder, routes, forms, and the timing instrument's failure modes |
 | 5 | [Orchestration Canvas Specification](tier1/orchestration-canvas-spec.md) | binding | provisional | operator-local interactive topology editor: palette, contract vocabulary, file format, generator and lint contracts |
-| 6 | [Agent Definition Standard](tier3/agent-definition-standard.md) | binding | stub | an agent is a contract, never a job title |
+| 6 | [Agent Definition Standard](tier3/agent-definition-standard.md) | binding | provisional | an agent is a contract, never a job title |
 | 7 | [Agent Catalog](tier3/agent-catalog.md) | binding | stub | one specification per capability |
 | 8 | [Tool Specification Standard](tier3/tool-specification-standard.md) | binding | stub | contract, side effects, blast radius, idempotency |
 | 9 | [State and Graph Specification](tier1/state-and-graph-specification.md) | binding | stub | field ownership, reducers, projections |
 | 10 | [Context Engineering Guide](tier3/context-engineering-guide.md) | binding | stub | seed layering; prefix order is architecture, not tuning |
 | 11 | [Instruction and Prompt Standard](tier3/instruction-and-prompt-standard.md) | binding | stub | prompts are versioned and enter the fingerprint |
-| 12 | [Escalation Protocol](tier3/escalation-protocol.md) | binding | stub | structural triggers; the agent cannot declare itself blocked |
-| 13 | [Handoff Contract Standard](tier3/handoff-contract-standard.md) | binding | stub | evidence refs travel, agent-authored summaries do not |
-| 14 | [Review Protocol](tier2/review-protocol.md) | context | stub | criterion-first review; what the human checks that the harness cannot |
-| 15 | [Build Protocol](tier2/build-protocol.md) | context | stub | how work moves from intent to merge |
+| 12 | [Execution Lifecycle](tier3/execution-lifecycle.md) | context | provisional | the seven phases a task walks; front half method, back half gated by DoD |
+| 13 | [Escalation Protocol](tier3/escalation-protocol.md) | binding | stub | structural triggers; the agent cannot declare itself blocked |
+| 14 | [Handoff Contract Standard](tier3/handoff-contract-standard.md) | binding | provisional | evidence refs travel, agent-authored summaries do not |
+| 15 | [Review Protocol](tier2/review-protocol.md) | context | stub | criterion-first review; what the human checks that the harness cannot |
+| 16 | [Build Protocol](tier2/build-protocol.md) | context | stub | how work moves from intent to merge |
 
 ## Phase 2
 
@@ -142,6 +143,17 @@ Consult when relevant. Never a source of instructions.
 | 2 | [Technology Selection Records](tier1/technology-selection-records.md) | record | stub | what was chosen and what was rejected |
 | 3 | [Postmortem Archive](tier6/postmortem-archive.md) | record | stub | immutable incident history |
 | 4 | [Onboarding Guide](tier7/onboarding-guide.md) | context | stub | serves humans and agent context alike |
+| 5 | [ECC capability classification](tier7/ecc-capability-audit.md) | record | provisional | map #41: what ECC has that Alfred lacks, classified; ALFRED-ADAPTER is empty |
+| 6 | [ECC memory boundary against ADR-0032](tier7/ecc-memory-boundary.md) | record | provisional | map #41: ECC's vault against ADR-0032 — mirror selected records, never consume wholesale |
+| 7 | [ECC install for Claude Code — what was done and what it changed](tier7/ecc-claude-code-install.md) | record | provisional | map #41: what was installed to ~/.claude, at what profile, and what was deliberately left out |
+| 8 | [Ticket #42 — the one execution lifecycle: decision record](tier7/ticket-42-execution-lifecycle-decision.md) | record | provisional | map #41: the seven phases, front half method and back half gated |
+| 9 | [Ticket #43 — role bindings: decision record](tier7/ticket-43-role-bindings-decision.md) | record | provisional | map #41: palette kind to runtime agent; a binding edit is a requalification event |
+| 10 | [Ticket #45 — state authority: decision record](tier7/ticket-45-state-authority-decision.md) | record | provisional | map #41: one home per fact; runtime is never evidence |
+| 11 | [Ticket #46 — Model routing policy: home and content](tier7/ticket-46-model-routing-decision.md) | record | directional | map #41: routing keys on capability_id; inherit forbidden; trivial is an empty class |
+| 12 | [Ticket #44 — the canonical task contract](tier7/ticket-44-task-contract-decision.md) | record | provisional | map #41: three contracts — task, session, handoff; factory runs do not cross the Worker port |
+| 13 | [Ticket #47 — execution edge semantics](tier7/ticket-47-edge-semantics-decision.md) | record | provisional | map #41: four contract types, zero additions; the palette blocks the real topology |
+| 14 | [Ticket #51 — the ECC2 reuse boundary](tier7/ticket-51-ecc2-boundary-decision.md) | record | provisional | map #41: adopt nothing from ECC2, and why each piece was refused |
+| 15 | [Ticket #52 — Mission Control's read model](tier7/ticket-52-read-model-decision.md) | record | provisional | map #41: queries at request time; the brief's snapshot contracts do not survive the spec |
 
 
 ## Architecture decisions
@@ -194,7 +206,11 @@ Binding on implementation and easy to miss, since they live inside one document.
 | [ADR-0042](tier1/adr-log.md) | The vault gains verbs and effects | Accepted |
 | [ADR-0043](tier1/adr-log.md) | Dead material archived and templates shelved | Accepted |
 | [ADR-0044](tier1/adr-log.md) | Register drift reconciled | Accepted |
+| [ADR-0045](tier1/adr-log.md) | The ECC coupling is factory scope, ring-fenced, and overrides no gate | Accepted |
+| [ADR-0046](tier1/adr-log.md) | Registry additions to the register generators are inspector patches, and carry this ADR | Accepted |
+| [ADR-0047](tier1/adr-log.md) | The ownership router gains the factory's facts, and runtime state is never evidence | Accepted |
+| [ADR-0048](tier1/adr-log.md) | The palette gains seven `hands-off-to` ports so the lifecycle chain becomes expressible | Accepted |
 
 ---
 
-**64 documents mapped** · 44 binding · 13 context · 7 record · 44 architecture decisions
+**76 documents mapped** · 44 binding · 14 context · 18 record · 48 architecture decisions

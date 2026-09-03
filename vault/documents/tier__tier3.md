@@ -27,6 +27,7 @@ generated: true
 - **contains** → [[document__tier3__autonomy-graduation-policy|Autonomy Graduation Policy]]
 - **contains** → [[document__tier3__context-engineering-guide|Context Engineering Guide]]
 - **contains** → [[document__tier3__escalation-protocol|Escalation Protocol]]
+- **contains** → [[document__tier3__execution-lifecycle|Execution Lifecycle]]
 - **contains** → [[document__tier3__handoff-contract-standard|Handoff Contract Standard]]
 - **contains** → [[document__tier3__instruction-and-prompt-standard|Instruction and Prompt Standard]]
 - **contains** → [[document__tier3__run-instrumentation-specification|Run Instrumentation Specification]]

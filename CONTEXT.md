@@ -90,4 +90,57 @@
 | **Topology Source** | The hand-authored `orchestration/topology.json` file — the single source of truth for the graph. |
 | **Canvas Artifact** | The generated interactive HTML file (`orchestration-canvas.html`) that edits the topology source. |
 
-ENDOADR
+---
+
+## Execution Lifecycle Terms
+
+Resolved 2026-09-02 in [ticket #42](https://github.com/Akamel01/Alfred/issues/42).
+
+| Term | Definition |
+|---|---|
+| **Execution Lifecycle** | The seven-phase sequence a task walks: Discover → Grill → Architect → Plan → Execute → Review → Validate. Method, not machinery — `enforcement: review-cadence`. It owns the *sequence*; it does not restate the merge gate. |
+| **Phase** | One step of the lifecycle. A phase terminates when its required artifact exists and validates. It does not terminate because the executing agent says it is done. |
+| **Phase termination check** | The verification that a phase's required artifact exists and validates. Performed by the **orchestrator**, never by the child that produced the artifact. |
+| **Front half / back half** | Discover · Grill · Architect · Plan are the front half (method, ungated). Execute · Review · Validate are the back half, gated by the twelve Definition-of-Done conditions. The lifecycle document cites DoD; it never restates it. |
+| **Critique pass** | The independent challenge of a plan, folded into the Plan phase rather than carried as a separate phase. It is what makes plan auto-approval safe: the check on a plan is a reviewer role, not a human gate. |
+| **Re-entry** | A phase moving **backward** after a downstream failure. Distinct from escalation. A static default table gives the re-entry point; the reviewer or validator that found the failure may override it **upstream only**, recording the reason. A finder may never send work downstream of the default. |
+| **Escalation** | The run **stopping** and a human being summoned. Distinct from re-entry. Triggers are structural and owned by `docs/tier3/escalation-protocol.md` (`enforcement: schema`), not by agent discretion. Agent-initiated escalation is a budget optimization, never load-bearing. |
+| **Task class** | The declared class assigned to a task **by the orchestrator before dispatch**, never chosen by the executing agent. It scales the front half; the back half is unconditional. The `trivial` class definition is owned by [ticket #46](https://github.com/Akamel01/Alfred/issues/46). |
+| **Never authoritative** | A capability that may inform a reviewer but may never be a gate. `agent-self-evaluation` is classified this way: a self-reported verdict from the executing session is the failure the execution/review separation exists to prevent. |
+---
+
+## State Authority Terms
+
+Resolved 2026-09-02 in [ticket #45](https://github.com/Akamel01/Alfred/issues/45).
+
+| Term | Definition |
+|---|---|
+| **Ownership router** | The table in `docs/tier1/data-architecture.md` § *Ownership, stated once so it is not restated inconsistently*. It says which document owns which fact; it holds no content of its own. Extended by adding rows, never by describing. |
+| **The collision rule** | "The stream is a field set, the store is a schema, and the store never re-declares a stream field." Adding a field to a record is a Run Instrumentation change plus a validator change — never a migration. |
+| **Runtime state** | Machine-local, gitignored, disposable state (`.autoforge/`, any ECC or ECC2 store). Never cited by a gate, a verdict, or an audit. If a fact matters it is emitted into the run record stream when it happens; the runtime copy is incidental. |
+| **Display-only** | A runtime fact Mission Control may render for liveness, carrying provenance saying it is unverified. A missing display-only fact renders as **unknown**, never as **none**. |
+| **Homes table** | The per-fact authority map recorded in `docs/tier7/ticket-45-state-authority-decision.md`. Everything not named as a home is derived, disposable, or display-only. |
+| **Type graph / instance graph** | The type graph is `policy/node-palette.json` + `orchestration/topology.json` — which roles exist and how they may connect (protected, ADR-0039). The instance graph is `control.work` — which tasks exist and what blocks what. The instance graph is validated by the type graph; it is not a second authority. |
+---
+
+## Role Binding Terms
+
+Resolved 2026-09-02 in [ticket #43](https://github.com/Akamel01/Alfred/issues/43).
+
+| Term | Definition |
+|---|---|
+| **Role Binding** | The record that turns a palette *role* into an agent *definition*: kind, `bindable`, `capability_id`, agents keyed by phase, a model **reference**, tools, permissions, context budget, and the three version fields. Schema owned by `docs/tier3/agent-definition-standard.md`; executable form in `policy/role-bindings.json` (protected). |
+| **`bindable`** | Three states: `agent` (bound), `unbound` (could be, is not), `never` (must never be delegated to an agent — the eight `operator` palette kinds). Cross-checked by lint against `category == "operator"`; disagreement fails. |
+| **Model reference** | A binding names a *routing key*, never a literal model. The key resolves against the model-routing policy ([#46](https://github.com/Akamel01/Alfred/issues/46)). A binding that names a literal model is a second home for a fact #46 owns. |
+| **Requalification event** | A binding edit. Its version fields are the Run Fingerprint's D19 group, so changing one triggers tiered requalification. This is what keeps a silent binding edit distinguishable from genuine capability drift. |
+## Model Routing Terms
+
+| Term | Definition |
+|---|---|
+| **Routing Key** | `capability_id` — the single key `policy/model-routing.json` maps to a model. Never a palette kind (a job title) and never a task class (a product term with one home). |
+| **Pinned Model** | A concrete model identity named in the routing policy. The opposite of `inherit`; `inherit` is forbidden because it defers a D19 fingerprint field to unversioned UI state. |
+| **FactoryFingerprint** | The identity a factory run is measured on. Shares the D19 group verbatim with `RunFingerprint`; carries API-served identity instead of a lane or quantization group. |
+| **Trivial Class** | A capability attribute, defined in schema and **empty at Phase 0**. A capability enters it only through measurement, on the autonomy-grant evidence path. |
+| **Explicit Override** | Alfred passes the model on every spawn; the vendored ECC default is never consulted. There is no generated projection and therefore no sync obligation. |
+| **Loud Default** | The vendored fallback model, set to fail expensively rather than cheaply, so an omitted override surfaces instead of hiding. |
+

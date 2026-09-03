@@ -282,13 +282,20 @@ at the moment an event happens rather than reconstructed from what survived it.
 
 ### Ownership, stated once so it is not restated inconsistently
 
-Three documents describe overlapping material and each owns exactly one thing.
+Each of these owns exactly one thing. Extended by ADR-0047 for the factory's own facts;
+the router gains rows, never descriptions — content stays in the home the row names.
 
 | Owner | Owns | Does not own |
 |---|---|---|
 | **This document** | Every table and column in `product`, `control`, `evidence`, `heldout`; the grant matrix; the append-only and hash-chain properties. | The field set of any record *inside* the run record stream. |
 | **Run Instrumentation Specification** | The run record stream: which records exist, their fields, their enumerations, their validator. | Where the stream lands, and every table that is not the stream. |
 | **Mission Control Specification** | The fields of `operator_action` only, versioned by `field_set_version`. | The envelope those fields travel in. |
+| **`policy/node-palette.json`** | Which roles exist, their ports, and their category. | Which of them run, and on what. |
+| **`policy/role-bindings.json`** | The capability tuple per role: `capability_id`, agents, tools, permissions, context budget, and the D19 version fields. | The model. It declares the routing key; it does not resolve it. |
+| **`policy/model-routing.json`** | Which model each `capability_id` resolves to, the forbidden identities, and the trivial class. | Which capabilities exist. |
+| **Execution Lifecycle** | The phase sequence, the static re-entry table, and phase-to-capability binding. | Any gate. It cites Definition of Done and `failure-semantics.md` rather than restating them. |
+| **`control.work`** | Which tasks exist, their state, and what blocks what — the instance graph. | The type graph. It is validated against the palette and topology; it is not a second authority for them. |
+| **Runtime state** (`.autoforge/`, any ECC or ECC2 store) | **Nothing.** Machine-local, gitignored, disposable. | Everything. It is never cited by a gate, a verdict, or an audit. If a fact matters it is emitted into the run record stream when it happens; the runtime copy is incidental. |
 
 The rule that resolves every future collision: **the stream is a field set, the store is a
 schema, and the store never re-declares a stream field.** `evidence.run_record` holds the

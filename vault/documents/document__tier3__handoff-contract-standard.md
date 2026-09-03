@@ -7,7 +7,7 @@ shape: "file"
 owner: "executable"
 enforcement: "schema"
 tier: "3"
-written: "stub"
+written: "full"
 review_after: "Phase 3"
 source: "docs/tier3/handoff-contract-standard.md:1"
 extractor: "documents"
@@ -33,9 +33,12 @@ generated: true
 
 | Field | Value |
 |---|---|
-| `evidence` | none — written pre-Phase-0 as a register stub (D32) |
 | `path` | docs/tier3/handoff-contract-standard.md |
 | `tier_name` | Agent specifications |
+
+**evidence**
+
+> The seven phases fixed in docs/tier3/execution-lifecycle.md and the phase_end record added to docs/tier3/run-instrumentation-specification.md by ADR-0047, whose artifact_ref is a hash rather than a path (I3). Promoted ahead of its stated review_after because those two supplied the content it was waiting for; no handoff has yet been observed crossing a phase boundary.
 
 ## Binds
 

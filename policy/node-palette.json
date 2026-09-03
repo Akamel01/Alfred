@@ -5,7 +5,7 @@
       "id": "planner",
       "label": "Planner",
       "description": "Plans the work breakdown and sequences tasks",
-      "ports": { "in": [], "out": ["delegates-to"] },
+      "ports": { "in": ["hands-off-to"], "out": ["delegates-to"] },
       "defaults": { "out:delegates-to": "delegates-to" },
       "icon": "📋",
       "category": "planning"
@@ -23,8 +23,8 @@
       "id": "architect",
       "label": "Architect",
       "description": "Designs system structure and reviews implementation",
-      "ports": { "in": ["feeds"], "out": ["delegates-to", "reviews"] },
-      "defaults": { "out:delegates-to": "delegates-to", "out:reviews": "reviews" },
+      "ports": { "in": ["feeds", "hands-off-to"], "out": ["delegates-to", "reviews", "hands-off-to"] },
+      "defaults": { "out:delegates-to": "delegates-to", "out:reviews": "reviews", "out:hands-off-to": "hands-off-to" },
       "icon": "🏗️",
       "category": "planning"
     },
@@ -77,8 +77,8 @@
       "id": "reviewer",
       "label": "Reviewer",
       "description": "Reviews work products for quality",
-      "ports": { "in": ["hands-off-to"], "out": ["reviews"] },
-      "defaults": { "out:reviews": "reviews" },
+      "ports": { "in": ["hands-off-to"], "out": ["reviews", "hands-off-to"] },
+      "defaults": { "out:reviews": "reviews", "out:hands-off-to": "hands-off-to" },
       "icon": "👁️",
       "category": "review"
     },
@@ -95,7 +95,7 @@
       "id": "validator",
       "label": "Validator",
       "description": "Validates evidence and outcomes",
-      "ports": { "in": ["feeds"], "out": ["reviews"] },
+      "ports": { "in": ["feeds", "hands-off-to"], "out": ["reviews"] },
       "defaults": { "out:reviews": "reviews" },
       "icon": "✓",
       "category": "review"
@@ -104,8 +104,8 @@
       "id": "examiner",
       "label": "Examiner",
       "description": "Examines artifacts for compliance",
-      "ports": { "in": ["feeds"], "out": ["reviews"] },
-      "defaults": { "out:reviews": "reviews" },
+      "ports": { "in": ["feeds", "hands-off-to"], "out": ["reviews", "hands-off-to"] },
+      "defaults": { "out:reviews": "reviews", "out:hands-off-to": "hands-off-to" },
       "icon": "🔍",
       "category": "review"
     },

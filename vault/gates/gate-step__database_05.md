@@ -4,7 +4,7 @@ id: "gate-step:database.05"
 title: "EvidenceStore, chain re-walk, and the D-synthetic restore drill"
 shape: "step"
 job: "database"
-source: ".github/workflows/gates.yml:396"
+source: ".github/workflows/gates.yml:408"
 extractor: "workflows"
 tags: [protected]
 aliases:
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `.github/workflows/gates.yml:396`
+**Source** · `.github/workflows/gates.yml:408`
 
 ## Statement
 

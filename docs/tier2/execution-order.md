@@ -390,7 +390,7 @@ These cannot be built by anyone else, and four of them block stages above.
 | O1 | `F` (fixed weekly obligations, min/week) and target `n` (tasks/day, **stated as dispatched or merged**) | The capacity gate; S9's sizing | Before Phase 1 |
 | O2 | Defect-escape **observation window** | The 2026-12-31 anchor's pass condition | Before Phase 2 exit |
 | O3 | D49 P3: validate, or take the stated degradation to the 10 strong P1 measures | S2's scope; Phase 1's exit shape | **2026-09-09** |
-| O4 | Phase 0 exit: move the date under a waiver ADR, or narrow the exit | Everything | **2026-09-09** |
+| O4 | Phase 0 exit — **decision half spent** by ADR-0022 (2026-08-19), which narrowed along the ownership seam and dated the residue. Remaining, against ADR-0022's narrowed list: **P0-4** egress canary firing against real enforcement (`nftables` default-drop in the host network namespace, not the probe alone); **P0-6** a recorded **D-production** restore (a green CI run is D-synthetic and proves the mechanism only); **P0-7** no unreviewed inspector patch enforces any of the above (tracked as O9). P0-1/2/3 were met at ADR-0022; **P0-5** byte-identical deterministic replay met by ADR-0025. | Everything | **2026-10-07** (ADR-0022's residue date) |
 | ~~O5~~ | ~~Read OpenHands at the pinned SHA~~ | — | **DONE 2026-08-18.** ADR-0018. The executor had moved: `OpenHands/software-agent-sdk` at `d460d1a0…`, not the repository D38 names. Eleven of thirteen premises corrected. |
 | O6 | Company formation — entity, liability-capped pilot template, insurance quote | First prospect conversation | **2026-09-09** |
 | O7 | EU 2022/1426 approval-register lookup (~1 hr) | Should precede conversation one | Before O8 |

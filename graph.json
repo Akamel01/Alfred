@@ -1,16 +1,16 @@
 {
   "anomalies": [],
   "counts": {
-    "adr": 44,
+    "adr": 48,
     "amendment": 12,
     "decision": 57,
-    "document": 64,
+    "document": 76,
     "effect": 5,
     "gate": 5,
-    "gate-step": 55,
+    "gate-step": 59,
     "kill-criterion": 6,
     "layout": 18,
-    "module": 238,
+    "module": 244,
     "operator-item": 9,
     "process": 7,
     "risk": 12,
@@ -23,13 +23,13 @@
     "amended_by": 2,
     "amends": 10,
     "blocks": 32,
-    "contains": 281,
+    "contains": 299,
     "discharges": 1,
-    "enforced_by": 340,
-    "imports": 246,
+    "enforced_by": 358,
+    "imports": 250,
     "needs": 4,
-    "runs": 34,
-    "see_also": 38,
+    "runs": 38,
+    "see_also": 46,
     "supersedes": 1
   },
   "edges": [
@@ -612,8 +612,8 @@
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 350,
-        "line": 350,
+        "end_line": 362,
+        "line": 362,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:database"
@@ -625,8 +625,8 @@
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 355,
-        "line": 355,
+        "end_line": 367,
+        "line": 367,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:database"
@@ -638,8 +638,8 @@
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 369,
-        "line": 369,
+        "end_line": 381,
+        "line": 381,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:database"
@@ -651,8 +651,8 @@
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 379,
-        "line": 379,
+        "end_line": 391,
+        "line": 391,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:database"
@@ -664,8 +664,8 @@
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 396,
-        "line": 396,
+        "end_line": 408,
+        "line": 408,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:database"
@@ -677,8 +677,8 @@
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 401,
-        "line": 401,
+        "end_line": 413,
+        "line": 413,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:database"
@@ -690,8 +690,8 @@
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 261,
-        "line": 261,
+        "end_line": 273,
+        "line": 273,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:inspector"
@@ -703,8 +703,8 @@
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 266,
-        "line": 266,
+        "end_line": 278,
+        "line": 278,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:inspector"
@@ -716,8 +716,8 @@
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 273,
-        "line": 273,
+        "end_line": 285,
+        "line": 285,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:inspector"
@@ -729,8 +729,8 @@
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 276,
-        "line": 276,
+        "end_line": 288,
+        "line": 288,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:inspector"
@@ -742,8 +742,8 @@
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 283,
-        "line": 283,
+        "end_line": 295,
+        "line": 295,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:inspector"
@@ -755,8 +755,8 @@
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 286,
-        "line": 286,
+        "end_line": 298,
+        "line": 298,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:inspector"
@@ -768,8 +768,8 @@
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 294,
-        "line": 294,
+        "end_line": 306,
+        "line": 306,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:inspector"
@@ -781,8 +781,8 @@
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 301,
-        "line": 301,
+        "end_line": 313,
+        "line": 313,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:inspector"
@@ -794,8 +794,8 @@
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 308,
-        "line": 308,
+        "end_line": 320,
+        "line": 320,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:inspector"
@@ -807,8 +807,8 @@
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 314,
-        "line": 314,
+        "end_line": 326,
+        "line": 326,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:inspector"
@@ -820,8 +820,8 @@
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 320,
-        "line": 320,
+        "end_line": 332,
+        "line": 332,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:inspector"
@@ -833,8 +833,8 @@
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 326,
-        "line": 326,
+        "end_line": 338,
+        "line": 338,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:inspector"
@@ -846,8 +846,8 @@
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 329,
-        "line": 329,
+        "end_line": 341,
+        "line": 341,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:inspector"
@@ -859,8 +859,8 @@
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 336,
-        "line": 336,
+        "end_line": 348,
+        "line": 348,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:inspector"
@@ -872,8 +872,8 @@
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 339,
-        "line": 339,
+        "end_line": 351,
+        "line": 351,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:inspector"
@@ -1167,7 +1167,7 @@
     {
       "confidence": "structural",
       "dst": "gate-step:integrity.23",
-      "evidence": "Orchestration canvas is current",
+      "evidence": "State authority lint checks its own vacuity",
       "extractor": "workflows",
       "kind": "contains",
       "source": {
@@ -1180,7 +1180,7 @@
     {
       "confidence": "structural",
       "dst": "gate-step:integrity.24",
-      "evidence": "Vault generator suites",
+      "evidence": "Ownership router homes exist and no gate cites runtime state",
       "extractor": "workflows",
       "kind": "contains",
       "source": {
@@ -1192,34 +1192,60 @@
     },
     {
       "confidence": "structural",
+      "dst": "gate-step:integrity.25",
+      "evidence": "Model routing lint checks its own vacuity",
+      "extractor": "workflows",
+      "kind": "contains",
+      "source": {
+        "end_line": 219,
+        "line": 219,
+        "path": ".github/workflows/gates.yml"
+      },
+      "src": "gate:integrity"
+    },
+    {
+      "confidence": "structural",
+      "dst": "gate-step:integrity.26",
+      "evidence": "Model routing policy conforms to the bindings",
+      "extractor": "workflows",
+      "kind": "contains",
+      "source": {
+        "end_line": 222,
+        "line": 222,
+        "path": ".github/workflows/gates.yml"
+      },
+      "src": "gate:integrity"
+    },
+    {
+      "confidence": "structural",
+      "dst": "gate-step:integrity.27",
+      "evidence": "Orchestration canvas is current",
+      "extractor": "workflows",
+      "kind": "contains",
+      "source": {
+        "end_line": 225,
+        "line": 225,
+        "path": ".github/workflows/gates.yml"
+      },
+      "src": "gate:integrity"
+    },
+    {
+      "confidence": "structural",
+      "dst": "gate-step:integrity.28",
+      "evidence": "Vault generator suites",
+      "extractor": "workflows",
+      "kind": "contains",
+      "source": {
+        "end_line": 228,
+        "line": 228,
+        "path": ".github/workflows/gates.yml"
+      },
+      "src": "gate:integrity"
+    },
+    {
+      "confidence": "structural",
       "dst": "gate-step:mutation.01",
       "evidence": "Install uv",
-      "extractor": "workflows",
-      "kind": "contains",
-      "source": {
-        "end_line": 414,
-        "line": 414,
-        "path": ".github/workflows/gates.yml"
-      },
-      "src": "gate:mutation"
-    },
-    {
-      "confidence": "structural",
-      "dst": "gate-step:mutation.02",
-      "evidence": "Set up Python",
-      "extractor": "workflows",
-      "kind": "contains",
-      "source": {
-        "end_line": 419,
-        "line": 419,
-        "path": ".github/workflows/gates.yml"
-      },
-      "src": "gate:mutation"
-    },
-    {
-      "confidence": "structural",
-      "dst": "gate-step:mutation.03",
-      "evidence": "Sync dependencies from the lockfile",
       "extractor": "workflows",
       "kind": "contains",
       "source": {
@@ -1231,13 +1257,39 @@
     },
     {
       "confidence": "structural",
+      "dst": "gate-step:mutation.02",
+      "evidence": "Set up Python",
+      "extractor": "workflows",
+      "kind": "contains",
+      "source": {
+        "end_line": 431,
+        "line": 431,
+        "path": ".github/workflows/gates.yml"
+      },
+      "src": "gate:mutation"
+    },
+    {
+      "confidence": "structural",
+      "dst": "gate-step:mutation.03",
+      "evidence": "Sync dependencies from the lockfile",
+      "extractor": "workflows",
+      "kind": "contains",
+      "source": {
+        "end_line": 438,
+        "line": 438,
+        "path": ".github/workflows/gates.yml"
+      },
+      "src": "gate:mutation"
+    },
+    {
+      "confidence": "structural",
       "dst": "gate-step:mutation.04",
       "evidence": "ACS-1 mutation control",
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 441,
-        "line": 441,
+        "end_line": 453,
+        "line": 453,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:mutation"
@@ -1249,8 +1301,8 @@
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 229,
-        "line": 229,
+        "end_line": 241,
+        "line": 241,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:product"
@@ -1262,8 +1314,8 @@
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 234,
-        "line": 234,
+        "end_line": 246,
+        "line": 246,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:product"
@@ -1275,8 +1327,8 @@
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 237,
-        "line": 237,
+        "end_line": 249,
+        "line": 249,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:product"
@@ -1288,8 +1340,8 @@
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 244,
-        "line": 244,
+        "end_line": 256,
+        "line": 256,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:product"
@@ -1301,8 +1353,8 @@
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 247,
-        "line": 247,
+        "end_line": 259,
+        "line": 259,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:product"
@@ -1314,8 +1366,8 @@
       "extractor": "workflows",
       "kind": "contains",
       "source": {
-        "end_line": 250,
-        "line": 250,
+        "end_line": 262,
+        "line": 262,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:product"
@@ -2024,6 +2076,19 @@
     },
     {
       "confidence": "structural",
+      "dst": "module:harness.fingerprint.factory",
+      "evidence": "harness/fingerprint/factory.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/fingerprint/factory.py"
+      },
+      "src": "module:harness.fingerprint"
+    },
+    {
+      "confidence": "structural",
       "dst": "module:harness.fingerprint.record",
       "evidence": "harness/fingerprint/record.py",
       "extractor": "code",
@@ -2032,6 +2097,19 @@
         "end_line": 1,
         "line": 1,
         "path": "harness/fingerprint/record.py"
+      },
+      "src": "module:harness.fingerprint"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.fingerprint.test_factory",
+      "evidence": "harness/fingerprint/test_factory.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/fingerprint/test_factory.py"
       },
       "src": "module:harness.fingerprint"
     },
@@ -3883,6 +3961,19 @@
     },
     {
       "confidence": "structural",
+      "dst": "document:tier3/execution-lifecycle",
+      "evidence": "docs/tier3/execution-lifecycle.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier3/execution-lifecycle.md"
+      },
+      "src": "tier:tier3"
+    },
+    {
+      "confidence": "structural",
       "dst": "document:tier3/handoff-contract-standard",
       "evidence": "docs/tier3/handoff-contract-standard.md",
       "extractor": "documents",
@@ -4247,6 +4338,45 @@
     },
     {
       "confidence": "structural",
+      "dst": "document:tier7/ecc-capability-audit",
+      "evidence": "docs/tier7/ecc-capability-audit.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ecc-capability-audit.md"
+      },
+      "src": "tier:tier7"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier7/ecc-claude-code-install",
+      "evidence": "docs/tier7/ecc-claude-code-install.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ecc-claude-code-install.md"
+      },
+      "src": "tier:tier7"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier7/ecc-memory-boundary",
+      "evidence": "docs/tier7/ecc-memory-boundary.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ecc-memory-boundary.md"
+      },
+      "src": "tier:tier7"
+    },
+    {
+      "confidence": "structural",
       "dst": "document:tier7/onboarding-guide",
       "evidence": "docs/tier7/onboarding-guide.md",
       "extractor": "documents",
@@ -4255,6 +4385,110 @@
         "end_line": 9,
         "line": 1,
         "path": "docs/tier7/onboarding-guide.md"
+      },
+      "src": "tier:tier7"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier7/ticket-42-execution-lifecycle-decision",
+      "evidence": "docs/tier7/ticket-42-execution-lifecycle-decision.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ticket-42-execution-lifecycle-decision.md"
+      },
+      "src": "tier:tier7"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier7/ticket-43-role-bindings-decision",
+      "evidence": "docs/tier7/ticket-43-role-bindings-decision.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ticket-43-role-bindings-decision.md"
+      },
+      "src": "tier:tier7"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier7/ticket-44-task-contract-decision",
+      "evidence": "docs/tier7/ticket-44-task-contract-decision.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ticket-44-task-contract-decision.md"
+      },
+      "src": "tier:tier7"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier7/ticket-45-state-authority-decision",
+      "evidence": "docs/tier7/ticket-45-state-authority-decision.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ticket-45-state-authority-decision.md"
+      },
+      "src": "tier:tier7"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier7/ticket-46-model-routing-decision",
+      "evidence": "docs/tier7/ticket-46-model-routing-decision.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ticket-46-model-routing-decision.md"
+      },
+      "src": "tier:tier7"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier7/ticket-47-edge-semantics-decision",
+      "evidence": "docs/tier7/ticket-47-edge-semantics-decision.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ticket-47-edge-semantics-decision.md"
+      },
+      "src": "tier:tier7"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier7/ticket-51-ecc2-boundary-decision",
+      "evidence": "docs/tier7/ticket-51-ecc2-boundary-decision.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ticket-51-ecc2-boundary-decision.md"
+      },
+      "src": "tier:tier7"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier7/ticket-52-read-model-decision",
+      "evidence": "docs/tier7/ticket-52-read-model-decision.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ticket-52-read-model-decision.md"
       },
       "src": "tier:tier7"
     },
@@ -4785,8 +5019,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 280,
-        "line": 280,
+        "end_line": 292,
+        "line": 292,
         "path": ".github/workflows/gates.yml"
       },
       "src": "adr:ADR-0003"
@@ -4853,6 +5087,32 @@
         "end_line": 1,
         "line": 1,
         "path": "harness/evidence/store.py"
+      },
+      "src": "adr:ADR-0003"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:harness.fingerprint.factory",
+      "evidence": "#: record type as its domain separator (ADR-0003), so a factory record and a lane record",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 57,
+        "line": 57,
+        "path": "harness/fingerprint/factory.py"
+      },
+      "src": "adr:ADR-0003"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:harness.fingerprint.test_factory",
+      "evidence": "# ACS-1 takes the record type as its domain separator (ADR-0003). Two record types",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 127,
+        "line": 127,
+        "path": "harness/fingerprint/test_factory.py"
       },
       "src": "adr:ADR-0003"
     },
@@ -6366,6 +6626,19 @@
     },
     {
       "confidence": "derived",
+      "dst": "module:scripts.gen_reading_map",
+      "evidence": "\"map #41: ECC's vault against ADR-0032 — mirror selected records, never consume wholesale\"",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 119,
+        "line": 119,
+        "path": "scripts/gen_reading_map.py"
+      },
+      "src": "adr:ADR-0032"
+    },
+    {
+      "confidence": "derived",
       "dst": "module:harness.containment.test_dispatch_mount",
       "evidence": "\"\"\"Tests for dispatch mount exclusion (C12/C13).\n\nPrototype for ADR-0035: dispatch mount must be excluded from \"no unexpected writes\" checks.\n\"\"\"",
       "extractor": "references",
@@ -6402,6 +6675,32 @@
         "path": "src/replay/harness.py"
       },
       "src": "adr:ADR-0037"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:scripts.lint_state_authority",
+      "evidence": "\"\"\"SA001-SA003: the ownership router's mechanical half, checked.\n\nADR-0047 extends `docs/tier1/data-architecture.md`'s ownership router with the factory's own\nfacts and draws one h",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 2,
+        "line": 2,
+        "path": "scripts/lint_state_authority.py"
+      },
+      "src": "adr:ADR-0047"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:scripts.lint_state_authority",
+      "evidence": "#: Runtime state, named once. ADR-0047 decision 3.",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 52,
+        "line": 52,
+        "path": "scripts/lint_state_authority.py"
+      },
+      "src": "adr:ADR-0047"
     },
     {
       "confidence": "derived",
@@ -6535,6 +6834,97 @@
     },
     {
       "confidence": "derived",
+      "dst": "module:harness.fingerprint.factory",
+      "evidence": "\"\"\"The factory fingerprint: what an *agent* run was measured on, as opposed to a lane.\n\n`RunFingerprint` cannot describe a factory agent, and the reason is structural rather than\na",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/fingerprint/factory.py"
+      },
+      "src": "decision:D19"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:harness.fingerprint.factory",
+      "evidence": "#: Taken from `RunFingerprint` rather than retyped. The D19 group has one definition.",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 62,
+        "line": 62,
+        "path": "harness/fingerprint/factory.py"
+      },
+      "src": "decision:D19"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:harness.fingerprint.factory",
+      "evidence": "\"D19\"",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 63,
+        "line": 63,
+        "path": "harness/fingerprint/factory.py"
+      },
+      "src": "decision:D19"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:harness.fingerprint.factory",
+      "evidence": "\"D19\"",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 77,
+        "line": 77,
+        "path": "harness/fingerprint/factory.py"
+      },
+      "src": "decision:D19"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:harness.fingerprint.factory",
+      "evidence": "# D19 — shared verbatim with RunFingerprint.",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 86,
+        "line": 86,
+        "path": "harness/fingerprint/factory.py"
+      },
+      "src": "decision:D19"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:harness.fingerprint.factory",
+      "evidence": "\"\"\"The D19 group here is the D19 group there — checked, not asserted in a comment.\n\n    `record.py` owns the list. If a sixth D19 field is added to `RunFingerprint` and not\n    her",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 178,
+        "line": 178,
+        "path": "harness/fingerprint/factory.py"
+      },
+      "src": "decision:D19"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:harness.fingerprint.factory",
+      "evidence": "\"D19\"",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 185,
+        "line": 185,
+        "path": "harness/fingerprint/factory.py"
+      },
+      "src": "decision:D19"
+    },
+    {
+      "confidence": "derived",
       "dst": "module:harness.fingerprint.record",
       "evidence": "# D19: what tiered requalification reads to decide which component moved.",
       "extractor": "references",
@@ -6569,6 +6959,45 @@
         "end_line": 175,
         "line": 175,
         "path": "harness/fingerprint/record.py"
+      },
+      "src": "decision:D19"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:harness.fingerprint.test_factory",
+      "evidence": "\"\"\"The factory fingerprint, and the two claims about it that a docstring cannot keep true.\n\nThe dangerous defect here is not a wrong hash. It is (a) a hash taken over a subset of t",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/fingerprint/test_factory.py"
+      },
+      "src": "decision:D19"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:harness.fingerprint.test_factory",
+      "evidence": "# ---- the D19 group is one list, not two ------------------------------------------------",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 44,
+        "line": 44,
+        "path": "harness/fingerprint/test_factory.py"
+      },
+      "src": "decision:D19"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:harness.fingerprint.test_factory",
+      "evidence": "\"D19\"",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 49,
+        "line": 49,
+        "path": "harness/fingerprint/test_factory.py"
       },
       "src": "decision:D19"
     },
@@ -6652,6 +7081,19 @@
     },
     {
       "confidence": "derived",
+      "dst": "module:scripts.lint_model_routing",
+      "evidence": "\"\"\"MR001-MR005: model routing policy conformance, checked before any spawn.\n\n**Why a static lint can enforce this at all.** Model selection happens at spawn time, in a\nharness Alfr",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 2,
+        "line": 2,
+        "path": "scripts/lint_model_routing.py"
+      },
+      "src": "decision:D19"
+    },
+    {
+      "confidence": "derived",
       "dst": "module:.github.workflows.gates.yml",
       "evidence": "machinery (D20): agents may not edit it.",
       "extractor": "references",
@@ -6712,6 +7154,19 @@
         "end_line": 1,
         "line": 1,
         "path": "harness/fingerprint/__init__.py"
+      },
+      "src": "decision:D20"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:harness.fingerprint.factory",
+      "evidence": "\"\"\"The factory fingerprint: what an *agent* run was measured on, as opposed to a lane.\n\n`RunFingerprint` cannot describe a factory agent, and the reason is structural rather than\na",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/fingerprint/factory.py"
       },
       "src": "decision:D20"
     },
@@ -6930,8 +7385,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 300,
-        "line": 300,
+        "end_line": 317,
+        "line": 317,
         "path": "scripts/gen_doc_stubs.py"
       },
       "src": "decision:D32"
@@ -7284,6 +7739,19 @@
         "end_line": 347,
         "line": 347,
         "path": "bench/probe_agentic.py"
+      },
+      "src": "decision:D40"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:harness.fingerprint.factory",
+      "evidence": "\"\"\"The factory fingerprint: what an *agent* run was measured on, as opposed to a lane.\n\n`RunFingerprint` cannot describe a factory agent, and the reason is structural rather than\na",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/fingerprint/factory.py"
       },
       "src": "decision:D40"
     },
@@ -9725,11 +10193,63 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
+        "end_line": 47,
+        "line": 47,
+        "path": "harness/fingerprint/factory.py"
+      },
+      "src": "module:harness.fingerprint.factory"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.fingerprint.record",
+      "evidence": "harness.fingerprint.record.FIELD_GROUPS",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 48,
+        "line": 48,
+        "path": "harness/fingerprint/factory.py"
+      },
+      "src": "module:harness.fingerprint.factory"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.acs.acs1",
+      "evidence": "harness.acs.acs1.acs_sha256",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
         "end_line": 40,
         "line": 40,
         "path": "harness/fingerprint/record.py"
       },
       "src": "module:harness.fingerprint.record"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.fingerprint.factory",
+      "evidence": "harness.fingerprint.factory.D19_FIELDS",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 14,
+        "line": 14,
+        "path": "harness/fingerprint/test_factory.py"
+      },
+      "src": "module:harness.fingerprint.test_factory"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.fingerprint.record",
+      "evidence": "harness.fingerprint.record.FIELD_GROUPS",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 22,
+        "line": 22,
+        "path": "harness/fingerprint/test_factory.py"
+      },
+      "src": "module:harness.fingerprint.test_factory"
     },
     {
       "confidence": "structural",
@@ -10349,8 +10869,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 370,
-        "line": 370,
+        "end_line": 371,
+        "line": 371,
         "path": "tools/tests/test_render.py"
       },
       "src": "module:tools.tests.test_render"
@@ -10362,8 +10882,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 306,
-        "line": 306,
+        "end_line": 307,
+        "line": 307,
         "path": "tools/tests/test_render.py"
       },
       "src": "module:tools.tests.test_render"
@@ -10388,8 +10908,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 371,
-        "line": 371,
+        "end_line": 372,
+        "line": 372,
         "path": "tools/tests/test_render.py"
       },
       "src": "module:tools.tests.test_render"
@@ -10401,8 +10921,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 528,
-        "line": 528,
+        "end_line": 529,
+        "line": 529,
         "path": "tools/tests/test_render.py"
       },
       "src": "module:tools.tests.test_render"
@@ -10427,8 +10947,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 372,
-        "line": 372,
+        "end_line": 373,
+        "line": 373,
         "path": "tools/tests/test_render.py"
       },
       "src": "module:tools.tests.test_render"
@@ -10505,8 +11025,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 306,
-        "line": 306,
+        "end_line": 309,
+        "line": 309,
         "path": "tools/tests/test_vaultgraph.py"
       },
       "src": "module:tools.tests.test_vaultgraph"
@@ -10518,8 +11038,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 208,
-        "line": 208,
+        "end_line": 211,
+        "line": 211,
         "path": "tools/tests/test_vaultgraph.py"
       },
       "src": "module:tools.tests.test_vaultgraph"
@@ -11896,8 +12416,8 @@
       "extractor": "workflows",
       "kind": "needs",
       "source": {
-        "end_line": 345,
-        "line": 345,
+        "end_line": 357,
+        "line": 357,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:database"
@@ -11909,8 +12429,8 @@
       "extractor": "workflows",
       "kind": "needs",
       "source": {
-        "end_line": 256,
-        "line": 256,
+        "end_line": 268,
+        "line": 268,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:inspector"
@@ -11922,8 +12442,8 @@
       "extractor": "workflows",
       "kind": "needs",
       "source": {
-        "end_line": 409,
-        "line": 409,
+        "end_line": 421,
+        "line": 421,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:mutation"
@@ -11935,8 +12455,8 @@
       "extractor": "workflows",
       "kind": "needs",
       "source": {
-        "end_line": 224,
-        "line": 224,
+        "end_line": 236,
+        "line": 236,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:product"
@@ -11948,8 +12468,8 @@
       "extractor": "workflows",
       "kind": "runs",
       "source": {
-        "end_line": 379,
-        "line": 379,
+        "end_line": 391,
+        "line": 391,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate-step:database.04"
@@ -11961,8 +12481,8 @@
       "extractor": "workflows",
       "kind": "runs",
       "source": {
-        "end_line": 396,
-        "line": 396,
+        "end_line": 408,
+        "line": 408,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate-step:database.05"
@@ -11974,8 +12494,8 @@
       "extractor": "workflows",
       "kind": "runs",
       "source": {
-        "end_line": 401,
-        "line": 401,
+        "end_line": 413,
+        "line": 413,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate-step:database.06"
@@ -11987,8 +12507,8 @@
       "extractor": "workflows",
       "kind": "runs",
       "source": {
-        "end_line": 276,
-        "line": 276,
+        "end_line": 288,
+        "line": 288,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate-step:inspector.04"
@@ -12000,8 +12520,8 @@
       "extractor": "workflows",
       "kind": "runs",
       "source": {
-        "end_line": 283,
-        "line": 283,
+        "end_line": 295,
+        "line": 295,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate-step:inspector.05"
@@ -12013,8 +12533,8 @@
       "extractor": "workflows",
       "kind": "runs",
       "source": {
-        "end_line": 294,
-        "line": 294,
+        "end_line": 306,
+        "line": 306,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate-step:inspector.07"
@@ -12026,8 +12546,8 @@
       "extractor": "workflows",
       "kind": "runs",
       "source": {
-        "end_line": 301,
-        "line": 301,
+        "end_line": 313,
+        "line": 313,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate-step:inspector.08"
@@ -12039,8 +12559,8 @@
       "extractor": "workflows",
       "kind": "runs",
       "source": {
-        "end_line": 308,
-        "line": 308,
+        "end_line": 320,
+        "line": 320,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate-step:inspector.09"
@@ -12052,8 +12572,8 @@
       "extractor": "workflows",
       "kind": "runs",
       "source": {
-        "end_line": 314,
-        "line": 314,
+        "end_line": 326,
+        "line": 326,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate-step:inspector.10"
@@ -12065,8 +12585,8 @@
       "extractor": "workflows",
       "kind": "runs",
       "source": {
-        "end_line": 320,
-        "line": 320,
+        "end_line": 332,
+        "line": 332,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate-step:inspector.11"
@@ -12078,8 +12598,8 @@
       "extractor": "workflows",
       "kind": "runs",
       "source": {
-        "end_line": 326,
-        "line": 326,
+        "end_line": 338,
+        "line": 338,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate-step:inspector.12"
@@ -12091,8 +12611,8 @@
       "extractor": "workflows",
       "kind": "runs",
       "source": {
-        "end_line": 329,
-        "line": 329,
+        "end_line": 341,
+        "line": 341,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate-step:inspector.13"
@@ -12104,8 +12624,8 @@
       "extractor": "workflows",
       "kind": "runs",
       "source": {
-        "end_line": 336,
-        "line": 336,
+        "end_line": 348,
+        "line": 348,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate-step:inspector.14"
@@ -12117,8 +12637,8 @@
       "extractor": "workflows",
       "kind": "runs",
       "source": {
-        "end_line": 339,
-        "line": 339,
+        "end_line": 351,
+        "line": 351,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate-step:inspector.15"
@@ -12346,8 +12866,8 @@
     },
     {
       "confidence": "structural",
-      "dst": "module:tools.orchestration.gen_canvas",
-      "evidence": "python3 tools/orchestration/gen_canvas.py --check",
+      "dst": "module:scripts.lint_state_authority",
+      "evidence": "python3 scripts/lint_state_authority.py --self-test",
       "extractor": "workflows",
       "kind": "runs",
       "source": {
@@ -12359,8 +12879,8 @@
     },
     {
       "confidence": "structural",
-      "dst": "module:tools.tests",
-      "evidence": "uv run pytest tools/tests",
+      "dst": "module:scripts.lint_state_authority",
+      "evidence": "python3 scripts/lint_state_authority.py",
       "extractor": "workflows",
       "kind": "runs",
       "source": {
@@ -12372,13 +12892,65 @@
     },
     {
       "confidence": "structural",
+      "dst": "module:scripts.lint_model_routing",
+      "evidence": "python3 scripts/lint_model_routing.py --self-test",
+      "extractor": "workflows",
+      "kind": "runs",
+      "source": {
+        "end_line": 219,
+        "line": 219,
+        "path": ".github/workflows/gates.yml"
+      },
+      "src": "gate-step:integrity.25"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:scripts.lint_model_routing",
+      "evidence": "python3 scripts/lint_model_routing.py",
+      "extractor": "workflows",
+      "kind": "runs",
+      "source": {
+        "end_line": 222,
+        "line": 222,
+        "path": ".github/workflows/gates.yml"
+      },
+      "src": "gate-step:integrity.26"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.orchestration.gen_canvas",
+      "evidence": "python3 tools/orchestration/gen_canvas.py --check",
+      "extractor": "workflows",
+      "kind": "runs",
+      "source": {
+        "end_line": 225,
+        "line": 225,
+        "path": ".github/workflows/gates.yml"
+      },
+      "src": "gate-step:integrity.27"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.tests",
+      "evidence": "uv run pytest tools/tests",
+      "extractor": "workflows",
+      "kind": "runs",
+      "source": {
+        "end_line": 228,
+        "line": 228,
+        "path": ".github/workflows/gates.yml"
+      },
+      "src": "gate-step:integrity.28"
+    },
+    {
+      "confidence": "structural",
       "dst": "module:harness.acs.mutate",
       "evidence": "uv run python harness/acs/mutate.py",
       "extractor": "workflows",
       "kind": "runs",
       "source": {
-        "end_line": 441,
-        "line": 441,
+        "end_line": 453,
+        "line": 453,
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate-step:mutation.04"
@@ -12878,6 +13450,110 @@
       "src": "adr:ADR-0044"
     },
     {
+      "confidence": "structural",
+      "dst": "adr:ADR-0018",
+      "evidence": "**See also:** ADR-0022 (the first D28 waiver, and the narrowing this effort does *not* repeat), ADR-0018 (Discharges O5 — the discharge shape this record follows), `docs/tier2/execution-order.md` § Op",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 4239,
+        "line": 4239,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0045"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0022",
+      "evidence": "**See also:** ADR-0022 (the first D28 waiver, and the narrowing this effort does *not* repeat), ADR-0018 (Discharges O5 — the discharge shape this record follows), `docs/tier2/execution-order.md` § Op",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 4239,
+        "line": 4239,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0045"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0031",
+      "evidence": "**See also:** ADR-0031 (the machine-readable protected set), D20, `docs/tier4/protected-paths-policy.md` § *The inspector stays small*, ADR-0045 (the effort this work belongs to)",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 4346,
+        "line": 4346,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0046"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0045",
+      "evidence": "**See also:** ADR-0031 (the machine-readable protected set), D20, `docs/tier4/protected-paths-policy.md` § *The inspector stays small*, ADR-0045 (the effort this work belongs to)",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 4346,
+        "line": 4346,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0046"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0003",
+      "evidence": "**See also:** ADR-0003 (ACS-1 domain separation), I2 and I6, `docs/tier7/ticket-45-state-authority-decision.md`, ADR-0039 (the type graph)",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 4439,
+        "line": 4439,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0047"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0039",
+      "evidence": "**See also:** ADR-0003 (ACS-1 domain separation), I2 and I6, `docs/tier7/ticket-45-state-authority-decision.md`, ADR-0039 (the type graph)",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 4439,
+        "line": 4439,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0047"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0039",
+      "evidence": "**See also:** ADR-0039 (the palette as type system), ADR-0046 (the inspector-patch class this is *not* in), `docs/tier7/ticket-43-role-bindings-decision.md`, `docs/tier7/ticket-47-edge-semantics-decis",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 4540,
+        "line": 4540,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0048"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0046",
+      "evidence": "**See also:** ADR-0039 (the palette as type system), ADR-0046 (the inspector-patch class this is *not* in), `docs/tier7/ticket-43-role-bindings-decision.md`, `docs/tier7/ticket-47-edge-semantics-decis",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 4540,
+        "line": 4540,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0048"
+    },
+    {
       "confidence": "prose",
       "dst": "decision:D17",
       "evidence": "Supersedes decision 17",
@@ -12893,14 +13569,14 @@
   ],
   "extractors": [
     {
-      "edges": 48,
+      "edges": 56,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 4,
       "min_nodes": 14,
       "name": "adrs",
-      "nodes": 44,
+      "nodes": 48,
       "rejected": 0,
       "scanned": 1,
       "unparsed": 0
@@ -12932,16 +13608,16 @@
       "unparsed": 0
     },
     {
-      "edges": 162,
+      "edges": 164,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 45,
       "min_nodes": 90,
       "name": "code",
-      "nodes": 243,
+      "nodes": 249,
       "rejected": 0,
-      "scanned": 270,
+      "scanned": 276,
       "unparsed": 0
     },
     {
@@ -12958,16 +13634,16 @@
       "unparsed": 0
     },
     {
-      "edges": 64,
+      "edges": 76,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 63,
       "min_nodes": 71,
       "name": "documents",
-      "nodes": 72,
+      "nodes": 84,
       "rejected": 0,
-      "scanned": 64,
+      "scanned": 76,
       "unparsed": 0
     },
     {
@@ -12984,7 +13660,7 @@
       "unparsed": 0
     },
     {
-      "edges": 246,
+      "edges": 250,
       "expect_rejected": null,
       "max_nodes": 0,
       "max_unparsed": 0,
@@ -12993,7 +13669,7 @@
       "name": "imports",
       "nodes": 0,
       "rejected": 0,
-      "scanned": 203,
+      "scanned": 207,
       "unparsed": 0
     },
     {
@@ -13023,7 +13699,7 @@
       "unparsed": 0
     },
     {
-      "edges": 340,
+      "edges": 358,
       "expect_rejected": null,
       "max_nodes": 0,
       "max_unparsed": 0,
@@ -13032,7 +13708,7 @@
       "name": "references",
       "nodes": 0,
       "rejected": 0,
-      "scanned": 200,
+      "scanned": 206,
       "unparsed": 0
     },
     {
@@ -13049,14 +13725,14 @@
       "unparsed": 1
     },
     {
-      "edges": 93,
+      "edges": 101,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 50,
       "min_nodes": 30,
       "name": "workflows",
-      "nodes": 60,
+      "nodes": 64,
       "rejected": 0,
       "scanned": 1,
       "unparsed": 0
@@ -13991,6 +14667,90 @@
       "status": "accepted",
       "tags": [],
       "title": "Register drift reconciled"
+    },
+    {
+      "attrs": {
+        "date": "2026-09-02",
+        "status": "accepted",
+        "status_raw": "Accepted"
+      },
+      "body": "**Date:** 2026-09-02 · **Status:** Accepted · **Supersedes:** none · **See also:** ADR-0022 (the first D28 waiver, and the narrowing this effort does *not* repeat), ADR-0018 (Discharges O5 — the discharge shape this record follows), `docs/tier2/execution-order.md` § Operator-owned · **D28 waiver:** no",
+      "extractor": "adrs",
+      "id": "adr:ADR-0045",
+      "kind": "adr",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 4239,
+        "line": 4239,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "accepted",
+      "tags": [],
+      "title": "The ECC coupling is factory scope, ring-fenced, and overrides no gate"
+    },
+    {
+      "attrs": {
+        "date": "2026-09-03",
+        "status": "accepted",
+        "status_raw": "Accepted"
+      },
+      "body": "**Date:** 2026-09-03 · **Status:** Accepted · **Supersedes:** none · **Amends:** nothing; this record supplies an obligation that was owed and initially misread · **See also:** ADR-0031 (the machine-readable protected set), D20, `docs/tier4/protected-paths-policy.md` § *The inspector stays small*, ADR-0045 (the effort this work belongs to) · **D28 waiver:** no",
+      "extractor": "adrs",
+      "id": "adr:ADR-0046",
+      "kind": "adr",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 4346,
+        "line": 4346,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "accepted",
+      "tags": [],
+      "title": "Registry additions to the register generators are inspector patches, and carry this ADR"
+    },
+    {
+      "attrs": {
+        "date": "2026-09-03",
+        "status": "accepted",
+        "status_raw": "Accepted"
+      },
+      "body": "**Date:** 2026-09-03 · **Status:** Accepted · **Supersedes:** none · **Amends:** `docs/tier1/data-architecture.md` § *Ownership, stated once so it is not restated inconsistently* (frozen), and `docs/tier3/run-instrumentation-specification.md`'s record-type enum · **See also:** ADR-0003 (ACS-1 domain separation), I2 and I6, `docs/tier7/ticket-45-state-authority-decision.md`, ADR-0039 (the type graph) · **D28 waiver:** no",
+      "extractor": "adrs",
+      "id": "adr:ADR-0047",
+      "kind": "adr",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 4439,
+        "line": 4439,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "accepted",
+      "tags": [],
+      "title": "The ownership router gains the factory's facts, and runtime state is never evidence"
+    },
+    {
+      "attrs": {
+        "date": "2026-09-03",
+        "status": "accepted",
+        "status_raw": "Accepted"
+      },
+      "body": "**Date:** 2026-09-03 · **Status:** Accepted · **Supersedes:** none · **Amends:** `policy/node-palette.json`'s port declarations for five kinds · **See also:** ADR-0039 (the palette as type system), ADR-0046 (the inspector-patch class this is *not* in), `docs/tier7/ticket-43-role-bindings-decision.md`, `docs/tier7/ticket-47-edge-semantics-decision.md`, `docs/tier3/execution-lifecycle.md` · **D28 waiver:** no",
+      "extractor": "adrs",
+      "id": "adr:ADR-0048",
+      "kind": "adr",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 4540,
+        "line": 4540,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "accepted",
+      "tags": [],
+      "title": "The palette gains seven `hands-off-to` ports so the lifecycle chain becomes expressible"
     },
     {
       "attrs": {
@@ -16367,14 +17127,14 @@
     {
       "attrs": {
         "enforcement": "schema",
-        "evidence": "none — written pre-Phase-0 as a register stub (D32)",
-        "falsifies_if": "An agent is dispatched whose definition names a job title rather than a capability.",
+        "evidence": "The decisions in docs/tier7/ticket-43-role-bindings-decision.md, the glossary's Capability definition, the frozen task specification standard's `capability` field, and the seven bindings now in policy/role-bindings.json checked by lint_topology.py TOP010-TOP013. No agent has been dispatched through a binding; the field set rests on the fingerprint's D19 group, not on an observed run.",
+        "falsifies_if": "An agent is dispatched whose definition names a job title rather than a capability; or a binding is edited without the fingerprint moving, meaning the version fields below are not actually the D19 group.",
         "owner": "executable",
         "path": "docs/tier3/agent-definition-standard.md",
         "review_after": "Phase 2",
         "tier": "3",
         "tier_name": "Agent specifications",
-        "written": "stub"
+        "written": "full"
       },
       "body": "",
       "extractor": "documents",
@@ -16521,15 +17281,46 @@
     },
     {
       "attrs": {
+        "enforcement": "review-cadence",
+        "evidence": "The decisions in docs/tier7/ticket-42-execution-lifecycle-decision.md, taken against the Definition of Done's twelve conditions, failure-semantics' three-valued verdict, AutoForge's protocol.md and stages/ directory, and the ECC capability audit. No task has walked these seven phases end to end; the phase set rests on a reduction of AutoForge's twelve names, not on observed execution.",
+        "falsifies_if": "A task completes the seven phases and the merge gate still catches a class of defect this lifecycle claims to prevent upstream; or the front half is observed to be skipped without the task class declaring it; or a re-entry sends work downstream of the static default.",
+        "owner": "human",
+        "path": "docs/tier3/execution-lifecycle.md",
+        "review_after": "the first ten tasks that walk it",
+        "tier": "3",
+        "tier_name": "Agent specifications",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier3/execution-lifecycle",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier3/execution-lifecycle.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier3",
+        "human",
+        "review-cadence"
+      ],
+      "title": "Execution Lifecycle"
+    },
+    {
+      "attrs": {
         "enforcement": "schema",
-        "evidence": "none — written pre-Phase-0 as a register stub (D32)",
+        "evidence": "The seven phases fixed in docs/tier3/execution-lifecycle.md and the phase_end record added to docs/tier3/run-instrumentation-specification.md by ADR-0047, whose artifact_ref is a hash rather than a path (I3). Promoted ahead of its stated review_after because those two supplied the content it was waiting for; no handoff has yet been observed crossing a phase boundary.",
         "falsifies_if": "A handoff carries prose the successor relies on without reading the underlying artifact.",
         "owner": "executable",
         "path": "docs/tier3/handoff-contract-standard.md",
         "review_after": "Phase 3",
         "tier": "3",
         "tier_name": "Agent specifications",
-        "written": "stub"
+        "written": "full"
       },
       "body": "",
       "extractor": "documents",
@@ -17389,6 +18180,99 @@
     },
     {
       "attrs": {
+        "enforcement": "none",
+        "evidence": "A read of ECC 2.2.1 at commit ca185ef (286 skills, 68 agents, 11 JSON schemas, the ecc2 Rust control plane, the AutoForge workspace) against Alfred's register as of 2026-09-02. Classification is from what the source does, never from what its documentation claims.",
+        "falsifies_if": "A capability classified ECC-NATIVE turns out to require an Alfred-side adapter to be usable, or a capability classified REMOVE/REPLACE is found to be load-bearing for something Alfred already depends on.",
+        "owner": "human",
+        "path": "docs/tier7/ecc-capability-audit.md",
+        "review_after": "the ECC2 reuse boundary decision",
+        "tier": "7",
+        "tier_name": "Meta",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier7/ecc-capability-audit",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ecc-capability-audit.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier7",
+        "human",
+        "none"
+      ],
+      "title": "ECC capability classification"
+    },
+    {
+      "attrs": {
+        "enforcement": "none",
+        "evidence": "A single install performed 2026-09-02 on one machine, with a pre-install inventory captured by hash and a dry-run diffed before apply. Nothing here is measured across machines or across ECC versions.",
+        "falsifies_if": "A second install of the same profile and commit produces a different operation set, or ECC hook runtime appears under ~/.claude without an explicit consent decision recorded.",
+        "owner": "human",
+        "path": "docs/tier7/ecc-claude-code-install.md",
+        "review_after": "the harness-portability decision",
+        "tier": "7",
+        "tier_name": "Meta",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier7/ecc-claude-code-install",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ecc-claude-code-install.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier7",
+        "human",
+        "none"
+      ],
+      "title": "ECC install for Claude Code — what was done and what it changed"
+    },
+    {
+      "attrs": {
+        "enforcement": "none",
+        "evidence": "A read of the ECC unified-memory implementation at commit ca185ef — schemas/memory.schema.json, scripts/lib/memory-vault.js, and scripts/hooks/session-start.js — against ADR-0032's three invariants. Findings cite line ranges in that source, not the schema's self-description.",
+        "falsifies_if": "A mirrored record is found in Alfred's evidence chain without a canonical source pointer, or the instincts injection path is found active on a machine this project drives.",
+        "owner": "human",
+        "path": "docs/tier7/ecc-memory-boundary.md",
+        "review_after": "the ECC2 reuse boundary decision",
+        "tier": "7",
+        "tier_name": "Meta",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier7/ecc-memory-boundary",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ecc-memory-boundary.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier7",
+        "human",
+        "none"
+      ],
+      "title": "ECC memory boundary against ADR-0032"
+    },
+    {
+      "attrs": {
         "enforcement": "review-cadence",
         "evidence": "none — written pre-Phase-0 as a register stub (D32)",
         "falsifies_if": "A newcomer following this guide reaches a wrong mental model of the containment boundary.",
@@ -17417,6 +18301,254 @@
         "review-cadence"
       ],
       "title": "Onboarding Guide"
+    },
+    {
+      "attrs": {
+        "enforcement": "none",
+        "evidence": "A grilling session on 2026-09-02 against the register as it stands (Definition of Done's twelve conditions, failure-semantics' three-valued verdict and F1–F14 table, the human-in-the-loop and escalation stubs, AutoForge's protocol.md, and the ECC capability audit). No lifecycle has been run end to end; nothing here rests on an observed execution.",
+        "falsifies_if": "A task completes the seven phases and the merge gate still catches a class of defect the lifecycle claimed to prevent upstream; or the front half is observed to be skipped without the task class declaring it.",
+        "owner": "human",
+        "path": "docs/tier7/ticket-42-execution-lifecycle-decision.md",
+        "review_after": "the first ten tasks that walk it",
+        "tier": "7",
+        "tier_name": "Meta",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier7/ticket-42-execution-lifecycle-decision",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ticket-42-execution-lifecycle-decision.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier7",
+        "human",
+        "none"
+      ],
+      "title": "Ticket #42 — the one execution lifecycle: decision record"
+    },
+    {
+      "attrs": {
+        "enforcement": "none",
+        "evidence": "A grilling session on 2026-09-02 against policy/node-palette.json (21 kinds), the three Tier 3 agent stubs, harness/fingerprint/record.py's D19 group, scripts/lint_topology.py, and the 68 ECC agent definitions installed to ~/.claude/agents on the same day. No palette kind has yet dispatched work; no binding has been exercised.",
+        "falsifies_if": "A palette kind of category `operator` acquires a runtime binding; or a binding record's model is resolved from anywhere other than the routing policy; or a binding is edited without a requalification following.",
+        "owner": "human",
+        "path": "docs/tier7/ticket-43-role-bindings-decision.md",
+        "review_after": "the first task dispatched through a binding",
+        "tier": "7",
+        "tier_name": "Meta",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier7/ticket-43-role-bindings-decision",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ticket-43-role-bindings-decision.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier7",
+        "human",
+        "none"
+      ],
+      "title": "Ticket #43 — role bindings: decision record"
+    },
+    {
+      "attrs": {
+        "enforcement": "none",
+        "evidence": "A read of the frozen task specification standard, the Worker port contract's WorkerSpec, the handoff contract stub, and AutoForge's spawn-contract.md, against the FactoryFingerprint added in this effort. No task has been dispatched through the contracts named here; the seam is read off documents that already bind, not off an observed dispatch.",
+        "falsifies_if": "A third document is found describing what an agent is handed; or a factory run is found crossing the Worker port, meaning D2 drew the boundary in the wrong place.",
+        "owner": "human",
+        "path": "docs/tier7/ticket-44-task-contract-decision.md",
+        "review_after": "Phase 2",
+        "tier": "7",
+        "tier_name": "Meta",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier7/ticket-44-task-contract-decision",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ticket-44-task-contract-decision.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier7",
+        "human",
+        "none"
+      ],
+      "title": "Ticket #44 — the canonical task contract"
+    },
+    {
+      "attrs": {
+        "enforcement": "none",
+        "evidence": "A grilling session on 2026-09-02 against data-architecture.md (frozen), cross-stage-invariants.md, run-instrumentation-specification.md, ECC's state-store.schema.json, and the .autoforge/state.json produced by a real AutoForge run against this repository on 2026-08-29. No factory task has yet written a run record; nothing here rests on an observed write.",
+        "falsifies_if": "A fact in the homes table below is written authoritatively in two places; or a gate, verdict or audit is observed reading machine-local runtime state.",
+        "owner": "human",
+        "path": "docs/tier7/ticket-45-state-authority-decision.md",
+        "review_after": "the first factory task that emits run records",
+        "tier": "7",
+        "tier_name": "Meta",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier7/ticket-45-state-authority-decision",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ticket-45-state-authority-decision.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier7",
+        "human",
+        "none"
+      ],
+      "title": "Ticket #45 — state authority: decision record"
+    },
+    {
+      "attrs": {
+        "enforcement": "review-cadence",
+        "evidence": "Reads the frozen task specification standard, the glossary's Capability and Autonomy-grant definitions, the run fingerprint module's stated design properties, the run instrumentation specification's attempt_start assertion, and the vendored AutoForge model policy as it exists on this machine. No measurement of any model against any Alfred capability exists yet; the decisions that would need one are deliberately deferred rather than guessed.",
+        "falsifies_if": "A model is selected for an Alfred capability by a path this document does not describe, or a factory merge rate is quoted without a fingerprint it is measured on.",
+        "owner": "executable",
+        "path": "docs/tier7/ticket-46-model-routing-decision.md",
+        "review_after": "Phase 2",
+        "tier": "7",
+        "tier_name": "Meta",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier7/ticket-46-model-routing-decision",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ticket-46-model-routing-decision.md"
+      },
+      "status": "directional",
+      "tags": [
+        "tier7",
+        "executable",
+        "review-cadence"
+      ],
+      "title": "Ticket #46 — Model routing policy: home and content"
+    },
+    {
+      "attrs": {
+        "enforcement": "none",
+        "evidence": "A read of policy/node-palette.json's port declarations, orchestration/topology.json as it stands (8 nodes, 7 edges), lint_topology.py's TOP003-TOP005 port-compatibility rule, and the nine edge kinds proposed in the brief's §8. The proposed topology in D4 was verified by running check_topology against a candidate tree, not asserted.",
+        "falsifies_if": "An edge kind rejected here is later needed to answer a question no existing edge answers; or the type graph is found being executed rather than validated against.",
+        "owner": "human",
+        "path": "docs/tier7/ticket-47-edge-semantics-decision.md",
+        "review_after": "Phase 2",
+        "tier": "7",
+        "tier_name": "Meta",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier7/ticket-47-edge-semantics-decision",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ticket-47-edge-semantics-decision.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier7",
+        "human",
+        "none"
+      ],
+      "title": "Ticket #47 — execution edge semantics"
+    },
+    {
+      "attrs": {
+        "enforcement": "none",
+        "evidence": "A read of ECC2 at ~/.config/opencode/ecc-source/ecc2 — 17 Rust files, ~54,100 lines, self-described alpha — including harness_eval.rs (579 lines), observability/mod.rs's compute_risk, and config's RISK_THRESHOLDS. Comparison is against Alfred's CriterionRunner, ACS-1 evidence chain, held-out isolation by SQL grant, and the Wilson-interval reading in K3.",
+        "falsifies_if": "An ECC2 pattern refused here is later adopted because the refusal reasoning was wrong; or Alfred is found importing, vendoring or executing ECC2 code.",
+        "owner": "human",
+        "path": "docs/tier7/ticket-51-ecc2-boundary-decision.md",
+        "review_after": "Phase 2",
+        "tier": "7",
+        "tier_name": "Meta",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier7/ticket-51-ecc2-boundary-decision",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ticket-51-ecc2-boundary-decision.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier7",
+        "human",
+        "none"
+      ],
+      "title": "Ticket #51 — the ECC2 reuse boundary"
+    },
+    {
+      "attrs": {
+        "enforcement": "none",
+        "evidence": "A read of docs/tier1/mission-control-specification.md — the boundary split, the read-model section's no-cache rule, and the decision-critical panel rule — against the brief's §18 snapshot contracts and §19 failure list. Neither Mission Control program exists as code; nothing here rests on an observed render.",
+        "falsifies_if": "A stored aggregate, materialized view or cache appears in the read model; or a decision-critical fact is found rendered from the read model rather than from the command surface; or a degraded state renders as a normal one.",
+        "owner": "human",
+        "path": "docs/tier7/ticket-52-read-model-decision.md",
+        "review_after": "the first screen that exists",
+        "tier": "7",
+        "tier_name": "Meta",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier7/ticket-52-read-model-decision",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ticket-52-read-model-decision.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier7",
+        "human",
+        "none"
+      ],
+      "title": "Ticket #52 — Mission Control's read model"
     },
     {
       "attrs": {
@@ -17527,8 +18659,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 350,
-        "line": 350,
+        "end_line": 362,
+        "line": 362,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -17551,8 +18683,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 355,
-        "line": 355,
+        "end_line": 367,
+        "line": 367,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -17575,8 +18707,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 369,
-        "line": 369,
+        "end_line": 381,
+        "line": 381,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -17599,8 +18731,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 379,
-        "line": 379,
+        "end_line": 391,
+        "line": 391,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -17623,8 +18755,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 396,
-        "line": 396,
+        "end_line": 408,
+        "line": 408,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -17647,8 +18779,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 401,
-        "line": 401,
+        "end_line": 413,
+        "line": 413,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -17671,8 +18803,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 261,
-        "line": 261,
+        "end_line": 273,
+        "line": 273,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -17695,8 +18827,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 266,
-        "line": 266,
+        "end_line": 278,
+        "line": 278,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -17719,8 +18851,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 273,
-        "line": 273,
+        "end_line": 285,
+        "line": 285,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -17743,8 +18875,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 276,
-        "line": 276,
+        "end_line": 288,
+        "line": 288,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -17767,8 +18899,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 283,
-        "line": 283,
+        "end_line": 295,
+        "line": 295,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -17791,8 +18923,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 286,
-        "line": 286,
+        "end_line": 298,
+        "line": 298,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -17815,8 +18947,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 294,
-        "line": 294,
+        "end_line": 306,
+        "line": 306,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -17839,8 +18971,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 301,
-        "line": 301,
+        "end_line": 313,
+        "line": 313,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -17863,8 +18995,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 308,
-        "line": 308,
+        "end_line": 320,
+        "line": 320,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -17887,8 +19019,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 314,
-        "line": 314,
+        "end_line": 326,
+        "line": 326,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -17911,8 +19043,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 320,
-        "line": 320,
+        "end_line": 332,
+        "line": 332,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -17935,8 +19067,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 326,
-        "line": 326,
+        "end_line": 338,
+        "line": 338,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -17959,8 +19091,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 329,
-        "line": 329,
+        "end_line": 341,
+        "line": 341,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -17983,8 +19115,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 336,
-        "line": 336,
+        "end_line": 348,
+        "line": 348,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -18007,8 +19139,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 339,
-        "line": 339,
+        "end_line": 351,
+        "line": 351,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -18547,12 +19679,12 @@
     },
     {
       "attrs": {
-        "command": "python3 tools/orchestration/gen_canvas.py --check",
+        "command": "python3 scripts/lint_state_authority.py --self-test",
         "job": "integrity",
         "kind": "run",
         "ordinal": "23"
       },
-      "body": "python3 tools/orchestration/gen_canvas.py --check",
+      "body": "python3 scripts/lint_state_authority.py --self-test",
       "extractor": "workflows",
       "id": "gate-step:integrity.23",
       "kind": "gate-step",
@@ -18567,16 +19699,16 @@
       "tags": [
         "protected"
       ],
-      "title": "Orchestration canvas is current"
+      "title": "State authority lint checks its own vacuity"
     },
     {
       "attrs": {
-        "command": "uv run pytest tools/tests",
+        "command": "python3 scripts/lint_state_authority.py",
         "job": "integrity",
         "kind": "run",
         "ordinal": "24"
       },
-      "body": "uv run pytest tools/tests",
+      "body": "python3 scripts/lint_state_authority.py",
       "extractor": "workflows",
       "id": "gate-step:integrity.24",
       "kind": "gate-step",
@@ -18585,6 +19717,102 @@
       "source": {
         "end_line": 216,
         "line": 216,
+        "path": ".github/workflows/gates.yml"
+      },
+      "status": "",
+      "tags": [
+        "protected"
+      ],
+      "title": "Ownership router homes exist and no gate cites runtime state"
+    },
+    {
+      "attrs": {
+        "command": "python3 scripts/lint_model_routing.py --self-test",
+        "job": "integrity",
+        "kind": "run",
+        "ordinal": "25"
+      },
+      "body": "python3 scripts/lint_model_routing.py --self-test",
+      "extractor": "workflows",
+      "id": "gate-step:integrity.25",
+      "kind": "gate-step",
+      "occurrences": [],
+      "shape": "step",
+      "source": {
+        "end_line": 219,
+        "line": 219,
+        "path": ".github/workflows/gates.yml"
+      },
+      "status": "",
+      "tags": [
+        "protected"
+      ],
+      "title": "Model routing lint checks its own vacuity"
+    },
+    {
+      "attrs": {
+        "command": "python3 scripts/lint_model_routing.py",
+        "job": "integrity",
+        "kind": "run",
+        "ordinal": "26"
+      },
+      "body": "python3 scripts/lint_model_routing.py",
+      "extractor": "workflows",
+      "id": "gate-step:integrity.26",
+      "kind": "gate-step",
+      "occurrences": [],
+      "shape": "step",
+      "source": {
+        "end_line": 222,
+        "line": 222,
+        "path": ".github/workflows/gates.yml"
+      },
+      "status": "",
+      "tags": [
+        "protected"
+      ],
+      "title": "Model routing policy conforms to the bindings"
+    },
+    {
+      "attrs": {
+        "command": "python3 tools/orchestration/gen_canvas.py --check",
+        "job": "integrity",
+        "kind": "run",
+        "ordinal": "27"
+      },
+      "body": "python3 tools/orchestration/gen_canvas.py --check",
+      "extractor": "workflows",
+      "id": "gate-step:integrity.27",
+      "kind": "gate-step",
+      "occurrences": [],
+      "shape": "step",
+      "source": {
+        "end_line": 225,
+        "line": 225,
+        "path": ".github/workflows/gates.yml"
+      },
+      "status": "",
+      "tags": [
+        "protected"
+      ],
+      "title": "Orchestration canvas is current"
+    },
+    {
+      "attrs": {
+        "command": "uv run pytest tools/tests",
+        "job": "integrity",
+        "kind": "run",
+        "ordinal": "28"
+      },
+      "body": "uv run pytest tools/tests",
+      "extractor": "workflows",
+      "id": "gate-step:integrity.28",
+      "kind": "gate-step",
+      "occurrences": [],
+      "shape": "step",
+      "source": {
+        "end_line": 228,
+        "line": 228,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -18607,8 +19835,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 414,
-        "line": 414,
+        "end_line": 426,
+        "line": 426,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -18631,8 +19859,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 419,
-        "line": 419,
+        "end_line": 431,
+        "line": 431,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -18655,8 +19883,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 426,
-        "line": 426,
+        "end_line": 438,
+        "line": 438,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -18679,8 +19907,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 441,
-        "line": 441,
+        "end_line": 453,
+        "line": 453,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -18703,8 +19931,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 229,
-        "line": 229,
+        "end_line": 241,
+        "line": 241,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -18727,8 +19955,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 234,
-        "line": 234,
+        "end_line": 246,
+        "line": 246,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -18751,8 +19979,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 237,
-        "line": 237,
+        "end_line": 249,
+        "line": 249,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -18775,8 +20003,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 244,
-        "line": 244,
+        "end_line": 256,
+        "line": 256,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -18799,8 +20027,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 247,
-        "line": 247,
+        "end_line": 259,
+        "line": 259,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -18823,8 +20051,8 @@
       "occurrences": [],
       "shape": "step",
       "source": {
-        "end_line": 250,
-        "line": 250,
+        "end_line": 262,
+        "line": 262,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -18845,8 +20073,8 @@
       "occurrences": [],
       "shape": "job",
       "source": {
-        "end_line": 343,
-        "line": 343,
+        "end_line": 355,
+        "line": 355,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -18867,8 +20095,8 @@
       "occurrences": [],
       "shape": "job",
       "source": {
-        "end_line": 254,
-        "line": 254,
+        "end_line": 266,
+        "line": 266,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -18911,8 +20139,8 @@
       "occurrences": [],
       "shape": "job",
       "source": {
-        "end_line": 407,
-        "line": 407,
+        "end_line": 419,
+        "line": 419,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -18933,8 +20161,8 @@
       "occurrences": [],
       "shape": "job",
       "source": {
-        "end_line": 222,
-        "line": 222,
+        "end_line": 234,
+        "line": 234,
         "path": ".github/workflows/gates.yml"
       },
       "status": "",
@@ -21158,6 +22386,32 @@
       "attrs": {
         "is_test": "false",
         "lint_gated": "false",
+        "path": "harness/fingerprint/factory.py",
+        "present": "true",
+        "protected": "true",
+        "tree": "harness"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:harness.fingerprint.factory",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/fingerprint/factory.py"
+      },
+      "status": "",
+      "tags": [
+        "protected"
+      ],
+      "title": "The factory fingerprint: what an *agent* run was measured on, as opposed to a lane."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
         "path": "harness/fingerprint/record.py",
         "present": "true",
         "protected": "true",
@@ -21179,6 +22433,32 @@
         "protected"
       ],
       "title": "The run fingerprint record: what a run was measured on, stated once and hashed."
+    },
+    {
+      "attrs": {
+        "is_test": "true",
+        "lint_gated": "false",
+        "path": "harness/fingerprint/test_factory.py",
+        "present": "true",
+        "protected": "true",
+        "tree": "harness"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:harness.fingerprint.test_factory",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/fingerprint/test_factory.py"
+      },
+      "status": "",
+      "tags": [
+        "protected"
+      ],
+      "title": "The factory fingerprint, and the two claims about it that a docstring cannot keep true."
     },
     {
       "attrs": {
@@ -22642,6 +23922,32 @@
       "attrs": {
         "is_test": "false",
         "lint_gated": "false",
+        "path": "policy/model-routing.json",
+        "present": "true",
+        "protected": "true",
+        "tree": "policy"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:policy.model-routing.json",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "policy/model-routing.json"
+      },
+      "status": "",
+      "tags": [
+        "protected"
+      ],
+      "title": "policy/model-routing.json"
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
         "path": "policy/network-allowlist.json",
         "present": "true",
         "protected": "true",
@@ -22767,6 +24073,32 @@
         "protected"
       ],
       "title": "policy/protected-paths.json"
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "policy/role-bindings.json",
+        "present": "true",
+        "protected": "true",
+        "tree": "policy"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:policy.role-bindings.json",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "policy/role-bindings.json"
+      },
+      "status": "",
+      "tags": [
+        "protected"
+      ],
+      "title": "policy/role-bindings.json"
     },
     {
       "attrs": {
@@ -23006,6 +24338,32 @@
       "attrs": {
         "is_test": "false",
         "lint_gated": "false",
+        "path": "scripts/lint_model_routing.py",
+        "present": "true",
+        "protected": "true",
+        "tree": "scripts"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:scripts.lint_model_routing",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "scripts/lint_model_routing.py"
+      },
+      "status": "",
+      "tags": [
+        "protected"
+      ],
+      "title": "MR001-MR005: model routing policy conformance, checked before any spawn."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
         "path": "scripts/lint_stage_gates.py",
         "present": "true",
         "protected": "true",
@@ -23027,6 +24385,32 @@
         "protected"
       ],
       "title": "The stage gate, as a check rather than as a sentence somebody reads."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "scripts/lint_state_authority.py",
+        "present": "true",
+        "protected": "true",
+        "tree": "scripts"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:scripts.lint_state_authority",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "scripts/lint_state_authority.py"
+      },
+      "status": "",
+      "tags": [
+        "protected"
+      ],
+      "title": "SA001-SA003: the ownership router's mechanical half, checked."
     },
     {
       "attrs": {
@@ -25440,10 +26824,10 @@
     {
       "attrs": {
         "blocks": "Everything",
-        "due": "2026-09-09",
+        "due": "2026-10-07 (ADR-0022's residue date)",
         "number": "O4"
       },
-      "body": "Phase 0 exit: move the date under a waiver ADR, or narrow the exit",
+      "body": "Phase 0 exit — **decision half spent** by ADR-0022 (2026-08-19), which narrowed along the ownership seam and dated the residue. Remaining, against ADR-0022's narrowed list: **P0-4** egress canary firing against real enforcement (`nftables` default-drop in the host network namespace, not the probe alone); **P0-6** a recorded **D-production** restore (a green CI run is D-synthetic and proves the mechanism only); **P0-7** no unreviewed inspector patch enforces any of the above (tracked as O9). P0-1/2/3 were met at ADR-0022; **P0-5** byte-identical deterministic replay met by ADR-0025.",
       "extractor": "stages",
       "id": "operator-item:O4",
       "kind": "operator-item",
@@ -25456,7 +26840,7 @@
       },
       "status": "open",
       "tags": [],
-      "title": "Phase 0 exit: move the date under a waiver ADR, or narrow the exit"
+      "title": "Phase 0 exit — **decision half spent** by ADR-0022 (2026-08-19), which narrowed along the ownership seam and dated the residue. Remaining, against ADR-0022's narrowed list: **P0-4** egress canary firi"
     },
     {
       "attrs": {

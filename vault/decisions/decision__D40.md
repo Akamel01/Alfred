@@ -36,6 +36,9 @@ Measures the three things that decide Alfred's inference lane:
 - **enforced_by** → [[module__bench_bench_infer|Phase -1 local-model benchmark.]] — """Reliability, not capability. A schema-capable model still emits invalid
     JSON through a bad serving layer (D40) — 
 - **enforced_by** → [[module__bench_probe_agentic|Sequential tool-calling probe — the axis D41 selected a lane without measuring.]] — # a serving-layer defect, not a capability failure — the D40 class, where a
+- **enforced_by** → [[module__harness_fingerprint_factory|The factory fingerprint: what an *agent* run was measured on, as opposed to a lane.]] — """The factory fingerprint: what an *agent* run was measured on, as opposed to a lane.
+
+`RunFingerprint` cannot describe
 - **enforced_by** → [[module__harness_fingerprint_record|The run fingerprint record: what a run was measured on, stated once and hashed.]] — # D40: the fields a measurement is not comparable across.
 - **enforced_by** → [[module__harness_fingerprint_record|The run fingerprint record: what a run was measured on, stated once and hashed.]] — "D40"
 - **enforced_by** → [[module__harness_fingerprint_record|The run fingerprint record: what a run was measured on, stated once and hashed.]] — # D40. The quantization *artifact* hash, never the quant name — imatrix variants share

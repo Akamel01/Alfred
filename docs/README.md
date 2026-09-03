@@ -6,7 +6,7 @@ Documents are classified by what stops them from lying, never by topic. See
 [Documentation Standard](tier7/documentation-standard.md) for the header contract,
 the stub policy, and the authorship boundary.
 
-**64 documents** · 31 written, 33 stubs · 35 executable or generated (54%)
+**76 documents** · 45 written, 31 stubs · 36 executable or generated (47%)
 
 ## Tier 0 — Constitution
 
@@ -57,12 +57,13 @@ the stub policy, and the authorship boundary.
 | Document | Status | Owner | Enforcement | Written |
 |---|---|---|---|---|
 | [Agent Catalog](tier3/agent-catalog.md) | directional | executable | `schema` | stub |
-| [Agent Definition Standard](tier3/agent-definition-standard.md) | provisional | executable | `schema` | stub |
+| [Agent Definition Standard](tier3/agent-definition-standard.md) | provisional | executable | `schema` | full |
 | [Agent Evaluation Protocol](tier3/agent-evaluation-protocol.md) | directional | human | `ci-gate` | stub |
 | [Autonomy Graduation Policy](tier3/autonomy-graduation-policy.md) | directional | executable | `ci-gate` | stub |
 | [Context Engineering Guide](tier3/context-engineering-guide.md) | provisional | human | `review-cadence` | stub |
 | [Escalation Protocol](tier3/escalation-protocol.md) | provisional | executable | `schema` | stub |
-| [Handoff Contract Standard](tier3/handoff-contract-standard.md) | provisional | executable | `schema` | stub |
+| [Execution Lifecycle](tier3/execution-lifecycle.md) | provisional | human | `review-cadence` | full |
+| [Handoff Contract Standard](tier3/handoff-contract-standard.md) | provisional | executable | `schema` | full |
 | [Instruction and Prompt Standard](tier3/instruction-and-prompt-standard.md) | provisional | executable | `schema` | stub |
 | [Run Instrumentation Specification](tier3/run-instrumentation-specification.md) | provisional | executable | `schema` | full |
 | [Tool Specification Standard](tier3/tool-specification-standard.md) | provisional | executable | `schema` | stub |
@@ -110,4 +111,15 @@ the stub policy, and the authorship boundary.
 |---|---|---|---|---|
 | [Decision Index](tier7/decision-index.md) | provisional | generated | `generated` | stub |
 | [Documentation Standard](tier7/documentation-standard.md) | frozen | human | `ci-gate` | full |
+| [ECC capability classification](tier7/ecc-capability-audit.md) | provisional | human | `none` | full |
+| [ECC install for Claude Code — what was done and what it changed](tier7/ecc-claude-code-install.md) | provisional | human | `none` | full |
+| [ECC memory boundary against ADR-0032](tier7/ecc-memory-boundary.md) | provisional | human | `none` | full |
 | [Onboarding Guide](tier7/onboarding-guide.md) | provisional | human | `review-cadence` | stub |
+| [Ticket #42 — the one execution lifecycle: decision record](tier7/ticket-42-execution-lifecycle-decision.md) | provisional | human | `none` | full |
+| [Ticket #43 — role bindings: decision record](tier7/ticket-43-role-bindings-decision.md) | provisional | human | `none` | full |
+| [Ticket #44 — the canonical task contract](tier7/ticket-44-task-contract-decision.md) | provisional | human | `none` | full |
+| [Ticket #45 — state authority: decision record](tier7/ticket-45-state-authority-decision.md) | provisional | human | `none` | full |
+| [Ticket #46 — Model routing policy: home and content](tier7/ticket-46-model-routing-decision.md) | directional | executable | `review-cadence` | full |
+| [Ticket #47 — execution edge semantics](tier7/ticket-47-edge-semantics-decision.md) | provisional | human | `none` | full |
+| [Ticket #51 — the ECC2 reuse boundary](tier7/ticket-51-ecc2-boundary-decision.md) | provisional | human | `none` | full |
+| [Ticket #52 — Mission Control's read model](tier7/ticket-52-read-model-decision.md) | provisional | human | `none` | full |
