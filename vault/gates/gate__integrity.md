@@ -50,10 +50,12 @@ generated: true
 - **contains** → [[gate-step__integrity_20|Protected paths append-only (bench/results/, bench/fingerprints/)]]
 - **contains** → [[gate-step__integrity_21|Topology lint checks its own vacuity]]
 - **contains** → [[gate-step__integrity_22|Topology file is valid]]
-- **contains** → [[gate-step__integrity_23|Model routing lint checks its own vacuity]]
-- **contains** → [[gate-step__integrity_24|Model routing policy conforms to the bindings]]
-- **contains** → [[gate-step__integrity_25|Orchestration canvas is current]]
-- **contains** → [[gate-step__integrity_26|Vault generator suites]]
+- **contains** → [[gate-step__integrity_23|State authority lint checks its own vacuity]]
+- **contains** → [[gate-step__integrity_24|Ownership router homes exist and no gate cites runtime state]]
+- **contains** → [[gate-step__integrity_25|Model routing lint checks its own vacuity]]
+- **contains** → [[gate-step__integrity_26|Model routing policy conforms to the bindings]]
+- **contains** → [[gate-step__integrity_27|Orchestration canvas is current]]
+- **contains** → [[gate-step__integrity_28|Vault generator suites]]
 - [[gate__database|database (throwaway cluster, roles and grants)]] **needs** → this
 - [[gate__inspector|inspector (ACS-1, lane, bench)]] **needs** → this
 - [[gate__product|product (lint, types, tests)]] **needs** → this

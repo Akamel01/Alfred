@@ -4433,3 +4433,104 @@ review is for, and claiming a mechanism here would be the wish that
 
 The mechanical part of decision 2 *is* checkable and is stated so it can be checked by
 reading the diff: no `def`, `if`, `return`, `for`, `while` or `assert` line added or removed.
+
+---
+
+## ADR-0047 — The ownership router gains the factory's facts, and runtime state is never evidence
+
+**Date:** 2026-09-03 · **Status:** Accepted · **Supersedes:** none · **Amends:** `docs/tier1/data-architecture.md` § *Ownership, stated once so it is not restated inconsistently* (frozen), and `docs/tier3/run-instrumentation-specification.md`'s record-type enum · **See also:** ADR-0003 (ACS-1 domain separation), I2 and I6, `docs/tier7/ticket-45-state-authority-decision.md`, ADR-0039 (the type graph) · **D28 waiver:** no
+
+### Context
+
+Coupling Alfred with ECC introduces a second orchestration runtime that keeps its own state.
+AutoForge writes `.autoforge/state.json`; ECC keeps `ecc.state-store.v1` with `sessions`,
+`skillRuns`, `skillVersions`, `decisions`, `installState`, `governanceEvents` and `workItems`.
+Alfred already has homes for most of what those hold, and had no statement about the overlap.
+
+`data-architecture.md` is **frozen**, and already carries the router that resolves this class
+of question, along with the rule that decides most of it:
+
+> the stream is a field set, the store is a schema, and the store never re-declares a stream
+> field.
+
+Amending a frozen document is what requires this record.
+
+Only one genuine collision was found. `workItems` and `control.work` both claim to say which
+tasks exist and what blocks what. Everything else dissolved under the rule above, or turned
+out to be a fact Alfred does not have a home for because it does not have the fact.
+
+### Decision
+
+1. **The router is extended rather than replaced, and it gains rows, not descriptions.** Six
+   new owners: the palette, the role bindings, the model routing policy, the execution
+   lifecycle, `control.work`, and runtime state. Each row names a home; content stays in the
+   home. A router that describes what it points at becomes a second copy of it.
+
+2. **`control.work` wins the one real collision.** ECC's `workItems` is a projection at best.
+   `control.work`'s `capability_id` is set at dispatch and is the grouping key for cost per
+   capability (I9) and for every autonomy grant (D19); a second writable home for task state
+   would make that key ambiguous exactly where it is load-bearing.
+
+3. **Runtime state owns nothing, and is never evidence.** `.autoforge/`, `ecc.state-store.v1`
+   and any successor are machine-local, gitignored and disposable. No gate, verdict or audit
+   may cite them. **If a fact matters, it is emitted into the run record stream when it
+   happens**; the runtime copy is incidental and may be deleted at any time without loss.
+
+   Mission Control may render a runtime fact for liveness, carrying provenance that says it is
+   unverified. A missing display-only fact renders as **unknown**, never as **none** — the
+   distinction between "we did not observe this" and "this did not happen" is the whole
+   difference between a liveness indicator and a claim.
+
+4. **`phase_start` and `phase_end` join the record stream.** The lifecycle has seven phases and
+   the stream could not previously say which one a turn happened in. Per the rule quoted above
+   this is a Run Instrumentation change plus a validator change and **is not a migration**: the
+   `evidence.run_record` projection is `jsonb` precisely so that adding a stream field does not
+   become an additive migration in the one schema whose migrations are additive-only.
+
+5. **`phase_end.outcome` has two values, not three.** `terminated` and `failed`. The
+   three-valued verdict stays at the merge gate: `indeterminate` means *excluded from the ratio
+   the autonomy gates read*, and upstream phases feed no ratio. Reusing the word there would
+   borrow precision those phases do not have, and would raise a question nobody has asked —
+   whether a `fail` at Architect counts against measured merge rate.
+
+6. **`phase_end.checked_by` is a one-value enum, and the single value is the point.** A phase
+   terminates when its artifact exists and validates, checked by the orchestrator and never by
+   the child that produced it. On 2026-09-02 two child sessions holding complete contracts
+   returned `completed` having created no branch, written no file and posted no comment, at a
+   combined ~136k tokens over 4 tool calls. The contracts were not the defect; nothing checked
+   the artifacts before the completion was accepted. A field that always reads `orchestrator`
+   costs nothing and converts "the child self-certified" from an untracked possibility into a
+   schema violation.
+
+7. **Risk score gets no home.** It was considered and not adopted. Writing a home for a fact
+   nothing produces is how a register starts lying.
+
+### Consequences
+
+- A reader asking "where does this fact live" has one table to consult, and the table now
+  covers the factory as well as the product.
+- Removing an ECC or AutoForge store loses nothing that a gate reads, by construction. That is
+  a property worth having before the coupling deepens, not after.
+- The re-entry table in `docs/tier3/execution-lifecycle.md` becomes falsifiable. Its static
+  default is defended as *"never catastrophically wrong, only sometimes wasteful"*, and
+  `phase_start.re_entry_from` plus `re_entry_override` is what will eventually test that.
+- Two documents move: one frozen (this amendment) and one provisional. Neither gains content
+  the other already holds.
+
+### Falsifies if
+
+A gate, verdict or audit is found citing runtime state — meaning decision 3 was not a real
+boundary and the router promised an isolation the system does not have.
+
+Or: a fact is found with two writable homes after this record, meaning the router was extended
+without resolving what it was extended for.
+
+### Enforcement
+
+`schema` for the stream half — the run-record validator rejects a `phase_end` whose `outcome`
+is outside the two values, or whose `checked_by` is not `orchestrator`.
+
+`review-cadence` for the router half. Nothing in CI can check that a document has not quietly
+become a second home for a fact; that is what the router exists to make visible to a reader.
+`scripts/lint_state_authority.py` checks the mechanical part — that every home the router names
+exists, and that no runtime path is referenced from a gated document.
