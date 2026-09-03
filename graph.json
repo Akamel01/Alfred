@@ -4,7 +4,7 @@
     "adr": 47,
     "amendment": 12,
     "decision": 57,
-    "document": 71,
+    "document": 72,
     "effect": 5,
     "gate": 5,
     "gate-step": 59,
@@ -23,7 +23,7 @@
     "amended_by": 2,
     "amends": 10,
     "blocks": 32,
-    "contains": 294,
+    "contains": 295,
     "discharges": 1,
     "enforced_by": 358,
     "imports": 250,
@@ -3961,6 +3961,19 @@
     },
     {
       "confidence": "structural",
+      "dst": "document:tier3/execution-lifecycle",
+      "evidence": "docs/tier3/execution-lifecycle.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier3/execution-lifecycle.md"
+      },
+      "src": "tier:tier3"
+    },
+    {
+      "confidence": "structural",
       "dst": "document:tier3/handoff-contract-standard",
       "evidence": "docs/tier3/handoff-contract-standard.md",
       "extractor": "documents",
@@ -6566,8 +6579,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 118,
-        "line": 118,
+        "end_line": 119,
+        "line": 119,
         "path": "scripts/gen_reading_map.py"
       },
       "src": "adr:ADR-0032"
@@ -7320,8 +7333,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 310,
-        "line": 310,
+        "end_line": 313,
+        "line": 313,
         "path": "scripts/gen_doc_stubs.py"
       },
       "src": "decision:D32"
@@ -13543,16 +13556,16 @@
       "unparsed": 0
     },
     {
-      "edges": 71,
+      "edges": 72,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 63,
       "min_nodes": 71,
       "name": "documents",
-      "nodes": 79,
+      "nodes": 80,
       "rejected": 0,
-      "scanned": 71,
+      "scanned": 72,
       "unparsed": 0
     },
     {
@@ -17166,6 +17179,37 @@
         "schema"
       ],
       "title": "Escalation Protocol"
+    },
+    {
+      "attrs": {
+        "enforcement": "review-cadence",
+        "evidence": "The decisions in docs/tier7/ticket-42-execution-lifecycle-decision.md, taken against the Definition of Done's twelve conditions, failure-semantics' three-valued verdict, AutoForge's protocol.md and stages/ directory, and the ECC capability audit. No task has walked these seven phases end to end; the phase set rests on a reduction of AutoForge's twelve names, not on observed execution.",
+        "falsifies_if": "A task completes the seven phases and the merge gate still catches a class of defect this lifecycle claims to prevent upstream; or the front half is observed to be skipped without the task class declaring it; or a re-entry sends work downstream of the static default.",
+        "owner": "human",
+        "path": "docs/tier3/execution-lifecycle.md",
+        "review_after": "the first ten tasks that walk it",
+        "tier": "3",
+        "tier_name": "Agent specifications",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier3/execution-lifecycle",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier3/execution-lifecycle.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier3",
+        "human",
+        "review-cadence"
+      ],
+      "title": "Execution Lifecycle"
     },
     {
       "attrs": {

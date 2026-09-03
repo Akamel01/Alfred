@@ -85,6 +85,7 @@ PHASES: list[tuple[str, str, list[tuple[str, str, str]]]] = [
         ("state-and-graph-specification", BINDING, "field ownership, reducers, projections"),
         ("context-engineering-guide", BINDING, "seed layering; prefix order is architecture, not tuning"),
         ("instruction-and-prompt-standard", BINDING, "prompts are versioned and enter the fingerprint"),
+        ("execution-lifecycle", CONTEXT, "the seven phases a task walks; front half method, back half gated by DoD"),
         ("escalation-protocol", BINDING, "structural triggers; the agent cannot declare itself blocked"),
         ("handoff-contract-standard", BINDING, "evidence refs travel, agent-authored summaries do not"),
         ("review-protocol", CONTEXT, "criterion-first review; what the human checks that the harness cannot"),
