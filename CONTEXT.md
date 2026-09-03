@@ -123,3 +123,15 @@ Resolved 2026-09-02 in [ticket #45](https://github.com/Akamel01/Alfred/issues/45
 | **Display-only** | A runtime fact Mission Control may render for liveness, carrying provenance saying it is unverified. A missing display-only fact renders as **unknown**, never as **none**. |
 | **Homes table** | The per-fact authority map recorded in `docs/tier7/ticket-45-state-authority-decision.md`. Everything not named as a home is derived, disposable, or display-only. |
 | **Type graph / instance graph** | The type graph is `policy/node-palette.json` + `orchestration/topology.json` — which roles exist and how they may connect (protected, ADR-0039). The instance graph is `control.work` — which tasks exist and what blocks what. The instance graph is validated by the type graph; it is not a second authority. |
+---
+
+## Role Binding Terms
+
+Resolved 2026-09-02 in [ticket #43](https://github.com/Akamel01/Alfred/issues/43).
+
+| Term | Definition |
+|---|---|
+| **Role Binding** | The record that turns a palette *role* into an agent *definition*: kind, `bindable`, `capability_id`, agents keyed by phase, a model **reference**, tools, permissions, context budget, and the three version fields. Schema owned by `docs/tier3/agent-definition-standard.md`; executable form in `policy/role-bindings.json` (protected). |
+| **`bindable`** | Three states: `agent` (bound), `unbound` (could be, is not), `never` (must never be delegated to an agent — the eight `operator` palette kinds). Cross-checked by lint against `category == "operator"`; disagreement fails. |
+| **Model reference** | A binding names a *routing key*, never a literal model. The key resolves against the model-routing policy ([#46](https://github.com/Akamel01/Alfred/issues/46)). A binding that names a literal model is a second home for a fact #46 owns. |
+| **Requalification event** | A binding edit. Its version fields are the Run Fingerprint's D19 group, so changing one triggers tiered requalification. This is what keeps a silent binding edit distinguishable from genuine capability drift. |
