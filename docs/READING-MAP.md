@@ -202,7 +202,8 @@ Binding on implementation and easy to miss, since they live inside one document.
 | [ADR-0043](tier1/adr-log.md) | Dead material archived and templates shelved | Accepted |
 | [ADR-0044](tier1/adr-log.md) | Register drift reconciled | Accepted |
 | [ADR-0045](tier1/adr-log.md) | The ECC coupling is factory scope, ring-fenced, and overrides no gate | Accepted |
+| [ADR-0046](tier1/adr-log.md) | Registry additions to the register generators are inspector patches, and carry this ADR | Accepted |
 
 ---
 
-**71 documents mapped** · 44 binding · 13 context · 14 record · 45 architecture decisions
+**71 documents mapped** · 44 binding · 13 context · 14 record · 46 architecture decisions
