@@ -91,3 +91,17 @@
 | **Canvas Artifact** | The generated interactive HTML file (`orchestration-canvas.html`) that edits the topology source. |
 
 ENDOADR
+---
+
+## State Authority Terms
+
+Resolved 2026-09-02 in [ticket #45](https://github.com/Akamel01/Alfred/issues/45).
+
+| Term | Definition |
+|---|---|
+| **Ownership router** | The table in `docs/tier1/data-architecture.md` § *Ownership, stated once so it is not restated inconsistently*. It says which document owns which fact; it holds no content of its own. Extended by adding rows, never by describing. |
+| **The collision rule** | "The stream is a field set, the store is a schema, and the store never re-declares a stream field." Adding a field to a record is a Run Instrumentation change plus a validator change — never a migration. |
+| **Runtime state** | Machine-local, gitignored, disposable state (`.autoforge/`, any ECC or ECC2 store). Never cited by a gate, a verdict, or an audit. If a fact matters it is emitted into the run record stream when it happens; the runtime copy is incidental. |
+| **Display-only** | A runtime fact Mission Control may render for liveness, carrying provenance saying it is unverified. A missing display-only fact renders as **unknown**, never as **none**. |
+| **Homes table** | The per-fact authority map recorded in `docs/tier7/ticket-45-state-authority-decision.md`. Everything not named as a home is derived, disposable, or display-only. |
+| **Type graph / instance graph** | The type graph is `policy/node-palette.json` + `orchestration/topology.json` — which roles exist and how they may connect (protected, ADR-0039). The instance graph is `control.work` — which tasks exist and what blocks what. The instance graph is validated by the type graph; it is not a second authority. |
