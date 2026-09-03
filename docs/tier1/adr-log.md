@@ -4235,3 +4235,108 @@ Regenerated: 535 nodes, 970 edges, 541 notes (17 changed) in `c699ce6`. The thre
  - `docs/tier0/risk-register.md` → provisional, `review-cadence`; this ADR is the Gate D record for the reorder — the diff is staged, reviewed line-by-line, and merged only on confirmation.
  - `vault/_anomalies.md` + `graph.json` + `docs-graph.html` → byte-compared in CI (`gen_vault.py --check`); the three drift anomalies no longer appear.
 
+
+## ADR-0045 — The ECC coupling is factory scope, ring-fenced, and overrides no gate
+
+**Date:** 2026-09-02 · **Status:** Accepted · **Supersedes:** none · **See also:** ADR-0022 (the first D28 waiver, and the narrowing this effort does *not* repeat), ADR-0018 (Discharges O5 — the discharge shape this record follows), `docs/tier2/execution-order.md` § Operator-owned · **D28 waiver:** no
+
+### Context
+
+Alfred is being coupled with Everything Claude Code (ECC 2.2.1, commit `ca185ef`). The
+effort is charted as [wayfinder:map — Alfred × ECC: one factory](https://github.com/Akamel01/Alfred/issues/41).
+Its destination is one unified multi-agent framework — one palette, one task contract, one
+state-authority map, one model policy — with Mission Control built over it.
+
+That work targets the **factory**, not the AV product. It advances neither Phase 0 exit nor
+the AV wedge, and the four empty product directories (`src/ingest`, `src/replay`, `src/api`,
+`src/thresholds`) stay empty. Recording that plainly is the reason this ADR exists.
+
+**The claim this record was opened to make was wrong, and correcting it is most of its
+value.** The map's charting asserted the effort "needs a D28 waiver the way ADR-0022
+narrowed Phase 0." It does not. A D28 waiver **overrides a gate**, and every prior one
+names the gate it overrode: ADR-0022 the Phase 0 exit criteria; ADR-0033 and ADR-0040 the
+frozen status of the coding standards' structure fence; ADR-0035 the protected paths
+policy. This effort overrides nothing. It changes no exit criterion, freezes nothing,
+lowers no bar, and edits no frozen document. O1 is a gate that *sizes S9 work packets*; it
+is not a gate forbidding factory work, and no such gate exists.
+
+Operating principle 9 makes overriding a gate "expensive and permanent," and the waiver
+count is a health metric the operating principles read. Spending a waiver where nothing is
+overridden inflates that metric and cheapens the instrument. So this record carries
+`D28 waiver: no` deliberately, and states the reason, because a reader who sees a scope ADR
+without a waiver should be able to tell that the absence was reasoned rather than forgotten.
+
+What the effort does consume is human attention, and that is the scarce resource: O1 fixes
+`F = 1200 min/week` against `n = 5 merged/day`. **There is no instrument to measure the
+consumption.** `docs/tier1/mission-control-specification.md` specifies per-review timing and
+names the failure directly — review time recorded by the person being measured "is worse
+than absent, because it looks like data" — and the surface that would record it does not
+exist as code. Any minutes figure asserted here would be a guess wearing a number's
+clothes.
+
+### Decision
+
+**Factory scope is recorded, the effort is ring-fenced rather than costed, and no gate is
+waived.**
+
+1. **Scope.** The ECC coupling is factory work. It does not advance Phase 0 exit, the four
+   dated operator items, or the AV product path, and it is not to be counted as though it
+   did. The counter-argument is recorded rather than assumed away: the factory is what
+   builds the product, the product path is four empty directories, and a factory that
+   cannot reliably run multi-agent work will not fill them faster by being ignored.
+
+2. **A ring-fenced budget, not an estimated cost.** The effort may consume up to
+   **300 min/week of O1's `F = 1200`** — one quarter. A budget is a decision the operator
+   can make and enforce today; a cost is a measurement nothing can currently take. This
+   mirrors the plan of record's treatment of BD, which is ring-fenced weekly hours from
+   Phase 0 for the same reason: so it cannot lose every prioritization contest to
+   engineering.
+
+   The derivation of the discarded estimate is kept so a later reader can recompute it
+   against a real instrument: as of this record the effort had consumed roughly ten human
+   turns; at a plausible 5–10 minutes of attention per turn that is 50–100 minutes for the
+   map plus two resolved decision tickets. That is an inference from message count, **not a
+   measurement**, and it is recorded as a footnote rather than a finding.
+
+3. **The stop condition.** Human minutes per task do not fall across the first **ten** tasks
+   dispatched through the seven-phase lifecycle (ADR pending; decided in
+   [ticket #42](https://github.com/Akamel01/Alfred/issues/42)) → the effort stops and the
+   coupling is re-argued. Ten is small enough to fail fast and is the first point at which
+   the number O1 already cares about could move. A merge-rate-based criterion was rejected
+   because the factory does not yet produce merge-rate data.
+
+4. **The kill criterion does not enter Tier 0.** `docs/tier0/charter-and-non-goals.md` is
+   protected and carries **company-level** kill criteria. This is an internal factory-effort
+   stop condition. Putting it in Tier 0 would spend a Gate D line-by-line review on scoping
+   an internal effort, and would mix two kinds of criterion in one home.
+
+5. **No protected path is touched and no Gate D applies.** `docs/tier1/adr-log.md` and
+   `docs/tier2/execution-order.md` are both outside `policy/protected-paths.json`'s prefixes.
+   Checked, not assumed.
+
+### Consequences
+
+- A reader can tell what this effort is and is not paying for. "Factory work" is on the
+  record with its budget, its stop condition, and the counter-argument that was weighed.
+- The waiver count is not inflated. ADR-0045 is the first ADR to carry `D28 waiver: no`
+  with a stated reason, which makes the absence legible rather than ambiguous.
+- The 300 min/week ring-fence is enforceable by the operator without any instrument, and
+  becomes measurable the moment the Mission Control review-timing instrument exists.
+- If the coupling is later observed to advance Phase 0 exit or the product path, the scope
+  classification in item 1 was wrong and this record is falsified — see below.
+
+### Falsifies if
+
+Factory-scope work under this effort is observed to block a dated operator item (O1–O9) —
+meaning a gate *was* overridden, the `D28 waiver: no` in this record's header was wrong,
+and the decision should have carried a waiver.
+
+### Enforcement
+
+`none`. This is a scope and budget decision owned by the operator; nothing in CI can check
+whether an effort is factory work or whether 300 min/week was respected. The instrument that
+would make item 2 measurable is `task_end.human_review_ms`, specified in
+`docs/tier1/mission-control-specification.md` and not yet built — tracked as
+[Mission Control read model](https://github.com/Akamel01/Alfred/issues/52). Stating `none`
+here is the honest label under the documentation standard's rule that a document with no
+mechanism must be small and human-owned.
