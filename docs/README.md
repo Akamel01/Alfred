@@ -6,7 +6,7 @@ Documents are classified by what stops them from lying, never by topic. See
 [Documentation Standard](tier7/documentation-standard.md) for the header contract,
 the stub policy, and the authorship boundary.
 
-**72 documents** · 40 written, 32 stubs · 36 executable or generated (50%)
+**76 documents** · 45 written, 31 stubs · 36 executable or generated (47%)
 
 ## Tier 0 — Constitution
 
@@ -63,7 +63,7 @@ the stub policy, and the authorship boundary.
 | [Context Engineering Guide](tier3/context-engineering-guide.md) | provisional | human | `review-cadence` | stub |
 | [Escalation Protocol](tier3/escalation-protocol.md) | provisional | executable | `schema` | stub |
 | [Execution Lifecycle](tier3/execution-lifecycle.md) | provisional | human | `review-cadence` | full |
-| [Handoff Contract Standard](tier3/handoff-contract-standard.md) | provisional | executable | `schema` | stub |
+| [Handoff Contract Standard](tier3/handoff-contract-standard.md) | provisional | executable | `schema` | full |
 | [Instruction and Prompt Standard](tier3/instruction-and-prompt-standard.md) | provisional | executable | `schema` | stub |
 | [Run Instrumentation Specification](tier3/run-instrumentation-specification.md) | provisional | executable | `schema` | full |
 | [Tool Specification Standard](tier3/tool-specification-standard.md) | provisional | executable | `schema` | stub |
@@ -117,5 +117,9 @@ the stub policy, and the authorship boundary.
 | [Onboarding Guide](tier7/onboarding-guide.md) | provisional | human | `review-cadence` | stub |
 | [Ticket #42 — the one execution lifecycle: decision record](tier7/ticket-42-execution-lifecycle-decision.md) | provisional | human | `none` | full |
 | [Ticket #43 — role bindings: decision record](tier7/ticket-43-role-bindings-decision.md) | provisional | human | `none` | full |
+| [Ticket #44 — the canonical task contract](tier7/ticket-44-task-contract-decision.md) | provisional | human | `none` | full |
 | [Ticket #45 — state authority: decision record](tier7/ticket-45-state-authority-decision.md) | provisional | human | `none` | full |
 | [Ticket #46 — Model routing policy: home and content](tier7/ticket-46-model-routing-decision.md) | directional | executable | `review-cadence` | full |
+| [Ticket #47 — execution edge semantics](tier7/ticket-47-edge-semantics-decision.md) | provisional | human | `none` | full |
+| [Ticket #51 — the ECC2 reuse boundary](tier7/ticket-51-ecc2-boundary-decision.md) | provisional | human | `none` | full |
+| [Ticket #52 — Mission Control's read model](tier7/ticket-52-read-model-decision.md) | provisional | human | `none` | full |

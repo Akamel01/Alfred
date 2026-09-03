@@ -71,6 +71,10 @@ NOT_GENERATED: frozenset[str] = frozenset({
     # The execution lifecycle, written directly at full content from ticket #42's decisions.
     # A stub of it would restate the seven phases with nothing behind them.
     "tier3/execution-lifecycle",
+    "tier7/ticket-44-task-contract-decision",
+    "tier7/ticket-47-edge-semantics-decision",
+    "tier7/ticket-51-ecc2-boundary-decision",
+    "tier7/ticket-52-read-model-decision",
 })
 
 
