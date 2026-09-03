@@ -2,7 +2,7 @@
   "version": 1,
   "authority": "docs/tier3/agent-definition-standard.md (schema) and docs/tier7/ticket-43-role-bindings-decision.md (the decisions). Protected by policy/ in protected-paths.json; a change here is a requalification event.",
   "notes": [
-    "A binding turns a palette kind \u2014 a role, and per the glossary never a valid agent definition \u2014 into a capability: (input contract, output contract, tools, permissions, criteria, escalation).",
+    "A binding turns a palette kind — a role, and per the glossary never a valid agent definition — into a capability: (input contract, output contract, tools, permissions, criteria, escalation).",
     "capability_id IS the routing key. policy/model-routing.json maps it to a model. Ticket #43 D5 gave the binding a separate `model` reference field; ticket #46 D4 then made capability_id itself the key, so that field would be a second name for one join and is deliberately absent.",
     "The version fields below are the fingerprint's D19 group. Editing one is a requalification event: it changes the fingerprint, and the glossary suspends every autonomy grant on a fingerprint change.",
     "bindable is stated explicitly rather than derived from category. Deriving it breaks silently when a non-agent kind is added outside the operator category; the lint cross-checks the two and fails on disagreement.",
@@ -11,7 +11,7 @@
   "bindable_values": {
     "agent": "dispatched to a runtime agent; carries a full binding record",
     "unbound": "a legitimate palette kind that no lifecycle phase dispatches today",
-    "never": "may never be delegated to an agent \u2014 the operator kinds, and anything else a human must hold"
+    "never": "may never be delegated to an agent — the operator kinds, and anything else a human must hold"
   },
   "kinds": {
     "planner": "agent",
@@ -40,26 +40,12 @@
     {
       "kind": "wayfinder",
       "capability_id": "capability:wayfinder@1",
-      "phases": [
-        "Chart"
-      ],
+      "phases": ["Chart"],
       "agents": [],
       "unbound_reason": "No ECC agent charts long-horizon work through fog; its 68 are language reviewers and build resolvers. This capability runs Alfred-native invoking the `wayfinder` skill directly. The empty roster is the honest answer rather than binding a near-miss such as `planner`, which is already the planner kind's agent and would make one agent answer to two capabilities.",
-      "tools": [
-        "Read",
-        "Grep",
-        "Glob",
-        "Bash"
-      ],
-      "permissions": {
-        "write": false,
-        "network": false,
-        "issue_tracker": true
-      },
-      "context_budget": {
-        "turn_cap": 60,
-        "token_cap": 400000
-      },
+      "tools": ["Read", "Grep", "Glob", "Bash"],
+      "permissions": { "write": false, "network": false, "issue_tracker": true },
+      "context_budget": { "turn_cap": 60, "token_cap": 400000 },
       "prompt_version": "unset",
       "tool_version": "unset",
       "context_strategy_version": "unset"
@@ -67,32 +53,14 @@
     {
       "kind": "researcher",
       "capability_id": "capability:researcher@1",
-      "phases": [
-        "Discover"
-      ],
+      "phases": ["Discover"],
       "agents": [
-        {
-          "agent": "code-explorer",
-          "harness": "claude-code"
-        },
-        {
-          "agent": "docs-lookup",
-          "harness": "claude-code"
-        }
+        { "agent": "code-explorer", "harness": "claude-code" },
+        { "agent": "docs-lookup", "harness": "claude-code" }
       ],
-      "tools": [
-        "Read",
-        "Grep",
-        "Glob"
-      ],
-      "permissions": {
-        "write": false,
-        "network": false
-      },
-      "context_budget": {
-        "turn_cap": 30,
-        "token_cap": 200000
-      },
+      "tools": ["Read", "Grep", "Glob"],
+      "permissions": { "write": false, "network": false },
+      "context_budget": { "turn_cap": 30, "token_cap": 200000 },
       "prompt_version": "unset",
       "tool_version": "unset",
       "context_strategy_version": "unset"
@@ -100,24 +68,12 @@
     {
       "kind": "examiner",
       "capability_id": "capability:examiner@1",
-      "phases": [
-        "Grill"
-      ],
+      "phases": ["Grill"],
       "agents": [],
       "unbound_reason": "No ECC agent performs requirements interrogation. ECC's 68 agents are language reviewers and build resolvers; `council` is a skill, not an agent. This kind runs Alfred-native until an agent exists for it, and the empty list says so rather than binding a near-miss.",
-      "tools": [
-        "Read",
-        "Grep",
-        "Glob"
-      ],
-      "permissions": {
-        "write": false,
-        "network": false
-      },
-      "context_budget": {
-        "turn_cap": 40,
-        "token_cap": 250000
-      },
+      "tools": ["Read", "Grep", "Glob"],
+      "permissions": { "write": false, "network": false },
+      "context_budget": { "turn_cap": 40, "token_cap": 250000 },
       "prompt_version": "unset",
       "tool_version": "unset",
       "context_strategy_version": "unset"
@@ -125,32 +81,14 @@
     {
       "kind": "architect",
       "capability_id": "capability:architect@1",
-      "phases": [
-        "Architect"
-      ],
+      "phases": ["Architect"],
       "agents": [
-        {
-          "agent": "architect",
-          "harness": "claude-code"
-        },
-        {
-          "agent": "code-architect",
-          "harness": "claude-code"
-        }
+        { "agent": "architect", "harness": "claude-code" },
+        { "agent": "code-architect", "harness": "claude-code" }
       ],
-      "tools": [
-        "Read",
-        "Grep",
-        "Glob"
-      ],
-      "permissions": {
-        "write": false,
-        "network": false
-      },
-      "context_budget": {
-        "turn_cap": 40,
-        "token_cap": 250000
-      },
+      "tools": ["Read", "Grep", "Glob"],
+      "permissions": { "write": false, "network": false },
+      "context_budget": { "turn_cap": 40, "token_cap": 250000 },
       "prompt_version": "unset",
       "tool_version": "unset",
       "context_strategy_version": "unset"
@@ -158,28 +96,13 @@
     {
       "kind": "planner",
       "capability_id": "capability:planner@1",
-      "phases": [
-        "Plan"
-      ],
+      "phases": ["Plan"],
       "agents": [
-        {
-          "agent": "planner",
-          "harness": "claude-code"
-        }
+        { "agent": "planner", "harness": "claude-code" }
       ],
-      "tools": [
-        "Read",
-        "Grep",
-        "Glob"
-      ],
-      "permissions": {
-        "write": false,
-        "network": false
-      },
-      "context_budget": {
-        "turn_cap": 30,
-        "token_cap": 200000
-      },
+      "tools": ["Read", "Grep", "Glob"],
+      "permissions": { "write": false, "network": false },
+      "context_budget": { "turn_cap": 30, "token_cap": 200000 },
       "prompt_version": "unset",
       "tool_version": "unset",
       "context_strategy_version": "unset"
@@ -187,32 +110,13 @@
     {
       "kind": "code-writer",
       "capability_id": "capability:code-writer@1",
-      "phases": [
-        "Execute"
-      ],
+      "phases": ["Execute"],
       "agents": [
-        {
-          "agent": "tdd-guide",
-          "harness": "claude-code"
-        }
+        { "agent": "tdd-guide", "harness": "claude-code" }
       ],
-      "tools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash",
-        "Grep",
-        "Glob"
-      ],
-      "permissions": {
-        "write": true,
-        "network": false,
-        "writable_paths_from": "task"
-      },
-      "context_budget": {
-        "turn_cap": 60,
-        "token_cap": 400000
-      },
+      "tools": ["Read", "Write", "Edit", "Bash", "Grep", "Glob"],
+      "permissions": { "write": true, "network": false, "writable_paths_from": "task" },
+      "context_budget": { "turn_cap": 60, "token_cap": 400000 },
       "prompt_version": "unset",
       "tool_version": "unset",
       "context_strategy_version": "unset"
@@ -220,34 +124,15 @@
     {
       "kind": "reviewer",
       "capability_id": "capability:reviewer@1",
-      "phases": [
-        "Review"
-      ],
+      "phases": ["Review"],
       "agents": [
-        {
-          "agent": "code-reviewer",
-          "harness": "claude-code"
-        },
-        {
-          "agent": "security-reviewer",
-          "harness": "claude-code"
-        }
+        { "agent": "code-reviewer", "harness": "claude-code" },
+        { "agent": "security-reviewer", "harness": "claude-code" }
       ],
-      "independence": "santa-method \u2014 two agents, both must pass, and neither may be the agent that ran Execute",
-      "tools": [
-        "Read",
-        "Grep",
-        "Glob",
-        "Bash"
-      ],
-      "permissions": {
-        "write": false,
-        "network": false
-      },
-      "context_budget": {
-        "turn_cap": 40,
-        "token_cap": 250000
-      },
+      "independence": "santa-method — two agents, both must pass, and neither may be the agent that ran Execute",
+      "tools": ["Read", "Grep", "Glob", "Bash"],
+      "permissions": { "write": false, "network": false },
+      "context_budget": { "turn_cap": 40, "token_cap": 250000 },
       "prompt_version": "unset",
       "tool_version": "unset",
       "context_strategy_version": "unset"
@@ -255,16 +140,11 @@
     {
       "kind": "validator",
       "capability_id": "capability:validator@1",
-      "phases": [
-        "Validate"
-      ],
+      "phases": ["Validate"],
       "agents": [],
-      "unbound_reason": "No ECC agent may hold validation authority. `verification-loop` and `eval-harness` are skills, not agents, and `agent-evaluator` is classified never authoritative \u2014 an agent rating its own output is a self-reported verdict from the executing session. Validation runs Alfred-native, against the criterion, outside the agent tree.",
+      "unbound_reason": "No ECC agent may hold validation authority. `verification-loop` and `eval-harness` are skills, not agents, and `agent-evaluator` is classified never authoritative — an agent rating its own output is a self-reported verdict from the executing session. Validation runs Alfred-native, against the criterion, outside the agent tree.",
       "tools": [],
-      "permissions": {
-        "write": false,
-        "network": false
-      },
+      "permissions": { "write": false, "network": false },
       "context_budget": null,
       "prompt_version": "unset",
       "tool_version": "unset",
