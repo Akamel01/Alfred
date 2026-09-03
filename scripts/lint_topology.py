@@ -30,6 +30,7 @@ from _lintkit import REPO_ROOT, Findings, self_test_exit, vacuity_guard
 
 PALETTE_PATH: Path = Path("policy/node-palette.json")
 TOPOLOGY_PATH: Path = Path("orchestration/topology.json")
+BINDINGS_PATH: Path = Path("policy/role-bindings.json")
 
 # Contracts where cycles are forbidden. hands-off-to allows feedback loops.
 CYCLE_FORBIDDEN: frozenset[str] = frozenset({"delegates-to", "reviews", "feeds"})
@@ -241,6 +242,106 @@ def check_topology(base: Path = REPO_ROOT) -> Findings:
 # ---------------------------------------------------------------------- self-test
 
 
+# ------------------------------------------------------------------- role bindings (TOP010-013)
+
+
+def check_bindings(base: Path = REPO_ROOT) -> Findings:
+    """TOP010-TOP013. The palette says which roles exist; the bindings say which ones run.
+
+    This is a two-file invariant, which is why it extends this lint rather than living in a
+    new one: a separate file would either duplicate the palette loader or leave the
+    cross-check unowned.
+
+    TOP010 every palette kind has a `bindable` value, and every `bindable` key is a real kind.
+    TOP011 `bindable` agrees with the palette's own category. Stated explicitly *and* derived,
+           then compared: an explicit `never` is a statement a reviewer sees in the diff, and
+           deriving it from `category` is an inference that breaks silently the day a
+           non-agent kind is added outside the operator category. Two independent expressions
+           of one fact, checked against each other, is not two homes for it.
+    TOP012 every binding names a kind whose `bindable` is `agent`, exactly once.
+    TOP013 a binding with no agents states why. An empty `agents` list is a real answer --
+           no ECC agent may hold validation authority -- but an unexplained one is an
+           omission wearing the same shape.
+    """
+    findings = Findings()
+    palette_data, palette_err = _load_json(PALETTE_PATH, base)
+    bindings_data, bindings_err = _load_json(BINDINGS_PATH, base)
+
+    if palette_err is not None:
+        findings.violations.append(palette_err)
+        return findings
+    if bindings_err is not None:
+        findings.violations.append(bindings_err)
+        return findings
+
+    assert palette_data is not None and bindings_data is not None
+
+    kinds = _palette_map(palette_data)
+    declared: dict[str, Any] = bindings_data.get("bindable_by_kind") or bindings_data.get("kinds") or {}
+    bindings: list[dict[str, Any]] = bindings_data.get("bindings", [])  # type: ignore[assignment]
+    findings.scanned = len(kinds) + len(bindings)
+
+    legal = {"agent", "unbound", "never"}
+
+    # TOP010 -- both directions.
+    for kind_id in sorted(kinds):
+        if kind_id not in declared:
+            findings.violations.append(f"TOP010 palette kind {kind_id!r} has no bindable value")
+    for kind_id in sorted(declared):
+        if kind_id not in kinds:
+            findings.violations.append(f"TOP010 bindable names {kind_id!r}, which is not a palette kind")
+        elif declared[kind_id] not in legal:
+            findings.violations.append(
+                f"TOP010 kind {kind_id!r} bindable {declared[kind_id]!r} not in {sorted(legal)}"
+            )
+
+    # TOP011 -- explicit against derived.
+    for kind_id, value in sorted(declared.items()):
+        node = kinds.get(kind_id)
+        if node is None or value not in legal:
+            continue
+        is_operator = node.get("category") == "operator"
+        if is_operator and value != "never":
+            findings.violations.append(
+                f"TOP011 kind {kind_id!r} is category 'operator' but bindable is {value!r}, not 'never'"
+            )
+        if not is_operator and value == "never":
+            findings.violations.append(
+                f"TOP011 kind {kind_id!r} is bindable 'never' but category is "
+                f"{node.get('category')!r}, not 'operator'"
+            )
+
+    # TOP012 -- one binding per agent-bindable kind.
+    seen: dict[str, int] = {}
+    for binding in bindings:
+        kind_id = binding.get("kind")
+        if not isinstance(kind_id, str):
+            findings.violations.append("TOP012 a binding has no 'kind'")
+            continue
+        seen[kind_id] = seen.get(kind_id, 0) + 1
+        if declared.get(kind_id) != "agent":
+            findings.violations.append(
+                f"TOP012 binding for {kind_id!r} whose bindable is "
+                f"{declared.get(kind_id)!r}, not 'agent'"
+            )
+    for kind_id, count in sorted(seen.items()):
+        if count > 1:
+            findings.violations.append(f"TOP012 kind {kind_id!r} has {count} bindings, expected 1")
+    for kind_id, value in sorted(declared.items()):
+        if value == "agent" and kind_id not in seen:
+            findings.violations.append(f"TOP012 kind {kind_id!r} is bindable 'agent' but has no binding")
+
+    # TOP013 -- an empty roster is an answer only when it says why.
+    for binding in bindings:
+        kind_id = binding.get("kind", "<unnamed>")
+        if not binding.get("agents") and not binding.get("unbound_reason"):
+            findings.violations.append(
+                f"TOP013 binding {kind_id!r} names no agents and gives no unbound_reason"
+            )
+
+    return findings
+
+
 def _valid_palette() -> dict[str, Any]:
     """Minimal palette for self-test: covers cases needed."""
     return {
@@ -278,6 +379,47 @@ def _write_fixture(root: Path, palette: dict[str, Any] | None, topology: dict[st
         t = root / TOPOLOGY_PATH
         t.parent.mkdir(parents=True, exist_ok=True)
         t.write_text(json.dumps(topology), encoding="utf-8")
+
+
+def _write_bindings(root: Path, palette: dict[str, Any], bindings: dict[str, Any]) -> None:
+    p = root / PALETTE_PATH
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(json.dumps(palette), encoding="utf-8")
+    b = root / BINDINGS_PATH
+    b.parent.mkdir(parents=True, exist_ok=True)
+    b.write_text(json.dumps(bindings), encoding="utf-8")
+
+
+def _binding_palette() -> dict[str, Any]:
+    """Palette for the binding checks: one agent-bindable kind and one operator kind.
+
+    The operator kind is the point -- TOP011 compares the explicit `bindable` against the
+    category, and a fixture with no operator kind cannot exercise either direction of it.
+    """
+    palette = _valid_palette()
+    palette["nodes"].append({
+        "id": "evidence-store", "label": "Evidence", "description": "e",
+        "ports": {"in": [], "out": []}, "defaults": {}, "icon": "x", "category": "operator",
+    })
+    return palette
+
+
+def _valid_bindings() -> dict[str, Any]:
+    return {
+        "version": 1,
+        "kinds": {
+            "planner": "agent",
+            "code-writer": "unbound",
+            "reviewer": "unbound",
+            "researcher": "unbound",
+            "drafter": "unbound",
+            "evidence-store": "never",
+        },
+        "bindings": [
+            {"kind": "planner", "capability_id": "capability:planner@1",
+             "agents": [{"agent": "planner", "harness": "claude-code"}]},
+        ],
+    }
 
 
 def self_test() -> int:
@@ -439,11 +581,88 @@ def self_test() -> int:
         if check_topology(base=case).scanned != 0:
             failures.append("empty topology did not report zero scanned")
 
+        # ---- role bindings TOP010-TOP013 ------------------------------------------------
+
+        # control: valid palette + valid bindings must be clean
+        case = scratch / "bind-clean"
+        _write_bindings(case, _binding_palette(), _valid_bindings())
+        ctrl_b = check_bindings(base=case)
+        if ctrl_b.violations:
+            failures.append(f"binding control fired on clean: {ctrl_b.violations}")
+
+        # TOP010 a palette kind with no bindable value
+        case = scratch / "top010a"
+        b = _valid_bindings()
+        del b["kinds"]["drafter"]
+        _write_bindings(case, _binding_palette(), b)
+        if not any("TOP010" in v for v in check_bindings(base=case).violations):
+            failures.append("TOP010 did not fire on a kind with no bindable value")
+
+        # TOP010 the reverse direction: a bindable naming no palette kind
+        case = scratch / "top010b"
+        b = _valid_bindings()
+        b["kinds"]["ghost-kind"] = "unbound"
+        _write_bindings(case, _binding_palette(), b)
+        if not any("TOP010" in v for v in check_bindings(base=case).violations):
+            failures.append("TOP010 did not fire on a bindable naming no palette kind")
+
+        # TOP011 an operator kind declared bindable
+        case = scratch / "top011a"
+        b = _valid_bindings()
+        b["kinds"]["evidence-store"] = "agent"
+        _write_bindings(case, _binding_palette(), b)
+        if not any("TOP011" in v for v in check_bindings(base=case).violations):
+            failures.append("TOP011 did not fire on an operator kind declared bindable")
+
+        # TOP011 the reverse direction: 'never' on a non-operator kind
+        case = scratch / "top011b"
+        b = _valid_bindings()
+        b["kinds"]["drafter"] = "never"
+        _write_bindings(case, _binding_palette(), b)
+        if not any("TOP011" in v for v in check_bindings(base=case).violations):
+            failures.append("TOP011 did not fire on 'never' outside the operator category")
+
+        # TOP012 a binding for a kind that is not bindable 'agent'
+        case = scratch / "top012a"
+        b = _valid_bindings()
+        b["bindings"].append({"kind": "drafter", "agents": [{"agent": "x", "harness": "y"}]})
+        _write_bindings(case, _binding_palette(), b)
+        if not any("TOP012" in v for v in check_bindings(base=case).violations):
+            failures.append("TOP012 did not fire on a binding for a non-agent kind")
+
+        # TOP012 a kind bindable 'agent' with no binding
+        case = scratch / "top012b"
+        b = _valid_bindings()
+        b["bindings"] = []
+        _write_bindings(case, _binding_palette(), b)
+        if not any("TOP012" in v for v in check_bindings(base=case).violations):
+            failures.append("TOP012 did not fire on an agent kind with no binding")
+
+        # TOP013 an empty agent roster with no stated reason
+        case = scratch / "top013"
+        b = _valid_bindings()
+        b["bindings"][0]["agents"] = []
+        _write_bindings(case, _binding_palette(), b)
+        if not any("TOP013" in v for v in check_bindings(base=case).violations):
+            failures.append("TOP013 did not fire on an empty roster with no unbound_reason")
+
+        # TOP013 negative control: an empty roster WITH a reason is legal
+        case = scratch / "top013-ok"
+        b = _valid_bindings()
+        b["bindings"][0]["agents"] = []
+        b["bindings"][0]["unbound_reason"] = "no agent may hold this authority"
+        _write_bindings(case, _binding_palette(), b)
+        if any("TOP013" in v for v in check_bindings(base=case).violations):
+            failures.append("TOP013 fired on an empty roster that stated its reason")
+
     return self_test_exit(
         failures,
         "OK self-test — TOP001 duplicate id, TOP002 missing ref, TOP003 bad source_port, "
         "TOP004 bad target_port, TOP005 illegal contract, TOP006 duplicate edge, "
-        "TOP007 cycle forbidden/allowed, TOP008 unknown kind, TOP009 missing version; control clean\n",
+        "TOP007 cycle forbidden/allowed, TOP008 unknown kind, TOP009 missing version, "
+        "TOP010 unbindable/unknown kind both directions, TOP011 category disagreement both "
+        "directions, TOP012 binding/bindable mismatch both directions, TOP013 unexplained "
+        "empty roster with its paired control; control clean\n",
     )
 
 
@@ -457,13 +676,19 @@ def main() -> int:
         return self_test()
 
     findings = check_topology()
-    for violation in findings.violations:
+    bindings = check_bindings()
+    for violation in [*findings.violations, *bindings.violations]:
         sys.stdout.write(f"{violation}\n")
     if vacuity_guard(findings.scanned, "VACUOUS topology: scanned 0 nodes+edges\n"):
         return 1
-    if findings.violations:
+    if vacuity_guard(bindings.scanned, "VACUOUS bindings: scanned 0 kinds+bindings\n"):
         return 1
-    sys.stdout.write(f"OK topology — {findings.scanned} nodes+edges, all TOP001-TOP009 satisfied\n")
+    if findings.violations or bindings.violations:
+        return 1
+    sys.stdout.write(
+        f"OK topology — {findings.scanned} nodes+edges, all TOP001-TOP009 satisfied; "
+        f"bindings — {bindings.scanned} kinds+bindings, all TOP010-TOP013 satisfied\n"
+    )
     return 0
 
 

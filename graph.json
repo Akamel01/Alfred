@@ -10,7 +10,7 @@
     "gate-step": 55,
     "kill-criterion": 6,
     "layout": 18,
-    "module": 238,
+    "module": 239,
     "operator-item": 9,
     "process": 7,
     "risk": 12,
@@ -13095,9 +13095,9 @@
       "min_edges": 45,
       "min_nodes": 90,
       "name": "code",
-      "nodes": 243,
+      "nodes": 244,
       "rejected": 0,
-      "scanned": 270,
+      "scanned": 271,
       "unparsed": 0
     },
     {
@@ -13188,7 +13188,7 @@
       "name": "references",
       "nodes": 0,
       "rejected": 0,
-      "scanned": 200,
+      "scanned": 201,
       "unparsed": 0
     },
     {
@@ -16565,14 +16565,14 @@
     {
       "attrs": {
         "enforcement": "schema",
-        "evidence": "none — written pre-Phase-0 as a register stub (D32)",
-        "falsifies_if": "An agent is dispatched whose definition names a job title rather than a capability.",
+        "evidence": "The decisions in docs/tier7/ticket-43-role-bindings-decision.md, the glossary's Capability definition, the frozen task specification standard's `capability` field, and the seven bindings now in policy/role-bindings.json checked by lint_topology.py TOP010-TOP013. No agent has been dispatched through a binding; the field set rests on the fingerprint's D19 group, not on an observed run.",
+        "falsifies_if": "An agent is dispatched whose definition names a job title rather than a capability; or a binding is edited without the fingerprint moving, meaning the version fields below are not actually the D19 group.",
         "owner": "executable",
         "path": "docs/tier3/agent-definition-standard.md",
         "review_after": "Phase 2",
         "tier": "3",
         "tier_name": "Agent specifications",
-        "written": "stub"
+        "written": "full"
       },
       "body": "",
       "extractor": "documents",
@@ -23182,6 +23182,32 @@
         "protected"
       ],
       "title": "policy/protected-paths.json"
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "policy/role-bindings.json",
+        "present": "true",
+        "protected": "true",
+        "tree": "policy"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:policy.role-bindings.json",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "policy/role-bindings.json"
+      },
+      "status": "",
+      "tags": [
+        "protected"
+      ],
+      "title": "policy/role-bindings.json"
     },
     {
       "attrs": {

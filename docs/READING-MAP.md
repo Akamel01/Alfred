@@ -87,7 +87,7 @@ One agent, one task, human gate.
 | 3 | [Mission Control Specification](tier1/mission-control-specification.md) | binding | provisional | the operator surface; the human gate is unrecorded and unmeasured without it |
 | 4 | [Mission Control Design](tier1/mission-control-design.md) | binding | provisional | how that surface is built: reachability ladder, routes, forms, and the timing instrument's failure modes |
 | 5 | [Orchestration Canvas Specification](tier1/orchestration-canvas-spec.md) | binding | provisional | operator-local interactive topology editor: palette, contract vocabulary, file format, generator and lint contracts |
-| 6 | [Agent Definition Standard](tier3/agent-definition-standard.md) | binding | stub | an agent is a contract, never a job title |
+| 6 | [Agent Definition Standard](tier3/agent-definition-standard.md) | binding | provisional | an agent is a contract, never a job title |
 | 7 | [Agent Catalog](tier3/agent-catalog.md) | binding | stub | one specification per capability |
 | 8 | [Tool Specification Standard](tier3/tool-specification-standard.md) | binding | stub | contract, side effects, blast radius, idempotency |
 | 9 | [State and Graph Specification](tier1/state-and-graph-specification.md) | binding | stub | field ownership, reducers, projections |
