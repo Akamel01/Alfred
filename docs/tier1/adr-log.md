@@ -4534,3 +4534,105 @@ is outside the two values, or whose `checked_by` is not `orchestrator`.
 become a second home for a fact; that is what the router exists to make visible to a reader.
 `scripts/lint_state_authority.py` checks the mechanical part — that every home the router names
 exists, and that no runtime path is referenced from a gated document.
+
+---
+
+## ADR-0048 — The palette gains seven `hands-off-to` ports so the lifecycle chain becomes expressible
+
+**Date:** 2026-09-03 · **Status:** Accepted · **Supersedes:** none · **Amends:** `policy/node-palette.json`'s port declarations for five kinds · **See also:** ADR-0039 (the palette as type system), ADR-0046 (the inspector-patch class this is *not* in), `docs/tier7/ticket-43-role-bindings-decision.md`, `docs/tier7/ticket-47-edge-semantics-decision.md`, `docs/tier3/execution-lifecycle.md` · **D28 waiver:** no
+
+### Context
+
+`docs/tier3/execution-lifecycle.md` fixes seven phases and `policy/role-bindings.json` binds the
+capabilities that run them. `orchestration/topology.json` is meant to be the graph of that chain,
+and today it is a leftover sample: eight nodes, seven edges, using kinds that predate the bindings.
+
+Rebuilding it surfaced a blocker that nothing had checked, because nothing had tried.
+
+**An edge requires its contract type to appear in the source kind's `out` *and* the target kind's
+`in`** (`lint_topology.py` TOP005). Measured against the lifecycle chain, **four of seven links are
+illegal**, and the worst case is not a near miss:
+
+> `planner` declares `"in": []`.
+
+The planner accepts nothing. **No kind in the palette can hand the planner work**, so the phase that
+sequences everything downstream is unreachable by construction. The palette has been in this state
+since ADR-0039 without failing anything, because `lint_topology.py` checks that the topology is
+internally consistent — not that it can express the lifecycle. The sample topology never tried the
+links that fail.
+
+### Decision
+
+1. **Seven port additions across five kinds. All of them `hands-off-to`.**
+
+   ```
+   examiner    in += hands-off-to    out += hands-off-to
+   architect   in += hands-off-to    out += hands-off-to
+   planner     in += hands-off-to
+   reviewer                          out += hands-off-to
+   validator   in += hands-off-to
+   ```
+
+2. **No new contract type.** The vocabulary stays at four — `delegates-to`, `feeds`,
+   `hands-off-to`, `reviews` — exactly as `docs/tier7/ticket-47-edge-semantics-decision.md` decided
+   after refusing five of the brief's nine proposed edge kinds. This record adds *permission to use
+   an existing type*, never a type.
+
+3. **Every phase transition is `hands-off-to`, and the uniformity is deliberate.** The alternatives
+   were considered per link and rejected. `feeds` reads as *"here is data for you"*; a phase
+   transition is *"I am done, it is yours"*. `delegates-to` from architect to planner would make the
+   architect the planner's superior, which the lifecycle does not say anywhere else. One arrow type
+   for one meaning leaves a map a reader can follow without a legend.
+
+4. **The two backward `reviews` edges need no addition.** `reviewer → code-writer` and
+   `validator → code-writer` are already legal. That is the re-entry table made structural: the
+   lifecycle's static default sends a Review or Validate failure back to Execute, and those are the
+   only backward edges the type graph permits. **An upstream override to Architect or Plan has no
+   edge and therefore cannot be expressed as a traversal** — which is correct, because the lifecycle
+   makes an override a recorded exception rather than a normal path.
+
+5. **`wayfinder` becomes `bindable: agent` and enters the graph as the entry point.** It was
+   `unbound` because the `~/.claude` wayfinder skill carried `disable-model-invocation: true` — no
+   agent could run it, so `unbound` was a statement of fact rather than a preference. The operator
+   removed that flag on 2026-09-03, the fact changed, and the binding follows it. The edge
+   `wayfinder --delegates-to--> researcher` **needs no port addition**: both ends already declare it.
+
+6. **This is not the data-only class ADR-0046 covers.** ADR-0046 bounds itself to registry entries
+   that add no control flow. A port declaration changes what connections are *expressible anywhere
+   in the graph*, which is a type-system change and heavier than a topology edit. It carries its own
+   record, and this is it.
+
+7. **`orchestration/topology.json` is not written by this record.** It is operator-only (ADR-0039).
+   The verified draft is on [issue #47](https://github.com/Akamel01/Alfred/issues/47) for the
+   operator to paste, amend or reject.
+
+### Consequences
+
+- The lifecycle chain becomes expressible. Verified rather than asserted: the candidate palette and
+  topology were built in a scratch tree and run through `check_topology`, which returns clean at 17
+  nodes+edges for the eight-role graph.
+- The palette's permissiveness grows by seven ports. That is a real widening of what the type graph
+  admits, and it is the cost of the chain being expressible at all.
+- `planner` stops being unreachable. Any topology drawn before this record that routed work to the
+  planner was invalid and would have failed TOP004.
+- One class of bug is now visible that was not: a palette that cannot express the lifecycle passes
+  every existing check. Nothing added here detects the next instance of that, and
+  `docs/tier7/ticket-47-edge-semantics-decision.md` records it as an open gap rather than a solved
+  one.
+
+### Falsifies if
+
+A phase transition is found needing a contract type other than `hands-off-to`, meaning decision 3's
+uniformity was a simplification rather than a description.
+
+Or: a port added here is found unused by any edge in the topology the operator eventually writes,
+meaning the palette was widened for a link that does not exist.
+
+### Enforcement
+
+`schema`, via `scripts/lint_topology.py` TOP003–TOP005, which already reject an edge whose contract
+is absent from either endpoint. The additions here change what those checks admit; they do not
+change the checks.
+
+Nothing asserts that the palette *can* express the lifecycle — that is the gap decision 7's
+consequence names, and finding it required drawing the graph rather than reading the file.

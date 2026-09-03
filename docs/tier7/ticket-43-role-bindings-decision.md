@@ -157,3 +157,26 @@ protected.
 Nothing here is blocked on [#46](https://github.com/Akamel01/Alfred/issues/46) except the
 routing keys' *values*; the binding's reference-shaped `model` field can be written before
 they resolve.
+
+
+## Amendment, 2026-09-03 — eight kinds, not seven
+
+D3 bound seven kinds on the reasoning that only those are dispatched by the lifecycle. `wayfinder`
+was `unbound`, and that was a **statement of fact rather than a judgement**: its skill carried
+`disable-model-invocation: true`, so no agent could run it.
+
+The operator removed that flag. The fact changed, so the binding changed with it — `wayfinder` is
+now `bindable: agent`, carrying `capability:wayfinder@1`, routed to `claude-opus-5` because
+long-horizon planning is §11 Opus work and a charting error propagates into every ticket the map
+produces.
+
+Its `agents` list is empty with a stated `unbound_reason`, joining `examiner` and `validator`: no
+ECC agent charts long-horizon work through fog, and binding `planner` — the nearest miss — would
+make one agent answer to two capabilities. It runs Alfred-native, invoking the `wayfinder` skill.
+
+**Three of eight capabilities now bind to no ECC agent.** That sharpens
+`docs/tier7/ecc-capability-audit.md`'s ALFRED-ADAPTER = 0 finding rather than softening it: ECC
+supplies agents for the middle of the lifecycle and nothing for its ends — charting, interrogation,
+and validation.
+
+D3's reasoning is unchanged and was not overturned. Only one of its inputs was.

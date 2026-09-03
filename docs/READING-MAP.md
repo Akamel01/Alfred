@@ -209,7 +209,8 @@ Binding on implementation and easy to miss, since they live inside one document.
 | [ADR-0045](tier1/adr-log.md) | The ECC coupling is factory scope, ring-fenced, and overrides no gate | Accepted |
 | [ADR-0046](tier1/adr-log.md) | Registry additions to the register generators are inspector patches, and carry this ADR | Accepted |
 | [ADR-0047](tier1/adr-log.md) | The ownership router gains the factory's facts, and runtime state is never evidence | Accepted |
+| [ADR-0048](tier1/adr-log.md) | The palette gains seven `hands-off-to` ports so the lifecycle chain becomes expressible | Accepted |
 
 ---
 
-**76 documents mapped** · 44 binding · 14 context · 18 record · 47 architecture decisions
+**76 documents mapped** · 44 binding · 14 context · 18 record · 48 architecture decisions

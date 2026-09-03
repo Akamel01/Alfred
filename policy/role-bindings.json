@@ -5,7 +5,8 @@
     "A binding turns a palette kind — a role, and per the glossary never a valid agent definition — into a capability: (input contract, output contract, tools, permissions, criteria, escalation).",
     "capability_id IS the routing key. policy/model-routing.json maps it to a model. Ticket #43 D5 gave the binding a separate `model` reference field; ticket #46 D4 then made capability_id itself the key, so that field would be a second name for one join and is deliberately absent.",
     "The version fields below are the fingerprint's D19 group. Editing one is a requalification event: it changes the fingerprint, and the glossary suspends every autonomy grant on a fingerprint change.",
-    "bindable is stated explicitly rather than derived from category. Deriving it breaks silently when a non-agent kind is added outside the operator category; the lint cross-checks the two and fails on disagreement."
+    "bindable is stated explicitly rather than derived from category. Deriving it breaks silently when a non-agent kind is added outside the operator category; the lint cross-checks the two and fails on disagreement.",
+    "wayfinder moved from unbound to agent on 2026-09-03: the ~/.claude wayfinder skill carried disable-model-invocation: true, so no agent could run it and 'unbound' was a statement of fact. The operator removed that flag, so the fact changed and the binding follows it."
   ],
   "bindable_values": {
     "agent": "dispatched to a runtime agent; carries a full binding record",
@@ -14,7 +15,7 @@
   },
   "kinds": {
     "planner": "agent",
-    "wayfinder": "unbound",
+    "wayfinder": "agent",
     "architect": "agent",
     "product-manager": "unbound",
     "code-writer": "agent",
@@ -36,6 +37,19 @@
     "restore-drill": "never"
   },
   "bindings": [
+    {
+      "kind": "wayfinder",
+      "capability_id": "capability:wayfinder@1",
+      "phases": ["Chart"],
+      "agents": [],
+      "unbound_reason": "No ECC agent charts long-horizon work through fog; its 68 are language reviewers and build resolvers. This capability runs Alfred-native invoking the `wayfinder` skill directly. The empty roster is the honest answer rather than binding a near-miss such as `planner`, which is already the planner kind's agent and would make one agent answer to two capabilities.",
+      "tools": ["Read", "Grep", "Glob", "Bash"],
+      "permissions": { "write": false, "network": false, "issue_tracker": true },
+      "context_budget": { "turn_cap": 60, "token_cap": 400000 },
+      "prompt_version": "unset",
+      "tool_version": "unset",
+      "context_strategy_version": "unset"
+    },
     {
       "kind": "researcher",
       "capability_id": "capability:researcher@1",

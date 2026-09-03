@@ -34,6 +34,13 @@
   },
   "routes": [
     {
+      "capability_id": "capability:wayfinder@1",
+      "model": "claude-opus-5",
+      "provider": "anthropic",
+      "trivial": false,
+      "reason": "Long-horizon planning and architecture-shaping decisions. The brief's §11 names planning and architecture as Opus work, and a charting error propagates into every ticket the map produces."
+    },
+    {
       "capability_id": "capability:researcher@1",
       "model": "claude-sonnet-5",
       "provider": "anthropic",

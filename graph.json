@@ -1,7 +1,7 @@
 {
   "anomalies": [],
   "counts": {
-    "adr": 47,
+    "adr": 48,
     "amendment": 12,
     "decision": 57,
     "document": 76,
@@ -29,7 +29,7 @@
     "imports": 250,
     "needs": 4,
     "runs": 38,
-    "see_also": 44,
+    "see_also": 46,
     "supersedes": 1
   },
   "edges": [
@@ -13528,6 +13528,32 @@
       "src": "adr:ADR-0047"
     },
     {
+      "confidence": "structural",
+      "dst": "adr:ADR-0039",
+      "evidence": "**See also:** ADR-0039 (the palette as type system), ADR-0046 (the inspector-patch class this is *not* in), `docs/tier7/ticket-43-role-bindings-decision.md`, `docs/tier7/ticket-47-edge-semantics-decis",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 4540,
+        "line": 4540,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0048"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0046",
+      "evidence": "**See also:** ADR-0039 (the palette as type system), ADR-0046 (the inspector-patch class this is *not* in), `docs/tier7/ticket-43-role-bindings-decision.md`, `docs/tier7/ticket-47-edge-semantics-decis",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 4540,
+        "line": 4540,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0048"
+    },
+    {
       "confidence": "prose",
       "dst": "decision:D17",
       "evidence": "Supersedes decision 17",
@@ -13543,14 +13569,14 @@
   ],
   "extractors": [
     {
-      "edges": 54,
+      "edges": 56,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 4,
       "min_nodes": 14,
       "name": "adrs",
-      "nodes": 47,
+      "nodes": 48,
       "rejected": 0,
       "scanned": 1,
       "unparsed": 0
@@ -14704,6 +14730,27 @@
       "status": "accepted",
       "tags": [],
       "title": "The ownership router gains the factory's facts, and runtime state is never evidence"
+    },
+    {
+      "attrs": {
+        "date": "2026-09-03",
+        "status": "accepted",
+        "status_raw": "Accepted"
+      },
+      "body": "**Date:** 2026-09-03 · **Status:** Accepted · **Supersedes:** none · **Amends:** `policy/node-palette.json`'s port declarations for five kinds · **See also:** ADR-0039 (the palette as type system), ADR-0046 (the inspector-patch class this is *not* in), `docs/tier7/ticket-43-role-bindings-decision.md`, `docs/tier7/ticket-47-edge-semantics-decision.md`, `docs/tier3/execution-lifecycle.md` · **D28 waiver:** no",
+      "extractor": "adrs",
+      "id": "adr:ADR-0048",
+      "kind": "adr",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 4540,
+        "line": 4540,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "accepted",
+      "tags": [],
+      "title": "The palette gains seven `hands-off-to` ports so the lifecycle chain becomes expressible"
     },
     {
       "attrs": {

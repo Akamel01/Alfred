@@ -36,3 +36,4 @@ generated: true
 - [[adr__ADR-0040|The structure fence grows to eighteen]] **see_also** → this
 - [[adr__ADR-0041|The S0–S9 build materialized as a numbered pipeline]] **see_also** → this
 - [[adr__ADR-0047|The ownership router gains the factory's facts, and runtime state is never evidence]] **see_also** → this
+- [[adr__ADR-0048|The palette gains seven `hands-off-to` ports so the lifecycle chain becomes expressible]] **see_also** → this
