@@ -4,7 +4,7 @@ id: "gate-step:inspector.15"
 title: "Run fingerprint record (field set, derived digest, register agreement)"
 shape: "step"
 job: "inspector"
-source: ".github/workflows/gates.yml:345"
+source: ".github/workflows/gates.yml:351"
 extractor: "workflows"
 tags: [protected]
 aliases:
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `.github/workflows/gates.yml:345`
+**Source** · `.github/workflows/gates.yml:351`
 
 ## Statement
 

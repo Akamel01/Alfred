@@ -37,6 +37,7 @@ generated: true
 - [[adr__ADR-0004|The ACS-1 float presentation grammar]] **amends** → this
 - [[adr__ADR-0006|The result stamp field set, its own version, and upstream toolchain provenance]] **see_also** → this
 - [[adr__ADR-0016|`StampedResult` takes its schema version from the stamp it contains]] **see_also** → this
+- [[adr__ADR-0047|The ownership router gains the factory's facts, and runtime state is never evidence]] **see_also** → this
 
 ## Enforced by (code)
 

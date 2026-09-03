@@ -67,7 +67,7 @@ domain separator.
 
 | Field | Type | Notes |
 |---|---|---|
-| `record_type` | enum | `attempt_start` · `turn` · `tool_call` · `progress` · `escalation` · `attempt_end` · `task_end` · `operator_action` |
+| `record_type` | enum | `attempt_start` · `phase_start` · `turn` · `tool_call` · `progress` · `phase_end` · `escalation` · `attempt_end` · `task_end` · `operator_action` |
 | `schema_version` | int | I6. This document is version 1. |
 | `event_id` | uuid7 | I4, typed distinctly. |
 | `org_id`, `project_id` | uuid7 | I1. Present with one tenant. |
@@ -248,6 +248,52 @@ of the harness.
 Any report of the mismatch rate states that it is a lower bound. A lower bound presented
 as a rate is the same class of error as a summary presented as a fact.
 
+## `phase_start` and `phase_end`
+
+The execution lifecycle (`docs/tier3/execution-lifecycle.md`) has seven phases, and until
+these records existed the stream could not say which one a turn happened in. Every question
+worth asking about the lifecycle — where re-entry actually lands, which phase consumes the
+budget, whether the front half was skipped for a task class that did not declare it — is a
+question about phase boundaries, and none of them is answerable from `turn` alone.
+
+**These are stream fields, not a store schema.** Per the ownership rule in
+`docs/tier1/data-architecture.md`, *the stream is a field set, the store is a schema, and the
+store never re-declares a stream field.* Adding these two record types is a change to this
+document and to the validator. **It is not a migration.**
+
+### `phase_start`
+
+| Field | Type | Notes |
+|---|---|---|
+| `phase` | enum | `discover` · `grill` · `architect` · `plan` · `execute` · `review` · `validate`. Closed set; it is the lifecycle's, and a phase this stream can name that the lifecycle does not have is a contract violation. |
+| `entry_reason` | enum | `sequence` · `re_entry`. What put the run in this phase. |
+| `re_entry_from` | enum \| null | The phase whose failure caused a backward move. Null unless `entry_reason` is `re_entry`. |
+| `re_entry_override` | bool | Whether the finder overrode the static default. |
+| `re_entry_rationale` | str \| null | Required when `re_entry_override` is true. The lifecycle permits an override only by the party that found the failure, and only upstream; an override with no recorded reason is indistinguishable from a wrong table. |
+| `capability_id` | str | The capability dispatched to for this phase. The join to `policy/role-bindings.json` and, through it, to `policy/model-routing.json`. |
+| `task_class` | str | The class assigned by the orchestrator before dispatch. Recorded here because it is what scales the front half, and a collapsed front half must be attributable to a declared class rather than to a skipped step. |
+
+**`re_entry_from` is what makes the re-entry table falsifiable.** The lifecycle's static
+default is defended on the claim that it is *"never catastrophically wrong, only sometimes
+wasteful."* Nothing tests that claim without a record of where re-entry was defaulted and
+where it was overridden.
+
+### `phase_end`
+
+| Field | Type | Notes |
+|---|---|---|
+| `phase` | enum | Must match the open `phase_start`. |
+| `outcome` | enum | `terminated` · `failed`. **Two values, deliberately.** The three-valued verdict lives at the merge gate and nowhere else — `indeterminate` means *excluded from the ratio the autonomy gates read*, and upstream phases feed no ratio. |
+| `artifact_ref` | str \| null | Hash of the artifact the phase produced (I3 — a hash, never a path). Null only when `outcome` is `failed`. |
+| `checked_by` | enum | `orchestrator`. Present and closed to one value, because the value is the point: a phase terminates when its artifact exists and validates, **checked by the orchestrator and never by the child that produced it**. Recording who checked is what makes a later violation visible rather than inferable. |
+| `wallclock_ms` | int | From the matching `phase_start.monotonic_ns`. |
+
+**Why `checked_by` is a one-value enum rather than omitted.** On 2026-09-02 two child
+sessions holding complete contracts returned `completed` having created no branch, written no
+file and posted no comment. The contracts were not the defect; nothing checked the artifacts
+before the completion was accepted. A field that always reads `orchestrator` costs nothing
+and turns "the child self-certified" from an untracked possibility into a schema violation.
+
 ## `escalation`
 
 | Field | Type | Notes |
@@ -343,7 +389,7 @@ Each record type has exactly one legal writer, and the pairing is checkable:
 
 | Records | Written by | `actor_kind` |
 |---|---|---|
-| `attempt_start` · `turn` · `tool_call` · `progress` · `escalation` · `attempt_end` · `task_end` | the harness | `harness` |
+| `attempt_start` · `phase_start` · `turn` · `tool_call` · `progress` · `phase_end` · `escalation` · `attempt_end` · `task_end` | the harness | `harness` |
 | `operator_action` | the mission-control command surface, under `alfred_operator` | `operator` |
 
 A record whose `record_type` and `actor_kind` disagree is a contract violation, not a
