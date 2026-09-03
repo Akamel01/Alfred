@@ -34,3 +34,4 @@ generated: true
 
 - **see_also** → [[adr__ADR-0031|The protected set is one file, and the gate protects its own policy]]
 - **see_also** → [[adr__ADR-0045|The ECC coupling is factory scope, ring-fenced, and overrides no gate]]
+- [[adr__ADR-0048|The palette gains seven `hands-off-to` ports so the lifecycle chain becomes expressible]] **see_also** → this

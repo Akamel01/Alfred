@@ -73,8 +73,20 @@ validator    in += hands-off-to
 ```
 
 **`policy/node-palette.json` is protected and is the type system (ADR-0039).** A port addition is
-heavier than a topology edit: it changes what connections are expressible anywhere. It is not made
-here, and the draft topology is recorded on the issue for the operator to accept, amend or reject.
+heavier than a topology edit: it changes what connections are expressible anywhere.
+
+**Resolved by ADR-0048**, after the operator chose `hands-off-to` for both links this record was
+unsure about. The final shape is **seven additions, all `hands-off-to`** — cleaner than the six
+mixed types drafted here, because every phase transition turned out to mean the same thing.
+
+**The graph is eight roles, not seven.** `wayfinder` was `unbound` because its skill carried
+`disable-model-invocation: true` and no agent could run it. The operator removed that flag on
+2026-09-03, so the fact changed and the binding followed. It enters as the entry point
+(`wayfinder --delegates-to--> researcher`) and **costs no port addition** — both ends already
+declare `delegates-to`.
+
+`orchestration/topology.json` is still not written here; it is operator-only, and the verified draft
+is on the issue.
 
 **`orchestration/` is operator-only.** The draft was written; the file was not.
 

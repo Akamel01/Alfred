@@ -5,189 +5,364 @@
       "id": "planner",
       "label": "Planner",
       "description": "Plans the work breakdown and sequences tasks",
-      "ports": { "in": [], "out": ["delegates-to"] },
-      "defaults": { "out:delegates-to": "delegates-to" },
-      "icon": "📋",
+      "ports": {
+        "in": [
+          "hands-off-to"
+        ],
+        "out": [
+          "delegates-to"
+        ]
+      },
+      "defaults": {
+        "out:delegates-to": "delegates-to"
+      },
+      "icon": "\ud83d\udccb",
       "category": "planning"
     },
     {
       "id": "wayfinder",
       "label": "Wayfinder",
       "description": "Charts the decision path through fog",
-      "ports": { "in": [], "out": ["delegates-to"] },
-      "defaults": { "out:delegates-to": "delegates-to" },
-      "icon": "🧭",
+      "ports": {
+        "in": [],
+        "out": [
+          "delegates-to"
+        ]
+      },
+      "defaults": {
+        "out:delegates-to": "delegates-to"
+      },
+      "icon": "\ud83e\udded",
       "category": "planning"
     },
     {
       "id": "architect",
       "label": "Architect",
       "description": "Designs system structure and reviews implementation",
-      "ports": { "in": ["feeds"], "out": ["delegates-to", "reviews"] },
-      "defaults": { "out:delegates-to": "delegates-to", "out:reviews": "reviews" },
-      "icon": "🏗️",
+      "ports": {
+        "in": [
+          "feeds",
+          "hands-off-to"
+        ],
+        "out": [
+          "delegates-to",
+          "reviews",
+          "hands-off-to"
+        ]
+      },
+      "defaults": {
+        "out:delegates-to": "delegates-to",
+        "out:reviews": "reviews",
+        "out:hands-off-to": "hands-off-to"
+      },
+      "icon": "\ud83c\udfd7\ufe0f",
       "category": "planning"
     },
     {
       "id": "product-manager",
       "label": "Product Manager",
       "description": "Owns product scope and prioritization",
-      "ports": { "in": ["feeds"], "out": ["delegates-to"] },
-      "defaults": { "out:delegates-to": "delegates-to" },
-      "icon": "📦",
+      "ports": {
+        "in": [
+          "feeds"
+        ],
+        "out": [
+          "delegates-to"
+        ]
+      },
+      "defaults": {
+        "out:delegates-to": "delegates-to"
+      },
+      "icon": "\ud83d\udce6",
       "category": "planning"
     },
     {
       "id": "code-writer",
       "label": "Code Writer",
       "description": "Implements features and fixes",
-      "ports": { "in": ["delegates-to", "reviews"], "out": ["hands-off-to"] },
-      "defaults": { "out:hands-off-to": "hands-off-to" },
-      "icon": "💻",
+      "ports": {
+        "in": [
+          "delegates-to",
+          "reviews"
+        ],
+        "out": [
+          "hands-off-to"
+        ]
+      },
+      "defaults": {
+        "out:hands-off-to": "hands-off-to"
+      },
+      "icon": "\ud83d\udcbb",
       "category": "execution"
     },
     {
       "id": "researcher",
       "label": "Researcher",
       "description": "Investigates and documents findings",
-      "ports": { "in": ["delegates-to"], "out": ["hands-off-to"] },
-      "defaults": { "out:hands-off-to": "hands-off-to" },
-      "icon": "🔬",
+      "ports": {
+        "in": [
+          "delegates-to"
+        ],
+        "out": [
+          "hands-off-to"
+        ]
+      },
+      "defaults": {
+        "out:hands-off-to": "hands-off-to"
+      },
+      "icon": "\ud83d\udd2c",
       "category": "execution"
     },
     {
       "id": "drafter",
       "label": "Drafter",
       "description": "Creates initial artifacts and drafts",
-      "ports": { "in": ["delegates-to", "hands-off-to"], "out": ["hands-off-to"] },
-      "defaults": { "out:hands-off-to": "hands-off-to" },
-      "icon": "✍️",
+      "ports": {
+        "in": [
+          "delegates-to",
+          "hands-off-to"
+        ],
+        "out": [
+          "hands-off-to"
+        ]
+      },
+      "defaults": {
+        "out:hands-off-to": "hands-off-to"
+      },
+      "icon": "\u270d\ufe0f",
       "category": "execution"
     },
     {
       "id": "domain-expert",
       "label": "Domain Expert",
       "description": "Provides deep domain knowledge",
-      "ports": { "in": ["delegates-to"], "out": ["hands-off-to"] },
-      "defaults": { "out:hands-off-to": "hands-off-to" },
-      "icon": "🎓",
+      "ports": {
+        "in": [
+          "delegates-to"
+        ],
+        "out": [
+          "hands-off-to"
+        ]
+      },
+      "defaults": {
+        "out:hands-off-to": "hands-off-to"
+      },
+      "icon": "\ud83c\udf93",
       "category": "execution"
     },
     {
       "id": "reviewer",
       "label": "Reviewer",
       "description": "Reviews work products for quality",
-      "ports": { "in": ["hands-off-to"], "out": ["reviews"] },
-      "defaults": { "out:reviews": "reviews" },
-      "icon": "👁️",
+      "ports": {
+        "in": [
+          "hands-off-to"
+        ],
+        "out": [
+          "reviews",
+          "hands-off-to"
+        ]
+      },
+      "defaults": {
+        "out:reviews": "reviews",
+        "out:hands-off-to": "hands-off-to"
+      },
+      "icon": "\ud83d\udc41\ufe0f",
       "category": "review"
     },
     {
       "id": "verifier",
       "label": "Verifier",
       "description": "Verifies correctness against criteria",
-      "ports": { "in": ["feeds", "hands-off-to"], "out": ["reviews"] },
-      "defaults": { "out:reviews": "reviews" },
-      "icon": "✅",
+      "ports": {
+        "in": [
+          "feeds",
+          "hands-off-to"
+        ],
+        "out": [
+          "reviews"
+        ]
+      },
+      "defaults": {
+        "out:reviews": "reviews"
+      },
+      "icon": "\u2705",
       "category": "review"
     },
     {
       "id": "validator",
       "label": "Validator",
       "description": "Validates evidence and outcomes",
-      "ports": { "in": ["feeds"], "out": ["reviews"] },
-      "defaults": { "out:reviews": "reviews" },
-      "icon": "✓",
+      "ports": {
+        "in": [
+          "feeds",
+          "hands-off-to"
+        ],
+        "out": [
+          "reviews"
+        ]
+      },
+      "defaults": {
+        "out:reviews": "reviews"
+      },
+      "icon": "\u2713",
       "category": "review"
     },
     {
       "id": "examiner",
       "label": "Examiner",
       "description": "Examines artifacts for compliance",
-      "ports": { "in": ["feeds"], "out": ["reviews"] },
-      "defaults": { "out:reviews": "reviews" },
-      "icon": "🔍",
+      "ports": {
+        "in": [
+          "feeds",
+          "hands-off-to"
+        ],
+        "out": [
+          "reviews",
+          "hands-off-to"
+        ]
+      },
+      "defaults": {
+        "out:reviews": "reviews",
+        "out:hands-off-to": "hands-off-to"
+      },
+      "icon": "\ud83d\udd0d",
       "category": "review"
     },
     {
       "id": "tester",
       "label": "Tester",
       "description": "Executes tests and reports results",
-      "ports": { "in": ["feeds"], "out": ["reviews"] },
-      "defaults": { "out:reviews": "reviews" },
-      "icon": "🧪",
+      "ports": {
+        "in": [
+          "feeds"
+        ],
+        "out": [
+          "reviews"
+        ]
+      },
+      "defaults": {
+        "out:reviews": "reviews"
+      },
+      "icon": "\ud83e\uddea",
       "category": "review"
     },
     {
       "id": "criterion-runner",
       "label": "Criterion Runner",
       "description": "Runs criterion evaluations",
-      "ports": { "in": [], "out": ["feeds"] },
-      "defaults": { "out:feeds": "feeds" },
-      "icon": "⚖️",
+      "ports": {
+        "in": [],
+        "out": [
+          "feeds"
+        ]
+      },
+      "defaults": {
+        "out:feeds": "feeds"
+      },
+      "icon": "\u2696\ufe0f",
       "category": "operator"
     },
     {
       "id": "evidence-store",
       "label": "Evidence Store",
       "description": "Stores and serves evidence artifacts",
-      "ports": { "in": ["feeds"], "out": [] },
+      "ports": {
+        "in": [
+          "feeds"
+        ],
+        "out": []
+      },
       "defaults": {},
-      "icon": "📚",
+      "icon": "\ud83d\udcda",
       "category": "operator"
     },
     {
       "id": "fingerprint-capture",
       "label": "Fingerprint Capture",
       "description": "Captures run fingerprints for containment",
-      "ports": { "in": [], "out": ["feeds"] },
-      "defaults": { "out:feeds": "feeds" },
-      "icon": "👆",
+      "ports": {
+        "in": [],
+        "out": [
+          "feeds"
+        ]
+      },
+      "defaults": {
+        "out:feeds": "feeds"
+      },
+      "icon": "\ud83d\udc46",
       "category": "operator"
     },
     {
       "id": "harness-runner",
       "label": "Harness Runner",
       "description": "Executes harness test suites",
-      "ports": { "in": [], "out": ["delegates-to"] },
-      "defaults": { "out:delegates-to": "delegates-to" },
-      "icon": "🏃",
+      "ports": {
+        "in": [],
+        "out": [
+          "delegates-to"
+        ]
+      },
+      "defaults": {
+        "out:delegates-to": "delegates-to"
+      },
+      "icon": "\ud83c\udfc3",
       "category": "operator"
     },
     {
       "id": "operator-gate",
       "label": "Operator Gate",
       "description": "Human-in-the-loop decision gate",
-      "ports": { "in": ["reviews"], "out": [] },
+      "ports": {
+        "in": [
+          "reviews"
+        ],
+        "out": []
+      },
       "defaults": {},
-      "icon": "🚪",
+      "icon": "\ud83d\udeaa",
       "category": "operator"
     },
     {
       "id": "worker-port",
       "label": "Worker Port",
       "description": "Worker protocol interface",
-      "ports": { "in": ["delegates-to"], "out": [] },
+      "ports": {
+        "in": [
+          "delegates-to"
+        ],
+        "out": []
+      },
       "defaults": {},
-      "icon": "🔌",
+      "icon": "\ud83d\udd0c",
       "category": "operator"
     },
     {
       "id": "mutation-controller",
       "label": "Mutation Controller",
       "description": "Runs mutation testing suite",
-      "ports": { "in": ["feeds"], "out": [] },
+      "ports": {
+        "in": [
+          "feeds"
+        ],
+        "out": []
+      },
       "defaults": {},
-      "icon": "🧬",
+      "icon": "\ud83e\uddec",
       "category": "operator"
     },
     {
       "id": "restore-drill",
       "label": "Restore Drill",
       "description": "Executes restore verification drills",
-      "ports": { "in": ["feeds"], "out": [] },
+      "ports": {
+        "in": [
+          "feeds"
+        ],
+        "out": []
+      },
       "defaults": {},
-      "icon": "🔄",
+      "icon": "\ud83d\udd04",
       "category": "operator"
     }
   ]
