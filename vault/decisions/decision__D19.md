@@ -41,9 +41,25 @@ Measures the three things that decide Alfred's inference lane:
 - **enforced_by** → [[module__harness_containment_denylist|Load the oracle denylist and give it a digest the fingerprint can carry.]] — """Load the oracle denylist and give it a digest the fingerprint can carry.
 
 The denylist is versioned protected policy 
+- **enforced_by** → [[module__harness_fingerprint_factory|The factory fingerprint: what an *agent* run was measured on, as opposed to a lane.]] — """The factory fingerprint: what an *agent* run was measured on, as opposed to a lane.
+
+`RunFingerprint` cannot describe
+- **enforced_by** → [[module__harness_fingerprint_factory|The factory fingerprint: what an *agent* run was measured on, as opposed to a lane.]] — #: Taken from `RunFingerprint` rather than retyped. The D19 group has one definition.
+- **enforced_by** → [[module__harness_fingerprint_factory|The factory fingerprint: what an *agent* run was measured on, as opposed to a lane.]] — "D19"
+- **enforced_by** → [[module__harness_fingerprint_factory|The factory fingerprint: what an *agent* run was measured on, as opposed to a lane.]] — "D19"
+- **enforced_by** → [[module__harness_fingerprint_factory|The factory fingerprint: what an *agent* run was measured on, as opposed to a lane.]] — # D19 — shared verbatim with RunFingerprint.
+- **enforced_by** → [[module__harness_fingerprint_factory|The factory fingerprint: what an *agent* run was measured on, as opposed to a lane.]] — """The D19 group here is the D19 group there — checked, not asserted in a comment.
+
+    `record.py` owns the list. If a 
+- **enforced_by** → [[module__harness_fingerprint_factory|The factory fingerprint: what an *agent* run was measured on, as opposed to a lane.]] — "D19"
 - **enforced_by** → [[module__harness_fingerprint_record|The run fingerprint record: what a run was measured on, stated once and hashed.]] — # D19: what tiered requalification reads to decide which component moved.
 - **enforced_by** → [[module__harness_fingerprint_record|The run fingerprint record: what a run was measured on, stated once and hashed.]] — "D19"
 - **enforced_by** → [[module__harness_fingerprint_record|The run fingerprint record: what a run was measured on, stated once and hashed.]] — # D19.
+- **enforced_by** → [[module__harness_fingerprint_test_factory|The factory fingerprint, and the two claims about it that a docstring cannot keep true.]] — """The factory fingerprint, and the two claims about it that a docstring cannot keep true.
+
+The dangerous defect here is
+- **enforced_by** → [[module__harness_fingerprint_test_factory|The factory fingerprint, and the two claims about it that a docstring cannot keep true.]] — # ---- the D19 group is one list, not two ------------------------------------------------
+- **enforced_by** → [[module__harness_fingerprint_test_factory|The factory fingerprint, and the two claims about it that a docstring cannot keep true.]] — "D19"
 - **enforced_by** → [[module__harness_fingerprint_test_record|The run fingerprint record, and the control that the hash covers every field.]] — """A record field with no column is a field the register cannot answer *what changed* on.
 
     D19's tiered requalificat

@@ -37,6 +37,8 @@ generated: true
 - [[module__harness_containment_image|C4 — the runtime image is the one the fingerprint declares, and it came from local disk.]] **imports** → this
 - [[module__harness_containment_lane|C11 — the serving lane is the lane the run was dispatched against.]] **imports** → this
 - [[module__harness_containment_test_image_and_lane|C4 and C11 — the two rows that were blocked on a fingerprint record, and their controls.]] **imports** → this
+- [[module__harness_fingerprint_factory|The factory fingerprint: what an *agent* run was measured on, as opposed to a lane.]] **imports** → this
+- [[module__harness_fingerprint_test_factory|The factory fingerprint, and the two claims about it that a docstring cannot keep true.]] **imports** → this
 - [[module__harness_fingerprint_test_record|The run fingerprint record, and the control that the hash covers every field.]] **imports** → this
 - [[module__harness_lane_lane_fingerprint|Fail-closed fingerprint assertion for the inference lane (D19/D40).]] **imports** → this
 - [[module__harness_lane_test_fingerprint_field_binding|Three spellings of "the lane's fields", and the two-schema reality between them.]] **imports** → this

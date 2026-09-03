@@ -36,6 +36,7 @@ generated: true
 - [[module__harness_containment_denylist|Load the oracle denylist and give it a digest the fingerprint can carry.]] **imports** → this
 - [[module__harness_evidence_store|Append-only, hash-chained evidence writes.]] **imports** → this
 - [[module__harness_evidence_test_store|The append-only chain, asserted from both sides.]] **imports** → this
+- [[module__harness_fingerprint_factory|The factory fingerprint: what an *agent* run was measured on, as opposed to a lane.]] **imports** → this
 - [[module__harness_fingerprint_record|The run fingerprint record: what a run was measured on, stated once and hashed.]] **imports** → this
 - [[module__harness_oracle_load|Carries oracle values across the boundary as data, and refuses when they are not clean.]] **imports** → this
 - [[module__scripts_capture_run_fingerprint|Factory-owned script that collects all RunFingerprint fields from live sources,]] **imports** → this
