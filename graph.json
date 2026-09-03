@@ -10453,8 +10453,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 370,
-        "line": 370,
+        "end_line": 371,
+        "line": 371,
         "path": "tools/tests/test_render.py"
       },
       "src": "module:tools.tests.test_render"
@@ -10466,8 +10466,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 306,
-        "line": 306,
+        "end_line": 307,
+        "line": 307,
         "path": "tools/tests/test_render.py"
       },
       "src": "module:tools.tests.test_render"
@@ -10492,8 +10492,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 371,
-        "line": 371,
+        "end_line": 372,
+        "line": 372,
         "path": "tools/tests/test_render.py"
       },
       "src": "module:tools.tests.test_render"
@@ -10505,8 +10505,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 528,
-        "line": 528,
+        "end_line": 529,
+        "line": 529,
         "path": "tools/tests/test_render.py"
       },
       "src": "module:tools.tests.test_render"
@@ -10531,8 +10531,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 372,
-        "line": 372,
+        "end_line": 373,
+        "line": 373,
         "path": "tools/tests/test_render.py"
       },
       "src": "module:tools.tests.test_render"
@@ -10609,8 +10609,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 306,
-        "line": 306,
+        "end_line": 309,
+        "line": 309,
         "path": "tools/tests/test_vaultgraph.py"
       },
       "src": "module:tools.tests.test_vaultgraph"
@@ -10622,8 +10622,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 208,
-        "line": 208,
+        "end_line": 211,
+        "line": 211,
         "path": "tools/tests/test_vaultgraph.py"
       },
       "src": "module:tools.tests.test_vaultgraph"
