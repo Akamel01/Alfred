@@ -29,3 +29,7 @@ generated: true
 | Field | Value |
 |---|---|
 | `status_raw` | Accepted |
+
+## Enforced by (code)
+
+- **enforced_by** → [[module__scripts_gen_reading_map|Generate docs/READING-MAP.md — what to read, when, and what it binds.]] — "map #41: ECC's vault against ADR-0032 — mirror selected records, never consume wholesale"

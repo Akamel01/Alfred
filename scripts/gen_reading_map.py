@@ -114,6 +114,13 @@ PHASES: list[tuple[str, str, list[tuple[str, str, str]]]] = [
         ("technology-selection-records", RECORD, "what was chosen and what was rejected"),
         ("postmortem-archive", RECORD, "immutable incident history"),
         ("onboarding-guide", CONTEXT, "serves humans and agent context alike"),
+        ("ecc-capability-audit", RECORD, "map #41: what ECC has that Alfred lacks, classified; ALFRED-ADAPTER is empty"),
+        ("ecc-memory-boundary", RECORD, "map #41: ECC's vault against ADR-0032 — mirror selected records, never consume wholesale"),
+        ("ecc-claude-code-install", RECORD, "map #41: what was installed to ~/.claude, at what profile, and what was deliberately left out"),
+        ("ticket-42-execution-lifecycle-decision", RECORD, "map #41: the seven phases, front half method and back half gated"),
+        ("ticket-43-role-bindings-decision", RECORD, "map #41: palette kind to runtime agent; a binding edit is a requalification event"),
+        ("ticket-45-state-authority-decision", RECORD, "map #41: one home per fact; runtime is never evidence"),
+        ("ticket-46-model-routing-decision", RECORD, "map #41: routing keys on capability_id; inherit forbidden; trivial is an empty class"),
     ]),
 ]
 

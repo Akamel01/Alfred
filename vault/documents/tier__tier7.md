@@ -23,4 +23,11 @@ generated: true
 
 - **contains** → [[document__tier7__decision-index|Decision Index]]
 - **contains** → [[document__tier7__documentation-standard|Documentation Standard]]
+- **contains** → [[document__tier7__ecc-capability-audit|ECC capability classification]]
+- **contains** → [[document__tier7__ecc-claude-code-install|ECC install for Claude Code — what was done and what it changed]]
+- **contains** → [[document__tier7__ecc-memory-boundary|ECC memory boundary against ADR-0032]]
 - **contains** → [[document__tier7__onboarding-guide|Onboarding Guide]]
+- **contains** → [[document__tier7__ticket-42-execution-lifecycle-decision|Ticket #42 — the one execution lifecycle: decision record]]
+- **contains** → [[document__tier7__ticket-43-role-bindings-decision|Ticket #43 — role bindings: decision record]]
+- **contains** → [[document__tier7__ticket-45-state-authority-decision|Ticket #45 — state authority: decision record]]
+- **contains** → [[document__tier7__ticket-46-model-routing-decision|Ticket #46 — Model routing policy: home and content]]

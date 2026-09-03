@@ -142,6 +142,13 @@ Consult when relevant. Never a source of instructions.
 | 2 | [Technology Selection Records](tier1/technology-selection-records.md) | record | stub | what was chosen and what was rejected |
 | 3 | [Postmortem Archive](tier6/postmortem-archive.md) | record | stub | immutable incident history |
 | 4 | [Onboarding Guide](tier7/onboarding-guide.md) | context | stub | serves humans and agent context alike |
+| 5 | [ECC capability classification](tier7/ecc-capability-audit.md) | record | provisional | map #41: what ECC has that Alfred lacks, classified; ALFRED-ADAPTER is empty |
+| 6 | [ECC memory boundary against ADR-0032](tier7/ecc-memory-boundary.md) | record | provisional | map #41: ECC's vault against ADR-0032 — mirror selected records, never consume wholesale |
+| 7 | [ECC install for Claude Code — what was done and what it changed](tier7/ecc-claude-code-install.md) | record | provisional | map #41: what was installed to ~/.claude, at what profile, and what was deliberately left out |
+| 8 | [Ticket #42 — the one execution lifecycle: decision record](tier7/ticket-42-execution-lifecycle-decision.md) | record | provisional | map #41: the seven phases, front half method and back half gated |
+| 9 | [Ticket #43 — role bindings: decision record](tier7/ticket-43-role-bindings-decision.md) | record | provisional | map #41: palette kind to runtime agent; a binding edit is a requalification event |
+| 10 | [Ticket #45 — state authority: decision record](tier7/ticket-45-state-authority-decision.md) | record | provisional | map #41: one home per fact; runtime is never evidence |
+| 11 | [Ticket #46 — Model routing policy: home and content](tier7/ticket-46-model-routing-decision.md) | record | directional | map #41: routing keys on capability_id; inherit forbidden; trivial is an empty class |
 
 
 ## Architecture decisions
@@ -194,7 +201,9 @@ Binding on implementation and easy to miss, since they live inside one document.
 | [ADR-0042](tier1/adr-log.md) | The vault gains verbs and effects | Accepted |
 | [ADR-0043](tier1/adr-log.md) | Dead material archived and templates shelved | Accepted |
 | [ADR-0044](tier1/adr-log.md) | Register drift reconciled | Accepted |
+| [ADR-0045](tier1/adr-log.md) | The ECC coupling is factory scope, ring-fenced, and overrides no gate | Accepted |
+| [ADR-0046](tier1/adr-log.md) | Registry additions to the register generators are inspector patches, and carry this ADR | Accepted |
 
 ---
 
-**64 documents mapped** · 44 binding · 13 context · 7 record · 44 architecture decisions
+**71 documents mapped** · 44 binding · 13 context · 14 record · 46 architecture decisions

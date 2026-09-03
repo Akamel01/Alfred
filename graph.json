@@ -1,10 +1,10 @@
 {
   "anomalies": [],
   "counts": {
-    "adr": 44,
+    "adr": 46,
     "amendment": 12,
     "decision": 57,
-    "document": 64,
+    "document": 71,
     "effect": 5,
     "gate": 5,
     "gate-step": 55,
@@ -23,13 +23,13 @@
     "amended_by": 2,
     "amends": 10,
     "blocks": 32,
-    "contains": 281,
+    "contains": 288,
     "discharges": 1,
-    "enforced_by": 340,
+    "enforced_by": 341,
     "imports": 246,
     "needs": 4,
     "runs": 34,
-    "see_also": 38,
+    "see_also": 42,
     "supersedes": 1
   },
   "edges": [
@@ -4247,6 +4247,45 @@
     },
     {
       "confidence": "structural",
+      "dst": "document:tier7/ecc-capability-audit",
+      "evidence": "docs/tier7/ecc-capability-audit.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ecc-capability-audit.md"
+      },
+      "src": "tier:tier7"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier7/ecc-claude-code-install",
+      "evidence": "docs/tier7/ecc-claude-code-install.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ecc-claude-code-install.md"
+      },
+      "src": "tier:tier7"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier7/ecc-memory-boundary",
+      "evidence": "docs/tier7/ecc-memory-boundary.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ecc-memory-boundary.md"
+      },
+      "src": "tier:tier7"
+    },
+    {
+      "confidence": "structural",
       "dst": "document:tier7/onboarding-guide",
       "evidence": "docs/tier7/onboarding-guide.md",
       "extractor": "documents",
@@ -4255,6 +4294,58 @@
         "end_line": 9,
         "line": 1,
         "path": "docs/tier7/onboarding-guide.md"
+      },
+      "src": "tier:tier7"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier7/ticket-42-execution-lifecycle-decision",
+      "evidence": "docs/tier7/ticket-42-execution-lifecycle-decision.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ticket-42-execution-lifecycle-decision.md"
+      },
+      "src": "tier:tier7"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier7/ticket-43-role-bindings-decision",
+      "evidence": "docs/tier7/ticket-43-role-bindings-decision.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ticket-43-role-bindings-decision.md"
+      },
+      "src": "tier:tier7"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier7/ticket-45-state-authority-decision",
+      "evidence": "docs/tier7/ticket-45-state-authority-decision.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ticket-45-state-authority-decision.md"
+      },
+      "src": "tier:tier7"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier7/ticket-46-model-routing-decision",
+      "evidence": "docs/tier7/ticket-46-model-routing-decision.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ticket-46-model-routing-decision.md"
       },
       "src": "tier:tier7"
     },
@@ -6366,6 +6457,19 @@
     },
     {
       "confidence": "derived",
+      "dst": "module:scripts.gen_reading_map",
+      "evidence": "\"map #41: ECC's vault against ADR-0032 — mirror selected records, never consume wholesale\"",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 118,
+        "line": 118,
+        "path": "scripts/gen_reading_map.py"
+      },
+      "src": "adr:ADR-0032"
+    },
+    {
+      "confidence": "derived",
       "dst": "module:harness.containment.test_dispatch_mount",
       "evidence": "\"\"\"Tests for dispatch mount exclusion (C12/C13).\n\nPrototype for ADR-0035: dispatch mount must be excluded from \"no unexpected writes\" checks.\n\"\"\"",
       "extractor": "references",
@@ -6930,8 +7034,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 300,
-        "line": 300,
+        "end_line": 310,
+        "line": 310,
         "path": "scripts/gen_doc_stubs.py"
       },
       "src": "decision:D32"
@@ -10349,8 +10453,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 370,
-        "line": 370,
+        "end_line": 371,
+        "line": 371,
         "path": "tools/tests/test_render.py"
       },
       "src": "module:tools.tests.test_render"
@@ -10362,8 +10466,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 306,
-        "line": 306,
+        "end_line": 307,
+        "line": 307,
         "path": "tools/tests/test_render.py"
       },
       "src": "module:tools.tests.test_render"
@@ -10388,8 +10492,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 371,
-        "line": 371,
+        "end_line": 372,
+        "line": 372,
         "path": "tools/tests/test_render.py"
       },
       "src": "module:tools.tests.test_render"
@@ -10401,8 +10505,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 528,
-        "line": 528,
+        "end_line": 529,
+        "line": 529,
         "path": "tools/tests/test_render.py"
       },
       "src": "module:tools.tests.test_render"
@@ -10427,8 +10531,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 372,
-        "line": 372,
+        "end_line": 373,
+        "line": 373,
         "path": "tools/tests/test_render.py"
       },
       "src": "module:tools.tests.test_render"
@@ -10505,8 +10609,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 306,
-        "line": 306,
+        "end_line": 309,
+        "line": 309,
         "path": "tools/tests/test_vaultgraph.py"
       },
       "src": "module:tools.tests.test_vaultgraph"
@@ -10518,8 +10622,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 208,
-        "line": 208,
+        "end_line": 211,
+        "line": 211,
         "path": "tools/tests/test_vaultgraph.py"
       },
       "src": "module:tools.tests.test_vaultgraph"
@@ -12878,6 +12982,58 @@
       "src": "adr:ADR-0044"
     },
     {
+      "confidence": "structural",
+      "dst": "adr:ADR-0018",
+      "evidence": "**See also:** ADR-0022 (the first D28 waiver, and the narrowing this effort does *not* repeat), ADR-0018 (Discharges O5 — the discharge shape this record follows), `docs/tier2/execution-order.md` § Op",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 4239,
+        "line": 4239,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0045"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0022",
+      "evidence": "**See also:** ADR-0022 (the first D28 waiver, and the narrowing this effort does *not* repeat), ADR-0018 (Discharges O5 — the discharge shape this record follows), `docs/tier2/execution-order.md` § Op",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 4239,
+        "line": 4239,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0045"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0031",
+      "evidence": "**See also:** ADR-0031 (the machine-readable protected set), D20, `docs/tier4/protected-paths-policy.md` § *The inspector stays small*, ADR-0045 (the effort this work belongs to)",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 4346,
+        "line": 4346,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0046"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0045",
+      "evidence": "**See also:** ADR-0031 (the machine-readable protected set), D20, `docs/tier4/protected-paths-policy.md` § *The inspector stays small*, ADR-0045 (the effort this work belongs to)",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 4346,
+        "line": 4346,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0046"
+    },
+    {
       "confidence": "prose",
       "dst": "decision:D17",
       "evidence": "Supersedes decision 17",
@@ -12893,14 +13049,14 @@
   ],
   "extractors": [
     {
-      "edges": 48,
+      "edges": 52,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 4,
       "min_nodes": 14,
       "name": "adrs",
-      "nodes": 44,
+      "nodes": 46,
       "rejected": 0,
       "scanned": 1,
       "unparsed": 0
@@ -12958,16 +13114,16 @@
       "unparsed": 0
     },
     {
-      "edges": 64,
+      "edges": 71,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 63,
       "min_nodes": 71,
       "name": "documents",
-      "nodes": 72,
+      "nodes": 79,
       "rejected": 0,
-      "scanned": 64,
+      "scanned": 71,
       "unparsed": 0
     },
     {
@@ -13023,7 +13179,7 @@
       "unparsed": 0
     },
     {
-      "edges": 340,
+      "edges": 341,
       "expect_rejected": null,
       "max_nodes": 0,
       "max_unparsed": 0,
@@ -13991,6 +14147,48 @@
       "status": "accepted",
       "tags": [],
       "title": "Register drift reconciled"
+    },
+    {
+      "attrs": {
+        "date": "2026-09-02",
+        "status": "accepted",
+        "status_raw": "Accepted"
+      },
+      "body": "**Date:** 2026-09-02 · **Status:** Accepted · **Supersedes:** none · **See also:** ADR-0022 (the first D28 waiver, and the narrowing this effort does *not* repeat), ADR-0018 (Discharges O5 — the discharge shape this record follows), `docs/tier2/execution-order.md` § Operator-owned · **D28 waiver:** no",
+      "extractor": "adrs",
+      "id": "adr:ADR-0045",
+      "kind": "adr",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 4239,
+        "line": 4239,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "accepted",
+      "tags": [],
+      "title": "The ECC coupling is factory scope, ring-fenced, and overrides no gate"
+    },
+    {
+      "attrs": {
+        "date": "2026-09-03",
+        "status": "accepted",
+        "status_raw": "Accepted"
+      },
+      "body": "**Date:** 2026-09-03 · **Status:** Accepted · **Supersedes:** none · **Amends:** nothing; this record supplies an obligation that was owed and initially misread · **See also:** ADR-0031 (the machine-readable protected set), D20, `docs/tier4/protected-paths-policy.md` § *The inspector stays small*, ADR-0045 (the effort this work belongs to) · **D28 waiver:** no",
+      "extractor": "adrs",
+      "id": "adr:ADR-0046",
+      "kind": "adr",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 4346,
+        "line": 4346,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "accepted",
+      "tags": [],
+      "title": "Registry additions to the register generators are inspector patches, and carry this ADR"
     },
     {
       "attrs": {
@@ -17389,6 +17587,99 @@
     },
     {
       "attrs": {
+        "enforcement": "none",
+        "evidence": "A read of ECC 2.2.1 at commit ca185ef (286 skills, 68 agents, 11 JSON schemas, the ecc2 Rust control plane, the AutoForge workspace) against Alfred's register as of 2026-09-02. Classification is from what the source does, never from what its documentation claims.",
+        "falsifies_if": "A capability classified ECC-NATIVE turns out to require an Alfred-side adapter to be usable, or a capability classified REMOVE/REPLACE is found to be load-bearing for something Alfred already depends on.",
+        "owner": "human",
+        "path": "docs/tier7/ecc-capability-audit.md",
+        "review_after": "the ECC2 reuse boundary decision",
+        "tier": "7",
+        "tier_name": "Meta",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier7/ecc-capability-audit",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ecc-capability-audit.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier7",
+        "human",
+        "none"
+      ],
+      "title": "ECC capability classification"
+    },
+    {
+      "attrs": {
+        "enforcement": "none",
+        "evidence": "A single install performed 2026-09-02 on one machine, with a pre-install inventory captured by hash and a dry-run diffed before apply. Nothing here is measured across machines or across ECC versions.",
+        "falsifies_if": "A second install of the same profile and commit produces a different operation set, or ECC hook runtime appears under ~/.claude without an explicit consent decision recorded.",
+        "owner": "human",
+        "path": "docs/tier7/ecc-claude-code-install.md",
+        "review_after": "the harness-portability decision",
+        "tier": "7",
+        "tier_name": "Meta",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier7/ecc-claude-code-install",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ecc-claude-code-install.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier7",
+        "human",
+        "none"
+      ],
+      "title": "ECC install for Claude Code — what was done and what it changed"
+    },
+    {
+      "attrs": {
+        "enforcement": "none",
+        "evidence": "A read of the ECC unified-memory implementation at commit ca185ef — schemas/memory.schema.json, scripts/lib/memory-vault.js, and scripts/hooks/session-start.js — against ADR-0032's three invariants. Findings cite line ranges in that source, not the schema's self-description.",
+        "falsifies_if": "A mirrored record is found in Alfred's evidence chain without a canonical source pointer, or the instincts injection path is found active on a machine this project drives.",
+        "owner": "human",
+        "path": "docs/tier7/ecc-memory-boundary.md",
+        "review_after": "the ECC2 reuse boundary decision",
+        "tier": "7",
+        "tier_name": "Meta",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier7/ecc-memory-boundary",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ecc-memory-boundary.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier7",
+        "human",
+        "none"
+      ],
+      "title": "ECC memory boundary against ADR-0032"
+    },
+    {
+      "attrs": {
         "enforcement": "review-cadence",
         "evidence": "none — written pre-Phase-0 as a register stub (D32)",
         "falsifies_if": "A newcomer following this guide reaches a wrong mental model of the containment boundary.",
@@ -17417,6 +17708,130 @@
         "review-cadence"
       ],
       "title": "Onboarding Guide"
+    },
+    {
+      "attrs": {
+        "enforcement": "none",
+        "evidence": "A grilling session on 2026-09-02 against the register as it stands (Definition of Done's twelve conditions, failure-semantics' three-valued verdict and F1–F14 table, the human-in-the-loop and escalation stubs, AutoForge's protocol.md, and the ECC capability audit). No lifecycle has been run end to end; nothing here rests on an observed execution.",
+        "falsifies_if": "A task completes the seven phases and the merge gate still catches a class of defect the lifecycle claimed to prevent upstream; or the front half is observed to be skipped without the task class declaring it.",
+        "owner": "human",
+        "path": "docs/tier7/ticket-42-execution-lifecycle-decision.md",
+        "review_after": "the first ten tasks that walk it",
+        "tier": "7",
+        "tier_name": "Meta",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier7/ticket-42-execution-lifecycle-decision",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ticket-42-execution-lifecycle-decision.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier7",
+        "human",
+        "none"
+      ],
+      "title": "Ticket #42 — the one execution lifecycle: decision record"
+    },
+    {
+      "attrs": {
+        "enforcement": "none",
+        "evidence": "A grilling session on 2026-09-02 against policy/node-palette.json (21 kinds), the three Tier 3 agent stubs, harness/fingerprint/record.py's D19 group, scripts/lint_topology.py, and the 68 ECC agent definitions installed to ~/.claude/agents on the same day. No palette kind has yet dispatched work; no binding has been exercised.",
+        "falsifies_if": "A palette kind of category `operator` acquires a runtime binding; or a binding record's model is resolved from anywhere other than the routing policy; or a binding is edited without a requalification following.",
+        "owner": "human",
+        "path": "docs/tier7/ticket-43-role-bindings-decision.md",
+        "review_after": "the first task dispatched through a binding",
+        "tier": "7",
+        "tier_name": "Meta",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier7/ticket-43-role-bindings-decision",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ticket-43-role-bindings-decision.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier7",
+        "human",
+        "none"
+      ],
+      "title": "Ticket #43 — role bindings: decision record"
+    },
+    {
+      "attrs": {
+        "enforcement": "none",
+        "evidence": "A grilling session on 2026-09-02 against data-architecture.md (frozen), cross-stage-invariants.md, run-instrumentation-specification.md, ECC's state-store.schema.json, and the .autoforge/state.json produced by a real AutoForge run against this repository on 2026-08-29. No factory task has yet written a run record; nothing here rests on an observed write.",
+        "falsifies_if": "A fact in the homes table below is written authoritatively in two places; or a gate, verdict or audit is observed reading machine-local runtime state.",
+        "owner": "human",
+        "path": "docs/tier7/ticket-45-state-authority-decision.md",
+        "review_after": "the first factory task that emits run records",
+        "tier": "7",
+        "tier_name": "Meta",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier7/ticket-45-state-authority-decision",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ticket-45-state-authority-decision.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier7",
+        "human",
+        "none"
+      ],
+      "title": "Ticket #45 — state authority: decision record"
+    },
+    {
+      "attrs": {
+        "enforcement": "review-cadence",
+        "evidence": "Reads the frozen task specification standard, the glossary's Capability and Autonomy-grant definitions, the run fingerprint module's stated design properties, the run instrumentation specification's attempt_start assertion, and the vendored AutoForge model policy as it exists on this machine. No measurement of any model against any Alfred capability exists yet; the decisions that would need one are deliberately deferred rather than guessed.",
+        "falsifies_if": "A model is selected for an Alfred capability by a path this document does not describe, or a factory merge rate is quoted without a fingerprint it is measured on.",
+        "owner": "executable",
+        "path": "docs/tier7/ticket-46-model-routing-decision.md",
+        "review_after": "Phase 2",
+        "tier": "7",
+        "tier_name": "Meta",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier7/ticket-46-model-routing-decision",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ticket-46-model-routing-decision.md"
+      },
+      "status": "directional",
+      "tags": [
+        "tier7",
+        "executable",
+        "review-cadence"
+      ],
+      "title": "Ticket #46 — Model routing policy: home and content"
     },
     {
       "attrs": {
@@ -25440,10 +25855,10 @@
     {
       "attrs": {
         "blocks": "Everything",
-        "due": "2026-09-09",
+        "due": "2026-10-07 (ADR-0022's residue date)",
         "number": "O4"
       },
-      "body": "Phase 0 exit: move the date under a waiver ADR, or narrow the exit",
+      "body": "Phase 0 exit — **decision half spent** by ADR-0022 (2026-08-19), which narrowed along the ownership seam and dated the residue. Remaining, against ADR-0022's narrowed list: **P0-4** egress canary firing against real enforcement (`nftables` default-drop in the host network namespace, not the probe alone); **P0-6** a recorded **D-production** restore (a green CI run is D-synthetic and proves the mechanism only); **P0-7** no unreviewed inspector patch enforces any of the above (tracked as O9). P0-1/2/3 were met at ADR-0022; **P0-5** byte-identical deterministic replay met by ADR-0025.",
       "extractor": "stages",
       "id": "operator-item:O4",
       "kind": "operator-item",
@@ -25456,7 +25871,7 @@
       },
       "status": "open",
       "tags": [],
-      "title": "Phase 0 exit: move the date under a waiver ADR, or narrow the exit"
+      "title": "Phase 0 exit — **decision half spent** by ADR-0022 (2026-08-19), which narrowed along the ownership seam and dated the residue. Remaining, against ADR-0022's narrowed list: **P0-4** egress canary firi"
     },
     {
       "attrs": {

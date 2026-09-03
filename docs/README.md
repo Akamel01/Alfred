@@ -6,7 +6,7 @@ Documents are classified by what stops them from lying, never by topic. See
 [Documentation Standard](tier7/documentation-standard.md) for the header contract,
 the stub policy, and the authorship boundary.
 
-**64 documents** · 31 written, 33 stubs · 35 executable or generated (54%)
+**71 documents** · 38 written, 33 stubs · 36 executable or generated (50%)
 
 ## Tier 0 — Constitution
 
@@ -110,4 +110,11 @@ the stub policy, and the authorship boundary.
 |---|---|---|---|---|
 | [Decision Index](tier7/decision-index.md) | provisional | generated | `generated` | stub |
 | [Documentation Standard](tier7/documentation-standard.md) | frozen | human | `ci-gate` | full |
+| [ECC capability classification](tier7/ecc-capability-audit.md) | provisional | human | `none` | full |
+| [ECC install for Claude Code — what was done and what it changed](tier7/ecc-claude-code-install.md) | provisional | human | `none` | full |
+| [ECC memory boundary against ADR-0032](tier7/ecc-memory-boundary.md) | provisional | human | `none` | full |
 | [Onboarding Guide](tier7/onboarding-guide.md) | provisional | human | `review-cadence` | stub |
+| [Ticket #42 — the one execution lifecycle: decision record](tier7/ticket-42-execution-lifecycle-decision.md) | provisional | human | `none` | full |
+| [Ticket #43 — role bindings: decision record](tier7/ticket-43-role-bindings-decision.md) | provisional | human | `none` | full |
+| [Ticket #45 — state authority: decision record](tier7/ticket-45-state-authority-decision.md) | provisional | human | `none` | full |
+| [Ticket #46 — Model routing policy: home and content](tier7/ticket-46-model-routing-decision.md) | directional | executable | `review-cadence` | full |
