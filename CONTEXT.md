@@ -90,4 +90,15 @@
 | **Topology Source** | The hand-authored `orchestration/topology.json` file — the single source of truth for the graph. |
 | **Canvas Artifact** | The generated interactive HTML file (`orchestration-canvas.html`) that edits the topology source. |
 
+## Model Routing Terms
+
+| Term | Definition |
+|---|---|
+| **Routing Key** | `capability_id` — the single key `policy/model-routing.json` maps to a model. Never a palette kind (a job title) and never a task class (a product term with one home). |
+| **Pinned Model** | A concrete model identity named in the routing policy. The opposite of `inherit`; `inherit` is forbidden because it defers a D19 fingerprint field to unversioned UI state. |
+| **FactoryFingerprint** | The identity a factory run is measured on. Shares the D19 group verbatim with `RunFingerprint`; carries API-served identity instead of a lane or quantization group. |
+| **Trivial Class** | A capability attribute, defined in schema and **empty at Phase 0**. A capability enters it only through measurement, on the autonomy-grant evidence path. |
+| **Explicit Override** | Alfred passes the model on every spawn; the vendored ECC default is never consulted. There is no generated projection and therefore no sync obligation. |
+| **Loud Default** | The vendored fallback model, set to fail expensively rather than cheaply, so an omitted override surfaces instead of hiding. |
+
 ENDOADR
