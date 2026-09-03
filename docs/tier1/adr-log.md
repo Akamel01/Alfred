@@ -4340,3 +4340,96 @@ would make item 2 measurable is `task_end.human_review_ms`, specified in
 [Mission Control read model](https://github.com/Akamel01/Alfred/issues/52). Stating `none`
 here is the honest label under the documentation standard's rule that a document with no
 mechanism must be small and human-owned.
+
+---
+
+## ADR-0046 — Registry additions to the register generators are inspector patches, and carry this ADR
+
+**Date:** 2026-09-03 · **Status:** Accepted · **Supersedes:** none · **Amends:** nothing; this record supplies an obligation that was owed and initially misread · **See also:** ADR-0031 (the machine-readable protected set), D20, `docs/tier4/protected-paths-policy.md` § *The inspector stays small*, ADR-0045 (the effort this work belongs to) · **D28 waiver:** no
+
+### Context
+
+The wayfinder map #41 effort produced eight research and decision documents. The register
+refuses documents it does not know about: `scripts/lint_docs.py --check` asserts that
+`gen_doc_stubs.py`'s `REGISTER` and `NOT_GENERATED` together account for every document on
+disk, in both directions, and `scripts/gen_reading_map.py --check` fails when a document has
+no reading-map entry. Both failed. The documents could not land without registry entries in
+two files under `scripts/`.
+
+`scripts/` is protected in full — *"Register lints and generators — inspector machinery
+(D20) … A validator an agent may edit validates nothing."*
+
+**A correction is the reason this record exists.** The first Gate D request for this work
+(commit `557c0b3`) argued no ADR was required, on the reading that the mandatory-ADR rule in
+ADR-0031 attaches to changing `policy/protected-paths.json` — the definition of what is
+protected — rather than to writing to a protected path. The operator approved on that basis.
+
+That reading is wrong. `docs/tier4/protected-paths-policy.md` states the rule directly and
+without that distinction:
+
+> Agent-drafted inspector patches are permitted only under line-by-line human review with a
+> **mandatory ADR**.
+
+A registry addition inside a generator is a patch to inspector machinery. The obligation was
+owed at `557c0b3` and is discharged here, covering that commit and the same-shaped additions
+that follow it in this effort.
+
+### Decision
+
+1. **Registry additions to `scripts/gen_doc_stubs.py` and `scripts/gen_reading_map.py` made
+   by the map #41 effort are agent-drafted inspector patches.** They require line-by-line
+   human review and are covered by this ADR. No further ADR is required per document
+   registered under this effort; the class is decided once, here.
+
+2. **The permitted change is data only.** An entry added to `NOT_GENERATED`, or a row added
+   to a `PHASES` section. No control flow, no predicate, no threshold, no exclusion applied
+   to a check. A diff under this ADR that adds or removes a `def`, `if`, `return`, `for`,
+   `while` or `assert` line is outside it and needs its own record.
+
+3. **`NOT_GENERATED` membership exempts a document from generation, never from validation.**
+   This was verified rather than assumed: a frontmatter key was deliberately broken on a
+   newly listed document and `lint_docs.py --check` still failed it
+   (`unknown frontmatter key 'XXbrokenXX'`). Corroborated independently — two of the seven
+   documents were subagent-authored with no header contract at all and were rejected while
+   already listed, so real headers had to be written.
+
+4. **The reason a registry addition is not a weakening is that it adds an obligation.** A
+   document in neither list is invisible to the generator; a document in `NOT_GENERATED` is
+   asserted to exist, is checked against the header contract, and is required to keep a
+   reading-map entry. The register knows more after the edit than before it.
+
+5. **This ADR does not widen what an agent may write.** It records that a narrow, data-only
+   class of inspector patch is permitted under human review. Every write still stops at
+   Gate D; nothing here makes one automatic.
+
+### Consequences
+
+- The Gate D approval on `557c0b3` now rests on the correct rule rather than on a
+  distinction the policy does not draw. The approval itself is not disturbed — the review
+  was performed and its basis recorded — but the record it required now exists.
+- Kernel lines-of-code, tracked as a health metric, is unchanged by this effort: the edits
+  add data, not code.
+- Later registry additions in this effort cite this ADR instead of re-arguing the class,
+  which keeps the ADR log from accumulating one record per registered document.
+- If the register is ever changed to accept documents without a registry entry, this whole
+  class of edit disappears and this record becomes historical.
+
+### Falsifies if
+
+An edit made under this ADR is found to have changed what a check enforces rather than what
+it knows about — meaning "data only" was not a real boundary and the class should never have
+been decided once for many diffs.
+
+Or: a document registered under this ADR is found to have bypassed the header contract,
+falsifying decision 3 and with it the argument that a registry addition adds an obligation
+rather than removing one.
+
+### Enforcement
+
+`review-cadence`, discharged at Gate D. Nothing in CI distinguishes a data-only registry
+addition from a logic change inside the same file — that is what the line-by-line human
+review is for, and claiming a mechanism here would be the wish that
+`scripts/lint_ci_coverage.py` names.
+
+The mechanical part of decision 2 *is* checkable and is stated so it can be checked by
+reading the diff: no `def`, `if`, `return`, `for`, `while` or `assert` line added or removed.

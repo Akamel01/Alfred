@@ -1,7 +1,7 @@
 {
   "anomalies": [],
   "counts": {
-    "adr": 45,
+    "adr": 46,
     "amendment": 12,
     "decision": 57,
     "document": 71,
@@ -29,7 +29,7 @@
     "imports": 246,
     "needs": 4,
     "runs": 34,
-    "see_also": 40,
+    "see_also": 42,
     "supersedes": 1
   },
   "edges": [
@@ -13008,6 +13008,32 @@
       "src": "adr:ADR-0045"
     },
     {
+      "confidence": "structural",
+      "dst": "adr:ADR-0031",
+      "evidence": "**See also:** ADR-0031 (the machine-readable protected set), D20, `docs/tier4/protected-paths-policy.md` § *The inspector stays small*, ADR-0045 (the effort this work belongs to)",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 4346,
+        "line": 4346,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0046"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0045",
+      "evidence": "**See also:** ADR-0031 (the machine-readable protected set), D20, `docs/tier4/protected-paths-policy.md` § *The inspector stays small*, ADR-0045 (the effort this work belongs to)",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 4346,
+        "line": 4346,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0046"
+    },
+    {
       "confidence": "prose",
       "dst": "decision:D17",
       "evidence": "Supersedes decision 17",
@@ -13023,14 +13049,14 @@
   ],
   "extractors": [
     {
-      "edges": 50,
+      "edges": 52,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 4,
       "min_nodes": 14,
       "name": "adrs",
-      "nodes": 45,
+      "nodes": 46,
       "rejected": 0,
       "scanned": 1,
       "unparsed": 0
@@ -14142,6 +14168,27 @@
       "status": "accepted",
       "tags": [],
       "title": "The ECC coupling is factory scope, ring-fenced, and overrides no gate"
+    },
+    {
+      "attrs": {
+        "date": "2026-09-03",
+        "status": "accepted",
+        "status_raw": "Accepted"
+      },
+      "body": "**Date:** 2026-09-03 · **Status:** Accepted · **Supersedes:** none · **Amends:** nothing; this record supplies an obligation that was owed and initially misread · **See also:** ADR-0031 (the machine-readable protected set), D20, `docs/tier4/protected-paths-policy.md` § *The inspector stays small*, ADR-0045 (the effort this work belongs to) · **D28 waiver:** no",
+      "extractor": "adrs",
+      "id": "adr:ADR-0046",
+      "kind": "adr",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 4346,
+        "line": 4346,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "accepted",
+      "tags": [],
+      "title": "Registry additions to the register generators are inspector patches, and carry this ADR"
     },
     {
       "attrs": {

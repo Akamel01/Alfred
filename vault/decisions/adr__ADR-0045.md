@@ -34,3 +34,4 @@ generated: true
 
 - **see_also** → [[adr__ADR-0018|The executor moved, and eleven of thirteen premises were wrong]]
 - **see_also** → [[adr__ADR-0022|Phase 0's exit, narrowed along the ownership seam, with the residue dated]]
+- [[adr__ADR-0046|Registry additions to the register generators are inspector patches, and carry this ADR]] **see_also** → this
