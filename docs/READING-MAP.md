@@ -93,10 +93,11 @@ One agent, one task, human gate.
 | 9 | [State and Graph Specification](tier1/state-and-graph-specification.md) | binding | stub | field ownership, reducers, projections |
 | 10 | [Context Engineering Guide](tier3/context-engineering-guide.md) | binding | stub | seed layering; prefix order is architecture, not tuning |
 | 11 | [Instruction and Prompt Standard](tier3/instruction-and-prompt-standard.md) | binding | stub | prompts are versioned and enter the fingerprint |
-| 12 | [Escalation Protocol](tier3/escalation-protocol.md) | binding | stub | structural triggers; the agent cannot declare itself blocked |
-| 13 | [Handoff Contract Standard](tier3/handoff-contract-standard.md) | binding | stub | evidence refs travel, agent-authored summaries do not |
-| 14 | [Review Protocol](tier2/review-protocol.md) | context | stub | criterion-first review; what the human checks that the harness cannot |
-| 15 | [Build Protocol](tier2/build-protocol.md) | context | stub | how work moves from intent to merge |
+| 12 | [Execution Lifecycle](tier3/execution-lifecycle.md) | context | provisional | the seven phases a task walks; front half method, back half gated by DoD |
+| 13 | [Escalation Protocol](tier3/escalation-protocol.md) | binding | stub | structural triggers; the agent cannot declare itself blocked |
+| 14 | [Handoff Contract Standard](tier3/handoff-contract-standard.md) | binding | provisional | evidence refs travel, agent-authored summaries do not |
+| 15 | [Review Protocol](tier2/review-protocol.md) | context | stub | criterion-first review; what the human checks that the harness cannot |
+| 16 | [Build Protocol](tier2/build-protocol.md) | context | stub | how work moves from intent to merge |
 
 ## Phase 2
 
@@ -149,6 +150,10 @@ Consult when relevant. Never a source of instructions.
 | 9 | [Ticket #43 — role bindings: decision record](tier7/ticket-43-role-bindings-decision.md) | record | provisional | map #41: palette kind to runtime agent; a binding edit is a requalification event |
 | 10 | [Ticket #45 — state authority: decision record](tier7/ticket-45-state-authority-decision.md) | record | provisional | map #41: one home per fact; runtime is never evidence |
 | 11 | [Ticket #46 — Model routing policy: home and content](tier7/ticket-46-model-routing-decision.md) | record | directional | map #41: routing keys on capability_id; inherit forbidden; trivial is an empty class |
+| 12 | [Ticket #44 — the canonical task contract](tier7/ticket-44-task-contract-decision.md) | record | provisional | map #41: three contracts — task, session, handoff; factory runs do not cross the Worker port |
+| 13 | [Ticket #47 — execution edge semantics](tier7/ticket-47-edge-semantics-decision.md) | record | provisional | map #41: four contract types, zero additions; the palette blocks the real topology |
+| 14 | [Ticket #51 — the ECC2 reuse boundary](tier7/ticket-51-ecc2-boundary-decision.md) | record | provisional | map #41: adopt nothing from ECC2, and why each piece was refused |
+| 15 | [Ticket #52 — Mission Control's read model](tier7/ticket-52-read-model-decision.md) | record | provisional | map #41: queries at request time; the brief's snapshot contracts do not survive the spec |
 
 
 ## Architecture decisions
@@ -207,4 +212,4 @@ Binding on implementation and easy to miss, since they live inside one document.
 
 ---
 
-**71 documents mapped** · 44 binding · 13 context · 14 record · 47 architecture decisions
+**76 documents mapped** · 44 binding · 14 context · 18 record · 47 architecture decisions

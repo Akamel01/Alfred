@@ -4,7 +4,7 @@
     "adr": 47,
     "amendment": 12,
     "decision": 57,
-    "document": 71,
+    "document": 76,
     "effect": 5,
     "gate": 5,
     "gate-step": 59,
@@ -23,7 +23,7 @@
     "amended_by": 2,
     "amends": 10,
     "blocks": 32,
-    "contains": 294,
+    "contains": 299,
     "discharges": 1,
     "enforced_by": 358,
     "imports": 250,
@@ -3961,6 +3961,19 @@
     },
     {
       "confidence": "structural",
+      "dst": "document:tier3/execution-lifecycle",
+      "evidence": "docs/tier3/execution-lifecycle.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier3/execution-lifecycle.md"
+      },
+      "src": "tier:tier3"
+    },
+    {
+      "confidence": "structural",
       "dst": "document:tier3/handoff-contract-standard",
       "evidence": "docs/tier3/handoff-contract-standard.md",
       "extractor": "documents",
@@ -4403,6 +4416,19 @@
     },
     {
       "confidence": "structural",
+      "dst": "document:tier7/ticket-44-task-contract-decision",
+      "evidence": "docs/tier7/ticket-44-task-contract-decision.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ticket-44-task-contract-decision.md"
+      },
+      "src": "tier:tier7"
+    },
+    {
+      "confidence": "structural",
       "dst": "document:tier7/ticket-45-state-authority-decision",
       "evidence": "docs/tier7/ticket-45-state-authority-decision.md",
       "extractor": "documents",
@@ -4424,6 +4450,45 @@
         "end_line": 9,
         "line": 1,
         "path": "docs/tier7/ticket-46-model-routing-decision.md"
+      },
+      "src": "tier:tier7"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier7/ticket-47-edge-semantics-decision",
+      "evidence": "docs/tier7/ticket-47-edge-semantics-decision.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ticket-47-edge-semantics-decision.md"
+      },
+      "src": "tier:tier7"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier7/ticket-51-ecc2-boundary-decision",
+      "evidence": "docs/tier7/ticket-51-ecc2-boundary-decision.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ticket-51-ecc2-boundary-decision.md"
+      },
+      "src": "tier:tier7"
+    },
+    {
+      "confidence": "structural",
+      "dst": "document:tier7/ticket-52-read-model-decision",
+      "evidence": "docs/tier7/ticket-52-read-model-decision.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ticket-52-read-model-decision.md"
       },
       "src": "tier:tier7"
     },
@@ -6566,8 +6631,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 118,
-        "line": 118,
+        "end_line": 119,
+        "line": 119,
         "path": "scripts/gen_reading_map.py"
       },
       "src": "adr:ADR-0032"
@@ -7320,8 +7385,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 310,
-        "line": 310,
+        "end_line": 317,
+        "line": 317,
         "path": "scripts/gen_doc_stubs.py"
       },
       "src": "decision:D32"
@@ -13543,16 +13608,16 @@
       "unparsed": 0
     },
     {
-      "edges": 71,
+      "edges": 76,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 63,
       "min_nodes": 71,
       "name": "documents",
-      "nodes": 79,
+      "nodes": 84,
       "rejected": 0,
-      "scanned": 71,
+      "scanned": 76,
       "unparsed": 0
     },
     {
@@ -17169,15 +17234,46 @@
     },
     {
       "attrs": {
+        "enforcement": "review-cadence",
+        "evidence": "The decisions in docs/tier7/ticket-42-execution-lifecycle-decision.md, taken against the Definition of Done's twelve conditions, failure-semantics' three-valued verdict, AutoForge's protocol.md and stages/ directory, and the ECC capability audit. No task has walked these seven phases end to end; the phase set rests on a reduction of AutoForge's twelve names, not on observed execution.",
+        "falsifies_if": "A task completes the seven phases and the merge gate still catches a class of defect this lifecycle claims to prevent upstream; or the front half is observed to be skipped without the task class declaring it; or a re-entry sends work downstream of the static default.",
+        "owner": "human",
+        "path": "docs/tier3/execution-lifecycle.md",
+        "review_after": "the first ten tasks that walk it",
+        "tier": "3",
+        "tier_name": "Agent specifications",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier3/execution-lifecycle",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier3/execution-lifecycle.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier3",
+        "human",
+        "review-cadence"
+      ],
+      "title": "Execution Lifecycle"
+    },
+    {
+      "attrs": {
         "enforcement": "schema",
-        "evidence": "none — written pre-Phase-0 as a register stub (D32)",
+        "evidence": "The seven phases fixed in docs/tier3/execution-lifecycle.md and the phase_end record added to docs/tier3/run-instrumentation-specification.md by ADR-0047, whose artifact_ref is a hash rather than a path (I3). Promoted ahead of its stated review_after because those two supplied the content it was waiting for; no handoff has yet been observed crossing a phase boundary.",
         "falsifies_if": "A handoff carries prose the successor relies on without reading the underlying artifact.",
         "owner": "executable",
         "path": "docs/tier3/handoff-contract-standard.md",
         "review_after": "Phase 3",
         "tier": "3",
         "tier_name": "Agent specifications",
-        "written": "stub"
+        "written": "full"
       },
       "body": "",
       "extractor": "documents",
@@ -18224,6 +18320,37 @@
     {
       "attrs": {
         "enforcement": "none",
+        "evidence": "A read of the frozen task specification standard, the Worker port contract's WorkerSpec, the handoff contract stub, and AutoForge's spawn-contract.md, against the FactoryFingerprint added in this effort. No task has been dispatched through the contracts named here; the seam is read off documents that already bind, not off an observed dispatch.",
+        "falsifies_if": "A third document is found describing what an agent is handed; or a factory run is found crossing the Worker port, meaning D2 drew the boundary in the wrong place.",
+        "owner": "human",
+        "path": "docs/tier7/ticket-44-task-contract-decision.md",
+        "review_after": "Phase 2",
+        "tier": "7",
+        "tier_name": "Meta",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier7/ticket-44-task-contract-decision",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ticket-44-task-contract-decision.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier7",
+        "human",
+        "none"
+      ],
+      "title": "Ticket #44 — the canonical task contract"
+    },
+    {
+      "attrs": {
+        "enforcement": "none",
         "evidence": "A grilling session on 2026-09-02 against data-architecture.md (frozen), cross-stage-invariants.md, run-instrumentation-specification.md, ECC's state-store.schema.json, and the .autoforge/state.json produced by a real AutoForge run against this repository on 2026-08-29. No factory task has yet written a run record; nothing here rests on an observed write.",
         "falsifies_if": "A fact in the homes table below is written authoritatively in two places; or a gate, verdict or audit is observed reading machine-local runtime state.",
         "owner": "human",
@@ -18282,6 +18409,99 @@
         "review-cadence"
       ],
       "title": "Ticket #46 — Model routing policy: home and content"
+    },
+    {
+      "attrs": {
+        "enforcement": "none",
+        "evidence": "A read of policy/node-palette.json's port declarations, orchestration/topology.json as it stands (8 nodes, 7 edges), lint_topology.py's TOP003-TOP005 port-compatibility rule, and the nine edge kinds proposed in the brief's §8. The proposed topology in D4 was verified by running check_topology against a candidate tree, not asserted.",
+        "falsifies_if": "An edge kind rejected here is later needed to answer a question no existing edge answers; or the type graph is found being executed rather than validated against.",
+        "owner": "human",
+        "path": "docs/tier7/ticket-47-edge-semantics-decision.md",
+        "review_after": "Phase 2",
+        "tier": "7",
+        "tier_name": "Meta",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier7/ticket-47-edge-semantics-decision",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ticket-47-edge-semantics-decision.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier7",
+        "human",
+        "none"
+      ],
+      "title": "Ticket #47 — execution edge semantics"
+    },
+    {
+      "attrs": {
+        "enforcement": "none",
+        "evidence": "A read of ECC2 at ~/.config/opencode/ecc-source/ecc2 — 17 Rust files, ~54,100 lines, self-described alpha — including harness_eval.rs (579 lines), observability/mod.rs's compute_risk, and config's RISK_THRESHOLDS. Comparison is against Alfred's CriterionRunner, ACS-1 evidence chain, held-out isolation by SQL grant, and the Wilson-interval reading in K3.",
+        "falsifies_if": "An ECC2 pattern refused here is later adopted because the refusal reasoning was wrong; or Alfred is found importing, vendoring or executing ECC2 code.",
+        "owner": "human",
+        "path": "docs/tier7/ticket-51-ecc2-boundary-decision.md",
+        "review_after": "Phase 2",
+        "tier": "7",
+        "tier_name": "Meta",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier7/ticket-51-ecc2-boundary-decision",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ticket-51-ecc2-boundary-decision.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier7",
+        "human",
+        "none"
+      ],
+      "title": "Ticket #51 — the ECC2 reuse boundary"
+    },
+    {
+      "attrs": {
+        "enforcement": "none",
+        "evidence": "A read of docs/tier1/mission-control-specification.md — the boundary split, the read-model section's no-cache rule, and the decision-critical panel rule — against the brief's §18 snapshot contracts and §19 failure list. Neither Mission Control program exists as code; nothing here rests on an observed render.",
+        "falsifies_if": "A stored aggregate, materialized view or cache appears in the read model; or a decision-critical fact is found rendered from the read model rather than from the command surface; or a degraded state renders as a normal one.",
+        "owner": "human",
+        "path": "docs/tier7/ticket-52-read-model-decision.md",
+        "review_after": "the first screen that exists",
+        "tier": "7",
+        "tier_name": "Meta",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier7/ticket-52-read-model-decision",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ticket-52-read-model-decision.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier7",
+        "human",
+        "none"
+      ],
+      "title": "Ticket #52 — Mission Control's read model"
     },
     {
       "attrs": {

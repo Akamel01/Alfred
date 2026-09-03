@@ -85,6 +85,7 @@ PHASES: list[tuple[str, str, list[tuple[str, str, str]]]] = [
         ("state-and-graph-specification", BINDING, "field ownership, reducers, projections"),
         ("context-engineering-guide", BINDING, "seed layering; prefix order is architecture, not tuning"),
         ("instruction-and-prompt-standard", BINDING, "prompts are versioned and enter the fingerprint"),
+        ("execution-lifecycle", CONTEXT, "the seven phases a task walks; front half method, back half gated by DoD"),
         ("escalation-protocol", BINDING, "structural triggers; the agent cannot declare itself blocked"),
         ("handoff-contract-standard", BINDING, "evidence refs travel, agent-authored summaries do not"),
         ("review-protocol", CONTEXT, "criterion-first review; what the human checks that the harness cannot"),
@@ -121,6 +122,10 @@ PHASES: list[tuple[str, str, list[tuple[str, str, str]]]] = [
         ("ticket-43-role-bindings-decision", RECORD, "map #41: palette kind to runtime agent; a binding edit is a requalification event"),
         ("ticket-45-state-authority-decision", RECORD, "map #41: one home per fact; runtime is never evidence"),
         ("ticket-46-model-routing-decision", RECORD, "map #41: routing keys on capability_id; inherit forbidden; trivial is an empty class"),
+        ("ticket-44-task-contract-decision", RECORD, "map #41: three contracts — task, session, handoff; factory runs do not cross the Worker port"),
+        ("ticket-47-edge-semantics-decision", RECORD, "map #41: four contract types, zero additions; the palette blocks the real topology"),
+        ("ticket-51-ecc2-boundary-decision", RECORD, "map #41: adopt nothing from ECC2, and why each piece was refused"),
+        ("ticket-52-read-model-decision", RECORD, "map #41: queries at request time; the brief's snapshot contracts do not survive the spec"),
     ]),
 ]
 
