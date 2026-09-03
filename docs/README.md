@@ -6,7 +6,7 @@ Documents are classified by what stops them from lying, never by topic. See
 [Documentation Standard](tier7/documentation-standard.md) for the header contract,
 the stub policy, and the authorship boundary.
 
-**71 documents** · 38 written, 33 stubs · 36 executable or generated (50%)
+**71 documents** · 39 written, 32 stubs · 36 executable or generated (50%)
 
 ## Tier 0 — Constitution
 
@@ -57,7 +57,7 @@ the stub policy, and the authorship boundary.
 | Document | Status | Owner | Enforcement | Written |
 |---|---|---|---|---|
 | [Agent Catalog](tier3/agent-catalog.md) | directional | executable | `schema` | stub |
-| [Agent Definition Standard](tier3/agent-definition-standard.md) | provisional | executable | `schema` | stub |
+| [Agent Definition Standard](tier3/agent-definition-standard.md) | provisional | executable | `schema` | full |
 | [Agent Evaluation Protocol](tier3/agent-evaluation-protocol.md) | directional | human | `ci-gate` | stub |
 | [Autonomy Graduation Policy](tier3/autonomy-graduation-policy.md) | directional | executable | `ci-gate` | stub |
 | [Context Engineering Guide](tier3/context-engineering-guide.md) | provisional | human | `review-cadence` | stub |
