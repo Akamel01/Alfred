@@ -260,9 +260,26 @@ hr.rule{border:0;border-top:1px solid var(--line);margin:calc(var(--u)*8) 0;}
   font-variant-numeric:tabular-nums;}
 .livebar .why{margin-left:auto;font-size:var(--step-xs);color:var(--ink-soft);max-width:52ch;}
 
-.graphwrap{overflow-x:auto;border:1px dashed var(--line-firm);border-radius:2px;
-  background:var(--surface-sunk);padding:calc(var(--u)*5);}
-svg.flow{display:block;min-width:1120px;width:100%;height:auto;}
+.graphframe{position:relative;}
+.graphwrap{overflow-x:auto;overflow-y:hidden;border:1px dashed var(--line-firm);
+  border-radius:2px;background:var(--surface-sunk);padding:calc(var(--u)*5);
+  overscroll-behavior-x:contain;}
+/* The eight capabilities and their five re-entry rows need about 1100px before the 9px
+   labels stop being readable. Scaling to a phone would keep the shape and lose the words,
+   which on a screen whose whole point is naming what is running is the wrong trade. So it
+   scrolls below that width — and says so, rather than leaving a peephole to be discovered. */
+svg.flow{display:block;min-width:1000px;width:100%;height:auto;}
+.graphhint{display:none;align-items:center;gap:calc(var(--u)*2);margin:0 0 calc(var(--u)*3);
+  font-size:var(--step-xs);color:var(--ink-soft);}
+.graphhint.on{display:flex;}
+.graphhint kbd{font-family:var(--font-data);font-size:10px;border:1px solid var(--line-firm);
+  border-radius:2px;padding:0 calc(var(--u)*1.5);color:var(--ink-mid);}
+.graphedge{position:absolute;top:0;bottom:0;width:calc(var(--u)*10);pointer-events:none;
+  opacity:0;transition:opacity 120ms ease-out;}
+.graphedge.on{opacity:1;}
+.graphedge.left{left:0;background:linear-gradient(to right,var(--surface-sunk),transparent);}
+.graphedge.right{right:0;background:linear-gradient(to left,var(--surface-sunk),transparent);}
+@media (prefers-reduced-motion: reduce){ .graphedge{transition:none;} }
 svg.flow .lane-line{stroke:var(--line-firm);stroke-width:1;}
 svg.flow .edge-recorded{stroke:var(--ink-mid);stroke-width:1.5;fill:none;}
 svg.flow .edge-runtime{stroke:var(--ink-soft);stroke-width:1.5;fill:none;stroke-dasharray:4 4;}
@@ -284,7 +301,7 @@ svg.flow .edge-override{stroke:var(--ink);stroke-width:2;fill:none;stroke-dashar
 .graphkey span{display:flex;align-items:center;gap:calc(var(--u)*2);}
 .graphkey svg{flex:none;}
 
-.agentgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+.agentgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr));
   gap:calc(var(--u)*4);}
 .agentcard{border:1px solid var(--line);border-radius:2px;background:var(--surface);
   padding:calc(var(--u)*4);cursor:pointer;transition:border-color 100ms ease-out;}
@@ -786,97 +803,106 @@ dialog.confirm .dfoot{display:flex;gap:calc(var(--u)*3);justify-content:flex-end
   <div class="zone prov-read">
     <div class="zhead"><span class="znum">01</span><h2 class="ztitle">The factory graph</h2><span class="zprov runtime">runtime · display only</span></div>
     <div class="zbody">
-      <div class="graphwrap">
-        <svg class="flow" viewBox="0 0 1190 320" role="img" aria-label="Eight capabilities in the lifecycle chain — three active, two idle-but-bound, three unbound — with all five static re-entry defaults, one override example, and shared-state traffic">
+      <p class="graphhint" id="graphhint"><kbd>↔</kbd> The chain is wider than this window — scroll the panel sideways to see all eight capabilities. Every capability also appears as a card below.</p>
+      <div class="graphframe">
+      <div class="graphwrap" id="graphwrap">
+        <svg class="flow" viewBox="0 0 1040 345" role="img" aria-label="Eight capabilities in the lifecycle chain — three active, two idle but bound, three unbound — with all five static re-entry defaults, one override example, and shared-state traffic">
           <defs>
-            <marker id="arr-default" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
-              <path d="M0 0 L10 5 L0 10 z" fill="var(--ink-mid)"/>
-            </marker>
-            <marker id="arr-override" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7.5" markerHeight="7.5" orient="auto-start-reverse">
-              <path d="M0 0 L10 5 L0 10 z" fill="var(--ink)"/>
-            </marker>
+            <marker id="arr-default" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="var(--ink-mid)"/></marker>
+            <marker id="arr-override" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7.5" markerHeight="7.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="var(--ink)"/></marker>
           </defs>
 
-          <!-- flow: recorded handoffs, solid -->
-          <path class="edge-recorded" d="M124 98 H166"/>
-          <path class="edge-recorded" d="M274 98 H316"/>
-          <path class="edge-recorded" d="M424 98 H466"/>
-          <path class="edge-recorded" d="M574 98 H616"/>
-          <path class="edge-recorded" d="M724 98 H766"/>
-          <path class="edge-recorded" d="M874 98 H916"/>
-          <path class="edge-recorded" d="M1024 98 H1066"/>
+          <!-- recorded handoffs: an artifact and its hash crossed here -->
+          <path class="edge-recorded" d="M116 105 H146"/>
+          <path class="edge-recorded" d="M246 105 H276"/>
+          <path class="edge-recorded" d="M376 105 H406"/>
+          <path class="edge-recorded" d="M506 105 H536"/>
+          <path class="edge-recorded" d="M636 105 H666"/>
+          <path class="edge-recorded" d="M766 105 H796"/>
+          <path class="edge-recorded" d="M896 105 H926"/>
 
-          <!-- static default re-entry #1: Execute fails -> Execute (self-loop) -->
-          <path class="edge-default" marker-end="url(#arr-default)" d="M800 76 C800 50 840 50 840 76"/>
-          <text class="sub" x="770" y="46">Execute → Execute</text>
+          <!-- static default re-entry, all five rows of execution-lifecycle.md -->
+          <path class="edge-default" marker-end="url(#arr-default)" d="M690 76 C690 52 742 52 742 76"/>
+          <text class="sub" x="650" y="48">Execute → Execute</text>
+          <path class="edge-default" marker-end="url(#arr-default)" d="M846 134 V160 H716 V134"/>
+          <text class="sub" x="760" y="156">Review → Execute</text>
+          <path class="edge-default" marker-end="url(#arr-default)" d="M976 134 V184 H726 V134"/>
+          <text class="sub" x="770" y="180">Validate → Execute</text>
+          <!-- either gate can find an Architect or Plan problem later, so both feed one junction -->
+          <path class="edge-default" d="M846 134 V210 H900"/>
+          <path class="edge-default" d="M976 134 V210 H900"/>
+          <circle cx="900" cy="210" r="3" fill="var(--ink-mid)"/>
+          <text class="sub" x="908" y="206">found later</text>
+          <path class="edge-default" marker-end="url(#arr-default)" d="M900 210 V238 H456 V134"/>
+          <text class="sub" x="466" y="234">Architect (found later) → Architect</text>
+          <path class="edge-default" marker-end="url(#arr-default)" d="M900 210 V262 H586 V134"/>
+          <text class="sub" x="596" y="258">Plan (found later) → Plan</text>
 
-          <!-- static default re-entry #2: Review fails -> Execute -->
-          <path class="edge-default" marker-end="url(#arr-default)" d="M970 120 V148 H820 V120"/>
-          <text class="sub" x="884" y="143">Review → Execute</text>
+          <!-- override: upstream-only, and the finder records why -->
+          <path class="edge-override" marker-end="url(#arr-override)" d="M846 76 C846 14 586 14 586 76"/>
+          <text class="sub" x="560" y="10">override — Review finds a wrong plan, re-enters Plan, reason recorded</text>
 
-          <!-- static default re-entry #3: Validate fails -> Execute -->
-          <path class="edge-default" marker-end="url(#arr-default)" d="M1120 120 V172 H840 V120"/>
-          <text class="sub" x="884" y="167">Validate → Execute</text>
-
-          <!-- static default re-entries #4/#5: an Architect or Plan problem found later
-               (during Review or Validate) re-enters Architect / Plan respectively.
-               Drawn from a shared "found later" junction since either gate can find it. -->
-          <path class="edge-default" d="M970 120 V200 H1045"/>
-          <path class="edge-default" d="M1120 120 V200 H1045"/>
-          <circle cx="1045" cy="200" r="3" fill="var(--ink-mid)"/>
-          <text class="sub" x="1054" y="196">found later</text>
-          <path class="edge-default" marker-end="url(#arr-default)" d="M1045 200 V228 H520 V120"/>
-          <text class="sub" x="530" y="223">Architect (found later) → Architect</text>
-          <path class="edge-default" marker-end="url(#arr-default)" d="M1045 200 V252 H670 V120"/>
-          <text class="sub" x="680" y="245">Plan (found later) → Plan</text>
-
-          <!-- override example: the finder may send work further upstream than the
-               default, and must record why. Overrides are upstream-only. -->
-          <path class="edge-override" marker-end="url(#arr-override)" d="M970 76 C970 8 670 8 670 76"/>
-          <text class="sub" x="676" y="16">override — Review finds a wrong plan, re-enters Plan, reason recorded</text>
-
-          <!-- runtime: writes to shared state, dashed -->
-          <path class="edge-runtime" d="M220 120 V286 H430"/>
-          <path class="edge-runtime" d="M520 120 V270"/>
-          <path class="edge-runtime" d="M820 120 V286 H590"/>
+          <!-- runtime traffic: no gate, verdict or audit may cite these -->
+          <path class="edge-runtime" d="M196 134 V300 H420"/>
+          <path class="edge-runtime" d="M456 134 V284"/>
+          <path class="edge-runtime" d="M716 134 V300 H580"/>
 
           <g class="node unbound" aria-label="wayfinder — unbound, no agent binds this capability">
-            <rect class="node-box unbound" x="16" y="76" width="108" height="44" rx="2"/>
-            <text x="28" y="96">wayfinder</text><text class="sub" x="28" y="110">unbound</text>
+            <rect class="node-box unbound" x="16" y="76" width="100" height="58" rx="2"/>
+            <text x="26" y="94">wayfinder</text>
+            <text class="sub" x="26" y="110">Chart</text>
+            <text class="sub" x="26" y="124">unbound</text>
           </g>
           <g class="node" tabindex="0" data-panel="agent-researcher">
-            <rect class="node-box active" x="166" y="76" width="108" height="44" rx="2"/>
-            <text x="178" y="96">researcher</text><text class="sub" x="178" y="110">Discover · sonnet-5</text>
+            <rect class="node-box active" x="146" y="76" width="100" height="58" rx="2"/>
+            <text x="156" y="94">researcher</text>
+            <text class="sub" x="156" y="110">Discover</text>
+            <text class="sub" x="156" y="124">sonnet-5</text>
           </g>
           <g class="node unbound" aria-label="examiner — unbound, no agent binds this capability">
-            <rect class="node-box unbound" x="316" y="76" width="108" height="44" rx="2"/>
-            <text x="328" y="96">examiner</text><text class="sub" x="328" y="110">unbound</text>
+            <rect class="node-box unbound" x="276" y="76" width="100" height="58" rx="2"/>
+            <text x="286" y="94">examiner</text>
+            <text class="sub" x="286" y="110">Grill</text>
+            <text class="sub" x="286" y="124">unbound</text>
           </g>
           <g class="node" tabindex="0" data-panel="agent-architect">
-            <rect class="node-box active" x="466" y="76" width="108" height="44" rx="2"/>
-            <text x="478" y="96">architect</text><text class="sub" x="478" y="110">Architect · opus-5</text>
+            <rect class="node-box active" x="406" y="76" width="100" height="58" rx="2"/>
+            <text x="416" y="94">architect</text>
+            <text class="sub" x="416" y="110">Architect</text>
+            <text class="sub" x="416" y="124">opus-5</text>
           </g>
           <g class="node" tabindex="0" data-panel="agent-planner">
-            <rect class="node-box idle" x="616" y="76" width="108" height="44" rx="2"/>
-            <text x="628" y="96">planner</text><text class="sub" x="628" y="110">idle · opus-5</text>
+            <rect class="node-box idle" x="536" y="76" width="100" height="58" rx="2"/>
+            <text x="546" y="94">planner</text>
+            <text class="sub" x="546" y="110">Plan</text>
+            <text class="sub" x="546" y="124">idle · opus-5</text>
           </g>
           <g class="node" tabindex="0" data-panel="agent-codewriter">
-            <rect class="node-box active" x="766" y="76" width="108" height="44" rx="2"/>
-            <text x="778" y="96">code-writer</text><text class="sub" x="778" y="110">Execute · sonnet-5</text>
+            <rect class="node-box active" x="666" y="76" width="100" height="58" rx="2"/>
+            <text x="676" y="94">code-writer</text>
+            <text class="sub" x="676" y="110">Execute</text>
+            <text class="sub" x="676" y="124">sonnet-5</text>
           </g>
           <g class="node" tabindex="0" data-panel="agent-reviewer">
-            <rect class="node-box idle" x="916" y="76" width="108" height="44" rx="2"/>
-            <text x="928" y="96">reviewer</text><text class="sub" x="928" y="110">idle · opus-5</text>
+            <rect class="node-box idle" x="796" y="76" width="100" height="58" rx="2"/>
+            <text x="806" y="94">reviewer</text>
+            <text class="sub" x="806" y="110">Review</text>
+            <text class="sub" x="806" y="124">idle · opus-5</text>
           </g>
           <g class="node unbound" aria-label="validator — unbound, no agent binds this capability">
-            <rect class="node-box unbound" x="1066" y="76" width="108" height="44" rx="2"/>
-            <text x="1078" y="96">validator</text><text class="sub" x="1078" y="110">unbound</text>
+            <rect class="node-box unbound" x="926" y="76" width="100" height="58" rx="2"/>
+            <text x="936" y="94">validator</text>
+            <text class="sub" x="936" y="110">Validate</text>
+            <text class="sub" x="936" y="124">unbound</text>
           </g>
 
-          <rect x="430" y="270" width="160" height="36" rx="2" fill="none" stroke="var(--ink-soft)" stroke-width="1" stroke-dasharray="3 3"/>
-          <text x="442" y="288">shared state</text>
-          <text class="sub" x="442" y="300">runtime · unverified</text>
+          <rect x="420" y="284" width="160" height="36" rx="2" fill="none" stroke="var(--ink-soft)" stroke-width="1" stroke-dasharray="3 3"/>
+          <text x="432" y="302">shared state</text>
+          <text class="sub" x="432" y="314">runtime · unverified</text>
         </svg>
+      </div>
+        <div class="graphedge left" aria-hidden="true"></div>
+        <div class="graphedge right" aria-hidden="true"></div>
       </div>
       <div class="graphkey">
         <span><svg width="26" height="8"><line x1="0" y1="4" x2="26" y2="4" stroke="var(--ink-mid)" stroke-width="1.5"/></svg> recorded handoff — artifact + hash</span>
@@ -1193,6 +1219,28 @@ document.addEventListener('keydown',e=>{
   const el=e.target.closest && e.target.closest('[data-panel]');
   if(el){ e.preventDefault(); openPanel(el.dataset.panel); }
 });
+
+/* ── the graph's scroll affordance ────────────────────────────────────────
+   Driven by measurement, never by a breakpoint guess: a fade that lies about
+   there being more to see is worse than no fade, because the reader stops
+   trusting the one that tells the truth.  ── */
+(()=>{
+  const wrap = document.getElementById('graphwrap');
+  const hint = document.getElementById('graphhint');
+  if(!wrap || !hint) return;
+  const left = document.querySelector('.graphedge.left');
+  const right = document.querySelector('.graphedge.right');
+  const sync = ()=>{
+    const over = wrap.scrollWidth - wrap.clientWidth;
+    hint.classList.toggle('on', over > 2);
+    left.classList.toggle('on', wrap.scrollLeft > 2);
+    right.classList.toggle('on', over > 2 && wrap.scrollLeft < over - 2);
+  };
+  wrap.addEventListener('scroll', sync, {passive:true});
+  addEventListener('resize', sync);
+  if(window.ResizeObserver) new ResizeObserver(sync).observe(wrap);
+  sync();
+})();
 
 /* ── model routing: a command-surface action embedded in the read model ─────
    Exactly the models named for this prototype. gpt-5-nano is listed and
