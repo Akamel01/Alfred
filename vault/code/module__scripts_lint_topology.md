@@ -32,5 +32,5 @@ generated: true
 
 ## Binds
 
-- [[gate-step__integrity_21|Topology lint checks its own vacuity]] **runs** → this
-- [[gate-step__integrity_22|Topology file is valid]] **runs** → this
+- [[gate-step__integrity_23|Topology lint checks its own vacuity]] **runs** → this
+- [[gate-step__integrity_24|Topology file is valid]] **runs** → this

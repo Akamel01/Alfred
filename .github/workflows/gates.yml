@@ -84,6 +84,20 @@ jobs:
       - name: Migrations are additive-only
         run: python3 scripts/lint_migrations.py
 
+      # Cross-stage invariants I1-I17. docs/tier1/cross-stage-invariants.md is frozen,
+      # declares `ci-gate` and says "Enforced by CI lint" — and no file named for that
+      # claim existed (#56). Five checks land the ones with a static form: tenancy,
+      # schema_version, causality, identifiers and idempotency. A sixth, INVMAP,
+      # resolves every invariant's declared enforcer against the filesystem and against
+      # this workflow, so a lint that is renamed or unwired fails the map rather than
+      # continuing to read as coverage. The ten held by review say so, with reasons.
+      - name: Cross-stage invariants hold
+        run: python3 scripts/lint_invariants.py
+
+      # Its own negative control, run first-class rather than trusted, like its siblings.
+      - name: Invariant lint detects planted violations
+        run: python3 scripts/lint_invariants.py --self-test
+
       # D16/D39. LangGraph raises only on *concurrent* unreducered writes, so a
       # sequential write to a verdict field is silent and the boundary is a
       # convention unless something checks it. Three directions: the vocabulary in

@@ -4917,3 +4917,116 @@ than reporting clean — the vacuity guard, aimed at the ordinal check itself.
 
 A record lands claiming a D28 waiver ordinal that its position does not derive, and CI is
 green — meaning the check reads a shape the log does not use.
+
+---
+
+## ADR-0053 — The cross-stage invariants get the lint their register claims, and a checked map of what enforces the rest
+
+**Date:** 2026-09-03 · **Status:** Accepted · **Supersedes:** none · **Amends:** nothing; `docs/tier1/cross-stage-invariants.md` is deliberately left untouched, and the Consequences say why · **See also:** ADR-0007 (the vacuity class), D57, `scripts/lint_migrations.py` (I2), `scripts/lint_verdict_boundary.py` (I17), #56 · **D28 waiver:** no
+
+### Context
+
+`docs/tier1/cross-stage-invariants.md` is `status: frozen`, `enforcement: ci-gate`, and its
+body says *"Enforced by CI lint. A violation fails the build."* `ci-gate` is the strongest
+value in the documentation standard's enum: it asserts a machine refuses the merge. No file
+named for that claim existed.
+
+The state was not quite as bare as #56 charted it. Two of the eight checks the document's
+§ *What the lint checks* enumerates were already enforced, by siblings written for other
+reasons: `lint_migrations.py` holds I2's additive-only rule, and `lint_verdict_boundary.py`
+holds both I17 clauses. Six were held by nothing.
+
+This is worse than an unenforced document rather than merely equal to one, and the reason is
+specific: a reviewer who reads `ci-gate` stops checking by hand. The claim does not just fail
+to help, it withdraws the help that would otherwise be there.
+
+### Decision
+
+1. **`scripts/lint_invariants.py` lands with five static checks**, wired into
+   `gates.yml` alongside its own `--self-test`:
+   - `INV1` (I1) — every table a migration creates declares `org_id` and `project_id`;
+   - `INV6` (I6) — and `schema_version`;
+   - `INV10` (I10) — and `caused_by`, because a causality link never stored cannot be
+     reconstructed afterwards;
+   - `INV4` (I4) — no `uuid1/3/4/5` call and no integer primary key in `src/` or
+     `migrations/`;
+   - `INV5` (I5) — every mutating route handler declares an `idempotency_key` parameter.
+
+2. **The column checks resolve one level of helper.** Every migration in the tree spreads a
+   module-level `_envelope()` into each `create_table`, so a check reading only literal
+   `sa.Column(...)` arguments would report all fourteen tables as missing all five envelope
+   columns. One level, not arbitrarily many: when a second level appears the bound is raised
+   visibly in a diff rather than silently under-reporting.
+
+3. **`INVMAP` is the sixth check and the one that keeps the other five honest.** Every
+   invariant declares its enforcement as `here` (a check in this file), `script` (a named
+   sibling), or `review` (a human, with the reason stated). There is no fourth value and in
+   particular none meaning *assumed*. A `script` referent must exist on disk **and** appear
+   in `gates.yml` — a lint that exists and never runs reads identically to enforcement from
+   inside the document. A `review` row must state a reason, because a review row with no
+   reason is an unenforced row with a nicer name.
+
+4. **The map was wrong on its first draft, and INVMAP is what said so.** I9, I11, I13 and
+   I14 were drafted as `script` rows pointing at `lint_docs.py`,
+   `capture_run_fingerprint.py`, `lint_topology.py` and `lint_harness_gate.py`. The check
+   fired on I11 — the file is real and `gates.yml` never invokes it — and reading the others
+   under that light showed the same defect one step earlier: recording a pin is not enforcing
+   one, and a lint that reads `policy/*.json` does not check that a threshold was not *also*
+   hard-coded somewhere. All four are now `review` rows with their reasons.
+
+5. **I3 is not statically checked, and the file says so in its own docstring.** The property
+   is "an artifact write goes through the content-addressed store, never a raw path". Every
+   static form reduces to an allowlist of modules permitted to write bytes, and the tree has
+   seventeen legitimate byte writes — bench reports, fixture generation, the restore drill's
+   anchor, the ACS vector generator. An allowlist admitting all of them discriminates
+   nothing. What holds I3 today is `evidence.artifact`'s `uq_artifact_content` uniqueness
+   over `(org_id, project_id, content_sha256)`: a database constraint, not a lint.
+
+6. **`INV4`'s scope is `src/` and `migrations/`, and the excluded instance is named.**
+   `harness/evidence/store.py:322` calls `uuid.uuid4()` for the primary key of every evidence
+   row — precisely what I4 forbids, on a chain written serially in time order, throwing away
+   the sortability the invariant is bought for. `harness/` is the inspector (D20); an agent
+   may not edit it, so a gate an agent cannot clear is a gate that gets worked around. It is
+   named in the docstring and filed as its own ticket, not swept.
+
+7. **`docs/tier1/cross-stage-invariants.md` is not amended.** See the Consequences.
+
+8. **This is a protected-path write** (`scripts/`, `.github/`, D20) under
+   `docs/tier4/protected-paths-policy.md:100` — line-by-line human review plus a mandatory
+   ADR. No gate is overridden, so no D28 waiver.
+
+### Consequences
+
+Six of the seventeen invariants now fail the build when violated, and ten declare in a
+machine-checked table that they are held by review, with their reasons. The seventeenth, I2,
+was already enforced and now says where.
+
+**The document's own claim is still wider than what enforces it, and repairing that is
+deliberately not done here.** The honest amendment would scope *"Enforced by CI lint"* to the
+invariants that are, and `cross-stage-invariants.md` is frozen. Whether amending a frozen
+`ci-gate` document is itself a D28 waiver is genuinely unsettled — ADR-0033 and ADR-0040 both
+took `D28 waiver: yes` to amend the coding standards' structure fence; ADR-0050 amended the
+same frozen section and took `D28 waiver: no` on ADR-0045's reasoning that a waiver overrides
+a *gate* rather than authorizing an edit. Taking a waiver I have not earned inflates a count
+ADR-0052 just made checkable; declining one I owe deflates it. Both are the failure this pair
+of ADRs exists to prevent, so the edit waits for the operator and the question is filed.
+
+Until then the lint's map is the measurement and the document is the claim, and where they
+disagree the map is the one that fails CI. That is the right asymmetry: a measurement that
+contradicts a claim is information, and the reverse is not.
+
+### Enforcement
+
+`ci-gate`. `scripts/lint_invariants.py` in `gates.yml`, with `--self-test` beside it.
+
+Eleven self-test controls, each a planted violation with its paired positive: a clean
+migration passes INV1/INV6/INV10 and a table missing any of the three fails; an empty tree
+reports zero scanned (the D57 guard, aimed at the envelope check itself); an integer primary
+key and a `uuid4()` call fail INV4 while a UUIDv7 table passes; an unkeyed mutating handler
+fails INV5 while a keyed one and a `GET` both pass; and a map naming an absent lint fails.
+
+### Falsifies if
+
+An invariant this file declares `here` or `script` is found violated in merged code with CI
+green — meaning the check reads a shape the tree does not use. Or a `review` row is found to
+have had a static form available all along.

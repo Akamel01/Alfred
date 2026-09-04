@@ -1,38 +1,37 @@
 ---
 kind: gate-step
 id: "gate-step:integrity.21"
-title: "Topology lint checks its own vacuity"
+title: "Vault and published graph are current"
 shape: "step"
 job: "integrity"
-source: ".github/workflows/gates.yml:207"
+source: ".github/workflows/gates.yml:206"
 extractor: "workflows"
 tags: [protected]
 aliases:
-  - "Topology lint checks its own vacuity"
+  - "Vault and published graph are current"
   - "integrity.21"
 generated: true
 ---
 
-# Topology lint checks its own vacuity
+# Vault and published graph are current
 
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `.github/workflows/gates.yml:207`
+**Source** · `.github/workflows/gates.yml:206`
 
 ## Statement
 
-python3 scripts/lint_topology.py --self-test
+python3 tools/gen_vault.py --check
 
 ## Fields
 
 | Field | Value |
 |---|---|
-| `command` | python3 scripts/lint_topology.py --self-test |
+| `command` | python3 tools/gen_vault.py --check |
 | `kind` | run |
 | `ordinal` | 21 |
 
 ## Binds
 
-- **runs** → [[module__scripts_lint_topology|Topology lint — TOP001-TOP009 per orchestration-canvas-spec §6.]]
 - [[gate__integrity|integrity (fixtures and register)]] **contains** → this

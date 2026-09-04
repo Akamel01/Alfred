@@ -1,38 +1,38 @@
 ---
 kind: gate-step
 id: "gate-step:integrity.09"
-title: "Verdict boundary holds"
+title: "Cross-stage invariants hold"
 shape: "step"
 job: "integrity"
-source: ".github/workflows/gates.yml:93"
+source: ".github/workflows/gates.yml:94"
 extractor: "workflows"
 tags: [protected]
 aliases:
-  - "Verdict boundary holds"
+  - "Cross-stage invariants hold"
   - "integrity.09"
 generated: true
 ---
 
-# Verdict boundary holds
+# Cross-stage invariants hold
 
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `.github/workflows/gates.yml:93`
+**Source** · `.github/workflows/gates.yml:94`
 
 ## Statement
 
-python3 scripts/lint_verdict_boundary.py
+python3 scripts/lint_invariants.py
 
 ## Fields
 
 | Field | Value |
 |---|---|
-| `command` | python3 scripts/lint_verdict_boundary.py |
+| `command` | python3 scripts/lint_invariants.py |
 | `kind` | run |
 | `ordinal` | 9 |
 
 ## Binds
 
-- **runs** → [[module__scripts_lint_verdict_boundary|D16/D39: the verdict boundary, enforced structurally rather than by convention.]]
+- **runs** → [[module__scripts_lint_invariants|Cross-stage invariants (I1–I17), and the map of what actually enforces each one.]]
 - [[gate__integrity|integrity (fixtures and register)]] **contains** → this

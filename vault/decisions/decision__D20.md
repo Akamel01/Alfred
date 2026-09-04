@@ -63,6 +63,9 @@ Each piece here ran verbatim, or near eno
 - **enforced_by** → [[module__scripts_lint_harness_gate|How much of `harness/` the lint gate actually collects, and whether it can go red.]] — """How much of `harness/` the lint gate actually collects, and whether it can go red.
 
 `harness/` is the tree everything
+- **enforced_by** → [[module__scripts_lint_invariants|Cross-stage invariants (I1–I17), and the map of what actually enforces each one.]] — """Cross-stage invariants (I1–I17), and the map of what actually enforces each one.
+
+`docs/tier1/cross-stage-invariants.
 - **enforced_by** → [[module__scripts_lint_stage_gates|The stage gate, as a check rather than as a sentence somebody reads.]] — """The stage gate, as a check rather than as a sentence somebody reads.
 
 `docs/tier2/stage-gate-definitions.md` carried 
