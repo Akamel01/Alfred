@@ -5,7 +5,7 @@ title: "The palette gains seven `hands-off-to` ports so the lifecycle chain beco
 status: "accepted"
 shape: "heading"
 date: "2026-09-03"
-source: "docs/tier1/adr-log.md:4540"
+source: "docs/tier1/adr-log.md:4549"
 extractor: "adrs"
 aliases:
   - "ADR-0048"
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `docs/tier1/adr-log.md:4540`
+**Source** · `docs/tier1/adr-log.md:4549`
 
 ## Statement
 

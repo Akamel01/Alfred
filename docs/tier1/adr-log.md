@@ -4043,6 +4043,15 @@ The two committed `layout-miss` anomalies (`orchestration/`, `prototype/`) stop 
  - `vault/_anomalies.md` + `graph.json` + `docs-graph.html` → byte-compared in CI (`gen_vault.py --check` in `gates.yml:192-193`); a hand edit fails the check.
  - `docs/tier2/coding-standards.md` → frozen, `ci-gate`; this ADR is the waiver that authorizes its diff.
 
+> **Ordinal correction (2026-09-03, #55).** The paragraph above reads *"It is the third."*
+> It is the **fourth**. ADR-0022 is the first, ADR-0033 the second, ADR-0035 the third, and
+> this record the fourth. The body is not rewritten because the log is append-only in spirit
+> and the number a record claimed is itself part of the record; the correction travels with it,
+> in the same blockquote form the renumbering notes use. The error ran in the under-reporting
+> direction, which is the direction that makes the waiver count — a health metric — look
+> healthier than it is. `scripts/lint_adr_numbers.py` now derives the ordinal from position
+> and reads this note, so the claim is checked rather than asserted.
+
 ---
 
 ## ADR-0041 — The S0–S9 build materialized as a numbered pipeline
@@ -4801,3 +4810,110 @@ Or: the live view and Part B become visually indistinguishable, meaning decision
 `review-cadence`. Nothing in CI can check that two renderings look sufficiently different from each other, and claiming otherwise would be the wish `scripts/lint_ci_coverage.py` names.
 
 What *is* structural is decision 4's consequence: there is no event stream to build, so the failure class it would introduce cannot arrive by accident. And ADR-0049's decision 2 holds by construction — the live view is the read model's, and the program that draws S2 cannot reach runtime state at all.
+
+---
+
+## ADR-0052 — The D28 waiver ordinal becomes derived, and ADR-0040's is corrected in place
+
+**Date:** 2026-09-03 · **Status:** Accepted · **Supersedes:** none · **Amends:** nothing; this record repairs a drift and closes the class · **See also:** ADR-0022 (the first D28 waiver), ADR-0033 (the second), ADR-0035 (the third), ADR-0040 (the fourth, which claimed to be the third), `docs/tier0/operating-principles.md` (the falsification clause the count feeds), #55 · **D28 waiver:** no
+
+### Context
+
+Four ADRs carry a `**D28 waiver:** yes` header, and each states in prose which waiver it is,
+because all four say the waiver *"counts toward the waiver total the operating principles use
+as a health metric."* Two of them claimed to be the **third**: ADR-0035 at `adr-log.md:3824`
+and ADR-0040 at `adr-log.md:4028`.
+
+The count is not decoration. `docs/tier0/operating-principles.md:6` makes it a falsification
+clause: *"three waivers against the same principle means the principle is wrong, not the
+situations."* A metric that cannot count itself cannot fire that clause. The current text
+supports reading the total as either three or four, and the error runs in the
+**under-reporting** direction — the direction that makes the register look healthier than it
+is, which is the only direction that goes unnoticed.
+
+The ordinal is derivable. It is the count of prior `D28 waiver: yes` headers in numeric
+order. Nothing derived it, so a prose claim was the only statement of it, and a prose claim
+is exactly the thing this repository has repeatedly found wrong.
+
+### Decision
+
+1. **ADR-0040's ordinal is corrected by an appended note, not by a body edit.**
+   `docs/tier1/adr-log.md:4046-4053` gains a blockquote stating that the record is the
+   **fourth**. The body still reads *"It is the third."* and that is deliberate: the log is
+   append-only in spirit, the number a record claimed is itself part of what the record did,
+   and `scripts/lint_adr_numbers.py`'s own CLAIM check forbids editing a record the base has
+   issued — a body rewrite would fail the lint that exists to stop exactly that. The
+   blockquote form is the one the renumbering notes already use, and `_record()` already
+   excludes it from the claim comparison.
+
+2. **`scripts/lint_adr_numbers.py` derives the ordinal and compares.** A fourth finding,
+   `WAIVER`, over three shapes, all failures:
+   - the ordinal claimed is not the position the record holds;
+   - the header declares a waiver and the body states no ordinal, so the record joins the
+     count without saying where it sits;
+   - the body claims an ordinal and the header says `D28 waiver: no`, so the prose enters a
+     count the header excludes the record from.
+
+3. **The record's effective claim is the *last* ordinal in it**, not the first. That is what
+   makes decision 1 legal rather than a dodge: an appended correction is the log's repair
+   shape, so the check must read the correction as the claim. It also means a body and its
+   note may disagree on the page and still agree on the count, which is the honest rendering
+   of an append-only log.
+
+4. **The candidate word is checked against a closed list of twenty ordinals**, so the two
+   pre-existing *"It is the thing that was measured…"* sentences at `adr-log.md:1224` and
+   `:1435` are not read as ordinal claims. The list stops at twenty because the operating
+   principles' clause fires at three against one principle; a register that reaches a
+   twentieth waiver has already falsified something, and a check that keeps counting past
+   that point has stopped meaning anything.
+
+5. **An ordinal counts as a claim only inside a waiver paragraph or a blockquote.** A
+   paragraph carrying the colon-less prose marker `**D28 waiver**` is the waiver paragraph;
+   a paragraph that is wholly a blockquote is a correction note. Everything else is
+   excluded, and this record is why: the first draft of decision 1 quoted ADR-0040's
+   sentence verbatim in order to explain why it is not being rewritten, and the check read
+   the quotation as this ADR claiming to be the third. The check caught its own author, and
+   the scoping is the repair.
+
+6. **`_parse` gains a `strip` switch rather than a second parser.** The claim check needs
+   trailing notes gone; the ordinal check needs them kept. One parse with a switch, because
+   two parsers sharing a heading grammar are two parsers that drift apart on it.
+
+7. **This is a protected-path write** (`scripts/`, D20) and carries no D28 waiver, because no
+   gate is overridden — `docs/tier4/protected-paths-policy.md:100` requires line-by-line human
+   review and a mandatory ADR, and this record is that ADR. Nothing frozen is amended.
+
+### Consequences
+
+The waiver total is now computed in one place and stated in four, and the four are checked
+against the one. A fifth waiver that claims the wrong ordinal fails CI rather than landing.
+
+The under-reporting direction specifically is closed: a record that silently omits its ordinal
+now fails, so the cheap way to avoid being counted — say nothing — is no longer available.
+
+What is **not** closed, and is deliberately left open: whether amending a frozen `ci-gate`
+document is itself a D28 waiver. ADR-0033 and ADR-0040 both amended the coding standards'
+structure fence and both took `D28 waiver: yes`; ADR-0050 amended the same frozen section and
+took `D28 waiver: no`, on ADR-0045's reasoning that a waiver overrides a *gate* rather than
+authorizing a document edit. Those cannot both be right, and the answer changes the total this
+ADR just made checkable. It is an operator decision, filed rather than assumed.
+
+The derivation reads headers, so a record that states its ordinal and forgets the header is
+counted as not-a-waiver and fails on the orphan shape rather than silently shrinking the
+total. That is the intended asymmetry: the failure is loud in the direction that would
+otherwise flatter the register.
+
+### Enforcement
+
+`ci-gate`. `scripts/lint_adr_numbers.py` in `gates.yml:72`, with `--self-test` at `:77`.
+
+Seven of the twelve self-test controls are the new ones: correct ordinals pass with a
+non-waiver between two waivers; a wrong ordinal fails; an appended correction is honoured; a
+waiver with no ordinal fails; an orphan claim fails; a quoted ordinal outside a waiver
+paragraph is not read as a claim; and a log with records but no waiver at all fails rather
+than reporting clean — the vacuity guard, aimed at the ordinal check itself.
+
+### Falsifies if
+
+A record lands claiming a D28 waiver ordinal that its position does not derive, and CI is
+green — meaning the check reads a shape the log does not use.

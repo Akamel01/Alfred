@@ -5,7 +5,7 @@ title: "The ownership router gains the factory's facts, and runtime state is nev
 status: "accepted"
 shape: "heading"
 date: "2026-09-03"
-source: "docs/tier1/adr-log.md:4439"
+source: "docs/tier1/adr-log.md:4448"
 extractor: "adrs"
 aliases:
   - "ADR-0047"
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `docs/tier1/adr-log.md:4439`
+**Source** · `docs/tier1/adr-log.md:4448`
 
 ## Statement
 
