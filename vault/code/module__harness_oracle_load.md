@@ -33,6 +33,7 @@ generated: true
 ## Binds
 
 - **imports** → [[module__harness_acs_acs1|ACS-1 — Alfred Canonical Serialization, version 1 (ADR-0003, ADR-0004).]]
+- **imports** → [[module__harness_ids|harness.ids]]
 - **imports** → [[module__harness_oracle_pins|What the oracle environment is pinned to, and the platform finding that forced it.]]
 - [[module__harness_oracle|harness.oracle]] **contains** → this
 - [[module__harness_oracle_test_oracle|Tests for the oracle boundary. Most run without the image; the slow one needs it.]] **imports** → this

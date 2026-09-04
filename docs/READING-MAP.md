@@ -217,7 +217,8 @@ Binding on implementation and easy to miss, since they live inside one document.
 | [ADR-0052](tier1/adr-log.md) | The D28 waiver ordinal becomes derived, and ADR-0040's is corrected in place | Accepted |
 | [ADR-0053](tier1/adr-log.md) | The cross-stage invariants get the lint their register claims, and a checked map of what enforces the rest | Accepted |
 | [ADR-0054](tier1/adr-log.md) | Check A lands: the model that answers is asserted against the fingerprint before an attempt starts | Accepted |
+| [ADR-0055](tier1/adr-log.md) | Evidence and heldout primary keys become UUIDv7, by a duplicated generator the harness suite checks against drift | Accepted |
 
 ---
 
-**77 documents mapped** · 44 binding · 14 context · 19 record · 54 architecture decisions
+**77 documents mapped** · 44 binding · 14 context · 19 record · 55 architecture decisions

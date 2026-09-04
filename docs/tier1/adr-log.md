@@ -5140,3 +5140,148 @@ over every field the record declares rather than over `model_id`.
 A factory attempt is found to have run on a model the declared fingerprint does not name,
 with no `fingerprint_drift` escalation in its stream — meaning the start path was reached by
 some route that does not pass through `begin_attempt`.
+
+---
+
+## ADR-0055 — Evidence and heldout primary keys become UUIDv7, by a duplicated generator the harness suite checks against drift
+
+**Date:** 2026-09-04 · **Status:** Accepted · **Supersedes:** none · **Amends:** nothing · **See also:** ADR-0053 decision 6 (named the excluded instance), `harness/fingerprint/factory.py`'s `d19_is_shared()` (the pattern this borrows), `harness/verdicts/__init__.py` and `tests/test_stamp_verify.py` (the precedent for where a cross-tree bridge test lives), #56, #80 · **D28 waiver:** no
+
+### Context
+
+`scripts/lint_invariants.py`'s INV4 check (I4, ADR-0053) forbids `uuid1/3/4/5` and integer
+primary keys in `src/` and `migrations/`, and names its own blind spot in the same commit:
+`harness/evidence/store.py:322` calls `uuid.uuid4()` for every evidence row's primary key,
+on a chain written serially, in time order, by exactly one writer — precisely the shape a
+sortable key is bought for. `harness/` is the inspector (D20); an agent may not edit it, so
+a gate an agent cannot clear is a gate that gets worked around, and #80 was filed to close
+it as its own change rather than sweep it into the lint.
+
+A first pass on #80 stopped before editing anything and reported two findings, both
+verified against the source before this ADR relied on them:
+
+1. **The chain digest does not cover the row id.** `link_digest`
+   (`harness/evidence/store.py:99-117`) hashes exactly `body_sha256`, `chain_id`,
+   `prev_sha256` and `record_type`. `body_sha256` is computed at line 312, ten lines before
+   `row_id` is generated at line 322, so the id is not folded into `body` either. **Changing
+   the id generator is therefore invisible to the chain's integrity scheme.** Existing v4
+   rows keep their keys unchanged, new rows get v7 keys, and nothing about how a link is
+   verified changes on either side of the cutover. This is a forward-only key-generation
+   change, not a discontinuity in the hash chain — stated here plainly so a reader of a
+   mixed-id-scheme table does not have to re-derive it.
+2. **Nothing audit-bearing orders on the id.** `harness/evidence/export.py:17-19` already
+   documents that export ordering by `id` is presentational; the audited order is
+   reconstructed by walking the chain's own links. The upside of v7 here is that a raw
+   export reads in creation order, which is real but cosmetic — I4's case for this change
+   rests on the sortable key being the right *shape* for an append-only, single-writer log,
+   not on any order-sensitive reader depending on it today.
+3. **A second, unflagged site:** `harness/oracle/load.py:192` mints `uuid.uuid4()` as the
+   primary key of `heldout.reference_value` — the schema only `alfred_criterion` may read.
+   `INV4`'s `src/`/`migrations/` scope never looked there either. Same defect, more
+   sensitive table.
+
+### Decision
+
+1. **`harness/ids/__init__.py` carries a second, from-specification implementation of
+   `uuid7()`**, not a wrapper around `src/domain/ids.py`. The import fence is the reason:
+   `scripts/lint_verdict_boundary.py`'s R check already forbids `harness.evidence` and
+   `harness.criterion` from reaching `src` — the direction that matters here, because that
+   check reads *what a protected writer can be made to execute*, not *which file an agent
+   touched*. If `harness/evidence/store.py` called `src.domain.ids.uuid7()`, an agent could
+   weaken that function (drop the version bits, widen the timestamp window, make it
+   deterministic) without editing a single path `policy/protected-paths.json` names — the
+   D20 collapse the fence exists to prevent, reached by a route that never shows up in a
+   protected-path diff. The one documented cross-tree edge in this repository runs the
+   other way, `src/provenance/encoding.py` importing `harness/acs` — product depending on
+   protected inspector code, which is safe because the inspector is what a product write
+   must answer to. No sibling exception admits the inbound direction, and this ADR does not
+   create one. Moving the generator into `harness/` and re-exporting it from
+   `src/domain/ids.py` (making `src/domain/ids.py` depend on `harness/`) was the fallback
+   considered and rejected: it is one implementation, but it makes a zero-dependency
+   product module depend on the protected tree for no reason a product concern can name.
+2. **The two implementations are checked, not asserted, to agree.** `tests/domain/test_ids.py`
+   calls `harness.ids.uuid7()` and `domain.ids.uuid7()` with the same `timestamp_ms` and the
+   same `random_bytes` — both already keyword arguments on `domain.ids.uuid7` for exactly
+   this kind of deterministic comparison — over four fixed cases (the zero timestamp, an
+   ordinary one, the top of the 48-bit range, and both all-zero and all-one randomness) and
+   asserts byte-identical `UUID` values, plus the version bit, the RFC 9562 variant bits,
+   and the 48-bit big-endian millisecond prefix explicitly. This is the same shape as
+   `harness/fingerprint/factory.py`'s `d19_is_shared()` — a claim that two things agree,
+   made callable so a future edit to either side that breaks agreement fails a test instead
+   of leaving a docstring that reads true and is not. It lives in `tests/domain/`, not in
+   `harness/`, following the precedent `harness/verdicts/__init__.py` already set:
+   `tests/test_stamp_verify.py` checks that module against `provenance.verify` from the one
+   tree that may import both without either depending on the other at runtime.
+   `harness/ids/__init__.py` and `harness/evidence/store.py` import nothing from `src`;
+   `tests/domain/test_ids.py` is what would go red on drift, and it is collected by the
+   product test job every run already collects, not a job that could be quietly skipped.
+3. **`harness/evidence/store.py:322`**: `row_id = uuid.uuid4()` becomes
+   `row_id = uuid7()`, imported from `harness.ids`. No other line in `_append` changes; the
+   `Appended.id` field stays typed `uuid.UUID`, not `EvidenceId` — `EvidenceId` is a
+   `NewType` declared in `src/domain/ids.py`, and importing it into `harness/evidence/store.py`
+   for a type annotation alone would still be an edge from the protected writer into the
+   agent-writable tree, which is exactly what decision 1 refuses regardless of whether the
+   import is load-bearing at runtime or only for `pyright`. `harness/` carries no type gate
+   today (`scripts/lint_harness_gate.py`, ADR-0029), so this costs nothing enforced, but the
+   ADR should not rely on that absence to justify an import the reasoning above forbids.
+4. **`harness/oracle/load.py:192`**: `uuid.uuid4()` becomes `uuid7()`, imported the same
+   way. `reference_value` carries no hash chain, so there is no digest-coverage question to
+   answer here — this is the sortable-key win alone, forward-only, on the more sensitive
+   schema.
+5. **`harness/ids/` is a package, not a loose module**, so `tools/gen_vault.py`'s code
+   extractor — which mints a node per subdirectory of `harness/` and per file inside it, but
+   does not scan loose files at `harness/`'s own top level — has a node to attach the new
+   import edges to. A flat `harness/ids.py` left `module:harness.ids` a dangling edge
+   endpoint in `graph.json`, caught by `tools/tests/test_vaultgraph.py`'s
+   `test_no_edge_endpoint_is_dangling` before this ADR was written, not after.
+6. **`docs/tier1/cross-stage-invariants.md` and `scripts/lint_invariants.py` are not
+   touched.** `INV4`'s scope stays `src/` and `migrations/`; widening it to `harness/` is a
+   separate decision (whether the inspector should carry any lint gate at all is OBSERVER-1,
+   ADR-0029) and is out of scope here. This ADR closes the named instance, not the scope.
+7. **This is a protected-path write** (`harness/`) under
+   `docs/tier4/protected-paths-policy.md:100` — line-by-line human review plus a mandatory
+   ADR. No stage gate or threshold is overridden by this change — it corrects a key-
+   generation function to match an existing invariant — so no D28 waiver arises.
+
+### Consequences
+
+Every evidence row and every `heldout.reference_value` row written from this commit forward
+carries a UUIDv7 primary key; every row written before it keeps its v4 key, unchanged and
+unrelabeled, and the chain that covers both never notices the difference because it never
+covered the id. A reader of either table sees two id schemes divided by `created_at` (v7
+rows sort by their own key from the cutover forward; v4 rows do not) but not by anything the
+integrity scheme distinguishes — stated here so an auditor does not have to reconstruct it
+from two commits.
+
+The honest cost is two implementations of a 26-line function that can drift, and the
+`tests/domain/test_ids.py` bridge is the only thing that turns that drift into a build
+failure. If that file is ever deleted to make an unrelated change pass, the two id schemes
+can diverge — say, one side's variant bits regressing under an unrelated refactor — with
+nothing beyond visual inspection to notice.
+
+**Whether the v4/v7 boundary needs to be recorded inside the chain itself was
+considered and rejected as unnecessary.** The chain digest never covered the id, so the
+boundary is not a discontinuity in anything the chain asserts, and `created_at` — already a
+stored, chained-body-adjacent column on every row — already answers "when did the scheme
+change" for any reader who needs it, more reliably than a marker row would, since a marker
+row is one more thing that could be omitted or duplicated. Recording it a second time in a
+dedicated marker would be exactly the kind of record `docs/tier0/operating-principles.md`
+warns against: a claim next to the data rather than a property of the data. No marker is
+built.
+
+### Enforcement
+
+`tests/domain/test_ids.py` for the cross-implementation agreement (parametrized over four
+cases, plus explicit version/variant/timestamp-prefix assertions and a negative control that
+two distinct inputs do not coincide); `python3 -m pytest harness/evidence harness/oracle -q`
+for the call sites, collected by the harness test job; `tools/gen_vault.py --check` and
+`tools/tests/test_vaultgraph.py` for the new package being a real node rather than a
+dangling edge endpoint.
+
+### Falsifies if
+
+`harness.ids.uuid7()` and `domain.ids.uuid7()` are found to disagree on any input with
+`tests/domain/test_ids.py` green — meaning the bridge test stopped covering the byte layout
+it claims to. Or an evidence row or `heldout.reference_value` row written after this commit
+is found with a non-v7 primary key, meaning a write path was reached that does not pass
+through `harness.ids.uuid7()`.
