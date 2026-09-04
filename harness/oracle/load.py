@@ -34,6 +34,7 @@ from typing import Any
 import psycopg
 
 from harness.acs.acs1 import acs_sha256
+from harness.ids import uuid7
 from harness.oracle.pins import ORACLE_NAME
 
 # Domain separation, as everywhere else a digest is taken. The input hash answers "what is
@@ -189,7 +190,11 @@ def load(
                 " oracle_name, oracle_commit_sha"
                 ") VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
                 (
-                    uuid.uuid4(), org_id, project_id, 1, now, r["measure_id"],
+                    # I4 / issue #80: same fix as the evidence store, on the more
+                    # sensitive heldout schema. No chain digest here to reason about —
+                    # `reference_value` is not hash-chained — so this is purely the
+                    # sortable-key win, forward-only.
+                    uuid7(), org_id, project_id, 1, now, r["measure_id"],
                     r["scenario_ref"], input_hash, next_version, r["value_kind"],
                     r.get("value"), r.get("infinite_sign"), r.get("reason_name"),
                     float(r["tolerance"]), float(r["quantum"]), TIER_PRODUCED,

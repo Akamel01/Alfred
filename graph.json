@@ -1,7 +1,7 @@
 {
   "anomalies": [],
   "counts": {
-    "adr": 54,
+    "adr": 55,
     "amendment": 12,
     "decision": 57,
     "document": 77,
@@ -10,7 +10,7 @@
     "gate-step": 61,
     "kill-criterion": 6,
     "layout": 18,
-    "module": 249,
+    "module": 252,
     "operator-item": 9,
     "process": 7,
     "risk": 12,
@@ -23,13 +23,13 @@
     "amended_by": 2,
     "amends": 10,
     "blocks": 32,
-    "contains": 305,
+    "contains": 306,
     "discharges": 1,
-    "enforced_by": 380,
-    "imports": 256,
+    "enforced_by": 382,
+    "imports": 259,
     "needs": 4,
     "runs": 40,
-    "see_also": 56,
+    "see_also": 57,
     "supersedes": 1
   },
   "edges": [
@@ -2177,6 +2177,19 @@
         "path": "harness/fingerprint/test_record.py"
       },
       "src": "module:harness.fingerprint"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.ids.__init__",
+      "evidence": "harness/ids/__init__.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/ids/__init__.py"
+      },
+      "src": "module:harness.ids"
     },
     {
       "confidence": "structural",
@@ -7393,6 +7406,19 @@
     },
     {
       "confidence": "derived",
+      "dst": "module:harness.ids.__init__",
+      "evidence": "\"\"\"A UUIDv7 for the evidence plane, independent of `src/domain/ids.py` (I4, issue #80).\n\n**Why this is not an import.** `harness/` is the protected inspector (D20): an agent may\ned",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/ids/__init__.py"
+      },
+      "src": "decision:D20"
+    },
+    {
+      "confidence": "derived",
       "dst": "module:harness.patch.validate",
       "evidence": "\"\"\"Validates a patch before anything touches a tree. Runs outside the container.\n\nA2: the container holds no VCS credential and emits a patch file to a mounted volume; a\nseparate u",
       "extractor": "references",
@@ -7505,6 +7531,19 @@
         "end_line": 2,
         "line": 2,
         "path": "scripts/lint_stage_gates.py"
+      },
+      "src": "decision:D20"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:tests.domain.test_ids",
+      "evidence": "\"\"\"`domain.ids.uuid7` and `harness.ids.uuid7`, and the claim that they agree (issue #80).\n\n`harness/` is the protected inspector (D20) and duplicates `uuid7()` rather than importin",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tests/domain/test_ids.py"
       },
       "src": "decision:D20"
     },
@@ -8386,8 +8425,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 46,
-        "line": 46,
+        "end_line": 47,
+        "line": 47,
         "path": "harness/oracle/load.py"
       },
       "src": "decision:D49"
@@ -8399,8 +8438,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 62,
-        "line": 62,
+        "end_line": 63,
+        "line": 63,
         "path": "harness/oracle/load.py"
       },
       "src": "decision:D49"
@@ -8659,8 +8698,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 58,
-        "line": 58,
+        "end_line": 59,
+        "line": 59,
         "path": "harness/evidence/store.py"
       },
       "src": "decision:D51"
@@ -8672,8 +8711,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 262,
-        "line": 262,
+        "end_line": 263,
+        "line": 263,
         "path": "harness/evidence/store.py"
       },
       "src": "decision:D51"
@@ -10422,6 +10461,19 @@
     },
     {
       "confidence": "structural",
+      "dst": "module:harness.ids",
+      "evidence": "harness.ids.uuid7",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 44,
+        "line": 44,
+        "path": "harness/evidence/store.py"
+      },
+      "src": "module:harness.evidence.store"
+    },
+    {
+      "confidence": "structural",
       "dst": "module:harness.db.cluster",
       "evidence": "harness.db.cluster.ThrowawayCluster",
       "extractor": "imports",
@@ -10773,13 +10825,26 @@
     },
     {
       "confidence": "structural",
-      "dst": "module:harness.oracle.pins",
-      "evidence": "harness.oracle.pins.ORACLE_NAME",
+      "dst": "module:harness.ids",
+      "evidence": "harness.ids.uuid7",
       "extractor": "imports",
       "kind": "imports",
       "source": {
         "end_line": 37,
         "line": 37,
+        "path": "harness/oracle/load.py"
+      },
+      "src": "module:harness.oracle.load"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.oracle.pins",
+      "evidence": "harness.oracle.pins.ORACLE_NAME",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 38,
+        "line": 38,
         "path": "harness/oracle/load.py"
       },
       "src": "module:harness.oracle.load"
@@ -11238,6 +11303,19 @@
         "path": "tests/api/test_routes.py"
       },
       "src": "module:tests.api.test_routes"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.ids",
+      "evidence": "harness.ids.uuid7",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 23,
+        "line": 23,
+        "path": "tests/domain/test_ids.py"
+      },
+      "src": "module:tests.domain.test_ids"
     },
     {
       "confidence": "structural",
@@ -14152,6 +14230,19 @@
       "src": "adr:ADR-0054"
     },
     {
+      "confidence": "structural",
+      "dst": "adr:ADR-0053",
+      "evidence": "**See also:** ADR-0053 decision 6 (named the excluded instance), `harness/fingerprint/factory.py`'s `d19_is_shared()` (the pattern this borrows), `harness/verdicts/__init__.py` and `tests/test_stamp_v",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 5146,
+        "line": 5146,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0055"
+    },
+    {
       "confidence": "prose",
       "dst": "decision:D17",
       "evidence": "Supersedes decision 17",
@@ -14167,14 +14258,14 @@
   ],
   "extractors": [
     {
-      "edges": 66,
+      "edges": 67,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 4,
       "min_nodes": 14,
       "name": "adrs",
-      "nodes": 54,
+      "nodes": 55,
       "rejected": 0,
       "scanned": 1,
       "unparsed": 0
@@ -14206,16 +14297,16 @@
       "unparsed": 0
     },
     {
-      "edges": 167,
+      "edges": 168,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 45,
       "min_nodes": 90,
       "name": "code",
-      "nodes": 254,
+      "nodes": 257,
       "rejected": 0,
-      "scanned": 281,
+      "scanned": 284,
       "unparsed": 0
     },
     {
@@ -14258,7 +14349,7 @@
       "unparsed": 0
     },
     {
-      "edges": 256,
+      "edges": 259,
       "expect_rejected": null,
       "max_nodes": 0,
       "max_unparsed": 0,
@@ -14267,7 +14358,7 @@
       "name": "imports",
       "nodes": 0,
       "rejected": 0,
-      "scanned": 210,
+      "scanned": 212,
       "unparsed": 0
     },
     {
@@ -14297,7 +14388,7 @@
       "unparsed": 0
     },
     {
-      "edges": 380,
+      "edges": 382,
       "expect_rejected": null,
       "max_nodes": 0,
       "max_unparsed": 0,
@@ -14306,7 +14397,7 @@
       "name": "references",
       "nodes": 0,
       "rejected": 0,
-      "scanned": 210,
+      "scanned": 212,
       "unparsed": 0
     },
     {
@@ -15475,6 +15566,27 @@
       "status": "accepted",
       "tags": [],
       "title": "Check A lands: the model that answers is asserted against the fingerprint before an attempt starts"
+    },
+    {
+      "attrs": {
+        "date": "2026-09-04",
+        "status": "accepted",
+        "status_raw": "Accepted"
+      },
+      "body": "**Date:** 2026-09-04 · **Status:** Accepted · **Supersedes:** none · **Amends:** nothing · **See also:** ADR-0053 decision 6 (named the excluded instance), `harness/fingerprint/factory.py`'s `d19_is_shared()` (the pattern this borrows), `harness/verdicts/__init__.py` and `tests/test_stamp_verify.py` (the precedent for where a cross-tree bridge test lives), #56, #80 · **D28 waiver:** no",
+      "extractor": "adrs",
+      "id": "adr:ADR-0055",
+      "kind": "adr",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 5146,
+        "line": 5146,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "accepted",
+      "tags": [],
+      "title": "Evidence and heldout primary keys become UUIDv7, by a duplicated generator the harness suite checks against drift"
     },
     {
       "attrs": {
@@ -23344,6 +23456,57 @@
     {
       "attrs": {
         "lint_gated": "false",
+        "namespace_package": "false",
+        "present": "true",
+        "protected": "true",
+        "tree": "harness"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:harness.ids",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "package",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/ids"
+      },
+      "status": "",
+      "tags": [
+        "protected"
+      ],
+      "title": "harness.ids"
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "harness/ids/__init__.py",
+        "present": "true",
+        "protected": "true",
+        "tree": "harness"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:harness.ids.__init__",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/ids/__init__.py"
+      },
+      "status": "",
+      "tags": [
+        "protected"
+      ],
+      "title": "A UUIDv7 for the evidence plane, independent of `src/domain/ids.py` (I4, issue #80)."
+    },
+    {
+      "attrs": {
+        "lint_gated": "false",
         "namespace_package": "true",
         "present": "true",
         "protected": "true",
@@ -26224,6 +26387,30 @@
       "status": "",
       "tags": [],
       "title": "Tests for error taxonomy (src/domain/errors.py)."
+    },
+    {
+      "attrs": {
+        "is_test": "true",
+        "lint_gated": "true",
+        "path": "tests/domain/test_ids.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tests"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tests.domain.test_ids",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tests/domain/test_ids.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "`domain.ids.uuid7` and `harness.ids.uuid7`, and the claim that they agree (issue #80)."
     },
     {
       "attrs": {

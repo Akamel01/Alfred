@@ -41,6 +41,7 @@ from psycopg import sql
 from psycopg.types.json import Jsonb
 
 from harness.acs.acs1 import acs_sha256
+from harness.ids import uuid7
 
 type AcsScalar = str | int | float | bool | None
 type AcsValue = AcsScalar | list[AcsValue] | dict[str, AcsValue]
@@ -319,7 +320,10 @@ class EvidenceStore:
             cur.execute("SELECT pg_advisory_xact_lock(%s)", (_lock_key(chain_id),))
             prev_sha256 = self._head(cur, table, chain_id)
 
-            row_id = uuid.uuid4()
+            # I4 / issue #80: sortable, forward-only — the chain digest (`link_digest`,
+            # above) never covered the row id, so pre-existing v4 rows are unaffected and
+            # this is not a discontinuity in the integrity scheme, only in key generation.
+            row_id = uuid7()
             sha256 = link_digest(
                 chain_id=chain_id,
                 record_type=record_type,

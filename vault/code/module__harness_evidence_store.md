@@ -33,6 +33,7 @@ generated: true
 ## Binds
 
 - **imports** → [[module__harness_acs_acs1|ACS-1 — Alfred Canonical Serialization, version 1 (ADR-0003, ADR-0004).]]
+- **imports** → [[module__harness_ids|harness.ids]]
 - [[module__harness_evidence|harness.evidence]] **contains** → this
 - [[module__harness_criterion_runner|Compose one verdict, and keep the held-out half out of the environment that runs.]] **imports** → this
 - [[module__harness_criterion_test_runner|Verdict composition, with the two collapses that would make the number meaningless.]] **imports** → this

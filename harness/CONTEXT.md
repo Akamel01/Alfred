@@ -4,8 +4,8 @@ One job: deterministic inspector machinery that dispatches work, executes criter
 
 ## Inputs
 
-- Working: `harness/db/`, `harness/lane/`, `harness/containment/`, `harness/worker/`, `harness/patch/`, `harness/deploy/`, `harness/selftest/`, `harness/fingerprint/`, `harness/acs/`
-- Reference: `docs/tier1/adr-log.md` (ADRs 0009–0015, 0018, 0029), `policy/protected-paths.json` (this tree is protected — `harness/`), `docs/tier2/execution-order.md` § S1/S3/S4
+- Working: `harness/db/`, `harness/lane/`, `harness/containment/`, `harness/worker/`, `harness/patch/`, `harness/deploy/`, `harness/selftest/`, `harness/fingerprint/`, `harness/acs/`, `harness/ids/`
+- Reference: `docs/tier1/adr-log.md` (ADRs 0009–0015, 0018, 0029, 0055), `policy/protected-paths.json` (this tree is protected — `harness/`), `docs/tier2/execution-order.md` § S1/S3/S4
 
 ## Process
 

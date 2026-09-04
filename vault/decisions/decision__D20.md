@@ -51,6 +51,9 @@ Ticket #46 specified two e
 - **enforced_by** → [[module__harness_fingerprint_factory|The factory fingerprint: what an *agent* run was measured on, as opposed to a lane.]] — """The factory fingerprint: what an *agent* run was measured on, as opposed to a lane.
 
 `RunFingerprint` cannot describe
+- **enforced_by** → [[module__harness_ids___init__|A UUIDv7 for the evidence plane, independent of `src/domain/ids.py` (I4, issue #80).]] — """A UUIDv7 for the evidence plane, independent of `src/domain/ids.py` (I4, issue #80).
+
+**Why this is not an import.** 
 - **enforced_by** → [[module__harness_patch_validate|Validates a patch before anything touches a tree. Runs outside the container.]] — """Validates a patch before anything touches a tree. Runs outside the container.
 
 A2: the container holds no VCS credent
@@ -72,3 +75,6 @@ Each piece here ran verbatim, or near eno
 - **enforced_by** → [[module__scripts_lint_stage_gates|The stage gate, as a check rather than as a sentence somebody reads.]] — """The stage gate, as a check rather than as a sentence somebody reads.
 
 `docs/tier2/stage-gate-definitions.md` carried 
+- **enforced_by** → [[module__tests_domain_test_ids|`domain.ids.uuid7` and `harness.ids.uuid7`, and the claim that they agree (issue #80).]] — """`domain.ids.uuid7` and `harness.ids.uuid7`, and the claim that they agree (issue #80).
+
+`harness/` is the protected i
