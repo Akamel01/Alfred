@@ -35,6 +35,8 @@ generated: true
 - **imports** → [[module__harness_acs_acs1|ACS-1 — Alfred Canonical Serialization, version 1 (ADR-0003, ADR-0004).]]
 - **imports** → [[module__harness_fingerprint_record|The run fingerprint record: what a run was measured on, stated once and hashed.]]
 - [[module__harness_fingerprint|harness.fingerprint]] **contains** → this
+- [[module__harness_fingerprint_attempt_start|Check A: the model that answers is the model the fingerprint declared, asserted at start.]] **imports** → this
+- [[module__harness_fingerprint_test_attempt_start|Check A: a planted substitution must refuse to start, and its control must proceed.]] **imports** → this
 - [[module__harness_fingerprint_test_factory|The factory fingerprint, and the two claims about it that a docstring cannot keep true.]] **imports** → this
 
 ## Enforced by (code)

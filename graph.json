@@ -1,7 +1,7 @@
 {
   "anomalies": [],
   "counts": {
-    "adr": 53,
+    "adr": 54,
     "amendment": 12,
     "decision": 57,
     "document": 77,
@@ -10,7 +10,7 @@
     "gate-step": 61,
     "kill-criterion": 6,
     "layout": 18,
-    "module": 247,
+    "module": 249,
     "operator-item": 9,
     "process": 7,
     "risk": 12,
@@ -23,13 +23,13 @@
     "amended_by": 2,
     "amends": 10,
     "blocks": 32,
-    "contains": 303,
+    "contains": 305,
     "discharges": 1,
-    "enforced_by": 374,
-    "imports": 250,
+    "enforced_by": 380,
+    "imports": 256,
     "needs": 4,
     "runs": 40,
-    "see_also": 55,
+    "see_also": 56,
     "supersedes": 1
   },
   "edges": [
@@ -2102,6 +2102,19 @@
     },
     {
       "confidence": "structural",
+      "dst": "module:harness.fingerprint.attempt_start",
+      "evidence": "harness/fingerprint/attempt_start.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/fingerprint/attempt_start.py"
+      },
+      "src": "module:harness.fingerprint"
+    },
+    {
+      "confidence": "structural",
       "dst": "module:harness.fingerprint.factory",
       "evidence": "harness/fingerprint/factory.py",
       "extractor": "code",
@@ -2123,6 +2136,19 @@
         "end_line": 1,
         "line": 1,
         "path": "harness/fingerprint/record.py"
+      },
+      "src": "module:harness.fingerprint"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.fingerprint.test_attempt_start",
+      "evidence": "harness/fingerprint/test_attempt_start.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/fingerprint/test_attempt_start.py"
       },
       "src": "module:harness.fingerprint"
     },
@@ -5144,6 +5170,19 @@
     },
     {
       "confidence": "derived",
+      "dst": "module:harness.fingerprint.attempt_start",
+      "evidence": "#: ACS-1 takes the record type as its domain separator (ADR-0003): a bundle and a",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 60,
+        "line": 60,
+        "path": "harness/fingerprint/attempt_start.py"
+      },
+      "src": "adr:ADR-0003"
+    },
+    {
+      "confidence": "derived",
       "dst": "module:harness.fingerprint.factory",
       "evidence": "#: record type as its domain separator (ADR-0003), so a factory record and a lane record",
       "extractor": "references",
@@ -5152,6 +5191,19 @@
         "end_line": 57,
         "line": 57,
         "path": "harness/fingerprint/factory.py"
+      },
+      "src": "adr:ADR-0003"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:harness.fingerprint.test_attempt_start",
+      "evidence": "\"\"\"ACS-1 takes the record type as its domain separator (ADR-0003).\"\"\"",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 164,
+        "line": 164,
+        "path": "harness/fingerprint/test_attempt_start.py"
       },
       "src": "adr:ADR-0003"
     },
@@ -6808,6 +6860,45 @@
     },
     {
       "confidence": "derived",
+      "dst": "module:harness.fingerprint.attempt_start",
+      "evidence": "\"\"\"Check A: the model that answers is the model the fingerprint declared, asserted at start.\n\nTicket #46 specified two enforcement checks for model routing. **Check P** — static po",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/fingerprint/attempt_start.py"
+      },
+      "src": "adr:ADR-0054"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:harness.fingerprint.attempt_start",
+      "evidence": "#: ADR-0054, because none of the eleven existing causes fits: `harness_fault` says this",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 54,
+        "line": 54,
+        "path": "harness/fingerprint/attempt_start.py"
+      },
+      "src": "adr:ADR-0054"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:harness.fingerprint.attempt_start",
+      "evidence": "\"\"\"The `escalation` record a refused start emits.\n\n    Field names are the specification's, not this module's invention: `primary_cause`,\n    `also_satisfied`, `evaluated_at_turn` ",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 85,
+        "line": 85,
+        "path": "harness/fingerprint/attempt_start.py"
+      },
+      "src": "adr:ADR-0054"
+    },
+    {
+      "confidence": "derived",
       "dst": "module:bench.toy_tasks",
       "evidence": "\"\"\"Phase -1 toy tasks: is the narrow task class within reach of a local model?\n\nEach task is shaped like the real Phase 1 class (D36): a published formula, a\nfixed signature, and a",
       "extractor": "references",
@@ -7271,6 +7362,19 @@
         "end_line": 1,
         "line": 1,
         "path": "harness/fingerprint/__init__.py"
+      },
+      "src": "decision:D20"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:harness.fingerprint.attempt_start",
+      "evidence": "\"\"\"Check A: the model that answers is the model the fingerprint declared, asserted at start.\n\nTicket #46 specified two enforcement checks for model routing. **Check P** — static po",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/fingerprint/attempt_start.py"
       },
       "src": "decision:D20"
     },
@@ -10453,6 +10557,45 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
+        "end_line": 49,
+        "line": 49,
+        "path": "harness/fingerprint/attempt_start.py"
+      },
+      "src": "module:harness.fingerprint.attempt_start"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.fingerprint.factory",
+      "evidence": "harness.fingerprint.factory.FactoryFingerprint",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 50,
+        "line": 50,
+        "path": "harness/fingerprint/attempt_start.py"
+      },
+      "src": "module:harness.fingerprint.attempt_start"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.fingerprint.record",
+      "evidence": "harness.fingerprint.record.FieldDiff",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 51,
+        "line": 51,
+        "path": "harness/fingerprint/attempt_start.py"
+      },
+      "src": "module:harness.fingerprint.attempt_start"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.acs.acs1",
+      "evidence": "harness.acs.acs1.acs_sha256",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
         "end_line": 47,
         "line": 47,
         "path": "harness/fingerprint/factory.py"
@@ -10484,6 +10627,45 @@
         "path": "harness/fingerprint/record.py"
       },
       "src": "module:harness.fingerprint.record"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.acs.acs1",
+      "evidence": "harness.acs.acs1.acs_sha256",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 16,
+        "line": 16,
+        "path": "harness/fingerprint/test_attempt_start.py"
+      },
+      "src": "module:harness.fingerprint.test_attempt_start"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.fingerprint.attempt_start",
+      "evidence": "harness.fingerprint.attempt_start.BUNDLE_RECORD_TYPE",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 17,
+        "line": 17,
+        "path": "harness/fingerprint/test_attempt_start.py"
+      },
+      "src": "module:harness.fingerprint.test_attempt_start"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:harness.fingerprint.factory",
+      "evidence": "harness.fingerprint.factory.FactoryFingerprint",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 23,
+        "line": 23,
+        "path": "harness/fingerprint/test_attempt_start.py"
+      },
+      "src": "module:harness.fingerprint.test_attempt_start"
     },
     {
       "confidence": "structural",
@@ -13957,6 +14139,19 @@
       "src": "adr:ADR-0053"
     },
     {
+      "confidence": "structural",
+      "dst": "adr:ADR-0047",
+      "evidence": "**See also:** ADR-0047 (the prior additive amendment to this document's enums), `docs/tier7/ticket-46-model-routing-decision.md` D6, `scripts/lint_model_routing.py` (check P), #72",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 5036,
+        "line": 5036,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0054"
+    },
+    {
       "confidence": "prose",
       "dst": "decision:D17",
       "evidence": "Supersedes decision 17",
@@ -13972,14 +14167,14 @@
   ],
   "extractors": [
     {
-      "edges": 65,
+      "edges": 66,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 4,
       "min_nodes": 14,
       "name": "adrs",
-      "nodes": 53,
+      "nodes": 54,
       "rejected": 0,
       "scanned": 1,
       "unparsed": 0
@@ -14011,16 +14206,16 @@
       "unparsed": 0
     },
     {
-      "edges": 165,
+      "edges": 167,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 45,
       "min_nodes": 90,
       "name": "code",
-      "nodes": 252,
+      "nodes": 254,
       "rejected": 0,
-      "scanned": 279,
+      "scanned": 281,
       "unparsed": 0
     },
     {
@@ -14063,7 +14258,7 @@
       "unparsed": 0
     },
     {
-      "edges": 250,
+      "edges": 256,
       "expect_rejected": null,
       "max_nodes": 0,
       "max_unparsed": 0,
@@ -14072,7 +14267,7 @@
       "name": "imports",
       "nodes": 0,
       "rejected": 0,
-      "scanned": 208,
+      "scanned": 210,
       "unparsed": 0
     },
     {
@@ -14102,7 +14297,7 @@
       "unparsed": 0
     },
     {
-      "edges": 374,
+      "edges": 380,
       "expect_rejected": null,
       "max_nodes": 0,
       "max_unparsed": 0,
@@ -14111,7 +14306,7 @@
       "name": "references",
       "nodes": 0,
       "rejected": 0,
-      "scanned": 208,
+      "scanned": 210,
       "unparsed": 0
     },
     {
@@ -15259,6 +15454,27 @@
       "status": "accepted",
       "tags": [],
       "title": "The cross-stage invariants get the lint their register claims, and a checked map of what enforces the rest"
+    },
+    {
+      "attrs": {
+        "date": "2026-09-03",
+        "status": "accepted",
+        "status_raw": "Accepted"
+      },
+      "body": "**Date:** 2026-09-03 · **Status:** Accepted · **Supersedes:** none · **Amends:** `docs/tier3/run-instrumentation-specification.md` (provisional) — the `escalation` cause set, `evaluated_at_turn`'s nullability, and two envelope nullability rules · **See also:** ADR-0047 (the prior additive amendment to this document's enums), `docs/tier7/ticket-46-model-routing-decision.md` D6, `scripts/lint_model_routing.py` (check P), #72 · **D28 waiver:** no",
+      "extractor": "adrs",
+      "id": "adr:ADR-0054",
+      "kind": "adr",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 5036,
+        "line": 5036,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "accepted",
+      "tags": [],
+      "title": "Check A lands: the model that answers is asserted against the fingerprint before an attempt starts"
     },
     {
       "attrs": {
@@ -22973,6 +23189,32 @@
       "attrs": {
         "is_test": "false",
         "lint_gated": "false",
+        "path": "harness/fingerprint/attempt_start.py",
+        "present": "true",
+        "protected": "true",
+        "tree": "harness"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:harness.fingerprint.attempt_start",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/fingerprint/attempt_start.py"
+      },
+      "status": "",
+      "tags": [
+        "protected"
+      ],
+      "title": "Check A: the model that answers is the model the fingerprint declared, asserted at start."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
         "path": "harness/fingerprint/factory.py",
         "present": "true",
         "protected": "true",
@@ -23020,6 +23262,32 @@
         "protected"
       ],
       "title": "The run fingerprint record: what a run was measured on, stated once and hashed."
+    },
+    {
+      "attrs": {
+        "is_test": "true",
+        "lint_gated": "false",
+        "path": "harness/fingerprint/test_attempt_start.py",
+        "present": "true",
+        "protected": "true",
+        "tree": "harness"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:harness.fingerprint.test_attempt_start",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "harness/fingerprint/test_attempt_start.py"
+      },
+      "status": "",
+      "tags": [
+        "protected"
+      ],
+      "title": "Check A: a planted substitution must refuse to start, and its control must proceed."
     },
     {
       "attrs": {

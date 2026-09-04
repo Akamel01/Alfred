@@ -45,6 +45,9 @@ Inspector machinery (D20). Permanently outside what agents may modify, and outsi
 - **enforced_by** → [[module__harness_fingerprint___init__|The run fingerprint record — the declared configuration a run is measured on.]] — """The run fingerprint record — the declared configuration a run is measured on.
 
 Inspector machinery (D20). `record.py`
+- **enforced_by** → [[module__harness_fingerprint_attempt_start|Check A: the model that answers is the model the fingerprint declared, asserted at start.]] — """Check A: the model that answers is the model the fingerprint declared, asserted at start.
+
+Ticket #46 specified two e
 - **enforced_by** → [[module__harness_fingerprint_factory|The factory fingerprint: what an *agent* run was measured on, as opposed to a lane.]] — """The factory fingerprint: what an *agent* run was measured on, as opposed to a lane.
 
 `RunFingerprint` cannot describe

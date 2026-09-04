@@ -5030,3 +5030,113 @@ fails INV5 while a keyed one and a `GET` both pass; and a map naming an absent l
 An invariant this file declares `here` or `script` is found violated in merged code with CI
 green — meaning the check reads a shape the tree does not use. Or a `review` row is found to
 have had a static form available all along.
+
+---
+
+## ADR-0054 — Check A lands: the model that answers is asserted against the fingerprint before an attempt starts
+
+**Date:** 2026-09-03 · **Status:** Accepted · **Supersedes:** none · **Amends:** `docs/tier3/run-instrumentation-specification.md` (provisional) — the `escalation` cause set, `evaluated_at_turn`'s nullability, and two envelope nullability rules · **See also:** ADR-0047 (the prior additive amendment to this document's enums), `docs/tier7/ticket-46-model-routing-decision.md` D6, `scripts/lint_model_routing.py` (check P), #72 · **D28 waiver:** no
+
+### Context
+
+Ticket #46 specified two enforcement checks for model routing. **Check P** shipped as
+`scripts/lint_model_routing.py`, MR001–MR005. **Check A** did not.
+`FactoryFingerprint.assert_matches` was written, raises `RecordDrift` on any difference in
+either direction, and **nothing called it**.
+
+The consequence is precise rather than theoretical: P checks what the diff says, A checks
+what actually ran. With only P, MR001–MR005 verify that two protected files agree with each
+other and nothing verifies that reality agrees with either.
+
+The specification already states the general rule, for `loaded_context_length`: *"a
+fingerprint field the server can change unobserved is not a fingerprint unless something
+checks it"*, and *"Asserted against the fingerprint, not read from it. … Mismatch is
+fail-closed: the attempt does not start."*
+
+Every field on a `FactoryFingerprint` has that exposure and a worse one. A lane is a process
+on a machine this side owns. An API-served model is a routing decision made by somebody
+else, and `provider`, `model_id`, `api_version` and `routing_key` can each move between one
+attempt and the next with nothing errored. An autonomy grant is *"X% merge, Y wall-clock per
+success, on fingerprint Z"* and is suspended by any fingerprint change — so an unobserved
+substitution does not suspend the grant, it silently reassigns it to a model that never
+earned it.
+
+### Decision
+
+1. **`harness/fingerprint/attempt_start.py` lands with `begin_attempt(declared, observed)`.**
+   It calls `assert_matches` and is the only intended caller of it. Agreement returns the
+   **declared** record, not a rebuild: handing back an object built from the observation
+   would invite a caller to record what it saw rather than what it declared, and those are
+   the same only for as long as the check keeps passing.
+
+2. **Mismatch raises, and raising is the fail-closed mechanism.** `AttemptRefused` is an
+   exception rather than a returned status because a returned status can be ignored by a
+   caller that forgot to read it — and a caller that forgets this one starts an attempt on
+   an undeclared model. Fail-closed means the default path on a mistake is refusal.
+
+3. **The refusal is a record, not only a raise.** Refusing alone makes a substituted model
+   look like an attempt that was never scheduled. So `AttemptRefused` carries an
+   `escalation` with `primary_cause = fingerprint_drift` and an `attempt_bundle_ref` over
+   the canonical form of the field differences, so the trail says *which* field moved.
+
+4. **`fingerprint_drift` joins the escalation cause set**, which is closed, in
+   `docs/tier3/run-instrumentation-specification.md`. None of the eleven existing causes
+   fits. `harness_fault` is the near miss and is wrong in the direction that matters: it
+   says this side broke, and the finding is that this side *worked* — it looked, and what
+   it found was somebody else's substitution. Filing a provider substitution as a harness
+   fault would move it into the one distribution Phase 1 exists to produce, on the side
+   that reads as our own flakiness.
+
+5. **`evaluated_at_turn` becomes `int | null`, null only on `fingerprint_drift`.** A refusal
+   is evaluated before turn zero. Writing `0` would say the first turn ran and reached this,
+   which is a different event — the same distinction `human_review_ms` draws between null
+   and 0, and for the same reason.
+
+6. **The refusal carries no `attempt_id` and no `caused_by`.** It is emitted *instead of* an
+   `attempt_start`, so there is no attempt to name and no predecessor in the stream. Both
+   envelope nullability rules are amended to say so, rather than leaving a validator to
+   discover the shape.
+
+7. **The bundle has its own ACS-1 record type**, `attempt_refusal_bundle`, distinct from
+   `factory_fingerprint`. ADR-0003 makes the record type the domain separator; a bundle and
+   a fingerprint that coincidentally serialized alike must still hash apart.
+
+8. **This is a protected-path write** (`harness/`, D20) under
+   `docs/tier4/protected-paths-policy.md:100` — line-by-line human review plus a mandatory
+   ADR. `run-instrumentation-specification.md` is `status: provisional`, so no freeze is
+   touched and no D28 waiver arises. The amendment is additive in the same shape ADR-0047
+   used on the same document.
+
+### Consequences
+
+`assert_matches` now has exactly one intended caller and that caller is the start path, so a
+dispatcher that skips the check is not starting an attempt at all — the check is on the path
+rather than beside it.
+
+**What is still missing, stated rather than implied: nothing dispatches a factory attempt
+yet.** `begin_attempt` has no production caller because the factory dispatcher does not
+exist, and it does not exist for a doctrine reason rather than an oversight —
+`docs/tier2/execution-order.md` § *What must not be built yet* forbids orchestration before
+per-task merge rate clears K3's Wilson lower bound. So check A is written, tested, and
+dormant. That is a smaller gap than the one it closes — the previous state had the assertion
+written with no obvious place to call it, and this one has the whole start path waiting for
+its first caller — but it is a gap, and P remains vacuous until a run passes through here.
+
+The twenty tests are all pairs: every one of the eleven fields refuses when substituted, a
+field the record never declared refuses (the second direction), a missing field refuses
+rather than defaulting, and beside each the control that must proceed.
+
+### Enforcement
+
+`schema` for the record shape; `harness/fingerprint/test_attempt_start.py` for the behaviour,
+collected by the harness test job.
+
+The parametrized substitution test is the load-bearing one: a check written for the field
+somebody had in mind is a check that passes on the field somebody did not, so the plant runs
+over every field the record declares rather than over `model_id`.
+
+### Falsifies if
+
+A factory attempt is found to have run on a model the declared fingerprint does not name,
+with no `fingerprint_drift` escalation in its stream — meaning the start path was reached by
+some route that does not pass through `begin_attempt`.
