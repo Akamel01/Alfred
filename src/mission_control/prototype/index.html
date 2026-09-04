@@ -268,12 +268,17 @@ svg.flow .edge-recorded{stroke:var(--ink-mid);stroke-width:1.5;fill:none;}
 svg.flow .edge-runtime{stroke:var(--ink-soft);stroke-width:1.5;fill:none;stroke-dasharray:4 4;}
 svg.flow .node-box{fill:var(--surface);stroke:var(--line-firm);stroke-width:1;}
 svg.flow .node-box.active{stroke:var(--ink);stroke-width:2;}
-svg.flow .node-box.idle{fill:none;stroke-dasharray:3 3;}
+svg.flow .node-box.idle{fill:var(--surface);stroke:var(--line-firm);stroke-width:1.5;opacity:.85;}
+svg.flow .node-box.unbound{fill:none;stroke:var(--line-firm);stroke-dasharray:3 3;opacity:.55;}
 svg.flow text{font-family:var(--font-data);font-size:10px;fill:var(--ink);}
 svg.flow text.sub{fill:var(--ink-soft);font-size:9px;}
 svg.flow g.node{cursor:pointer;}
 svg.flow g.node:hover .node-box{stroke:var(--ink);}
 svg.flow g.node:focus-visible{outline:2px solid var(--ink);}
+svg.flow g.node.unbound{cursor:default;}
+svg.flow g.node.unbound:hover .node-box{stroke:var(--line-firm);}
+svg.flow .edge-default{stroke:var(--ink-mid);stroke-width:1.5;fill:none;}
+svg.flow .edge-override{stroke:var(--ink);stroke-width:2;fill:none;stroke-dasharray:1 3 7 3;}
 .graphkey{display:flex;gap:calc(var(--u)*6);flex-wrap:wrap;font-size:var(--step-xs);
   color:var(--ink-soft);margin-top:calc(var(--u)*4);}
 .graphkey span{display:flex;align-items:center;gap:calc(var(--u)*2);}
@@ -285,7 +290,9 @@ svg.flow g.node:focus-visible{outline:2px solid var(--ink);}
   padding:calc(var(--u)*4);cursor:pointer;transition:border-color 100ms ease-out;}
 .agentcard:hover{border-color:var(--line-firm);}
 .agentcard:focus-visible{outline:2px solid var(--ink);outline-offset:2px;}
-.agentcard.idle{background:none;border-style:dashed;opacity:.7;}
+.agentcard.idle{background:var(--surface);border-style:solid;border-color:var(--line-firm);opacity:.82;}
+.agentcard.unbound{background:none;border-style:dashed;opacity:.62;cursor:default;}
+.agentcard.unbound:hover{border-color:var(--line);}
 .agentcard h4{margin:0 0 calc(var(--u)*2);font-family:var(--font-data);font-size:var(--step-sm);
   font-weight:600;display:flex;align-items:baseline;gap:calc(var(--u)*2);}
 .agentcard h4 .ph{margin-left:auto;font-size:10px;letter-spacing:.06em;text-transform:uppercase;
@@ -300,6 +307,28 @@ svg.flow g.node:focus-visible{outline:2px solid var(--ink);}
   color:var(--ink-soft);border:1px dashed var(--line-firm);border-radius:2px;
   padding:0 calc(var(--u)*1.5);display:inline-block;margin-bottom:calc(var(--u)*1.5);}
 .unknown{font-family:var(--font-data);font-size:var(--step-xs);color:var(--ink-soft);font-style:normal;}
+.reasonquote{font-family:var(--font-human);font-size:0.9375rem;line-height:1.5;
+  color:var(--ink-mid);margin:calc(var(--u)*3) 0 0;padding-top:calc(var(--u)*3);
+  border-top:1px dashed var(--line-firm);}
+.reasonquote code{font-family:var(--font-data);font-size:0.82em;color:var(--ink-mid);}
+
+/* ── model routing control: a command-surface action embedded in a read-model card ── */
+.modelctl{margin-top:calc(var(--u)*3);padding:calc(var(--u)*3) calc(var(--u)*3.5);
+  background:var(--surface);border-left:var(--rail) solid var(--edge-authority);
+  border-radius:0 2px 2px 0;box-shadow:0 1px 2px rgb(0 0 0/.05);cursor:default;}
+.modelctl .mchead{display:flex;align-items:baseline;gap:calc(var(--u)*2);margin-bottom:calc(var(--u)*2);}
+.modelctl .mclabel{font-family:var(--font-data);font-size:10px;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ink-soft);}
+.modelctl .mcbadge{margin-left:auto;font-family:var(--font-data);font-size:9px;letter-spacing:.06em;
+  text-transform:uppercase;border:1px solid var(--edge-authority);color:var(--ink);
+  font-weight:600;padding:0 calc(var(--u)*1.5);border-radius:2px;white-space:nowrap;}
+.modelctl select{width:100%;font-family:var(--font-data);font-size:var(--step-xs);
+  padding:calc(var(--u)*1.5) calc(var(--u)*2);border:1px solid var(--line-firm);
+  border-radius:2px;background:var(--surface);color:var(--ink);}
+.modelctl .mcwarn{margin-top:calc(var(--u)*2.5);font-size:var(--step-xs);color:var(--ink-mid);
+  line-height:1.5;}
+.modelctl .mcwarn strong{color:var(--ink);}
+.modelctl .mclane{margin-top:calc(var(--u)*1.5);font-size:10px;color:var(--ink-soft);line-height:1.5;}
 
 /* ── sidebar ──────────────────────────────────────────────── */
 .scrim{position:fixed;inset:0;background:var(--scrim);opacity:0;pointer-events:none;
@@ -758,75 +787,116 @@ dialog.confirm .dfoot{display:flex;gap:calc(var(--u)*3);justify-content:flex-end
     <div class="zhead"><span class="znum">01</span><h2 class="ztitle">The factory graph</h2><span class="zprov runtime">runtime · display only</span></div>
     <div class="zbody">
       <div class="graphwrap">
-        <svg class="flow" viewBox="0 0 1190 230" role="img" aria-label="Eight capabilities in the lifecycle chain, three active, with two re-entry edges and shared-state traffic">
-          <!-- flow: recorded handoffs, solid -->
-          <path class="edge-recorded" d="M124 42 H166"/>
-          <path class="edge-recorded" d="M274 42 H316"/>
-          <path class="edge-recorded" d="M424 42 H466"/>
-          <path class="edge-recorded" d="M574 42 H616"/>
-          <path class="edge-recorded" d="M724 42 H766"/>
-          <path class="edge-recorded" d="M874 42 H916"/>
-          <path class="edge-recorded" d="M1024 42 H1066"/>
-          <!-- re-entry: reviewer and validator back to Execute -->
-          <path class="edge-recorded" d="M970 64 V92 H820 V64"/>
-          <path class="edge-recorded" d="M1120 64 V110 H840 V64"/>
-          <text class="sub" x="856" y="88">re-entry</text>
-          <!-- runtime: writes to shared state, dashed -->
-          <path class="edge-runtime" d="M220 64 V172 H430"/>
-          <path class="edge-runtime" d="M520 64 V150"/>
-          <path class="edge-runtime" d="M800 64 V172 H590"/>
+        <svg class="flow" viewBox="0 0 1190 320" role="img" aria-label="Eight capabilities in the lifecycle chain — three active, two idle-but-bound, three unbound — with all five static re-entry defaults, one override example, and shared-state traffic">
+          <defs>
+            <marker id="arr-default" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+              <path d="M0 0 L10 5 L0 10 z" fill="var(--ink-mid)"/>
+            </marker>
+            <marker id="arr-override" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7.5" markerHeight="7.5" orient="auto-start-reverse">
+              <path d="M0 0 L10 5 L0 10 z" fill="var(--ink)"/>
+            </marker>
+          </defs>
 
-          <g class="node" tabindex="0" data-panel="agent-wayfinder">
-            <rect class="node-box idle" x="16" y="20" width="108" height="44" rx="2"/>
-            <text x="28" y="40">wayfinder</text><text class="sub" x="28" y="54">idle</text>
+          <!-- flow: recorded handoffs, solid -->
+          <path class="edge-recorded" d="M124 98 H166"/>
+          <path class="edge-recorded" d="M274 98 H316"/>
+          <path class="edge-recorded" d="M424 98 H466"/>
+          <path class="edge-recorded" d="M574 98 H616"/>
+          <path class="edge-recorded" d="M724 98 H766"/>
+          <path class="edge-recorded" d="M874 98 H916"/>
+          <path class="edge-recorded" d="M1024 98 H1066"/>
+
+          <!-- static default re-entry #1: Execute fails -> Execute (self-loop) -->
+          <path class="edge-default" marker-end="url(#arr-default)" d="M800 76 C800 50 840 50 840 76"/>
+          <text class="sub" x="770" y="46">Execute → Execute</text>
+
+          <!-- static default re-entry #2: Review fails -> Execute -->
+          <path class="edge-default" marker-end="url(#arr-default)" d="M970 120 V148 H820 V120"/>
+          <text class="sub" x="884" y="143">Review → Execute</text>
+
+          <!-- static default re-entry #3: Validate fails -> Execute -->
+          <path class="edge-default" marker-end="url(#arr-default)" d="M1120 120 V172 H840 V120"/>
+          <text class="sub" x="884" y="167">Validate → Execute</text>
+
+          <!-- static default re-entries #4/#5: an Architect or Plan problem found later
+               (during Review or Validate) re-enters Architect / Plan respectively.
+               Drawn from a shared "found later" junction since either gate can find it. -->
+          <path class="edge-default" d="M970 120 V200 H1045"/>
+          <path class="edge-default" d="M1120 120 V200 H1045"/>
+          <circle cx="1045" cy="200" r="3" fill="var(--ink-mid)"/>
+          <text class="sub" x="1054" y="196">found later</text>
+          <path class="edge-default" marker-end="url(#arr-default)" d="M1045 200 V228 H520 V120"/>
+          <text class="sub" x="530" y="223">Architect (found later) → Architect</text>
+          <path class="edge-default" marker-end="url(#arr-default)" d="M1045 200 V252 H670 V120"/>
+          <text class="sub" x="680" y="245">Plan (found later) → Plan</text>
+
+          <!-- override example: the finder may send work further upstream than the
+               default, and must record why. Overrides are upstream-only. -->
+          <path class="edge-override" marker-end="url(#arr-override)" d="M970 76 C970 8 670 8 670 76"/>
+          <text class="sub" x="676" y="16">override — Review finds a wrong plan, re-enters Plan, reason recorded</text>
+
+          <!-- runtime: writes to shared state, dashed -->
+          <path class="edge-runtime" d="M220 120 V286 H430"/>
+          <path class="edge-runtime" d="M520 120 V270"/>
+          <path class="edge-runtime" d="M820 120 V286 H590"/>
+
+          <g class="node unbound" aria-label="wayfinder — unbound, no agent binds this capability">
+            <rect class="node-box unbound" x="16" y="76" width="108" height="44" rx="2"/>
+            <text x="28" y="96">wayfinder</text><text class="sub" x="28" y="110">unbound</text>
           </g>
           <g class="node" tabindex="0" data-panel="agent-researcher">
-            <rect class="node-box active" x="166" y="20" width="108" height="44" rx="2"/>
-            <text x="178" y="40">researcher</text><text class="sub" x="178" y="54">Discover · sonnet-5</text>
+            <rect class="node-box active" x="166" y="76" width="108" height="44" rx="2"/>
+            <text x="178" y="96">researcher</text><text class="sub" x="178" y="110">Discover · sonnet-5</text>
           </g>
-          <g class="node" tabindex="0" data-panel="agent-examiner">
-            <rect class="node-box idle" x="316" y="20" width="108" height="44" rx="2"/>
-            <text x="328" y="40">examiner</text><text class="sub" x="328" y="54">idle</text>
+          <g class="node unbound" aria-label="examiner — unbound, no agent binds this capability">
+            <rect class="node-box unbound" x="316" y="76" width="108" height="44" rx="2"/>
+            <text x="328" y="96">examiner</text><text class="sub" x="328" y="110">unbound</text>
           </g>
           <g class="node" tabindex="0" data-panel="agent-architect">
-            <rect class="node-box active" x="466" y="20" width="108" height="44" rx="2"/>
-            <text x="478" y="40">architect</text><text class="sub" x="478" y="54">Architect · opus-5</text>
+            <rect class="node-box active" x="466" y="76" width="108" height="44" rx="2"/>
+            <text x="478" y="96">architect</text><text class="sub" x="478" y="110">Architect · opus-5</text>
           </g>
           <g class="node" tabindex="0" data-panel="agent-planner">
-            <rect class="node-box idle" x="616" y="20" width="108" height="44" rx="2"/>
-            <text x="628" y="40">planner</text><text class="sub" x="628" y="54">idle</text>
+            <rect class="node-box idle" x="616" y="76" width="108" height="44" rx="2"/>
+            <text x="628" y="96">planner</text><text class="sub" x="628" y="110">idle · opus-5</text>
           </g>
           <g class="node" tabindex="0" data-panel="agent-codewriter">
-            <rect class="node-box active" x="766" y="20" width="108" height="44" rx="2"/>
-            <text x="778" y="40">code-writer</text><text class="sub" x="778" y="54">Execute · sonnet-5</text>
+            <rect class="node-box active" x="766" y="76" width="108" height="44" rx="2"/>
+            <text x="778" y="96">code-writer</text><text class="sub" x="778" y="110">Execute · sonnet-5</text>
           </g>
           <g class="node" tabindex="0" data-panel="agent-reviewer">
-            <rect class="node-box idle" x="916" y="20" width="108" height="44" rx="2"/>
-            <text x="928" y="40">reviewer</text><text class="sub" x="928" y="54">idle</text>
+            <rect class="node-box idle" x="916" y="76" width="108" height="44" rx="2"/>
+            <text x="928" y="96">reviewer</text><text class="sub" x="928" y="110">idle · opus-5</text>
           </g>
-          <g class="node" tabindex="0" data-panel="agent-validator">
-            <rect class="node-box idle" x="1066" y="20" width="108" height="44" rx="2"/>
-            <text x="1078" y="40">validator</text><text class="sub" x="1078" y="54">idle</text>
+          <g class="node unbound" aria-label="validator — unbound, no agent binds this capability">
+            <rect class="node-box unbound" x="1066" y="76" width="108" height="44" rx="2"/>
+            <text x="1078" y="96">validator</text><text class="sub" x="1078" y="110">unbound</text>
           </g>
 
-          <rect x="430" y="150" width="160" height="44" rx="2" fill="none" stroke="var(--ink-soft)" stroke-width="1" stroke-dasharray="3 3"/>
-          <text x="442" y="170">shared state</text>
-          <text class="sub" x="442" y="184">runtime · unverified</text>
+          <rect x="430" y="270" width="160" height="36" rx="2" fill="none" stroke="var(--ink-soft)" stroke-width="1" stroke-dasharray="3 3"/>
+          <text x="442" y="288">shared state</text>
+          <text class="sub" x="442" y="300">runtime · unverified</text>
         </svg>
       </div>
       <div class="graphkey">
         <span><svg width="26" height="8"><line x1="0" y1="4" x2="26" y2="4" stroke="var(--ink-mid)" stroke-width="1.5"/></svg> recorded handoff — artifact + hash</span>
         <span><svg width="26" height="8"><line x1="0" y1="4" x2="26" y2="4" stroke="var(--ink-soft)" stroke-width="1.5" stroke-dasharray="4 4"/></svg> runtime traffic — display only</span>
+        <span><svg width="26" height="8"><line x1="0" y1="4" x2="20" y2="4" stroke="var(--ink-mid)" stroke-width="1.5"/><path d="M20 1 L26 4 L20 7 z" fill="var(--ink-mid)"/></svg> static default re-entry (all five rows of the table)</span>
+        <span><svg width="26" height="8"><line x1="0" y1="4" x2="20" y2="4" stroke="var(--ink)" stroke-width="2" stroke-dasharray="1 3 7 3"/><path d="M20 1 L26 4 L20 7 z" fill="var(--ink)"/></svg> override — upstream-only, reason recorded</span>
         <span><svg width="14" height="12"><rect x="0.5" y="0.5" width="13" height="11" fill="none" stroke="var(--ink)" stroke-width="2"/></svg> active</span>
-        <span><svg width="14" height="12"><rect x="0.5" y="0.5" width="13" height="11" fill="none" stroke="var(--line-firm)" stroke-dasharray="3 3"/></svg> idle</span>
+        <span><svg width="14" height="12"><rect x="0.5" y="0.5" width="13" height="11" fill="var(--surface)" stroke="var(--line-firm)" stroke-width="1.5"/></svg> idle — bound, no attempt in flight</span>
+        <span><svg width="14" height="12"><rect x="0.5" y="0.5" width="13" height="11" fill="none" stroke="var(--line-firm)" stroke-dasharray="3 3"/></svg> unbound — no agent binds this capability</span>
       </div>
       <p class="footnote">Solid edges are handoffs the evidence chain recorded — an artifact and its hash. Dashed edges are runtime traffic, which no gate, verdict or audit may cite. There are no agent-to-agent message edges, because a handoff carries a hash and there is no field a message could travel in.</p>
+      <p class="footnote">All five rows of the static-default re-entry table (<code>docs/tier3/execution-lifecycle.md</code> § The static default) are drawn: Execute, Review and Validate default back to Execute; an Architect or Plan problem found later defaults back to Architect or Plan respectively. The reviewer or validator that found the failure may <strong>override</strong> the default, but only upstream of it, and must record the reason — drawn here as a visually distinct edge kind, never the same line as a default, because a finder that could send work downstream of the default could wave work past its own gate.</p>
+      <p class="footnote">The loop is bounded. <code>attempt_start.budget</code> carries four dimensions — <code>turn_cap</code>, <code>token_cap</code>, <code>wallclock_cap_ms</code>, <code>iteration_cap</code> — and all four are escalation triggers (<code>docs/tier3/run-instrumentation-specification.md</code>). <code>iteration_cap</code> is the one that stops a re-entry loop from running forever; past it the run escalates rather than re-entering again.</p>
     </div>
   </div>
 
   <div class="zone prov-read">
     <div class="zhead"><span class="znum">02</span><h2 class="ztitle">Agents</h2><span class="zprov runtime">recorded facts + unverified prose</span></div>
     <div class="zbody">
+      <p class="footnote" style="margin-top:0">Three states, not two. <strong>Unbound</strong> means no agent binds this capability — structural, permanent until a binding lands. <strong>Idle</strong> means an agent is bound but nothing is in flight right now — transient. <strong>Active</strong> means an attempt is running. Unbound cards are not clickable; the reason is quoted below, in full, rather than hidden behind an interaction.</p>
       <div class="agentgrid">
         <div class="agentcard" tabindex="0" data-panel="agent-researcher">
           <h4>researcher <span class="ph">Discover</span></h4>
@@ -838,6 +908,11 @@ dialog.confirm .dfoot{display:flex;gap:calc(var(--u)*3);justify-content:flex-end
           <div class="saidbox">
             <span class="saidtag">agent-authored · unverified</span>
             <p class="said">Reading the ingest adapters to find where units are dropped.</p>
+          </div>
+          <div class="modelctl" data-model-ctl data-cap="capability:researcher@1" data-current="claude-sonnet-5">
+            <div class="mchead"><span class="mclabel">Model routing</span><span class="mcbadge">command surface</span></div>
+            <select aria-label="Model for capability:researcher@1"></select>
+            <p class="mcwarn">Changing this is an <strong>action</strong>, not a read: <code>model_version</code> is a D19 fingerprint field, and any change <strong>suspends the autonomy grant</strong> for this capability until it requalifies on the new fingerprint.</p>
           </div>
         </div>
         <div class="agentcard" tabindex="0" data-panel="agent-architect">
@@ -851,6 +926,24 @@ dialog.confirm .dfoot{display:flex;gap:calc(var(--u)*3);justify-content:flex-end
             <span class="saidtag">agent-authored · unverified</span>
             <p class="said">Deciding whether units belong on the schema or the metric signature.</p>
           </div>
+          <div class="modelctl" data-model-ctl data-cap="capability:architect@1" data-current="claude-opus-5">
+            <div class="mchead"><span class="mclabel">Model routing</span><span class="mcbadge">command surface</span></div>
+            <select aria-label="Model for capability:architect@1"></select>
+            <p class="mcwarn">Changing this is an <strong>action</strong>, not a read: <code>model_version</code> is a D19 fingerprint field, and any change <strong>suspends the autonomy grant</strong> for this capability until it requalifies on the new fingerprint.</p>
+          </div>
+        </div>
+        <div class="agentcard idle" tabindex="0" data-panel="agent-planner">
+          <h4>planner <span class="ph">Plan</span></h4>
+          <div class="factline">
+            <b>capability:planner@1</b><br>
+            model <b>claude-opus-5</b> · agent <b>planner</b> · claude-code<br>
+            idle — bound, no attempt in flight
+          </div>
+          <div class="modelctl" data-model-ctl data-cap="capability:planner@1" data-current="claude-opus-5">
+            <div class="mchead"><span class="mclabel">Model routing</span><span class="mcbadge">command surface</span></div>
+            <select aria-label="Model for capability:planner@1"></select>
+            <p class="mcwarn">Changing this is an <strong>action</strong>, not a read: <code>model_version</code> is a D19 fingerprint field, and any change <strong>suspends the autonomy grant</strong> for this capability until it requalifies on the new fingerprint.</p>
+          </div>
         </div>
         <div class="agentcard" tabindex="0" data-panel="agent-codewriter">
           <h4>code-writer <span class="ph">Execute</span></h4>
@@ -863,6 +956,40 @@ dialog.confirm .dfoot{display:flex;gap:calc(var(--u)*3);justify-content:flex-end
             <span class="saidtag">agent-authored · unverified</span>
             <p class="said"><span class="unknown">unknown</span></p>
           </div>
+          <div class="modelctl" data-model-ctl data-cap="capability:code-writer@1" data-current="claude-sonnet-5">
+            <div class="mchead"><span class="mclabel">Model routing</span><span class="mcbadge">command surface</span></div>
+            <select aria-label="Model for capability:code-writer@1"></select>
+            <p class="mcwarn">Changing this is an <strong>action</strong>, not a read: <code>model_version</code> is a D19 fingerprint field, and any change <strong>suspends the autonomy grant</strong> for this capability until it requalifies on the new fingerprint.</p>
+          </div>
+        </div>
+        <div class="agentcard idle" tabindex="0" data-panel="agent-reviewer">
+          <h4>reviewer <span class="ph">Review</span></h4>
+          <div class="factline">
+            <b>capability:reviewer@1</b><br>
+            model <b>claude-opus-5</b> · agents <b>code-reviewer, security-reviewer</b><br>
+            idle — bound, no attempt in flight<br>
+            independence: santa-method, both must pass
+          </div>
+          <div class="modelctl" data-model-ctl data-cap="capability:reviewer@1" data-current="claude-opus-5">
+            <div class="mchead"><span class="mclabel">Model routing</span><span class="mcbadge">command surface</span></div>
+            <select aria-label="Model for capability:reviewer@1"></select>
+            <p class="mcwarn">Changing this is an <strong>action</strong>, not a read: <code>model_version</code> is a D19 fingerprint field, and any change <strong>suspends the autonomy grant</strong> for this capability until it requalifies on the new fingerprint. Both bound agents route through this one capability-level model.</p>
+          </div>
+        </div>
+        <div class="agentcard unbound" aria-label="wayfinder — unbound">
+          <h4>wayfinder <span class="ph">Chart</span></h4>
+          <div class="factline"><b>capability:wayfinder@1</b><br>unbound — no agent binds this capability</div>
+          <p class="reasonquote">"No ECC agent charts long-horizon work through fog. Its 68 are language reviewers and build resolvers. This capability runs Alfred-native invoking the <code>wayfinder</code> skill directly. The empty roster is the honest answer rather than binding a near-miss such as <code>planner</code>, which is already the planner kind's agent and would make one agent answer to two capabilities."</p>
+        </div>
+        <div class="agentcard unbound" aria-label="examiner — unbound">
+          <h4>examiner <span class="ph">Grill</span></h4>
+          <div class="factline"><b>capability:examiner@1</b><br>unbound — no agent binds this capability</div>
+          <p class="reasonquote">"No ECC agent performs requirements interrogation. ECC's 68 agents are language reviewers and build resolvers; <code>council</code> is a skill, not an agent. This kind runs Alfred-native until an agent exists for it, and the empty list says so rather than binding a near-miss."</p>
+        </div>
+        <div class="agentcard unbound" aria-label="validator — unbound">
+          <h4>validator <span class="ph">Validate</span></h4>
+          <div class="factline"><b>capability:validator@1</b><br>unbound — no agent binds this capability</div>
+          <p class="reasonquote">"No ECC agent may hold validation authority. <code>verification-loop</code> and <code>eval-harness</code> are skills, not agents, and <code>agent-evaluator</code> is classified never authoritative — an agent rating its own output is a self-reported verdict from the executing session. Validation runs Alfred-native, against the criterion, outside the agent tree."</p>
         </div>
       </div>
       <p class="footnote">The recorded facts come from <code>phase_start</code> and the routing policy. The prose is the agent's own and is <strong>never</strong> rendered on the review screen — the program that draws S2 cannot reach runtime state at all. A missing statement renders as <strong>unknown</strong>, never as <strong>none</strong>.</p>
@@ -940,6 +1067,23 @@ dialog.confirm .dfoot{display:flex;gap:calc(var(--u)*3);justify-content:flex-end
   </div>
 </dialog>
 
+<dialog class="confirm" id="modeldlg">
+  <div class="dhead"><h3>Change model — this suspends an autonomy grant</h3></div>
+  <div class="dbody">
+    <p style="margin-top:0"><code>model_version</code> is a D19 fingerprint field. Changing it changes the fingerprint, and the glossary's autonomy grant — <em>"X% merge, Y wall-clock per success, on fingerprint Z"</em> — is <strong>suspended by any fingerprint change</strong>. This capability requalifies on the new fingerprint before autonomy resumes.</p>
+    <dl class="kv">
+      <dt>Capability</dt><dd id="modeldlg-cap"></dd>
+      <dt>Current model</dt><dd id="modeldlg-from"></dd>
+      <dt>New model</dt><dd id="modeldlg-to"></dd>
+      <dt>Effect</dt><dd><strong>Autonomy grant suspended</strong></dd>
+    </dl>
+  </div>
+  <div class="dfoot">
+    <button class="btn" type="button" id="modeldlgcancel">Cancel</button>
+    <button class="btn btn-primary" type="button" id="modeldlgok">Change model</button>
+  </div>
+</dialog>
+
 <script>
 /* ── tabs ─────────────────────────────────────────────────── */
 const tabs = Array.from(document.querySelectorAll('nav.screens button'));
@@ -977,36 +1121,44 @@ const PANELS = {
     <p class="footnote">Both causes, always. Rendering only the first recreates in your head the corruption the schema went out of its way to prevent.</p>`],
   'task-4a18': ['Task 019a4a18', `<dl class="kv"><dt>Termination</dt><dd>escalation</dd>
     <dt>primary_cause</dt><dd>iteration_cap</dd><dt>Sterile repeats</dt><dd>6</dd></dl>`],
-  'agent-wayfinder': ['wayfinder · idle', `<dl class="kv"><dt>capability_id</dt><dd>capability:wayfinder@1</dd>
+  'agent-wayfinder': ['wayfinder · unbound', `<dl class="kv"><dt>capability_id</dt><dd>capability:wayfinder@1</dd>
+    <dt>State</dt><dd>unbound — no agent binds this capability</dd>
     <dt>Model</dt><dd>claude-opus-5</dd><dt>Phase</dt><dd>Chart</dd><dt>Agents</dt><dd>none — runs Alfred-native</dd></dl>
-    <p class="footnote">No ECC agent charts long-horizon work through fog. The empty roster is the honest answer rather than binding a near-miss.</p>`],
+    <p class="reasonquote">"No ECC agent charts long-horizon work through fog. Its 68 are language reviewers and build resolvers. This capability runs Alfred-native invoking the <code>wayfinder</code> skill directly. The empty roster is the honest answer rather than binding a near-miss such as <code>planner</code>, which is already the planner kind's agent and would make one agent answer to two capabilities."</p>`],
   'agent-researcher': ['researcher · Discover', `<dl class="kv"><dt>capability_id</dt><dd>capability:researcher@1</dd>
     <dt>Model</dt><dd>claude-sonnet-5</dd><dt>Task</dt><dd>019a5011</dd><dt>Turn</dt><dd>8 / 30</dd>
     <dt>Tokens</dt><dd>46,120 / 200,000</dd><dt>Agents</dt><dd>code-explorer, docs-lookup</dd></dl>
     <div class="saidbox"><span class="saidtag">agent-authored · unverified</span>
     <p class="said">Reading the ingest adapters to find where units are dropped.</p></div>`],
-  'agent-examiner': ['examiner · idle', `<dl class="kv"><dt>capability_id</dt><dd>capability:examiner@1</dd>
+  'agent-examiner': ['examiner · unbound', `<dl class="kv"><dt>capability_id</dt><dd>capability:examiner@1</dd>
+    <dt>State</dt><dd>unbound — no agent binds this capability</dd>
     <dt>Model</dt><dd>claude-opus-5</dd><dt>Agents</dt><dd>none</dd></dl>
-    <p class="footnote">No ECC agent performs requirements interrogation — its 68 are language reviewers and build resolvers.</p>`],
+    <p class="reasonquote">"No ECC agent performs requirements interrogation. ECC's 68 agents are language reviewers and build resolvers; <code>council</code> is a skill, not an agent. This kind runs Alfred-native until an agent exists for it, and the empty list says so rather than binding a near-miss."</p>`],
   'agent-architect': ['architect · Architect', `<dl class="kv"><dt>capability_id</dt><dd>capability:architect@1</dd>
     <dt>Model</dt><dd>claude-opus-5</dd><dt>Task</dt><dd>019a4ff2</dd><dt>Turn</dt><dd>21 / 40</dd>
     <dt>Tokens</dt><dd>118,400 / 250,000</dd></dl>
     <div class="saidbox"><span class="saidtag">agent-authored · unverified</span>
     <p class="said">Deciding whether units belong on the schema or the metric signature.</p></div>`],
-  'agent-planner': ['planner · idle', `<dl class="kv"><dt>capability_id</dt><dd>capability:planner@1</dd>
-    <dt>Model</dt><dd>claude-opus-5</dd><dt>Agents</dt><dd>planner</dd></dl>`],
+  'agent-planner': ['planner · idle (bound)', `<dl class="kv"><dt>capability_id</dt><dd>capability:planner@1</dd>
+    <dt>State</dt><dd>idle — bound, no attempt in flight</dd>
+    <dt>Agent</dt><dd>planner</dd><dt>Harness</dt><dd>claude-code</dd>
+    <dt>Routed model</dt><dd>claude-opus-5</dd></dl>
+    <p class="footnote">Bound capability. Idle means no in-flight attempt, never no binding — that is a different state, drawn dashed, with the reason quoted in full.</p>`],
   'agent-codewriter': ['code-writer · Execute', `<dl class="kv"><dt>capability_id</dt><dd>capability:code-writer@1</dd>
     <dt>Model</dt><dd>claude-sonnet-5</dd><dt>Task</dt><dd>019a4f2c</dd><dt>Turn</dt><dd>12 / 60</dd>
     <dt>Tokens</dt><dd>141,900 / 400,000</dd><dt>Agents</dt><dd>tdd-guide</dd></dl>
     <div class="saidbox"><span class="saidtag">agent-authored · unverified</span>
     <p class="said"><span class="unknown">unknown</span></p></div>
     <p class="footnote">Unknown, never none. We did not observe a statement; that is different from the agent having none.</p>`],
-  'agent-reviewer': ['reviewer · idle', `<dl class="kv"><dt>capability_id</dt><dd>capability:reviewer@1</dd>
-    <dt>Model</dt><dd>claude-opus-5</dd><dt>Agents</dt><dd>code-reviewer, security-reviewer</dd>
-    <dt>Independence</dt><dd>both must pass; neither may be the agent that ran Execute</dd></dl>`],
-  'agent-validator': ['validator · idle', `<dl class="kv"><dt>capability_id</dt><dd>capability:validator@1</dd>
+  'agent-reviewer': ['reviewer · idle (bound)', `<dl class="kv"><dt>capability_id</dt><dd>capability:reviewer@1</dd>
+    <dt>State</dt><dd>idle — bound, no attempt in flight</dd>
+    <dt>Agents</dt><dd>code-reviewer, security-reviewer</dd><dt>Harness</dt><dd>claude-code</dd>
+    <dt>Routed model</dt><dd>claude-opus-5</dd>
+    <dt>Independence</dt><dd>santa-method — both must pass; neither may be the agent that ran Execute</dd></dl>`],
+  'agent-validator': ['validator · unbound', `<dl class="kv"><dt>capability_id</dt><dd>capability:validator@1</dd>
+    <dt>State</dt><dd>unbound — no agent binds this capability</dd>
     <dt>Model</dt><dd>claude-opus-5</dd><dt>Agents</dt><dd>none</dd></dl>
-    <p class="footnote">No agent may hold validation authority. Validation runs against the criterion, outside the agent tree.</p>`],
+    <p class="reasonquote">"No ECC agent may hold validation authority. <code>verification-loop</code> and <code>eval-harness</code> are skills, not agents, and <code>agent-evaluator</code> is classified never authoritative — an agent rating its own output is a self-reported verdict from the executing session. Validation runs Alfred-native, against the criterion, outside the agent tree."</p>`],
   'ev-handoff': ['Handoff · recorded', `<dl class="kv"><dt>Event</dt><dd>hands-off-to</dd>
     <dt>artifact_ref</dt><dd>7bd42e60 c519f38a</dd><dt>checked_by</dt><dd>orchestrator</dd>
     <dt>outcome</dt><dd>terminated</dd></dl>
@@ -1032,12 +1184,98 @@ document.getElementById('sbclose').addEventListener('click',closePanel);
 scrim.addEventListener('click',closePanel);
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') closePanel(); });
 document.addEventListener('pointerdown',e=>{
+  if(e.target.closest('.modelctl')) return; // the model control is its own action, not a panel trigger
   const el=e.target.closest('[data-panel]'); if(el) openPanel(el.dataset.panel);
 });
 document.addEventListener('keydown',e=>{
   if(e.key!=='Enter'&&e.key!==' ') return;
+  if(e.target.closest && e.target.closest('.modelctl')) return;
   const el=e.target.closest && e.target.closest('[data-panel]');
   if(el){ e.preventDefault(); openPanel(el.dataset.panel); }
+});
+
+/* ── model routing: a command-surface action embedded in the read model ─────
+   Exactly the models named for this prototype. gpt-5-nano is listed and
+   disabled — ticket #46 D5: the trivial class is empty, so it runs nothing.
+   LM Studio entries carry a `lane` fingerprint group an API-served model
+   does not (harness/fingerprint/factory.py), noted inline on selection.  ── */
+const MODEL_GROUPS = [
+  { label: 'Claude Code', options: [
+    { value: 'claude-fable-5-1', text: 'Fable 5.1' },
+    { value: 'claude-opus-5', text: 'Opus 5 (loud default)' },
+    { value: 'claude-sonnet-5', text: 'Sonnet 5' },
+    { value: 'claude-haiku-4-5-20251001', text: 'Haiku 4.5' },
+  ]},
+  { label: 'opencode', options: [
+    { value: 'opencode/gpt-5-nano', text: 'gpt-5-nano — disabled: no capability measured into the trivial class (#70)', disabled: true },
+  ]},
+  { label: 'LM Studio (local · 127.0.0.1:1234)', options: [
+    { value: 'lmstudio/qwen/qwen3.8-27b', text: 'qwen/qwen3.8-27b', lane: true },
+    { value: 'lmstudio/qwen3-next-80b-a3b-instruct', text: 'qwen3-next-80b-a3b-instruct', lane: true },
+    { value: 'lmstudio/openai/gpt-oss-120b', text: 'gpt-oss-120b', lane: true },
+  ]},
+];
+const MODEL_TEXT = {};
+MODEL_GROUPS.forEach(g=>g.options.forEach(o=>{ MODEL_TEXT[o.value]=o.text; }));
+
+document.querySelectorAll('[data-model-ctl]').forEach(ctl=>{
+  const select = ctl.querySelector('select');
+  const current = ctl.dataset.current;
+  MODEL_GROUPS.forEach(g=>{
+    const og = document.createElement('optgroup'); og.label = g.label;
+    g.options.forEach(o=>{
+      const opt = document.createElement('option');
+      opt.value = o.value; opt.textContent = o.text;
+      if(o.disabled) opt.disabled = true;
+      if(o.value === current) opt.selected = true;
+      og.appendChild(opt);
+    });
+    select.appendChild(og);
+  });
+  select.dataset.applied = current;
+
+  const laneNote = document.createElement('p');
+  laneNote.className = 'mclane';
+  ctl.appendChild(laneNote);
+  function refreshLaneNote(value){
+    const grp = MODEL_GROUPS.find(g=>g.options.some(o=>o.value===value));
+    const opt = grp && grp.options.find(o=>o.value===value);
+    laneNote.textContent = (opt && opt.lane)
+      ? 'Self-hosted: this fingerprint carries a lane group (quantization, loaded_context_length, parallel_slots, …) an API-served model does not — a second record type, not a wider field set (harness/fingerprint/factory.py).'
+      : '';
+  }
+  refreshLaneNote(current);
+
+  select.addEventListener('click', e=>e.stopPropagation());
+  select.addEventListener('change', ()=>{
+    const to = select.value;
+    const from = select.dataset.applied;
+    if(to === from) return;
+    document.getElementById('modeldlg-cap').textContent = ctl.dataset.cap;
+    document.getElementById('modeldlg-from').textContent = MODEL_TEXT[from] || from;
+    document.getElementById('modeldlg-to').textContent = MODEL_TEXT[to] || to;
+    const dlg = document.getElementById('modeldlg');
+    dlg.showModal();
+    const onOk = ()=>{
+      select.dataset.applied = to;
+      refreshLaneNote(to);
+      toast(`Model changed for ${ctl.dataset.cap} — autonomy grant suspended`);
+      cleanup();
+    };
+    const onCancel = ()=>{
+      select.value = from; // revert — nothing is applied until confirmed
+      cleanup();
+    };
+    function cleanup(){
+      dlg.close();
+      document.getElementById('modeldlgok').removeEventListener('click', onOk);
+      document.getElementById('modeldlgcancel').removeEventListener('click', onCancel);
+      dlg.removeEventListener('cancel', onCancel);
+    }
+    document.getElementById('modeldlgok').addEventListener('click', onOk);
+    document.getElementById('modeldlgcancel').addEventListener('click', onCancel);
+    dlg.addEventListener('cancel', onCancel); // Escape key
+  });
 });
 
 /* ── confirmations ────────────────────────────────────────── */
