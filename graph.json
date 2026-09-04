@@ -10,7 +10,7 @@
     "gate-step": 59,
     "kill-criterion": 6,
     "layout": 18,
-    "module": 244,
+    "module": 246,
     "operator-item": 9,
     "process": 7,
     "risk": 12,
@@ -23,7 +23,7 @@
     "amended_by": 2,
     "amends": 10,
     "blocks": 32,
-    "contains": 300,
+    "contains": 301,
     "discharges": 1,
     "enforced_by": 358,
     "imports": 250,
@@ -2801,6 +2801,19 @@
         "path": "src/metrics/value.py"
       },
       "src": "module:src.metrics"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:src.mission_control.prototype.vercel.json",
+      "evidence": "src/mission_control/prototype/vercel.json",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "src/mission_control/prototype/vercel.json"
+      },
+      "src": "module:src.mission_control"
     },
     {
       "confidence": "structural",
@@ -13673,16 +13686,16 @@
       "unparsed": 0
     },
     {
-      "edges": 164,
+      "edges": 165,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 45,
       "min_nodes": 90,
       "name": "code",
-      "nodes": 249,
+      "nodes": 251,
       "rejected": 0,
-      "scanned": 276,
+      "scanned": 278,
       "unparsed": 0
     },
     {
@@ -13773,7 +13786,7 @@
       "name": "references",
       "nodes": 0,
       "rejected": 0,
-      "scanned": 206,
+      "scanned": 207,
       "unparsed": 0
     },
     {
@@ -25050,6 +25063,53 @@
       "status": "",
       "tags": [],
       "title": "`MetricValue` — the tagged form every metric result takes on every boundary (ADR-0001)."
+    },
+    {
+      "attrs": {
+        "lint_gated": "true",
+        "namespace_package": "true",
+        "present": "true",
+        "protected": "false",
+        "tree": "src"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:src.mission_control",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "package",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "src/mission_control"
+      },
+      "status": "",
+      "tags": [],
+      "title": "src.mission_control"
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
+        "path": "src/mission_control/prototype/vercel.json",
+        "present": "true",
+        "protected": "false",
+        "tree": "src"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:src.mission_control.prototype.vercel.json",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "src/mission_control/prototype/vercel.json"
+      },
+      "status": "",
+      "tags": [],
+      "title": "src/mission_control/prototype/vercel.json"
     },
     {
       "attrs": {
