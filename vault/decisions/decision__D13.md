@@ -28,3 +28,7 @@ generated: true
 | Field | Value |
 |---|---|
 | `rationale` | Single toolchain. Pydantic gives executable contracts. Hypothesis is the strongest available adversary. numpy/scipy is correct for the domain. |
+
+## Enforced by (code)
+
+- **enforced_by** → [[module__scripts_lint_invariants|Cross-stage invariants (I1–I17), and the map of what actually enforces each one.]] — "no long-running endpoint exists yet; S8 under D13"

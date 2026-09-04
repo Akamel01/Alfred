@@ -5,7 +5,7 @@ title: "Dead material archived and templates shelved"
 status: "accepted"
 shape: "heading"
 date: "2026-08-29"
-source: "docs/tier1/adr-log.md:4142"
+source: "docs/tier1/adr-log.md:4151"
 extractor: "adrs"
 aliases:
   - "ADR-0043"
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `docs/tier1/adr-log.md:4142`
+**Source** · `docs/tier1/adr-log.md:4151`
 
 ## Statement
 

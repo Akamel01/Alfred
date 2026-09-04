@@ -4,7 +4,7 @@ id: "gate:product"
 title: "product (lint, types, tests)"
 shape: "job"
 job: "product"
-source: ".github/workflows/gates.yml:234"
+source: ".github/workflows/gates.yml:248"
 extractor: "workflows"
 tags: [protected]
 aliases:
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `.github/workflows/gates.yml:234`
+**Source** · `.github/workflows/gates.yml:248`
 
 ## Fields
 

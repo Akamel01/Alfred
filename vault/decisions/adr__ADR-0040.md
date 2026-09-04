@@ -38,3 +38,11 @@ generated: true
 - **see_also** → [[adr__ADR-0039|Orchestration Canvas: Protected Topology Source & Palette Binding]]
 - [[adr__ADR-0041|The S0–S9 build materialized as a numbered pipeline]] **see_also** → this
 - [[adr__ADR-0043|Dead material archived and templates shelved]] **see_also** → this
+- [[adr__ADR-0052|The D28 waiver ordinal becomes derived, and ADR-0040's is corrected in place]] **see_also** → this
+
+## Enforced by (code)
+
+- **enforced_by** → [[module__scripts_lint_adr_numbers|ADR number claim lint: a branch may not claim a number the base has issued.]] — #: that record's claim. ADR-0052 is the instance — it quotes ADR-0040's line while explaining
+- **enforced_by** → [[module__scripts_lint_adr_numbers|ADR number claim lint: a branch may not claim a number the base has issued.]] — """The record's effective ordinal claim: the **last** one across its claim sites.
+
+    Last, not first, because the log 

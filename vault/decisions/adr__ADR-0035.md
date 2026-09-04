@@ -35,6 +35,7 @@ generated: true
 - **see_also** → [[adr__ADR-0022|Phase 0's exit, narrowed along the ownership seam, with the residue dated]]
 - **see_also** → [[adr__ADR-0031|The protected set is one file, and the gate protects its own policy]]
 - **see_also** → [[adr__ADR-0033|The structure fence names every top-level directory, and the vault floors it]]
+- [[adr__ADR-0052|The D28 waiver ordinal becomes derived, and ADR-0040's is corrected in place]] **see_also** → this
 
 ## Enforced by (code)
 

@@ -37,6 +37,7 @@ generated: true
 - [[adr__ADR-0019|D38's sandbox rationale, verified: true of one configuration, false of the default]] **see_also** → this
 - [[adr__ADR-0020|The run fingerprint record, and the two assertions that were waiting on it]] **see_also** → this
 - [[adr__ADR-0029|The tree that verifies every other tree is verified by nothing]] **see_also** → this
+- [[adr__ADR-0053|The cross-stage invariants get the lint their register claims, and a checked map of what e]] **see_also** → this
 
 ## Enforced by (code)
 

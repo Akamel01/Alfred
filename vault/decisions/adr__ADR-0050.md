@@ -5,7 +5,7 @@ title: "Mission Control is hosted off-host, and the loopback bind is replaced ra
 status: "accepted"
 shape: "heading"
 date: "2026-09-03"
-source: "docs/tier1/adr-log.md:4691"
+source: "docs/tier1/adr-log.md:4700"
 extractor: "adrs"
 aliases:
   - "ADR-0050"
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `docs/tier1/adr-log.md:4691`
+**Source** · `docs/tier1/adr-log.md:4700`
 
 ## Statement
 

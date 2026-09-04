@@ -37,3 +37,4 @@ generated: true
 - [[adr__ADR-0040|The structure fence grows to eighteen]] **amends** → this
 - [[adr__ADR-0035|The protected set's single home names its fourth shape as a projection, not a second autho]] **see_also** → this
 - [[adr__ADR-0040|The structure fence grows to eighteen]] **see_also** → this
+- [[adr__ADR-0052|The D28 waiver ordinal becomes derived, and ADR-0040's is corrected in place]] **see_also** → this

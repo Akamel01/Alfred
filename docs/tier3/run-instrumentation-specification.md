@@ -71,9 +71,9 @@ domain separator.
 | `schema_version` | int | I6. This document is version 1. |
 | `event_id` | uuid7 | I4, typed distinctly. |
 | `org_id`, `project_id` | uuid7 | I1. Present with one tenant. |
-| `task_id`, `attempt_id` | uuid7 | `attempt_id` null on `task_end`, and on an `operator_action` that is about a task rather than an attempt. |
+| `task_id`, `attempt_id` | uuid7 | `attempt_id` null on `task_end`, on an `operator_action` that is about a task rather than an attempt, and on a `fingerprint_drift` escalation — that refusal happens before an attempt exists, so an id here would name an attempt that never started. |
 | `trace_id`, `span_id` | str | OpenTelemetry semantics, I8. |
-| `caused_by` | uuid7 \| null | The `event_id` this record is a consequence of (I10). Null only on `attempt_start`. |
+| `caused_by` | uuid7 \| null | The `event_id` this record is a consequence of (I10). Null on `attempt_start`, and on a `fingerprint_drift` escalation, which is the record emitted *instead of* an `attempt_start` and so has no predecessor in the stream. |
 | `actor_kind` | enum | `harness` · `operator`. Closed set today. Every record states who wrote it rather than leaving it to be inferred from `record_type`. |
 | `actor_id` | str | Constant on a single-operator machine, and present anyway: adding it later changes the digest of every prior record with no marker distinguishing old shape from new. |
 | `emitted_at` | RFC 3339 UTC | Human-facing timestamp. Never used for durations. |
@@ -300,12 +300,22 @@ and turns "the child self-certified" from an untracked possibility into a schema
 |---|---|---|
 | `primary_cause` | enum | Exactly one. |
 | `also_satisfied` | [enum] | Every other trigger true at the same evaluation. |
-| `evaluated_at_turn` | int | |
+| `evaluated_at_turn` | int \| null | Null only on `fingerprint_drift`, which is evaluated before turn zero. `0` would say the first turn ran and reached this, which is a different event — the same distinction `human_review_ms` draws between null and 0. |
 | `attempt_bundle_ref` | str | Artifact hash of the structured bundle: what was tried, what was read, what the criterion said. |
 
 Causes, closed set: `turn_cap` · `token_cap` · `wallclock_cap` · `iteration_cap` ·
 `criterion_red_after_n` · `no_monotone_progress` · `protected_path_attempt` ·
-`tool_unavailable` · `policy_violation` · `agent_initiated` · `harness_fault`.
+`tool_unavailable` · `policy_violation` · `agent_initiated` · `harness_fault` ·
+`fingerprint_drift`.
+
+**`fingerprint_drift` is not a `harness_fault`,** and the distinction is the whole value of
+the record. `harness_fault` says this side broke. `fingerprint_drift` says this side worked
+— it looked at what answered and found somebody else's substitution — so the attempt does
+not start, and the refusal is recorded rather than only survived. It is the only cause that
+fires before turn zero, which is why `evaluated_at_turn` is nullable and why the record
+carries no `attempt_id`: there is no attempt. `attempt_bundle_ref` addresses the field
+differences, so the audit trail says *which* field moved rather than that one did.
+`harness/fingerprint/attempt_start.py` emits it (ADR-0054).
 
 **`also_satisfied` is what makes the distribution mean anything.** Caps are frequently
 reached together — a run that exhausts its turn cap has usually also exhausted its token

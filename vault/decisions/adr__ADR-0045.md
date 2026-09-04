@@ -5,7 +5,7 @@ title: "The ECC coupling is factory scope, ring-fenced, and overrides no gate"
 status: "accepted"
 shape: "heading"
 date: "2026-09-02"
-source: "docs/tier1/adr-log.md:4239"
+source: "docs/tier1/adr-log.md:4248"
 extractor: "adrs"
 aliases:
   - "ADR-0045"
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `docs/tier1/adr-log.md:4239`
+**Source** · `docs/tier1/adr-log.md:4248`
 
 ## Statement
 

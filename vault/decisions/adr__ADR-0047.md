@@ -5,7 +5,7 @@ title: "The ownership router gains the factory's facts, and runtime state is nev
 status: "accepted"
 shape: "heading"
 date: "2026-09-03"
-source: "docs/tier1/adr-log.md:4439"
+source: "docs/tier1/adr-log.md:4448"
 extractor: "adrs"
 aliases:
   - "ADR-0047"
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `docs/tier1/adr-log.md:4439`
+**Source** · `docs/tier1/adr-log.md:4448`
 
 ## Statement
 
@@ -35,6 +35,7 @@ generated: true
 - **see_also** → [[adr__ADR-0003|Canonical serialization for hashed structures (ACS-1)]]
 - **see_also** → [[adr__ADR-0039|Orchestration Canvas: Protected Topology Source & Palette Binding]]
 - [[adr__ADR-0049|Agent-stated intent is rendered on the live view and nowhere a decision is taken]] **see_also** → this
+- [[adr__ADR-0054|Check A lands: the model that answers is asserted against the fingerprint before an attemp]] **see_also** → this
 
 ## Enforced by (code)
 

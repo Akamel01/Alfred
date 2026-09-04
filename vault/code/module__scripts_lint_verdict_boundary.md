@@ -32,8 +32,8 @@ generated: true
 
 ## Binds
 
-- [[gate-step__integrity_09|Verdict boundary holds]] **runs** → this
-- [[gate-step__integrity_10|Verdict boundary lint detects planted violations]] **runs** → this
+- [[gate-step__integrity_11|Verdict boundary holds]] **runs** → this
+- [[gate-step__integrity_12|Verdict boundary lint detects planted violations]] **runs** → this
 
 ## Enforced by (code)
 

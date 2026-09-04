@@ -45,6 +45,9 @@ Inspector machinery (D20). Permanently outside what agents may modify, and outsi
 - **enforced_by** → [[module__harness_fingerprint___init__|The run fingerprint record — the declared configuration a run is measured on.]] — """The run fingerprint record — the declared configuration a run is measured on.
 
 Inspector machinery (D20). `record.py`
+- **enforced_by** → [[module__harness_fingerprint_attempt_start|Check A: the model that answers is the model the fingerprint declared, asserted at start.]] — """Check A: the model that answers is the model the fingerprint declared, asserted at start.
+
+Ticket #46 specified two e
 - **enforced_by** → [[module__harness_fingerprint_factory|The factory fingerprint: what an *agent* run was measured on, as opposed to a lane.]] — """The factory fingerprint: what an *agent* run was measured on, as opposed to a lane.
 
 `RunFingerprint` cannot describe
@@ -63,6 +66,9 @@ Each piece here ran verbatim, or near eno
 - **enforced_by** → [[module__scripts_lint_harness_gate|How much of `harness/` the lint gate actually collects, and whether it can go red.]] — """How much of `harness/` the lint gate actually collects, and whether it can go red.
 
 `harness/` is the tree everything
+- **enforced_by** → [[module__scripts_lint_invariants|Cross-stage invariants (I1–I17), and the map of what actually enforces each one.]] — """Cross-stage invariants (I1–I17), and the map of what actually enforces each one.
+
+`docs/tier1/cross-stage-invariants.
 - **enforced_by** → [[module__scripts_lint_stage_gates|The stage gate, as a check rather than as a sentence somebody reads.]] — """The stage gate, as a check rather than as a sentence somebody reads.
 
 `docs/tier2/stage-gate-definitions.md` carried 

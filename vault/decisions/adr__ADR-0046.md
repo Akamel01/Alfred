@@ -5,7 +5,7 @@ title: "Registry additions to the register generators are inspector patches, and
 status: "accepted"
 shape: "heading"
 date: "2026-09-03"
-source: "docs/tier1/adr-log.md:4346"
+source: "docs/tier1/adr-log.md:4355"
 extractor: "adrs"
 aliases:
   - "ADR-0046"
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `docs/tier1/adr-log.md:4346`
+**Source** · `docs/tier1/adr-log.md:4355`
 
 ## Statement
 

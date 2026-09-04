@@ -4043,6 +4043,15 @@ The two committed `layout-miss` anomalies (`orchestration/`, `prototype/`) stop 
  - `vault/_anomalies.md` + `graph.json` + `docs-graph.html` → byte-compared in CI (`gen_vault.py --check` in `gates.yml:192-193`); a hand edit fails the check.
  - `docs/tier2/coding-standards.md` → frozen, `ci-gate`; this ADR is the waiver that authorizes its diff.
 
+> **Ordinal correction (2026-09-03, #55).** The paragraph above reads *"It is the third."*
+> It is the **fourth**. ADR-0022 is the first, ADR-0033 the second, ADR-0035 the third, and
+> this record the fourth. The body is not rewritten because the log is append-only in spirit
+> and the number a record claimed is itself part of the record; the correction travels with it,
+> in the same blockquote form the renumbering notes use. The error ran in the under-reporting
+> direction, which is the direction that makes the waiver count — a health metric — look
+> healthier than it is. `scripts/lint_adr_numbers.py` now derives the ordinal from position
+> and reads this note, so the claim is checked rather than asserted.
+
 ---
 
 ## ADR-0041 — The S0–S9 build materialized as a numbered pipeline
@@ -4801,3 +4810,333 @@ Or: the live view and Part B become visually indistinguishable, meaning decision
 `review-cadence`. Nothing in CI can check that two renderings look sufficiently different from each other, and claiming otherwise would be the wish `scripts/lint_ci_coverage.py` names.
 
 What *is* structural is decision 4's consequence: there is no event stream to build, so the failure class it would introduce cannot arrive by accident. And ADR-0049's decision 2 holds by construction — the live view is the read model's, and the program that draws S2 cannot reach runtime state at all.
+
+---
+
+## ADR-0052 — The D28 waiver ordinal becomes derived, and ADR-0040's is corrected in place
+
+**Date:** 2026-09-03 · **Status:** Accepted · **Supersedes:** none · **Amends:** nothing; this record repairs a drift and closes the class · **See also:** ADR-0022 (the first D28 waiver), ADR-0033 (the second), ADR-0035 (the third), ADR-0040 (the fourth, which claimed to be the third), `docs/tier0/operating-principles.md` (the falsification clause the count feeds), #55 · **D28 waiver:** no
+
+### Context
+
+Four ADRs carry a `**D28 waiver:** yes` header, and each states in prose which waiver it is,
+because all four say the waiver *"counts toward the waiver total the operating principles use
+as a health metric."* Two of them claimed to be the **third**: ADR-0035 at `adr-log.md:3824`
+and ADR-0040 at `adr-log.md:4028`.
+
+The count is not decoration. `docs/tier0/operating-principles.md:6` makes it a falsification
+clause: *"three waivers against the same principle means the principle is wrong, not the
+situations."* A metric that cannot count itself cannot fire that clause. The current text
+supports reading the total as either three or four, and the error runs in the
+**under-reporting** direction — the direction that makes the register look healthier than it
+is, which is the only direction that goes unnoticed.
+
+The ordinal is derivable. It is the count of prior `D28 waiver: yes` headers in numeric
+order. Nothing derived it, so a prose claim was the only statement of it, and a prose claim
+is exactly the thing this repository has repeatedly found wrong.
+
+### Decision
+
+1. **ADR-0040's ordinal is corrected by an appended note, not by a body edit.**
+   `docs/tier1/adr-log.md:4046-4053` gains a blockquote stating that the record is the
+   **fourth**. The body still reads *"It is the third."* and that is deliberate: the log is
+   append-only in spirit, the number a record claimed is itself part of what the record did,
+   and `scripts/lint_adr_numbers.py`'s own CLAIM check forbids editing a record the base has
+   issued — a body rewrite would fail the lint that exists to stop exactly that. The
+   blockquote form is the one the renumbering notes already use, and `_record()` already
+   excludes it from the claim comparison.
+
+2. **`scripts/lint_adr_numbers.py` derives the ordinal and compares.** A fourth finding,
+   `WAIVER`, over three shapes, all failures:
+   - the ordinal claimed is not the position the record holds;
+   - the header declares a waiver and the body states no ordinal, so the record joins the
+     count without saying where it sits;
+   - the body claims an ordinal and the header says `D28 waiver: no`, so the prose enters a
+     count the header excludes the record from.
+
+3. **The record's effective claim is the *last* ordinal in it**, not the first. That is what
+   makes decision 1 legal rather than a dodge: an appended correction is the log's repair
+   shape, so the check must read the correction as the claim. It also means a body and its
+   note may disagree on the page and still agree on the count, which is the honest rendering
+   of an append-only log.
+
+4. **The candidate word is checked against a closed list of twenty ordinals**, so the two
+   pre-existing *"It is the thing that was measured…"* sentences at `adr-log.md:1224` and
+   `:1435` are not read as ordinal claims. The list stops at twenty because the operating
+   principles' clause fires at three against one principle; a register that reaches a
+   twentieth waiver has already falsified something, and a check that keeps counting past
+   that point has stopped meaning anything.
+
+5. **An ordinal counts as a claim only inside a waiver paragraph or a blockquote.** A
+   paragraph carrying the colon-less prose marker `**D28 waiver**` is the waiver paragraph;
+   a paragraph that is wholly a blockquote is a correction note. Everything else is
+   excluded, and this record is why: the first draft of decision 1 quoted ADR-0040's
+   sentence verbatim in order to explain why it is not being rewritten, and the check read
+   the quotation as this ADR claiming to be the third. The check caught its own author, and
+   the scoping is the repair.
+
+6. **`_parse` gains a `strip` switch rather than a second parser.** The claim check needs
+   trailing notes gone; the ordinal check needs them kept. One parse with a switch, because
+   two parsers sharing a heading grammar are two parsers that drift apart on it.
+
+7. **This is a protected-path write** (`scripts/`, D20) and carries no D28 waiver, because no
+   gate is overridden — `docs/tier4/protected-paths-policy.md:100` requires line-by-line human
+   review and a mandatory ADR, and this record is that ADR. Nothing frozen is amended.
+
+### Consequences
+
+The waiver total is now computed in one place and stated in four, and the four are checked
+against the one. A fifth waiver that claims the wrong ordinal fails CI rather than landing.
+
+The under-reporting direction specifically is closed: a record that silently omits its ordinal
+now fails, so the cheap way to avoid being counted — say nothing — is no longer available.
+
+What is **not** closed, and is deliberately left open: whether amending a frozen `ci-gate`
+document is itself a D28 waiver. ADR-0033 and ADR-0040 both amended the coding standards'
+structure fence and both took `D28 waiver: yes`; ADR-0050 amended the same frozen section and
+took `D28 waiver: no`, on ADR-0045's reasoning that a waiver overrides a *gate* rather than
+authorizing a document edit. Those cannot both be right, and the answer changes the total this
+ADR just made checkable. It is an operator decision, filed rather than assumed.
+
+The derivation reads headers, so a record that states its ordinal and forgets the header is
+counted as not-a-waiver and fails on the orphan shape rather than silently shrinking the
+total. That is the intended asymmetry: the failure is loud in the direction that would
+otherwise flatter the register.
+
+### Enforcement
+
+`ci-gate`. `scripts/lint_adr_numbers.py` in `gates.yml:72`, with `--self-test` at `:77`.
+
+Seven of the twelve self-test controls are the new ones: correct ordinals pass with a
+non-waiver between two waivers; a wrong ordinal fails; an appended correction is honoured; a
+waiver with no ordinal fails; an orphan claim fails; a quoted ordinal outside a waiver
+paragraph is not read as a claim; and a log with records but no waiver at all fails rather
+than reporting clean — the vacuity guard, aimed at the ordinal check itself.
+
+### Falsifies if
+
+A record lands claiming a D28 waiver ordinal that its position does not derive, and CI is
+green — meaning the check reads a shape the log does not use.
+
+---
+
+## ADR-0053 — The cross-stage invariants get the lint their register claims, and a checked map of what enforces the rest
+
+**Date:** 2026-09-03 · **Status:** Accepted · **Supersedes:** none · **Amends:** nothing; `docs/tier1/cross-stage-invariants.md` is deliberately left untouched, and the Consequences say why · **See also:** ADR-0007 (the vacuity class), D57, `scripts/lint_migrations.py` (I2), `scripts/lint_verdict_boundary.py` (I17), #56 · **D28 waiver:** no
+
+### Context
+
+`docs/tier1/cross-stage-invariants.md` is `status: frozen`, `enforcement: ci-gate`, and its
+body says *"Enforced by CI lint. A violation fails the build."* `ci-gate` is the strongest
+value in the documentation standard's enum: it asserts a machine refuses the merge. No file
+named for that claim existed.
+
+The state was not quite as bare as #56 charted it. Two of the eight checks the document's
+§ *What the lint checks* enumerates were already enforced, by siblings written for other
+reasons: `lint_migrations.py` holds I2's additive-only rule, and `lint_verdict_boundary.py`
+holds both I17 clauses. Six were held by nothing.
+
+This is worse than an unenforced document rather than merely equal to one, and the reason is
+specific: a reviewer who reads `ci-gate` stops checking by hand. The claim does not just fail
+to help, it withdraws the help that would otherwise be there.
+
+### Decision
+
+1. **`scripts/lint_invariants.py` lands with five static checks**, wired into
+   `gates.yml` alongside its own `--self-test`:
+   - `INV1` (I1) — every table a migration creates declares `org_id` and `project_id`;
+   - `INV6` (I6) — and `schema_version`;
+   - `INV10` (I10) — and `caused_by`, because a causality link never stored cannot be
+     reconstructed afterwards;
+   - `INV4` (I4) — no `uuid1/3/4/5` call and no integer primary key in `src/` or
+     `migrations/`;
+   - `INV5` (I5) — every mutating route handler declares an `idempotency_key` parameter.
+
+2. **The column checks resolve one level of helper.** Every migration in the tree spreads a
+   module-level `_envelope()` into each `create_table`, so a check reading only literal
+   `sa.Column(...)` arguments would report all fourteen tables as missing all five envelope
+   columns. One level, not arbitrarily many: when a second level appears the bound is raised
+   visibly in a diff rather than silently under-reporting.
+
+3. **`INVMAP` is the sixth check and the one that keeps the other five honest.** Every
+   invariant declares its enforcement as `here` (a check in this file), `script` (a named
+   sibling), or `review` (a human, with the reason stated). There is no fourth value and in
+   particular none meaning *assumed*. A `script` referent must exist on disk **and** appear
+   in `gates.yml` — a lint that exists and never runs reads identically to enforcement from
+   inside the document. A `review` row must state a reason, because a review row with no
+   reason is an unenforced row with a nicer name.
+
+4. **The map was wrong on its first draft, and INVMAP is what said so.** I9, I11, I13 and
+   I14 were drafted as `script` rows pointing at `lint_docs.py`,
+   `capture_run_fingerprint.py`, `lint_topology.py` and `lint_harness_gate.py`. The check
+   fired on I11 — the file is real and `gates.yml` never invokes it — and reading the others
+   under that light showed the same defect one step earlier: recording a pin is not enforcing
+   one, and a lint that reads `policy/*.json` does not check that a threshold was not *also*
+   hard-coded somewhere. All four are now `review` rows with their reasons.
+
+5. **I3 is not statically checked, and the file says so in its own docstring.** The property
+   is "an artifact write goes through the content-addressed store, never a raw path". Every
+   static form reduces to an allowlist of modules permitted to write bytes, and the tree has
+   seventeen legitimate byte writes — bench reports, fixture generation, the restore drill's
+   anchor, the ACS vector generator. An allowlist admitting all of them discriminates
+   nothing. What holds I3 today is `evidence.artifact`'s `uq_artifact_content` uniqueness
+   over `(org_id, project_id, content_sha256)`: a database constraint, not a lint.
+
+6. **`INV4`'s scope is `src/` and `migrations/`, and the excluded instance is named.**
+   `harness/evidence/store.py:322` calls `uuid.uuid4()` for the primary key of every evidence
+   row — precisely what I4 forbids, on a chain written serially in time order, throwing away
+   the sortability the invariant is bought for. `harness/` is the inspector (D20); an agent
+   may not edit it, so a gate an agent cannot clear is a gate that gets worked around. It is
+   named in the docstring and filed as its own ticket, not swept.
+
+7. **`docs/tier1/cross-stage-invariants.md` is not amended.** See the Consequences.
+
+8. **This is a protected-path write** (`scripts/`, `.github/`, D20) under
+   `docs/tier4/protected-paths-policy.md:100` — line-by-line human review plus a mandatory
+   ADR. No gate is overridden, so no D28 waiver.
+
+### Consequences
+
+Six of the seventeen invariants now fail the build when violated, and ten declare in a
+machine-checked table that they are held by review, with their reasons. The seventeenth, I2,
+was already enforced and now says where.
+
+**The document's own claim is still wider than what enforces it, and repairing that is
+deliberately not done here.** The honest amendment would scope *"Enforced by CI lint"* to the
+invariants that are, and `cross-stage-invariants.md` is frozen. Whether amending a frozen
+`ci-gate` document is itself a D28 waiver is genuinely unsettled — ADR-0033 and ADR-0040 both
+took `D28 waiver: yes` to amend the coding standards' structure fence; ADR-0050 amended the
+same frozen section and took `D28 waiver: no` on ADR-0045's reasoning that a waiver overrides
+a *gate* rather than authorizing an edit. Taking a waiver I have not earned inflates a count
+ADR-0052 just made checkable; declining one I owe deflates it. Both are the failure this pair
+of ADRs exists to prevent, so the edit waits for the operator and the question is filed.
+
+Until then the lint's map is the measurement and the document is the claim, and where they
+disagree the map is the one that fails CI. That is the right asymmetry: a measurement that
+contradicts a claim is information, and the reverse is not.
+
+### Enforcement
+
+`ci-gate`. `scripts/lint_invariants.py` in `gates.yml`, with `--self-test` beside it.
+
+Eleven self-test controls, each a planted violation with its paired positive: a clean
+migration passes INV1/INV6/INV10 and a table missing any of the three fails; an empty tree
+reports zero scanned (the D57 guard, aimed at the envelope check itself); an integer primary
+key and a `uuid4()` call fail INV4 while a UUIDv7 table passes; an unkeyed mutating handler
+fails INV5 while a keyed one and a `GET` both pass; and a map naming an absent lint fails.
+
+### Falsifies if
+
+An invariant this file declares `here` or `script` is found violated in merged code with CI
+green — meaning the check reads a shape the tree does not use. Or a `review` row is found to
+have had a static form available all along.
+
+---
+
+## ADR-0054 — Check A lands: the model that answers is asserted against the fingerprint before an attempt starts
+
+**Date:** 2026-09-03 · **Status:** Accepted · **Supersedes:** none · **Amends:** `docs/tier3/run-instrumentation-specification.md` (provisional) — the `escalation` cause set, `evaluated_at_turn`'s nullability, and two envelope nullability rules · **See also:** ADR-0047 (the prior additive amendment to this document's enums), `docs/tier7/ticket-46-model-routing-decision.md` D6, `scripts/lint_model_routing.py` (check P), #72 · **D28 waiver:** no
+
+### Context
+
+Ticket #46 specified two enforcement checks for model routing. **Check P** shipped as
+`scripts/lint_model_routing.py`, MR001–MR005. **Check A** did not.
+`FactoryFingerprint.assert_matches` was written, raises `RecordDrift` on any difference in
+either direction, and **nothing called it**.
+
+The consequence is precise rather than theoretical: P checks what the diff says, A checks
+what actually ran. With only P, MR001–MR005 verify that two protected files agree with each
+other and nothing verifies that reality agrees with either.
+
+The specification already states the general rule, for `loaded_context_length`: *"a
+fingerprint field the server can change unobserved is not a fingerprint unless something
+checks it"*, and *"Asserted against the fingerprint, not read from it. … Mismatch is
+fail-closed: the attempt does not start."*
+
+Every field on a `FactoryFingerprint` has that exposure and a worse one. A lane is a process
+on a machine this side owns. An API-served model is a routing decision made by somebody
+else, and `provider`, `model_id`, `api_version` and `routing_key` can each move between one
+attempt and the next with nothing errored. An autonomy grant is *"X% merge, Y wall-clock per
+success, on fingerprint Z"* and is suspended by any fingerprint change — so an unobserved
+substitution does not suspend the grant, it silently reassigns it to a model that never
+earned it.
+
+### Decision
+
+1. **`harness/fingerprint/attempt_start.py` lands with `begin_attempt(declared, observed)`.**
+   It calls `assert_matches` and is the only intended caller of it. Agreement returns the
+   **declared** record, not a rebuild: handing back an object built from the observation
+   would invite a caller to record what it saw rather than what it declared, and those are
+   the same only for as long as the check keeps passing.
+
+2. **Mismatch raises, and raising is the fail-closed mechanism.** `AttemptRefused` is an
+   exception rather than a returned status because a returned status can be ignored by a
+   caller that forgot to read it — and a caller that forgets this one starts an attempt on
+   an undeclared model. Fail-closed means the default path on a mistake is refusal.
+
+3. **The refusal is a record, not only a raise.** Refusing alone makes a substituted model
+   look like an attempt that was never scheduled. So `AttemptRefused` carries an
+   `escalation` with `primary_cause = fingerprint_drift` and an `attempt_bundle_ref` over
+   the canonical form of the field differences, so the trail says *which* field moved.
+
+4. **`fingerprint_drift` joins the escalation cause set**, which is closed, in
+   `docs/tier3/run-instrumentation-specification.md`. None of the eleven existing causes
+   fits. `harness_fault` is the near miss and is wrong in the direction that matters: it
+   says this side broke, and the finding is that this side *worked* — it looked, and what
+   it found was somebody else's substitution. Filing a provider substitution as a harness
+   fault would move it into the one distribution Phase 1 exists to produce, on the side
+   that reads as our own flakiness.
+
+5. **`evaluated_at_turn` becomes `int | null`, null only on `fingerprint_drift`.** A refusal
+   is evaluated before turn zero. Writing `0` would say the first turn ran and reached this,
+   which is a different event — the same distinction `human_review_ms` draws between null
+   and 0, and for the same reason.
+
+6. **The refusal carries no `attempt_id` and no `caused_by`.** It is emitted *instead of* an
+   `attempt_start`, so there is no attempt to name and no predecessor in the stream. Both
+   envelope nullability rules are amended to say so, rather than leaving a validator to
+   discover the shape.
+
+7. **The bundle has its own ACS-1 record type**, `attempt_refusal_bundle`, distinct from
+   `factory_fingerprint`. ADR-0003 makes the record type the domain separator; a bundle and
+   a fingerprint that coincidentally serialized alike must still hash apart.
+
+8. **This is a protected-path write** (`harness/`, D20) under
+   `docs/tier4/protected-paths-policy.md:100` — line-by-line human review plus a mandatory
+   ADR. `run-instrumentation-specification.md` is `status: provisional`, so no freeze is
+   touched and no D28 waiver arises. The amendment is additive in the same shape ADR-0047
+   used on the same document.
+
+### Consequences
+
+`assert_matches` now has exactly one intended caller and that caller is the start path, so a
+dispatcher that skips the check is not starting an attempt at all — the check is on the path
+rather than beside it.
+
+**What is still missing, stated rather than implied: nothing dispatches a factory attempt
+yet.** `begin_attempt` has no production caller because the factory dispatcher does not
+exist, and it does not exist for a doctrine reason rather than an oversight —
+`docs/tier2/execution-order.md` § *What must not be built yet* forbids orchestration before
+per-task merge rate clears K3's Wilson lower bound. So check A is written, tested, and
+dormant. That is a smaller gap than the one it closes — the previous state had the assertion
+written with no obvious place to call it, and this one has the whole start path waiting for
+its first caller — but it is a gap, and P remains vacuous until a run passes through here.
+
+The twenty tests are all pairs: every one of the eleven fields refuses when substituted, a
+field the record never declared refuses (the second direction), a missing field refuses
+rather than defaulting, and beside each the control that must proceed.
+
+### Enforcement
+
+`schema` for the record shape; `harness/fingerprint/test_attempt_start.py` for the behaviour,
+collected by the harness test job.
+
+The parametrized substitution test is the load-bearing one: a check written for the field
+somebody had in mind is a check that passes on the field somebody did not, so the plant runs
+over every field the record declares rather than over `model_id`.
+
+### Falsifies if
+
+A factory attempt is found to have run on a model the declared fingerprint does not name,
+with no `fingerprint_drift` escalation in its stream — meaning the start path was reached by
+some route that does not pass through `begin_attempt`.

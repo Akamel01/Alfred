@@ -1,19 +1,19 @@
 ---
 kind: gate-step
 id: "gate-step:integrity.10"
-title: "Verdict boundary lint detects planted violations"
+title: "Invariant lint detects planted violations"
 shape: "step"
 job: "integrity"
 source: ".github/workflows/gates.yml:98"
 extractor: "workflows"
 tags: [protected]
 aliases:
-  - "Verdict boundary lint detects planted violations"
+  - "Invariant lint detects planted violations"
   - "integrity.10"
 generated: true
 ---
 
-# Verdict boundary lint detects planted violations
+# Invariant lint detects planted violations
 
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
@@ -22,17 +22,17 @@ generated: true
 
 ## Statement
 
-python3 scripts/lint_verdict_boundary.py --self-test
+python3 scripts/lint_invariants.py --self-test
 
 ## Fields
 
 | Field | Value |
 |---|---|
-| `command` | python3 scripts/lint_verdict_boundary.py --self-test |
+| `command` | python3 scripts/lint_invariants.py --self-test |
 | `kind` | run |
 | `ordinal` | 10 |
 
 ## Binds
 
-- **runs** → [[module__scripts_lint_verdict_boundary|D16/D39: the verdict boundary, enforced structurally rather than by convention.]]
+- **runs** → [[module__scripts_lint_invariants|Cross-stage invariants (I1–I17), and the map of what actually enforces each one.]]
 - [[gate__integrity|integrity (fixtures and register)]] **contains** → this

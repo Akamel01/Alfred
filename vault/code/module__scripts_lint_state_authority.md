@@ -32,8 +32,8 @@ generated: true
 
 ## Binds
 
-- [[gate-step__integrity_23|State authority lint checks its own vacuity]] **runs** → this
-- [[gate-step__integrity_24|Ownership router homes exist and no gate cites runtime state]] **runs** → this
+- [[gate-step__integrity_25|State authority lint checks its own vacuity]] **runs** → this
+- [[gate-step__integrity_26|Ownership router homes exist and no gate cites runtime state]] **runs** → this
 
 ## Enforced by (code)
 

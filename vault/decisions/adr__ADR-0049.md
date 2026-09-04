@@ -5,7 +5,7 @@ title: "Agent-stated intent is rendered on the live view and nowhere a decision 
 status: "accepted"
 shape: "heading"
 date: "2026-09-03"
-source: "docs/tier1/adr-log.md:4642"
+source: "docs/tier1/adr-log.md:4651"
 extractor: "adrs"
 aliases:
   - "ADR-0049"
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `docs/tier1/adr-log.md:4642`
+**Source** · `docs/tier1/adr-log.md:4651`
 
 ## Statement
 

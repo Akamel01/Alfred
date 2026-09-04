@@ -214,7 +214,10 @@ Binding on implementation and easy to miss, since they live inside one document.
 | [ADR-0049](tier1/adr-log.md) | Agent-stated intent is rendered on the live view and nowhere a decision is taken | Accepted |
 | [ADR-0050](tier1/adr-log.md) | Mission Control is hosted off-host, and the loopback bind is replaced rather than relaxed | Accepted |
 | [ADR-0051](tier1/adr-log.md) | The live view is pulled forward ahead of its trigger, and the trigger's reasoning is not discharged | Accepted |
+| [ADR-0052](tier1/adr-log.md) | The D28 waiver ordinal becomes derived, and ADR-0040's is corrected in place | Accepted |
+| [ADR-0053](tier1/adr-log.md) | The cross-stage invariants get the lint their register claims, and a checked map of what enforces the rest | Accepted |
+| [ADR-0054](tier1/adr-log.md) | Check A lands: the model that answers is asserted against the fingerprint before an attempt starts | Accepted |
 
 ---
 
-**77 documents mapped** · 44 binding · 14 context · 19 record · 51 architecture decisions
+**77 documents mapped** · 44 binding · 14 context · 19 record · 54 architecture decisions

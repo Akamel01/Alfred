@@ -1,55 +1,36 @@
 ---
 kind: gate-step
 id: "gate-step:integrity.20"
-title: "Protected paths append-only (bench/results/, bench/fingerprints/)"
+title: "Vault generator detects its own vacuity"
 shape: "step"
 job: "integrity"
-source: ".github/workflows/gates.yml:195"
+source: ".github/workflows/gates.yml:194"
 extractor: "workflows"
 tags: [protected]
 aliases:
-  - "Protected paths append-only (bench/results/, bench/fingerprints/)"
+  - "Vault generator detects its own vacuity"
   - "integrity.20"
 generated: true
 ---
 
-# Protected paths append-only (bench/results/, bench/fingerprints/)
+# Vault generator detects its own vacuity
 
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `.github/workflows/gates.yml:195`
+**Source** · `.github/workflows/gates.yml:194`
 
 ## Statement
 
-set -euo pipefail
-modified=$(git diff --name-only HEAD~1 -- bench/results/ bench/fingerprints/ 2>/dev/null || true)
-if [ -n "$modified" ]; then
-echo "Protected paths modified (not just added):"
-echo "$modified"
-echo "Only new files (status 'A') are allowed under bench/results/ and bench/fingerprints/ (ADR-0038)."
-exit 1
-fi
-echo "No modifications to append-only protected paths."
+python3 tools/gen_vault.py --self-test
 
 ## Fields
 
 | Field | Value |
 |---|---|
+| `command` | python3 tools/gen_vault.py --self-test |
 | `kind` | run |
 | `ordinal` | 20 |
-
-**command**
-
-> set -euo pipefail
-modified=$(git diff --name-only HEAD~1 -- bench/results/ bench/fingerprints/ 2>/dev/null || true)
-if [ -n "$modified" ]; then
-echo "Protected paths modified (not just added):"
-echo "$modified"
-echo "Only new files (status 'A') are allowed under bench/results/ and bench/fingerprints/ (ADR-0038)."
-exit 1
-fi
-echo "No modifications to append-only protected paths."
 
 ## Binds
 

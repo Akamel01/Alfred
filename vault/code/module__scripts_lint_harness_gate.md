@@ -32,8 +32,8 @@ generated: true
 
 ## Binds
 
-- [[gate-step__integrity_13|Harness lint coverage]] **runs** → this
-- [[gate-step__integrity_14|Harness gate detects planted violations]] **runs** → this
+- [[gate-step__integrity_15|Harness lint coverage]] **runs** → this
+- [[gate-step__integrity_16|Harness gate detects planted violations]] **runs** → this
 
 ## Enforced by (code)
 

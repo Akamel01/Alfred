@@ -32,8 +32,8 @@ generated: true
 
 ## Binds
 
-- [[gate-step__integrity_25|Model routing lint checks its own vacuity]] **runs** → this
-- [[gate-step__integrity_26|Model routing policy conforms to the bindings]] **runs** → this
+- [[gate-step__integrity_27|Model routing lint checks its own vacuity]] **runs** → this
+- [[gate-step__integrity_28|Model routing policy conforms to the bindings]] **runs** → this
 
 ## Enforced by (code)
 
