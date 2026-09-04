@@ -4,7 +4,7 @@ id: "layout:projects"
 title: "projects/"
 status: "named"
 shape: "fence-line"
-source: "docs/tier2/coding-standards.md:130"
+source: "docs/tier2/coding-standards.md:132"
 extractor: "layout"
 aliases:
   - "projects"
@@ -17,7 +17,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `docs/tier2/coding-standards.md:130`
+**Source** · `docs/tier2/coding-standards.md:132`
 
 ## Statement
 

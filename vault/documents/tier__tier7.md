@@ -35,3 +35,4 @@ generated: true
 - **contains** → [[document__tier7__ticket-47-edge-semantics-decision|Ticket #47 — execution edge semantics]]
 - **contains** → [[document__tier7__ticket-51-ecc2-boundary-decision|Ticket #51 — the ECC2 reuse boundary]]
 - **contains** → [[document__tier7__ticket-52-read-model-decision|Ticket #52 — Mission Control's read model]]
+- **contains** → [[document__tier7__ticket-67-live-view-decision|Ticket #67 — the live multi-agent view]]

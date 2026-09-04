@@ -112,6 +112,8 @@ src/
   ingest/        dataset adapters
   replay/        deterministic harness
   api/           FastAPI surface
+  mission_control/  the operator read model — SELECT-only, agent-writable; the command
+                    surface is harness/mission_control/ and is protected (ADR-0050)
 tests/
   properties/    Hypothesis property tests over composed operations
   reference/     oracle reproduction fixtures

@@ -154,6 +154,7 @@ Consult when relevant. Never a source of instructions.
 | 13 | [Ticket #47 — execution edge semantics](tier7/ticket-47-edge-semantics-decision.md) | record | provisional | map #41: four contract types, zero additions; the palette blocks the real topology |
 | 14 | [Ticket #51 — the ECC2 reuse boundary](tier7/ticket-51-ecc2-boundary-decision.md) | record | provisional | map #41: adopt nothing from ECC2, and why each piece was refused |
 | 15 | [Ticket #52 — Mission Control's read model](tier7/ticket-52-read-model-decision.md) | record | provisional | map #41: queries at request time; the brief's snapshot contracts do not survive the spec |
+| 16 | [Ticket #67 — the live multi-agent view](tier7/ticket-67-live-view-decision.md) | record | provisional | map #41: the live multi-agent view — polling not streaming, agent prose off the approval screen |
 
 
 ## Architecture decisions
@@ -210,7 +211,10 @@ Binding on implementation and easy to miss, since they live inside one document.
 | [ADR-0046](tier1/adr-log.md) | Registry additions to the register generators are inspector patches, and carry this ADR | Accepted |
 | [ADR-0047](tier1/adr-log.md) | The ownership router gains the factory's facts, and runtime state is never evidence | Accepted |
 | [ADR-0048](tier1/adr-log.md) | The palette gains seven `hands-off-to` ports so the lifecycle chain becomes expressible | Accepted |
+| [ADR-0049](tier1/adr-log.md) | Agent-stated intent is rendered on the live view and nowhere a decision is taken | Accepted |
+| [ADR-0050](tier1/adr-log.md) | Mission Control is hosted off-host, and the loopback bind is replaced rather than relaxed | Accepted |
+| [ADR-0051](tier1/adr-log.md) | The live view is pulled forward ahead of its trigger, and the trigger's reasoning is not discharged | Accepted |
 
 ---
 
-**76 documents mapped** · 44 binding · 14 context · 18 record · 48 architecture decisions
+**77 documents mapped** · 44 binding · 14 context · 19 record · 51 architecture decisions
