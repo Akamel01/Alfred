@@ -4636,3 +4636,168 @@ change the checks.
 
 Nothing asserts that the palette *can* express the lifecycle — that is the gap decision 7's
 consequence names, and finding it required drawing the graph rather than reading the file.
+
+---
+
+## ADR-0049 — Agent-stated intent is rendered on the live view and nowhere a decision is taken
+
+**Date:** 2026-09-03 · **Status:** Accepted · **Supersedes:** none · **Amends:** `docs/tier1/mission-control-specification.md` § *Deliberately hard to reach, and why* — the third bullet · **See also:** ADR-0047 (runtime state owns nothing), `docs/tier7/ticket-52-read-model-decision.md`, `docs/tier3/handoff-contract-standard.md`, D22 · **D28 waiver:** no
+
+### Context
+
+The operator asked Mission Control to show a live multi-agent view carrying, per agent, *"what each agent is working on right now with the model used and goals."*
+
+Most of that is derivable from recorded facts. `phase_start` carries `capability_id`, `phase` and `task_class`; `policy/model-routing.json` maps `capability_id` to a pinned model; the task carries its executable criterion. *Which capability is running, in which phase, on which model, against which criterion* needs no agent to say anything.
+
+**"Goals" is the part that does not derive.** An agent's statement of what it is trying to do is authored by the party being judged, and the specification forbids rendering it:
+
+> **Any agent self-assessment** of progress, completeness or blockage. It is not recorded, so it cannot be rendered.
+
+The operator was shown that rule and the reasoning behind it, and chose to render agent-stated intent anyway. This record exists because that reverses a stated rule, and a reversal that lives only in a conversation is not a decision the register can be held to.
+
+### Decision
+
+1. **Agent-stated intent is rendered on the live view, and only there.** It is attributed to the agent, marked unverified, and passes the A10 scan before render like every other externally-originated string.
+
+2. **It never appears on S2 Review.** The ban's argument is specific and it survives intact where it applies: on the approval screen, agent prose is *the thing being judged arguing with its judge*. Nobody approves anything on a monitoring view, so the argument does not reach it. S4's existing treatment — behind one click, labelled, escaped, scanned — is unchanged.
+
+3. **It is display-only under ADR-0047.** Agent-stated intent is runtime state. No gate, verdict or audit may cite it. When it is unavailable the live view renders **unknown**, never **none**.
+
+4. **It is never the only thing shown about an agent.** The recorded facts — capability, phase, model, task, criterion, budget consumed — are rendered alongside and with more weight. An operator who ignores the prose entirely loses nothing they need.
+
+5. **The criterion outranks the stated goal, visually and in the record.** Where an agent's stated intent and its executable criterion disagree, the criterion is what the work will be judged against and the surface must not imply otherwise.
+
+### Consequences
+
+- The live view is readable at a glance, which is what the operator asked for and what a wall of `capability_id`s does not deliver.
+- The approval gate is unchanged. The rule that was reversed is reversed exactly where its argument does not apply, and nowhere else.
+- A new class of content reaches an operator screen: agent-authored prose, on a surface the operator watches while work runs. The A10 scan is what stands between that and a prompt-injection attempt with a shorter path, and it is now load-bearing on one more surface than before.
+- The specification's *Deliberately hard to reach* list loses one of its four bullets on one screen. The other three — held-out detail, agent prose on S2, the diff as a default view — are untouched.
+
+### Falsifies if
+
+An operator decision is found to have turned on agent-stated intent rather than on the criterion — meaning decisions 2, 4 and 5 did not actually keep the prose out of the deciding path, and the ban should not have been narrowed.
+
+Or: agent-stated intent is found rendered on S2, or cited by a gate, verdict or audit.
+
+### Enforcement
+
+`review-cadence`. Nothing in CI can tell that a rendered string influenced a human decision. What *is* mechanical is decision 2 — the read model and command surface are separate programs with no import path between them, CI-checked, and the live view is the read model's. S2's decision-critical panel is rendered by the command surface, which has no access to runtime state at all.
+
+That separation is why decision 2 is a boundary rather than a convention: S2 cannot render agent prose because the program that draws S2 cannot reach it.
+
+---
+
+## ADR-0050 — Mission Control is hosted off-host, and the loopback bind is replaced rather than relaxed
+
+**Date:** 2026-09-03 · **Status:** Accepted · **Supersedes:** none · **Amends:** `docs/tier1/mission-control-specification.md` § *Authentication and exposure*; `docs/tier2/coding-standards.md` § *Structure* (frozen, `ci-gate`) · **See also:** ADR-0049, `docs/tier4/threat-model.md`, `docs/tier4/permission-and-identity-model.md` · **D28 waiver:** no
+
+### Context
+
+The operator has a Vercel account and wants Mission Control deployed from GitHub with automatic deployment — **both programs**, command surface included, so a merge can be authorized from anywhere.
+
+The specification's current position is not "no authentication by oversight." It is a reasoned position that depends entirely on one control:
+
+> **Loopback bind only** — `127.0.0.1`. Asserted at startup; the process refuses to start bound to any other interface. **This is the actual access control.**
+
+Everything else follows from it. No password, no session store, no TLS, because *"on a single-user machine the OS login is the authentication boundary, and a password on a loopback service protects against nothing a local process could not bypass by reading the same database."*
+
+The specification also names, in advance, what changes if the surface ever becomes reachable off-host. That list was written for exactly this moment and it is adopted here rather than rediscovered.
+
+**The operator was shown this and chose full remote for both programs.** The reasoning is recorded so the decision is legible: this is not relaxing a setting. It removes the only access control the design has and requires a different one to be built.
+
+### Decision
+
+1. **Off-host is the target architecture for both programs.** Not the read model alone. A merge may be authorized from a machine that is not the operator's.
+
+2. **Nothing real deploys until the replacement controls exist.** The loopback bind is removed only when what replaces it is in place. Concretely, and taken from the specification's own list:
+
+   - **Real authentication with a per-action identity.** `actor_id` stops being constant and becomes load-bearing. It is already in the envelope for exactly this reason, so this is a behaviour change and **not** a hash-breaking schema change.
+   - **TLS**, terminated by the host.
+   - **Rate limiting** on every action endpoint.
+   - **An audit of the read model's query surface against a hostile client** rather than a trusted one. Every query the read model exposes was written assuming the caller is the operator.
+   - **The `Host` allowlist and `Origin` check** are re-derived for the deployed origin. Their purpose — DNS rebinding and cross-origin POST — does not disappear off-host; it grows.
+
+3. **The residual stops being acceptable and is replaced, not carried forward.** Today's accepted residual reads *"any local process running as the operator can authorize a merge."* Off-host, "the person at the machine" is no longer a meaningful identity, and the specification says so. The residual after this decision is whatever the authentication design leaves, and it must be restated there rather than inherited from here.
+
+4. **The static design prototype may deploy immediately.** It carries no database connection, no credentials and no real data. It is a picture. Deploying it exercises the pipeline and lets the design be reviewed on real devices while item 2 is built.
+
+5. **The structure fence gains `src/mission_control/`.** The specification already assigns the read model that path and the command surface `harness/mission_control/`; the latter is inside an existing fence entry, the former is not, and code cannot land where the fence has no room for it.
+
+### Consequences
+
+- Mission Control's security model changes from *"one control, honestly stated"* to *"several controls that must each hold."* That is strictly more surface and strictly more that can be got wrong, and it is the price of remote access.
+- The work in item 2 is not incidental. It is a project, and it blocks every real deployment.
+- Item 4 means a Vercel deployment exists long before item 2 completes. **The hazard is obvious and named: a working URL invites pointing it at a real database.** The prototype must carry a visible marker that it is not connected to anything, and the marker is not decoration.
+- `actor_id` becoming load-bearing is the one piece of good news. The envelope already carries it, so the evidence chain does not need to change shape to record who did what.
+
+### Falsifies if
+
+A real Mission Control surface — either program — is found reachable off-host without the item 2 controls in place.
+
+Or: the deployed prototype is found connected to any database, or presenting any value that is not fabricated.
+
+### Enforcement
+
+`review-cadence` for the architecture. `ci-gate` for the fence entry, via `tools/vaultgraph/extract/layout.py`, which already reads the fence and surfaces an unnamed top-level entry as a layout miss.
+
+The startup assertion that currently refuses a non-loopback bind stays in place and is the thing item 2 must earn the right to change. Removing it before the replacement exists is what decision 2 forbids, and no lint can check that — which is why it is stated as the first falsification condition rather than left implied.
+
+---
+
+## ADR-0051 — The live view is pulled forward ahead of its trigger, and the trigger's reasoning is not discharged
+
+**Date:** 2026-09-03 · **Status:** Accepted · **Supersedes:** none · **Amends:** `docs/tier1/mission-control-specification.md` § *Deliberately deferred*, the second row · **See also:** ADR-0049, ADR-0050, `docs/tier7/ticket-52-read-model-decision.md`, #69 · **D28 waiver:** no
+
+### Context
+
+The operator asked for a live multi-agent view: a graph of agents with their contexts and contracts, what each is working on right now, and the traffic between them.
+
+The specification already defers exactly this, with a two-part trigger and a stated reason:
+
+> **Live in-flight run observability** — trigger: the first task whose wall-clock exceeds its budget by a margin an operator would have interrupted, **and an interruption path exists**. *Until interruption is possible, watching is not observability, it is anxiety.*
+
+**Neither condition is met.** No task has overrun in a way that mattered, and no interruption path exists. The view is being built anyway, on the operator's decision.
+
+This record exists because the deferral was reasoned, and a reasoned deferral overridden without a record looks in hindsight like a deferral nobody noticed.
+
+### Decision
+
+1. **The live view is built now, ahead of both trigger conditions.**
+
+2. **The trigger's reasoning is not discharged, and is not pretended away.** *"Watching is not observability, it is anxiety"* remains true until an interruption path exists. Building the view does not make it false; it makes it a cost the operator has accepted with the sentence in front of them.
+
+3. **The interruption path is filed as [#69](https://github.com/Akamel01/Alfred/issues/69)** rather than left as an assumption the view will eventually acquire. The ticket carries the hard part explicitly: an operator-interrupted attempt is not an agent failure, and counting it as one corrupts the merge rate the autonomy gates read.
+
+4. **Mechanically it is polling, not streaming.** `docs/tier7/ticket-52-read-model-decision.md` D1 stands unchanged: queries at request time, no snapshots, no event stream. The live view re-queries on a short interval and stamps how current it is. §19's duplicate, partial and reordered event failures therefore still cannot occur, because there are still no events.
+
+5. **It is visually distinct from Part B, deliberately.** Part B renders what happened, per attempt, as *"a pure function of two immutable inputs … never stored."* The live view renders runtime state, which ADR-0047 says owns nothing and is never evidence. Two graphs where one is trustworthy in a way the other structurally cannot be:
+
+   | | Part B | Live view |
+   |---|---|---|
+   | Edges | solid | dashed for unverified runtime traffic, solid for recorded facts |
+   | Ground | full weight | lighter |
+   | Marker | none | persistent `live · unverified`, with the poll timestamp |
+
+   Without that separation an operator reads the mutable diagram with the trust the immutable one earned, which is the failure mode the whole read-model/command-surface split exists to prevent, arriving through the graphics.
+
+6. **Missing runtime facts render as `unknown`, never `none`.** The distinction between *we did not observe this* and *this did not happen* is the entire difference between a liveness indicator and a claim.
+
+### Consequences
+
+- The operator gets the view they asked for, and the sentence explaining why it is premature is on the record where a reader will find it rather than in a chat log.
+- [#69](https://github.com/Akamel01/Alfred/issues/69) is now load-bearing for this feature being what it claims to be, and is tracked rather than implied.
+- A second graph exists in the product, which is a maintenance cost and a chance for the two to drift in appearance until the distinction in decision 5 erodes. That erosion would be silent, and nothing checks it.
+- Polling at a short interval against the evidence store is a query-load question that has not been measured. The specification's answer to a slow query is *"an index or a narrower query — never a stored aggregate"*, and that answer still applies.
+
+### Falsifies if
+
+An operator is observed watching a run overrun with no action available — the specification's own prediction, arriving as designed.
+
+Or: the live view and Part B become visually indistinguishable, meaning decision 5 was stated and not maintained.
+
+### Enforcement
+
+`review-cadence`. Nothing in CI can check that two renderings look sufficiently different from each other, and claiming otherwise would be the wish `scripts/lint_ci_coverage.py` names.
+
+What *is* structural is decision 4's consequence: there is no event stream to build, so the failure class it would introduce cannot arrive by accident. And ADR-0049's decision 2 holds by construction — the live view is the read model's, and the program that draws S2 cannot reach runtime state at all.

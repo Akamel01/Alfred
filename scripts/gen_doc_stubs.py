@@ -75,6 +75,7 @@ NOT_GENERATED: frozenset[str] = frozenset({
     "tier7/ticket-47-edge-semantics-decision",
     "tier7/ticket-51-ecc2-boundary-decision",
     "tier7/ticket-52-read-model-decision",
+    "tier7/ticket-67-live-view-decision",
 })
 
 

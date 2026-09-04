@@ -34,6 +34,7 @@ generated: true
 
 - **see_also** → [[adr__ADR-0003|Canonical serialization for hashed structures (ACS-1)]]
 - **see_also** → [[adr__ADR-0039|Orchestration Canvas: Protected Topology Source & Palette Binding]]
+- [[adr__ADR-0049|Agent-stated intent is rendered on the live view and nowhere a decision is taken]] **see_also** → this
 
 ## Enforced by (code)
 

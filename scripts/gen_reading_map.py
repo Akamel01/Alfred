@@ -126,6 +126,7 @@ PHASES: list[tuple[str, str, list[tuple[str, str, str]]]] = [
         ("ticket-47-edge-semantics-decision", RECORD, "map #41: four contract types, zero additions; the palette blocks the real topology"),
         ("ticket-51-ecc2-boundary-decision", RECORD, "map #41: adopt nothing from ECC2, and why each piece was refused"),
         ("ticket-52-read-model-decision", RECORD, "map #41: queries at request time; the brief's snapshot contracts do not survive the spec"),
+        ("ticket-67-live-view-decision", RECORD, "map #41: the live multi-agent view — polling not streaming, agent prose off the approval screen"),
     ]),
 ]
 
