@@ -5269,6 +5269,16 @@ dedicated marker would be exactly the kind of record `docs/tier0/operating-princ
 warns against: a claim next to the data rather than a property of the data. No marker is
 built.
 
+**The order is to the millisecond, and no finer.** UUIDv7 places 48 bits of Unix
+milliseconds in front and randomness behind, so two rows minted inside the same
+millisecond sort arbitrarily against each other. RFC 9562 makes intra-millisecond
+monotonicity optional and neither implementation adds a counter, so this is a property of
+the format rather than of this change — verified by generating fifty keys in a tight loop
+and finding them not in sorted order. It is stated here because *sortable* invites the
+reading *totally ordered*, and an auditor who assumed that would be assuming something the
+key does not carry. What the chain is actually ordered by is unchanged and unaffected: the
+hash links, walked, exactly as `harness/evidence/export.py` already says.
+
 ### Enforcement
 
 `tests/domain/test_ids.py` for the cross-implementation agreement (parametrized over four
