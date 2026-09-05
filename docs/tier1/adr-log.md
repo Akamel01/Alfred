@@ -5295,3 +5295,122 @@ dangling edge endpoint.
 it claims to. Or an evidence row or `heldout.reference_value` row written after this commit
 is found with a non-v7 primary key, meaning a write path was reached that does not pass
 through `harness.ids.uuid7()`.
+
+## ADR-0056 — The requalification trigger covers the whole binding, and the five fields that would record it are all unset
+
+**Date:** 2026-09-05 · **Status:** Accepted · **Supersedes:** none · **Amends:** `policy/role-bindings.json`'s third note · **See also:** `docs/tier7/ticket-43-role-bindings-decision.md` D7 (the ruling this restates and does not invent), `docs/tier0/autonomy-boundaries.md:123` (the tiering), `harness/fingerprint/factory.py` (which already named this hole), ADR-0007 (the vacuity class), #84, #85 · **D28 waiver:** no
+
+### Context
+
+`policy/role-bindings.json` contradicts itself on its own trigger, and two open tickets
+depend on which half wins.
+
+Its authority line says a change to the file "is a requalification event" — unqualified. Its
+third note then narrows the same claim to a named subset: *"The version fields below are the
+fingerprint's D19 group. Editing one is a requalification event."* `agents` — the roster
+naming which runtime agent serves a capability — is not among those fields. Read narrowly,
+swapping every agent in every roster is a free edit. [#85](https://github.com/Akamel01/Alfred/issues/85)
+proposes exactly such a roster edit; [#84](https://github.com/Akamel01/Alfred/issues/84)
+assumes a live control could perform one.
+
+The tiebreaker is not in the file. `docs/tier7/ticket-43-role-bindings-decision.md` **D7**
+already decided this, under the heading *"A binding edit is a requalification event,"* and
+rejected the narrow reading by name:
+
+> *Beat:* "only some fields trigger" — which invites the argument you least want during an
+> incident, over which half of the binding changed and whether it counted.
+
+D7 supplies the a-fortiori as well: `tool-specification-standard.md` hashes tool
+*descriptions* into the fingerprint *"because descriptions alone can change behaviour."* A
+roster edit substitutes a different agent — a different prompt and a different tool set. It
+is strictly more than a description. D7 is unsuperseded; no later ADR touches it.
+
+So the authority line is right and **note 3 is the drift**. That much is a restatement, not a
+new decision, and this ADR would not be worth writing for it alone.
+
+**What makes it worth writing.** All twenty-four version fields, across all eight bindings,
+are the string `"unset"` — every `prompt_version`, every `tool_version`, every
+`context_strategy_version`. Under note 3's narrow reading the trigger is not merely too
+small; it is **inoperative**. No roster edit, and no edit of any kind reachable today, moves
+a field off `"unset"`, so the condition note 3 names can never be met. A rule that fires on
+zero inputs and reports nothing wrong is the vacuity class of ADR-0007 and of the D57 guard:
+a check that scanned zero items must fail, not pass.
+
+`harness/fingerprint/factory.py` had already written this down before this ADR looked:
+without a factory fingerprint record, `policy/role-bindings.json`'s claim that a binding edit
+is a requalification event *"has nothing to attach to."* `harness/fingerprint/record.py`
+states the general form — *"a field defaulted at construction is a field that silently stops
+discriminating."* `"unset"` is that default, twenty-four times.
+
+The cause is known and is not a bug in this file: **no dispatcher exists.** Nothing reads
+`policy/role-bindings.json` at spawn time. Its only readers are `scripts/lint_topology.py`,
+`scripts/lint_model_routing.py` and the documentation generators. There is no run from which
+a real `prompt_version` could be captured, so the fields are honestly empty rather than
+wrongly filled.
+
+### Decision
+
+1. **The trigger is the whole binding record, not a field subset.** Any edit to a binding —
+   `agents` included — is a requalification event. This restates #43 D7 and adds nothing to
+   it; it is recorded here because the file that carries the rule contradicts it, and two
+   tickets were about to be worked against the wrong half.
+
+2. **`policy/role-bindings.json`'s third note is corrected** to stop scoping the trigger to
+   the version fields, and to state that the version fields *record* which component moved
+   rather than *determining whether* anything did. The authority line is left as written; it
+   was already correct. `policy/` is protected, so this is a **Gate D** change — see
+   *Consequences*.
+
+3. **The tier is the smoke subset.** `docs/tier0/autonomy-boundaries.md:123` tiers
+   requalification by what moved: prompt or context strategy to a smoke subset, serving stack
+   or lockfile to smoke plus tool-calling probes, weights or quantization or orchestrator to
+   the full golden set. A roster edit changes which prompt and which tools run; it is a
+   prompt-and-context change. It is **not** an orchestrator change, so it is not a
+   criterion-set epoch boundary and prior measurements stay comparable across it.
+
+4. **The requalification this triggers today is vacuous, and must be recorded as vacuous
+   rather than as passed.** There are no autonomy grants, no factory fingerprint records, and
+   no dispatcher to produce either. A roster edit merged now suspends nothing, because
+   nothing is granted. Under D57 the correct report is `indeterminate` — the check did not
+   run — and never `pass`. An `indeterminate` here is excluded from merge rate on both sides
+   and tracked as harness health, which is the existing three-valued shape and needs no new
+   machinery.
+
+5. **This ADR does not fill the version fields.** Writing real values requires a run to
+   capture them from, and the dispatcher that would produce one does not exist. Inventing
+   values to make the fields non-empty would put numbers in a hash that nothing can check —
+   the precise failure `factory.py` refuses when it declines to widen `RunFingerprint` with
+   nullable fields. **The `"unset"` field set gets its own ticket** rather than a fix here.
+
+**Rejected: let note 3 stand and rule roster edits free.** It is the cheaper reading and it
+is what the narrow text says. It fails on D7's own ground — it relocates the argument to an
+incident, where the question becomes which half of a binding changed — and it fails harder on
+the vacuity finding, because the subset it privileges is empty. A trigger scoped to fields
+that are all `"unset"` is not a narrower rule than the broad one; it is no rule.
+
+**Rejected: rule now that a UI control may write the roster.** That is #84's question, not
+this one. It engages #45's prohibition on the caller picking who runs a role, which deserves
+its own interrogation and its own ADR. Deciding it as a corollary here would settle by
+adjacency a question that was never asked.
+
+### Consequences
+
+**#85 is unblocked and is not free.** Expanding the reviewer roster by language is a
+requalification event at the smoke-subset tier, and merges with that recorded. The ticket may
+proceed on that basis.
+
+**#84 gets its premise and not its answer.** It still needs the separate ruling on whether a
+live control may write protected policy. Until that lands, #84 is an ADR ticket, not an
+implementation ticket — there is no runtime for a routing dropdown to be authoritative over.
+
+**A Gate D read is owed and is not discharged by this ADR.** `policy/` is protected;
+`docs/tier4/protected-paths-policy.md:100` permits an agent-drafted patch to the protected set
+only under line-by-line human review *with* a mandatory ADR. This ADR is the second half. The
+first half — an operator read of the `policy/role-bindings.json` diff — **has not happened**,
+and is recorded here as owed rather than assumed, in the same explicit form as the read
+outstanding on PR #82.
+
+**Falsification trigger.** This decision is wrong if a binding edit merges and a
+requalification note is neither recorded nor deliberately waived; or if a version field
+acquires a concrete value while no dispatcher exists to have measured it, which would mean a
+number was invented to satisfy the schema rather than captured from a run.

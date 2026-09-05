@@ -1,7 +1,7 @@
 {
   "anomalies": [],
   "counts": {
-    "adr": 55,
+    "adr": 56,
     "amendment": 12,
     "decision": 57,
     "document": 77,
@@ -29,7 +29,7 @@
     "imports": 259,
     "needs": 4,
     "runs": 40,
-    "see_also": 57,
+    "see_also": 58,
     "supersedes": 1
   },
   "edges": [
@@ -14243,6 +14243,19 @@
       "src": "adr:ADR-0055"
     },
     {
+      "confidence": "structural",
+      "dst": "adr:ADR-0007",
+      "evidence": "**See also:** `docs/tier7/ticket-43-role-bindings-decision.md` D7 (the ruling this restates and does not invent), `docs/tier0/autonomy-boundaries.md:123` (the tiering), `harness/fingerprint/factory.py",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 5299,
+        "line": 5299,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0056"
+    },
+    {
       "confidence": "prose",
       "dst": "decision:D17",
       "evidence": "Supersedes decision 17",
@@ -14258,14 +14271,14 @@
   ],
   "extractors": [
     {
-      "edges": 67,
+      "edges": 68,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 4,
       "min_nodes": 14,
       "name": "adrs",
-      "nodes": 55,
+      "nodes": 56,
       "rejected": 0,
       "scanned": 1,
       "unparsed": 0
@@ -15587,6 +15600,27 @@
       "status": "accepted",
       "tags": [],
       "title": "Evidence and heldout primary keys become UUIDv7, by a duplicated generator the harness suite checks against drift"
+    },
+    {
+      "attrs": {
+        "date": "2026-09-05",
+        "status": "accepted",
+        "status_raw": "Accepted"
+      },
+      "body": "**Date:** 2026-09-05 · **Status:** Accepted · **Supersedes:** none · **Amends:** `policy/role-bindings.json`'s third note · **See also:** `docs/tier7/ticket-43-role-bindings-decision.md` D7 (the ruling this restates and does not invent), `docs/tier0/autonomy-boundaries.md:123` (the tiering), `harness/fingerprint/factory.py` (which already named this hole), ADR-0007 (the vacuity class), #84, #85 · **D28 waiver:** no",
+      "extractor": "adrs",
+      "id": "adr:ADR-0056",
+      "kind": "adr",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 5299,
+        "line": 5299,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "accepted",
+      "tags": [],
+      "title": "The requalification trigger covers the whole binding, and the five fields that would record it are all unset"
     },
     {
       "attrs": {
