@@ -37,6 +37,50 @@ a real operator console should not be indexed.
 
 There is no build step and no dependency. The deployment is one HTML file.
 
+### Root Directory is the setting that matters, and its failure mode is loud
+
+If Root Directory is left at the repository root, Vercel scans the whole tree, finds
+`src/api/app.py`, decides the project is FastAPI, and fails the build:
+
+```
+Error: No FastAPI entrypoint found in default locations, but found potential entrypoints:
+  src/api/__init__.py (variable: app)
+  src/api/app.py (variable: app)
+  tests/api/test_routes.py (variable: app)
+  tools/serve_vault.py (variable: Handler)
+```
+
+That error is diagnostic: it lists files this deployment should never have been able to
+see, so it says *Root Directory is unset* rather than anything about the prototype. Set it
+to `src/mission_control/prototype` and the deployment sees three files — `index.html`,
+`vercel.json`, `README.md` — and no Python at all.
+
+**Not fixed with a second config at the repository root.** That would stop the framework
+detection and would also become the only config Vercel reads — so the headers here would
+silently stop applying, and the two files would need hand-syncing with nothing checking
+they agreed. Trading a visible dashboard setting for two configs that drift apart, where
+the drift is *security headers going missing*, is the worse deal.
+
+**Fixed inside this file instead.** `vercel.json` pins `framework: null`,
+`buildCommand: ""`, `installCommand: ""` and `outputDirectory: "."`. Settings here take
+precedence over the project's dashboard fields, so a framework preset left on the project
+from before Root Directory was set — Vercel detected FastAPI from `src/api/app.py` — no
+longer selects a Python builder for a directory holding one HTML file. Empty strings
+rather than `null`, because `null` means *use the default* and a default being chosen is
+the whole problem.
+
+This keeps one config, in the directory it describes, and moves the part that was
+invisible from a dashboard nobody can read from the tree into a file that reviews like
+anything else.
+
+### Deployment Protection
+
+Vercel's Deployment Protection is on by default and gates the URL behind an SSO redirect,
+so only someone signed into the account can open it. That is the right default while
+[#68](https://github.com/Akamel01/Alfred/issues/68) does not exist — it is doing the job
+the loopback bind does locally. Turning it off makes the page public, which is safe for
+*this* content and is a habit worth not forming on this particular URL.
+
 ## What it demonstrates
 
 **Verdict state is form, not colour.** Grayscale is mandated, so `pass` is a solid fill,
