@@ -55,12 +55,23 @@ see, so it says *Root Directory is unset* rather than anything about the prototy
 to `src/mission_control/prototype` and the deployment sees three files — `index.html`,
 `vercel.json`, `README.md` — and no Python at all.
 
-**Deliberately not fixed from the repository.** A `vercel.json` at the repository root
-would stop the framework detection, and it would also become the only config Vercel reads
-— so the headers here would silently stop applying, and the two files would have to be
-kept in sync by hand with nothing checking that they were. Trading a visible dashboard
-setting for two configs that can drift apart, where the drift is *security headers going
-missing*, is the worse deal. One setting, in one place, that fails loudly when wrong.
+**Not fixed with a second config at the repository root.** That would stop the framework
+detection and would also become the only config Vercel reads — so the headers here would
+silently stop applying, and the two files would need hand-syncing with nothing checking
+they agreed. Trading a visible dashboard setting for two configs that drift apart, where
+the drift is *security headers going missing*, is the worse deal.
+
+**Fixed inside this file instead.** `vercel.json` pins `framework: null`,
+`buildCommand: ""`, `installCommand: ""` and `outputDirectory: "."`. Settings here take
+precedence over the project's dashboard fields, so a framework preset left on the project
+from before Root Directory was set — Vercel detected FastAPI from `src/api/app.py` — no
+longer selects a Python builder for a directory holding one HTML file. Empty strings
+rather than `null`, because `null` means *use the default* and a default being chosen is
+the whole problem.
+
+This keeps one config, in the directory it describes, and moves the part that was
+invisible from a dashboard nobody can read from the tree into a file that reviews like
+anything else.
 
 ### Deployment Protection
 
