@@ -45,6 +45,7 @@ class NodeKind(StrEnum):
     LAYOUT = "layout"
     PROCESS = "process"
     EFFECT = "effect"
+    POLICY = "policy"
 
 
 class EdgeKind(StrEnum):

@@ -38,6 +38,7 @@ FOLDERS = {
     NodeKind.LAYOUT: "layout",
     NodeKind.PROCESS: "processes",
     NodeKind.EFFECT: "effects",
+    NodeKind.POLICY: "policy",
 }
 
 
