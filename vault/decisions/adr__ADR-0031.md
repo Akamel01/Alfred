@@ -37,6 +37,7 @@ generated: true
 - [[adr__ADR-0039|Orchestration Canvas: Protected Topology Source & Palette Binding]] **see_also** → this
 - [[adr__ADR-0040|The structure fence grows to eighteen]] **see_also** → this
 - [[adr__ADR-0046|Registry additions to the register generators are inspector patches, and carry this ADR]] **see_also** → this
+- [[adr__ADR-0060|ADR-0038 decided harden; what was built does not enforce it, names a script that does not ]] **see_also** → this
 
 ## Enforced by (code)
 

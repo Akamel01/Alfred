@@ -33,3 +33,4 @@ generated: true
 ## Binds
 
 - **see_also** → [[adr__ADR-0053|The cross-stage invariants get the lint their register claims, and a checked map of what e]]
+- [[adr__ADR-0061|An interruption is recorded as a termination, not a verdict: the record-shape half of #69]] **see_also** → this

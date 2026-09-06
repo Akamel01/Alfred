@@ -1,7 +1,7 @@
 {
   "anomalies": [],
   "counts": {
-    "adr": 57,
+    "adr": 61,
     "amendment": 12,
     "decision": 57,
     "document": 77,
@@ -22,7 +22,7 @@
   },
   "edge_counts": {
     "amended_by": 2,
-    "amends": 10,
+    "amends": 11,
     "blocks": 32,
     "contains": 307,
     "discharges": 1,
@@ -31,7 +31,7 @@
     "needs": 4,
     "references": 2,
     "runs": 40,
-    "see_also": 60,
+    "see_also": 67,
     "supersedes": 1
   },
   "edges": [
@@ -151,6 +151,19 @@
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0040"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0038",
+      "evidence": "**Amends:** ADR-0038's enforcement description",
+      "extractor": "adrs",
+      "kind": "amends",
+      "source": {
+        "end_line": 5878,
+        "line": 5878,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0060"
     },
     {
       "confidence": "prose",
@@ -14375,6 +14388,97 @@
       "src": "adr:ADR-0057"
     },
     {
+      "confidence": "structural",
+      "dst": "adr:ADR-0035",
+      "evidence": "**See also:** ADR-0035 (the prototype `harness/containment/dispatch_mount.py` cites, `docs/tier1/adr-log.md:3790`), ADR-0054 (the same \"written, tested, dormant\" shape for `begin_attempt`), issue #6, ",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 5523,
+        "line": 5523,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0058"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0054",
+      "evidence": "**See also:** ADR-0035 (the prototype `harness/containment/dispatch_mount.py` cites, `docs/tier1/adr-log.md:3790`), ADR-0054 (the same \"written, tested, dormant\" shape for `begin_attempt`), issue #6, ",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 5523,
+        "line": 5523,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0058"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0007",
+      "evidence": "**See also:** ADR-0038 (the harden decision this audits rather than re-litigates), ADR-0031 (the protected set), ADR-0007 (the vacuity class), D57, #4, #88",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 5878,
+        "line": 5878,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0060"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0031",
+      "evidence": "**See also:** ADR-0038 (the harden decision this audits rather than re-litigates), ADR-0031 (the protected set), ADR-0007 (the vacuity class), D57, #4, #88",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 5878,
+        "line": 5878,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0060"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0038",
+      "evidence": "**See also:** ADR-0038 (the harden decision this audits rather than re-litigates), ADR-0031 (the protected set), ADR-0007 (the vacuity class), D57, #4, #88",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 5878,
+        "line": 5878,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0060"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0017",
+      "evidence": "**See also:** ADR-0017 (a hole never passes), ADR-0055 (evidence chain link keys), `harness/verdicts/__init__.py` (the three-valued vocabulary), D51 (operator actions as evidence), #69",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 6115,
+        "line": 6115,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0061"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0055",
+      "evidence": "**See also:** ADR-0017 (a hole never passes), ADR-0055 (evidence chain link keys), `harness/verdicts/__init__.py` (the three-valued vocabulary), D51 (operator actions as evidence), #69",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 6115,
+        "line": 6115,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0061"
+    },
+    {
       "confidence": "prose",
       "dst": "decision:D17",
       "evidence": "Supersedes decision 17",
@@ -14390,14 +14494,14 @@
   ],
   "extractors": [
     {
-      "edges": 70,
+      "edges": 78,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 4,
       "min_nodes": 14,
       "name": "adrs",
-      "nodes": 57,
+      "nodes": 61,
       "rejected": 0,
       "scanned": 1,
       "unparsed": 0
@@ -15774,6 +15878,90 @@
       "status": "accepted",
       "tags": [],
       "title": "The C13/C7 archive-suffix split is defensible only under a wiring premise nothing in this repository can confirm, and the spec fix it implies is blocked on #78"
+    },
+    {
+      "attrs": {
+        "date": "2026-09-05",
+        "status": "accepted",
+        "status_raw": "Accepted"
+      },
+      "body": "**Date:** 2026-09-05 · **Status:** Accepted · **Supersedes:** none · **Amends:** nothing · **See also:** ADR-0035 (the prototype `harness/containment/dispatch_mount.py` cites, `docs/tier1/adr-log.md:3790`), ADR-0054 (the same \"written, tested, dormant\" shape for `begin_attempt`), issue #6, issue #7 (the C13/C7 unwired finding this record extends to C12), `plan/README.md`, `policy/protected-paths.json` · **D28 waiver:** no",
+      "extractor": "adrs",
+      "id": "adr:ADR-0058",
+      "kind": "adr",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 5523,
+        "line": 5523,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "accepted",
+      "tags": [],
+      "title": "The dispatch-workspace exclusion contract: what a dispatch mount excludes, and that nothing dispatches yet"
+    },
+    {
+      "attrs": {
+        "date": "2026-09-05",
+        "status": "accepted",
+        "status_raw": "Accepted"
+      },
+      "body": "**Date:** 2026-09-05 · **Status:** Accepted · **Supersedes:** none · **Amends:** none (no file changes; this is a ruling, not an implementation) · **See also:** `docs/tier7/ticket-45-state-authority-decision.md`, `docs/tier7/ticket-46-model-routing-decision.md` (D2, D3, D4), `docs/tier4/protected-paths-policy.md`, `docs/tier1/mission-control-specification.md` (R6, DB roles), `policy/model-routing.json`, `src/mission_control/prototype/index.html`, issue #84, issue #86 · **D28 waiver:** no — nothing here overrides a stage gate or threshold",
+      "extractor": "adrs",
+      "id": "adr:ADR-0059",
+      "kind": "adr",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 5665,
+        "line": 5665,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "accepted",
+      "tags": [],
+      "title": "The live view's model dropdown may not write routing policy, standing or split; the affordance the ticket wants does not exist as infrastructure yet"
+    },
+    {
+      "attrs": {
+        "date": "2026-09-05",
+        "status": "accepted",
+        "status_raw": "Accepted"
+      },
+      "body": "**Date:** 2026-09-05 · **Status:** Accepted · **Supersedes:** none · **Amends:** ADR-0038's enforcement description · **See also:** ADR-0038 (the harden decision this audits rather than re-litigates), ADR-0031 (the protected set), ADR-0007 (the vacuity class), D57, #4, #88 · **D28 waiver:** no",
+      "extractor": "adrs",
+      "id": "adr:ADR-0060",
+      "kind": "adr",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 5878,
+        "line": 5878,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "accepted",
+      "tags": [],
+      "title": "ADR-0038 decided harden; what was built does not enforce it, names a script that does not exist, and has never scanned a real diff"
+    },
+    {
+      "attrs": {
+        "date": "2026-09-05",
+        "status": "accepted",
+        "status_raw": "Accepted"
+      },
+      "body": "**Date:** 2026-09-05 · **Status:** Accepted · **Supersedes:** none · **Amends:** nothing on disk; it specifies changes to the Run Instrumentation and Mission Control specifications and `docs/tier1/data-architecture.md` for a later, separately reviewed commit · **Discharges:** the record-shape half of #69 · **See also:** ADR-0017 (a hole never passes), ADR-0055 (evidence chain link keys), `harness/verdicts/__init__.py` (the three-valued vocabulary), D51 (operator actions as evidence), #69 · **D28 waiver:** no — `data-architecture.md` is `status: frozen` but `enforcement: schema`, not `ci-gate`, so this falls outside the class disputed by #78, and no document is amended by this ADR itself",
+      "extractor": "adrs",
+      "id": "adr:ADR-0061",
+      "kind": "adr",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 6115,
+        "line": 6115,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "accepted",
+      "tags": [],
+      "title": "An interruption is recorded as a termination, not a verdict: the record-shape half of #69"
     },
     {
       "attrs": {

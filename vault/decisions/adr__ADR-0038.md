@@ -29,3 +29,8 @@ generated: true
 | Field | Value |
 |---|---|
 | `status_raw` | Accepted |
+
+## Binds
+
+- [[adr__ADR-0060|ADR-0038 decided harden; what was built does not enforce it, names a script that does not ]] **amends** → this
+- [[adr__ADR-0060|ADR-0038 decided harden; what was built does not enforce it, names a script that does not ]] **see_also** → this
