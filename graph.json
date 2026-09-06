@@ -10,8 +10,9 @@
     "gate-step": 61,
     "kill-criterion": 6,
     "layout": 18,
-    "module": 252,
+    "module": 253,
     "operator-item": 9,
+    "policy": 7,
     "process": 7,
     "risk": 12,
     "schema": 5,
@@ -23,11 +24,12 @@
     "amended_by": 2,
     "amends": 10,
     "blocks": 32,
-    "contains": 306,
+    "contains": 307,
     "discharges": 1,
     "enforced_by": 382,
-    "imports": 259,
+    "imports": 263,
     "needs": 4,
+    "references": 2,
     "runs": 40,
     "see_also": 60,
     "supersedes": 1
@@ -3241,6 +3243,19 @@
         "end_line": 1,
         "line": 1,
         "path": "tools/vaultgraph/extract/layout.py"
+      },
+      "src": "module:tools.vaultgraph"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.extract.policy",
+      "evidence": "tools/vaultgraph/extract/policy.py",
+      "extractor": "code",
+      "kind": "contains",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/extract/policy.py"
       },
       "src": "module:tools.vaultgraph"
     },
@@ -11748,6 +11763,19 @@
     },
     {
       "confidence": "structural",
+      "dst": "module:tools.vaultgraph.extract.policy",
+      "evidence": "tools.vaultgraph.extract.policy",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 16,
+        "line": 16,
+        "path": "tools/vaultgraph/extract/__init__.py"
+      },
+      "src": "module:tools.vaultgraph.extract.__init__"
+    },
+    {
+      "confidence": "structural",
       "dst": "module:tools.vaultgraph.extract.process",
       "evidence": "tools.vaultgraph.extract.process",
       "extractor": "imports",
@@ -12213,6 +12241,45 @@
         "path": "tools/vaultgraph/extract/layout.py"
       },
       "src": "module:tools.vaultgraph.extract.layout"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.model",
+      "evidence": "tools.vaultgraph.model.Confidence",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 41,
+        "line": 41,
+        "path": "tools/vaultgraph/extract/policy.py"
+      },
+      "src": "module:tools.vaultgraph.extract.policy"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.protocol",
+      "evidence": "tools.vaultgraph.protocol.Context",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 42,
+        "line": 42,
+        "path": "tools/vaultgraph/extract/policy.py"
+      },
+      "src": "module:tools.vaultgraph.extract.policy"
+    },
+    {
+      "confidence": "structural",
+      "dst": "module:tools.vaultgraph.textio",
+      "evidence": "tools.vaultgraph.textio.rel",
+      "extractor": "imports",
+      "kind": "imports",
+      "source": {
+        "end_line": 43,
+        "line": 43,
+        "path": "tools/vaultgraph/extract/policy.py"
+      },
+      "src": "module:tools.vaultgraph.extract.policy"
     },
     {
       "confidence": "structural",
@@ -12980,6 +13047,32 @@
         "path": ".github/workflows/gates.yml"
       },
       "src": "gate:product"
+    },
+    {
+      "confidence": "derived",
+      "dst": "policy:role-bindings",
+      "evidence": "The routing key is capability_id, declared in policy/role-bindings.json. Not palette kind: the frozen task specification standard requires the task field `capability` and calls it ",
+      "extractor": "policy",
+      "kind": "references",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "policy/model-routing.json"
+      },
+      "src": "policy:model-routing"
+    },
+    {
+      "confidence": "derived",
+      "dst": "policy:model-routing",
+      "evidence": "capability_id IS the routing key. policy/model-routing.json maps it to a model. Ticket #43 D5 gave the binding a separate `model` reference field; ticket #46 D4 then made capabilit",
+      "extractor": "policy",
+      "kind": "references",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "policy/role-bindings.json"
+      },
+      "src": "policy:role-bindings"
     },
     {
       "confidence": "structural",
@@ -14336,16 +14429,16 @@
       "unparsed": 0
     },
     {
-      "edges": 168,
+      "edges": 169,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 45,
       "min_nodes": 90,
       "name": "code",
-      "nodes": 257,
+      "nodes": 258,
       "rejected": 0,
-      "scanned": 284,
+      "scanned": 285,
       "unparsed": 0
     },
     {
@@ -14388,7 +14481,7 @@
       "unparsed": 0
     },
     {
-      "edges": 259,
+      "edges": 263,
       "expect_rejected": null,
       "max_nodes": 0,
       "max_unparsed": 0,
@@ -14397,7 +14490,7 @@
       "name": "imports",
       "nodes": 0,
       "rejected": 0,
-      "scanned": 212,
+      "scanned": 213,
       "unparsed": 0
     },
     {
@@ -14411,6 +14504,19 @@
       "nodes": 18,
       "rejected": 0,
       "scanned": 1,
+      "unparsed": 0
+    },
+    {
+      "edges": 2,
+      "expect_rejected": null,
+      "max_nodes": null,
+      "max_unparsed": 0,
+      "min_edges": 2,
+      "min_nodes": 7,
+      "name": "policy",
+      "nodes": 7,
+      "rejected": 0,
+      "scanned": 7,
       "unparsed": 0
     },
     {
@@ -27334,6 +27440,30 @@
       "attrs": {
         "is_test": "false",
         "lint_gated": "false",
+        "path": "tools/vaultgraph/extract/policy.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tools"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tools.vaultgraph.extract.policy",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "module",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tools/vaultgraph/extract/policy.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "`policy/*.json` — machine-readable Tier 4: the allowlist, the denylist, and the protected set."
+    },
+    {
+      "attrs": {
+        "is_test": "false",
+        "lint_gated": "false",
         "path": "tools/vaultgraph/extract/process.py",
         "present": "true",
         "protected": "false",
@@ -28142,6 +28272,178 @@
       "status": "open",
       "tags": [],
       "title": "Line-by-line review of inspector patches — ACS-1 `operator_action` vector, `lint_tier0_adr.py`"
+    },
+    {
+      "attrs": {
+        "authority": "docs/tier7/ticket-46-model-routing-decision.md. Protected by policy/ in protected-paths.json. A change here moves model_version, a D19 fingerprint field, and the glossary suspends every autonomy grant on a fingerprint change.",
+        "count:forbidden": "2",
+        "count:loud_default": "2",
+        "count:notes": "4",
+        "count:routes": "8",
+        "count:trivial_class": "3",
+        "path": "policy/model-routing.json",
+        "unset_field_count": "0",
+        "version": "1"
+      },
+      "body": "",
+      "extractor": "policy",
+      "id": "policy:model-routing",
+      "kind": "policy",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "policy/model-routing.json"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Model Routing policy"
+    },
+    {
+      "attrs": {
+        "authority": "",
+        "count:allowlist": "0",
+        "count:canary_targets": "2",
+        "count:forbidden_allowlist_patterns": "7",
+        "path": "policy/network-allowlist.json",
+        "unset_field_count": "0",
+        "version": "1"
+      },
+      "body": "",
+      "extractor": "policy",
+      "id": "policy:network-allowlist",
+      "kind": "policy",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "policy/network-allowlist.json"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Network Allowlist policy"
+    },
+    {
+      "attrs": {
+        "authority": "",
+        "count:nodes": "21",
+        "path": "policy/node-palette.json",
+        "unset_field_count": "0",
+        "version": "1"
+      },
+      "body": "",
+      "extractor": "policy",
+      "id": "policy:node-palette",
+      "kind": "policy",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "policy/node-palette.json"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Node Palette policy"
+    },
+    {
+      "attrs": {
+        "authority": "",
+        "count:denied": "4",
+        "count:permitted_substrate": "4",
+        "path": "policy/oracle-denylist.json",
+        "unset_field_count": "0",
+        "version": "1"
+      },
+      "body": "",
+      "extractor": "policy",
+      "id": "policy:oracle-denylist",
+      "kind": "policy",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "policy/oracle-denylist.json"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Oracle Denylist policy"
+    },
+    {
+      "attrs": {
+        "authority": "",
+        "count:hashes": "47",
+        "path": "policy/oracle-source-hashes.json",
+        "unset_field_count": "0",
+        "version": "1"
+      },
+      "body": "",
+      "extractor": "policy",
+      "id": "policy:oracle-source-hashes",
+      "kind": "policy",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "policy/oracle-source-hashes.json"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Oracle Source Hashes policy"
+    },
+    {
+      "attrs": {
+        "authority": "docs/tier4/protected-paths-policy.md (frozen) and D20 — ADR-0031",
+        "count:files": "2",
+        "count:prefixes": "13",
+        "path": "policy/protected-paths.json",
+        "unset_field_count": "0",
+        "version": "1"
+      },
+      "body": "",
+      "extractor": "policy",
+      "id": "policy:protected-paths",
+      "kind": "policy",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "policy/protected-paths.json"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Protected Paths policy"
+    },
+    {
+      "attrs": {
+        "authority": "docs/tier3/agent-definition-standard.md (schema) and docs/tier7/ticket-43-role-bindings-decision.md (the decisions). Protected by policy/ in protected-paths.json; a change here is a requalification event.",
+        "count:bindable_values": "3",
+        "count:bindings": "8",
+        "count:kinds": "21",
+        "count:notes": "6",
+        "path": "policy/role-bindings.json",
+        "unset_field_count": "24",
+        "version": "1"
+      },
+      "body": "",
+      "extractor": "policy",
+      "id": "policy:role-bindings",
+      "kind": "policy",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "policy/role-bindings.json"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Role Bindings policy"
     },
     {
       "attrs": {

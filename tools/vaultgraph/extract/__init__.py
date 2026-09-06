@@ -14,7 +14,7 @@ from typing import Final
 
 from ..protocol import ExtractorSpec, validate_registry
 from . import (adrs, amendments, charter, code, decisions, documents, effect, imports, layout,
-               process, references, stages, workflows)
+               policy, process, references, stages, workflows)
 
 EXTRACTORS: Final[tuple[ExtractorSpec, ...]] = (
     documents.SPEC,
@@ -22,6 +22,10 @@ EXTRACTORS: Final[tuple[ExtractorSpec, ...]] = (
     # After `charter`: it reads the same tier the constitution sets, so the layout the
     # fence declares is in the graph before anything that points at it.
     layout.SPEC,
+    # `policy` mints nodes only from `policy/*.json` and relates them only to each other, so it
+    # has no ordering dependency on anything else — placed here, beside `layout`, because both
+    # are file-declared inventories rather than the prose/log extractors around them.
+    policy.SPEC,
     stages.SPEC,
     # After `stages`: an ADR's `Discharges:` field names an operator item, and the only way to
     # tell "discharges O5" from "discharges an O5 nobody declares" is to ask what exists.

@@ -44,6 +44,7 @@ generated: true
 - [[module__tools_vaultgraph_extract_effect|Change-impact index — "if you change X, open these cards" — derived from in-edges.]] **imports** → this
 - [[module__tools_vaultgraph_extract_imports|What depends on what: module -> module edges, read from import statements.]] **imports** → this
 - [[module__tools_vaultgraph_extract_layout|The top-level layout as declared in the coding-standards structure fence.]] **imports** → this
+- [[module__tools_vaultgraph_extract_policy|`policy/*.json` — machine-readable Tier 4: the allowlist, the denylist, and the protected ]] **imports** → this
 - [[module__tools_vaultgraph_extract_process|Verbs the repository runs — one node per runnable, with path:line provenance.]] **imports** → this
 - [[module__tools_vaultgraph_extract_references|Where decisions are enforced in code, read out of comments and docstrings.]] **imports** → this
 - [[module__tools_vaultgraph_extract_stages|S0-S9 and O1-O9, and the dependency clauses that make them a DAG.]] **imports** → this
