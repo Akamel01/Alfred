@@ -6432,3 +6432,97 @@ needs this one to land first, so it has a terminal record to write into.
 No protected path was written. `harness/`, `migrations/harness/`, `docs/tier1/adr-log.md` and
 every other protected prefix were only read. This document is the specification the orchestrator
 can turn into an ADR number, a migration description, and a validator-rule ticket.
+
+## ADR-0062 — Amending a frozen ci-gate document is a D28 waiver; ADR-0050 is retroactively the third against the structure fence, and the falsification clause fires
+
+**Date:** 2026-09-06 · **Status:** Accepted · **Supersedes:** ADR-0050's `D28 waiver: no` classification · **Amends:** ADR-0050's waiver header · **See also:** ADR-0033 and ADR-0040 (the reading this adopts), ADR-0050 (the reading this overrules), ADR-0052 (the derived ordinal), ADR-0022 and ADR-0035 (the other two waivers), `docs/tier0/operating-principles.md:6` (the falsification clause this trips), #78 · **D28 waiver:** no — this record classifies waivers, it does not amend a frozen document
+
+### Context
+
+[#78](https://github.com/Akamel01/Alfred/issues/78) recorded that two merged ADRs disagree on
+whether amending a frozen `ci-gate` document is a D28 waiver. ADR-0033 and ADR-0040 say it is
+and each carries `D28 waiver: yes`. ADR-0050 amends
+`docs/tier2/coding-standards.md § Structure (frozen, ci-gate)` — naming the freeze and the
+gate in its own header — and carries `D28 waiver: no`.
+
+The disagreement is not cosmetic. The waiver count feeds the falsification clause at
+`docs/tier0/operating-principles.md:6`, and the totals straddled the threshold, so the tie
+could not be broken by whoever noticed it. It was escalated and held open as an operator
+decision.
+
+**The operator decided on 2026-09-06: amending a frozen `ci-gate` document is a D28 waiver.
+ADR-0033 and ADR-0040's reading governs; ADR-0050's does not.**
+
+### Decision
+
+**1. The rule.** An ADR that amends a document whose header carries `status: frozen` **and**
+`enforcement: ci-gate` declares `D28 waiver: yes`. The freeze plus the gate is what makes the
+document's content a commitment rather than a draft; overriding it is the waiver, whatever
+the size of the diff.
+
+**2. ADR-0050 is reclassified.** Its `Amends` line already names
+`docs/tier2/coding-standards.md § Structure (frozen, ci-gate)` explicitly, so it meets the
+rule on its own text. Its `D28 waiver: no` was wrong under the reading now adopted. The ADR
+log is append-only, so this record carries the correction rather than editing ADR-0050 in
+place, and `scripts/lint_adr_numbers.py`'s derived-ordinal check (ADR-0052) must be updated
+to read the corrected classification from here.
+
+**3. The waiver total is five**, not four: ADR-0022, ADR-0033, ADR-0035, ADR-0040, ADR-0050.
+
+### The falsification clause fires, and this is the substance of the record
+
+`docs/tier0/operating-principles.md:6`:
+
+> A principle is repeatedly waived under D28's ADR discipline — **three waivers against the
+> same principle means the principle is wrong, not the situations.**
+
+Against the specific gate ADR-0040 names — *"the frozen status over the coding standards'
+structure fence"* — the waivers are now:
+
+| ADR | What it amended | Was | Now |
+|---|---|---|---|
+| ADR-0033 | the structure fence of the coding standards | waiver | waiver |
+| ADR-0040 | the structure fence of the coding standards | waiver | waiver |
+| ADR-0050 | `coding-standards.md § Structure` (frozen, ci-gate) | not a waiver | **waiver** |
+
+**Three waivers, one gate.** The clause is not a warning; it is a falsification condition with
+a stated conclusion: *the principle is wrong, not the situations.* Three independent efforts
+found the fence's frozen content had to move, and each was correct on its own facts. The
+register's own discipline says the fault is the freeze, not the three amendments.
+
+**What that does and does not mean.** It does not mean the structure fence is wrong — the
+fence catches real drift, and `tools/vaultgraph/extract/layout.py` floors it at eighteen with
+`layout-miss` and `layout-ghost` anomalies that fire. It means the fence's **`status: frozen`
+is the wrong classification for a list that tracks a directory tree**, because a tree grows
+and a frozen list cannot. A document that must be amended whenever the repository gains a
+top-level directory is a `provisional` document with a gate, not a frozen one.
+
+**The remedy is not this ADR's to apply.** Changing that classification means editing
+`docs/tier2/coding-standards.md`'s header, and re-deriving the waiver total once the fence
+stops generating waivers. More importantly, the falsification clause itself lives in
+`docs/tier0/operating-principles.md` — the constitution, protected, permanently human-authored
+under ADR-0005. **An agent may not discharge a falsification of a principle it is measured
+against.** This record states that the condition is met and hands it to the operator.
+
+### Consequences
+
+**[#7](https://github.com/Akamel01/Alfred/issues/7) is unblocked, and its price is now known.**
+ADR-0057 left the sandbox-specification correction blocked on this question. The answer:
+amending `docs/tier4/sandbox-specification.md` (frozen, `ci-gate`) to document the C13/C7
+archive-suffix asymmetry **is** a D28 waiver, and would be the sixth. Whether to spend it, or
+to unify the tuples under Gate D instead — ADR-0057 recorded unification as the fallback and
+the textually better-supported option — is now a live choice rather than a blocked one.
+
+**[#88](https://github.com/Akamel01/Alfred/issues/88) is partly unblocked.** Correcting the
+inverted `--diff-filter` in `.github/workflows/gates.yml` amends no frozen document and needs
+no waiver. Correcting ADR-0038's prose about a script that does not exist needs no waiver
+either. Only a change to a frozen ci-gate document would.
+
+**A lint obligation.** `scripts/lint_adr_numbers.py` derives each waiver's ordinal by counting
+prior `D28 waiver: yes` headers. ADR-0050's header still reads `no`. Until the lint reads this
+correction, the derived count and the true count disagree by one — and that disagreement is
+exactly the drift ADR-0052 closed the class on. `scripts/` is protected, so this is Gate D.
+
+**Falsification trigger.** This decision is wrong if a fourth waiver lands against the
+structure fence gate while the fence is still `frozen` — which would mean the falsification
+clause fired, was recorded, and changed nothing, making the clause decorative.

@@ -1,7 +1,7 @@
 {
   "anomalies": [],
   "counts": {
-    "adr": 61,
+    "adr": 62,
     "amendment": 12,
     "decision": 57,
     "document": 77,
@@ -22,7 +22,7 @@
   },
   "edge_counts": {
     "amended_by": 2,
-    "amends": 11,
+    "amends": 12,
     "blocks": 32,
     "contains": 307,
     "discharges": 1,
@@ -31,8 +31,8 @@
     "needs": 4,
     "references": 2,
     "runs": 40,
-    "see_also": 67,
-    "supersedes": 1
+    "see_also": 73,
+    "supersedes": 2
   },
   "edges": [
     {
@@ -164,6 +164,19 @@
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0060"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0050",
+      "evidence": "**Amends:** ADR-0050's waiver header",
+      "extractor": "adrs",
+      "kind": "amends",
+      "source": {
+        "end_line": 6436,
+        "line": 6436,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0062"
     },
     {
       "confidence": "prose",
@@ -14479,6 +14492,97 @@
       "src": "adr:ADR-0061"
     },
     {
+      "confidence": "structural",
+      "dst": "adr:ADR-0022",
+      "evidence": "**See also:** ADR-0033 and ADR-0040 (the reading this adopts), ADR-0050 (the reading this overrules), ADR-0052 (the derived ordinal), ADR-0022 and ADR-0035 (the other two waivers), `docs/tier0/operati",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 6436,
+        "line": 6436,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0062"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0033",
+      "evidence": "**See also:** ADR-0033 and ADR-0040 (the reading this adopts), ADR-0050 (the reading this overrules), ADR-0052 (the derived ordinal), ADR-0022 and ADR-0035 (the other two waivers), `docs/tier0/operati",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 6436,
+        "line": 6436,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0062"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0035",
+      "evidence": "**See also:** ADR-0033 and ADR-0040 (the reading this adopts), ADR-0050 (the reading this overrules), ADR-0052 (the derived ordinal), ADR-0022 and ADR-0035 (the other two waivers), `docs/tier0/operati",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 6436,
+        "line": 6436,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0062"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0040",
+      "evidence": "**See also:** ADR-0033 and ADR-0040 (the reading this adopts), ADR-0050 (the reading this overrules), ADR-0052 (the derived ordinal), ADR-0022 and ADR-0035 (the other two waivers), `docs/tier0/operati",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 6436,
+        "line": 6436,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0062"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0050",
+      "evidence": "**See also:** ADR-0033 and ADR-0040 (the reading this adopts), ADR-0050 (the reading this overrules), ADR-0052 (the derived ordinal), ADR-0022 and ADR-0035 (the other two waivers), `docs/tier0/operati",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 6436,
+        "line": 6436,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0062"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0052",
+      "evidence": "**See also:** ADR-0033 and ADR-0040 (the reading this adopts), ADR-0050 (the reading this overrules), ADR-0052 (the derived ordinal), ADR-0022 and ADR-0035 (the other two waivers), `docs/tier0/operati",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 6436,
+        "line": 6436,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0062"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0050",
+      "evidence": "**Supersedes:** ADR-0050's `D28 waiver: no` classification",
+      "extractor": "adrs",
+      "kind": "supersedes",
+      "source": {
+        "end_line": 6436,
+        "line": 6436,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0062"
+    },
+    {
       "confidence": "prose",
       "dst": "decision:D17",
       "evidence": "Supersedes decision 17",
@@ -14494,14 +14598,14 @@
   ],
   "extractors": [
     {
-      "edges": 78,
+      "edges": 86,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 4,
       "min_nodes": 14,
       "name": "adrs",
-      "nodes": 61,
+      "nodes": 62,
       "rejected": 0,
       "scanned": 1,
       "unparsed": 0
@@ -15962,6 +16066,27 @@
       "status": "accepted",
       "tags": [],
       "title": "An interruption is recorded as a termination, not a verdict: the record-shape half of #69"
+    },
+    {
+      "attrs": {
+        "date": "2026-09-06",
+        "status": "accepted",
+        "status_raw": "Accepted"
+      },
+      "body": "**Date:** 2026-09-06 · **Status:** Accepted · **Supersedes:** ADR-0050's `D28 waiver: no` classification · **Amends:** ADR-0050's waiver header · **See also:** ADR-0033 and ADR-0040 (the reading this adopts), ADR-0050 (the reading this overrules), ADR-0052 (the derived ordinal), ADR-0022 and ADR-0035 (the other two waivers), `docs/tier0/operating-principles.md:6` (the falsification clause this trips), #78 · **D28 waiver:** no — this record classifies waivers, it does not amend a frozen document",
+      "extractor": "adrs",
+      "id": "adr:ADR-0062",
+      "kind": "adr",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 6436,
+        "line": 6436,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "accepted",
+      "tags": [],
+      "title": "Amending a frozen ci-gate document is a D28 waiver; ADR-0050 is retroactively the third against the structure fence, and the falsification clause fires"
     },
     {
       "attrs": {

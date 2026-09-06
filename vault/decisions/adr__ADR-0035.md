@@ -37,6 +37,7 @@ generated: true
 - **see_also** → [[adr__ADR-0033|The structure fence names every top-level directory, and the vault floors it]]
 - [[adr__ADR-0052|The D28 waiver ordinal becomes derived, and ADR-0040's is corrected in place]] **see_also** → this
 - [[adr__ADR-0058|The dispatch-workspace exclusion contract: what a dispatch mount excludes, and that nothin]] **see_also** → this
+- [[adr__ADR-0062|Amending a frozen ci-gate document is a D28 waiver; ADR-0050 is retroactively the third ag]] **see_also** → this
 
 ## Enforced by (code)
 

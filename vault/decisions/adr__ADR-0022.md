@@ -28,6 +28,7 @@ generated: true
 - [[adr__ADR-0035|The protected set's single home names its fourth shape as a projection, not a second autho]] **see_also** → this
 - [[adr__ADR-0045|The ECC coupling is factory scope, ring-fenced, and overrides no gate]] **see_also** → this
 - [[adr__ADR-0052|The D28 waiver ordinal becomes derived, and ADR-0040's is corrected in place]] **see_also** → this
+- [[adr__ADR-0062|Amending a frozen ci-gate document is a D28 waiver; ADR-0050 is retroactively the third ag]] **see_also** → this
 
 ## Enforced by (code)
 
