@@ -5414,3 +5414,108 @@ outstanding on PR #82.
 requalification note is neither recorded nor deliberately waived; or if a version field
 acquires a concrete value while no dispatcher exists to have measured it, which would mean a
 number was invented to satisfy the schema rather than captured from a run.
+
+## ADR-0057 — The C13/C7 archive-suffix split is defensible only under a wiring premise nothing in this repository can confirm, and the spec fix it implies is blocked on #78
+
+**Date:** 2026-09-05 · **Status:** Accepted · **Supersedes:** none · **Amends:** nothing · **See also:** commit `6f6d5de` (froze the split as declared contract), `harness/containment/test_archive_suffix_binding.py`, `docs/tier4/sandbox-specification.md` C13 and layer 3, ADR-0017 (an unread hole yields `not_executed`, never `passed`), ADR-0007 (the vacuity class), #7, #78 · **D28 waiver:** no
+
+### Context
+
+[#7](https://github.com/Akamel01/Alfred/issues/7) records that `harness/containment/inside.py`
+scans 7 archive suffixes for C13 while `harness/containment/oracle_absence.py` scans 4 for
+C7's layer-3 path scan, with no authority anywhere explaining the divergence. Commit `6f6d5de`
+froze both tuples in a binding test and said so plainly rather than inventing a reason. The
+ticket asks the sandbox-spec owner to document why the split is legitimate or unify the sets.
+
+**The shape is a three-level nesting, not two unrelated sets.** Computed rather than asserted:
+
+```
+spec prose (3):  .whl .tar.gz .zip
+C7   (4):        .whl .tar.gz .tgz .zip
+C13  (7):        .whl .tar.gz .tgz .zip .tar.bz2 .tar.xz .egg
+```
+
+`spec ⊂ C7 ⊂ C13`, both strict. Two consequences the ticket did not name. First, **the spec row
+has never matched the code it describes** — C13's implementation exceeds it by four suffixes and
+no commit updated the row when they were added. Second, and more pointed, the spec's layer-3
+paragraph says C7 scans *"the archives and caches C13 covers."* That reads as an instruction to
+reuse C13's set. C7 instead declares its own literal tuple at `oracle_absence.py:67`. **The spec
+text is evidence against the split being deliberate**, not for it.
+
+`git log -S "ARCHIVE_SUFFIXES"` returns exactly one commit per file — `f26d63f` for C7's tuple,
+`6d86fe2` for C13's — and neither message gives a reason. No ADR, comment, or spec line explains
+it. Any rationale is therefore reconstructed from mechanics, not recovered.
+
+### Decision
+
+**1. The divergence is defensible in design, and the finding is recorded as `indeterminate` on
+the wiring point rather than `pass`.**
+
+The two scanners have different shapes, and the difference carries the argument. C13
+(`inside.py:410`) is recursive — `root.rglob("*")` — over roots its docstring calls "under any
+mount". C7 (`oracle_absence.py:181`) is shallow — `base.iterdir()`, one level — over each
+interpreter's effective import path. Both are fail-closed boot gates: failure means the run does
+not start.
+
+Worked out per direction: a suffix missing from **C13's 7** is a true blind spot, because nothing
+else sweeps every mount recursively — which is why that set must be maximal, and is. A suffix
+missing from **C7's 4** but present in C13's 7 (`.tar.bz2`, `.tar.xz`, `.egg`) cannot go
+undetected *provided C13 also runs and both are required*, because every directory C7 walks lies
+under some mount that C13's recursive scan already visits, at equal or greater depth, against a
+strictly larger suffix set. C7's archive check is then redundant defense-in-depth inside a probe
+whose primary job is denylist and import-hook detection.
+
+**2. That premise is unverified, and this is the load-bearing caveat.** There is **no production
+call site anywhere in this repository** for either assertion. Every reference to
+`assert_no_archives_or_caches` is its definition, its `__all__` export, or a test supplying a
+`tmp_path` fixture. Nothing confirms that the real boot sequence invokes C13 with roots set to
+every mount, that both C7 and C13 run on every boot, or that both are required to pass. This is
+the same class of fact as the absent dispatcher: the declaration exists, the runtime does not.
+
+If C13 is ever wired with a narrower `roots` set than "every mount" — scoped to the writable set,
+say, rather than every read-only mount — **the subsumption argument collapses and C7's narrower
+list becomes a real gap** for `.tar.bz2` / `.tar.xz` / `.egg` on an import path outside whatever
+C13 actually scans. So this ADR licenses the split conditionally and names the condition, in
+keeping with ADR-0017: an unread hole yields `not_executed`, never `passed`.
+
+**3. The frozen binding test remains the answer of record.** Neither tuple and neither test is
+touched. Drift still fails a test; the semantic question is now answered conditionally rather
+than left open.
+
+**4. The spec correction this implies is blocked and is not taken here.** The natural remedy —
+write the failure-direction argument into `docs/tier4/sandbox-specification.md` beside C13 and
+layer 3, and correct the stale 3-suffix row — cannot be executed now. That document is
+`status: frozen`, `enforcement: ci-gate`, which is precisely the class
+[#78](https://github.com/Akamel01/Alfred/issues/78) disputes: ADR-0033 and ADR-0040 hold that
+amending a frozen ci-gate document is a D28 waiver, ADR-0050 holds that it is not, and the
+waiver totals straddle the three-waiver falsification trigger at
+`docs/tier0/operating-principles.md:6`. Amending the spec would either create a waiver or not
+depending on which merged ADR one follows — that is the tie #78 exists to break, and it is an
+operator decision. **This ADR does not break it.** The spec edit waits on #78.
+
+**Rejected: unify the two tuples now.** Textually the best-supported option — layer 3 already
+says C7 covers what C13 covers, so importing `inside.ARCHIVE_SUFFIXES` would make code match
+spec. It is rejected here only because `harness/` is protected: unification is a Gate D change
+needing line-by-line human review, and it would also have to move the frozen binding test that
+currently pins the split. It remains the right answer if the wiring premise in (2) cannot be
+confirmed, and is recorded as the fallback rather than dismissed.
+
+**Rejected: assert the split is fine and close the question.** The mechanics permit it; the
+evidence does not establish it. Manufacturing a clean rationale for a real inconsistency, in a
+containment control, is the failure this repository's `not_executed` discipline exists to
+prevent.
+
+### Consequences
+
+**#7 is answered but not dischargeable.** The answer of record now exists as a durable artifact
+rather than a frozen test plus an open question. The spec-synchronisation half is blocked on
+#78; #7 should be re-labelled blocked rather than workable.
+
+**A verification obligation is created and owned by whoever assembles the boot sequence:**
+confirm C13 is invoked with every-mount scope, on every boot, as a required gate co-equal with
+C7. Until then the split's legitimacy is conditional.
+
+**Falsification trigger.** This decision is wrong if the boot sequence lands with C13 scoped to
+anything narrower than every mount, or with C7 and C13 not both required to pass — either of
+which turns the three suffixes C7 omits into a live false negative and makes unification, not
+documentation, the correct remedy.

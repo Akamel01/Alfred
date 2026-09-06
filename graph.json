@@ -1,7 +1,7 @@
 {
   "anomalies": [],
   "counts": {
-    "adr": 56,
+    "adr": 57,
     "amendment": 12,
     "decision": 57,
     "document": 77,
@@ -29,7 +29,7 @@
     "imports": 259,
     "needs": 4,
     "runs": 40,
-    "see_also": 58,
+    "see_also": 60,
     "supersedes": 1
   },
   "edges": [
@@ -14256,6 +14256,32 @@
       "src": "adr:ADR-0056"
     },
     {
+      "confidence": "structural",
+      "dst": "adr:ADR-0007",
+      "evidence": "**See also:** commit `6f6d5de` (froze the split as declared contract), `harness/containment/test_archive_suffix_binding.py`, `docs/tier4/sandbox-specification.md` C13 and layer 3, ADR-0017 (an unread ",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 5418,
+        "line": 5418,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0057"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0017",
+      "evidence": "**See also:** commit `6f6d5de` (froze the split as declared contract), `harness/containment/test_archive_suffix_binding.py`, `docs/tier4/sandbox-specification.md` C13 and layer 3, ADR-0017 (an unread ",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 5418,
+        "line": 5418,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0057"
+    },
+    {
       "confidence": "prose",
       "dst": "decision:D17",
       "evidence": "Supersedes decision 17",
@@ -14271,14 +14297,14 @@
   ],
   "extractors": [
     {
-      "edges": 68,
+      "edges": 70,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 4,
       "min_nodes": 14,
       "name": "adrs",
-      "nodes": 56,
+      "nodes": 57,
       "rejected": 0,
       "scanned": 1,
       "unparsed": 0
@@ -15621,6 +15647,27 @@
       "status": "accepted",
       "tags": [],
       "title": "The requalification trigger covers the whole binding, and the five fields that would record it are all unset"
+    },
+    {
+      "attrs": {
+        "date": "2026-09-05",
+        "status": "accepted",
+        "status_raw": "Accepted"
+      },
+      "body": "**Date:** 2026-09-05 · **Status:** Accepted · **Supersedes:** none · **Amends:** nothing · **See also:** commit `6f6d5de` (froze the split as declared contract), `harness/containment/test_archive_suffix_binding.py`, `docs/tier4/sandbox-specification.md` C13 and layer 3, ADR-0017 (an unread hole yields `not_executed`, never `passed`), ADR-0007 (the vacuity class), #7, #78 · **D28 waiver:** no",
+      "extractor": "adrs",
+      "id": "adr:ADR-0057",
+      "kind": "adr",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 5418,
+        "line": 5418,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "accepted",
+      "tags": [],
+      "title": "The C13/C7 archive-suffix split is defensible only under a wiring premise nothing in this repository can confirm, and the spec fix it implies is blocked on #78"
     },
     {
       "attrs": {
