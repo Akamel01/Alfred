@@ -50,7 +50,7 @@ def test_the_register_yields_every_non_generated_document() -> None:
     # document lands, and the name no longer carries the number because it drifted once
     # already — the function read "sixty_three" while asserting 64.
     result = _result()
-    assert sum(1 for n in result.nodes if n.kind is NodeKind.DOCUMENT) == 77
+    assert sum(1 for n in result.nodes if n.kind is NodeKind.DOCUMENT) == 78
 
 
 def test_every_tier_directory_becomes_one_node() -> None:
@@ -59,19 +59,19 @@ def test_every_tier_directory_becomes_one_node() -> None:
 
 
 def test_every_falsification_condition_in_the_corpus_is_data() -> None:
-    # 77 in document frontmatter, 5 in decision cells. This is the relation the graph exists
+    # 78 in document frontmatter, 5 in decision cells. This is the relation the graph exists
     # to make queryable and it existed as prose in two formats and as data nowhere.
     result = _result()
     docs = [n for n in result.nodes
             if n.kind is NodeKind.DOCUMENT and n.attrs.get("falsifies_if")]
     decisions = [n for n in result.nodes
                  if n.kind is NodeKind.DECISION and n.attrs.get("falsifies_if")]
-    assert len(docs) == 77
+    assert len(docs) == 78
     assert sorted(n.attrs["number"] for n in decisions) == ["30", "48", "49", "51", "55"]
 
 
 def test_every_document_carries_a_falsification_condition() -> None:
-    # The relation the graph exists to make visible. All 77 state one; a parser that stopped
+    # The relation the graph exists to make visible. All 78 state one; a parser that stopped
     # reading frontmatter would drop this to zero and this assertion is what would say so.
     result = _result()
     docs = [n for n in result.nodes if n.kind is NodeKind.DOCUMENT]
@@ -469,3 +469,47 @@ def test_prose_edges_never_claim_structural_confidence() -> None:
     prose = [e for e in result.edges if e.kind.value == "blocks"]
     assert prose and all(e.confidence.value == "prose" for e in prose)
     assert all(e.evidence for e in prose)
+
+
+# ---- policy (issue #5 prototype) ---------------------------------------------------------
+
+def test_policy_mints_one_node_per_policy_json_file() -> None:
+    # 7 files on disk today: model-routing, network-allowlist, node-palette, oracle-denylist,
+    # oracle-source-hashes, protected-paths, role-bindings. CONTEXT.md is prose, not JSON, and
+    # is excluded by the `*.json` glob the same way `documents` excludes its own CONTEXT.md.
+    result = _result()
+    policies = [n for n in result.nodes if n.kind is NodeKind.POLICY]
+    assert len(policies) == 7
+    assert {n.attrs["path"] for n in policies} == {
+        "policy/model-routing.json", "policy/network-allowlist.json", "policy/node-palette.json",
+        "policy/oracle-denylist.json", "policy/oracle-source-hashes.json",
+        "policy/protected-paths.json", "policy/role-bindings.json",
+    }
+
+
+def test_policy_cross_references_model_routing_and_role_bindings() -> None:
+    # model-routing.json's authority names role-bindings.json as the source of its routing key
+    # (capability_id), and role-bindings.json's authority names model-routing.json right back.
+    result = _result()
+    by_id = {n.id: n for n in result.nodes if n.kind is NodeKind.POLICY}
+    refs = [e for e in result.edges if e.kind.value == "references" and e.extractor == "policy"]
+    assert len(refs) == 2
+    pairs = {(by_id[e.src].attrs["path"], by_id[e.dst].attrs["path"]) for e in refs}
+    assert pairs == {
+        ("policy/model-routing.json", "policy/role-bindings.json"),
+        ("policy/role-bindings.json", "policy/model-routing.json"),
+    }
+    assert all(e.confidence.value == "derived" for e in refs)
+
+
+def test_policy_never_claims_a_live_value_for_unset_version_fields() -> None:
+    # policy/role-bindings.json has 24 D19 version fields (prompt_version, tool_version,
+    # context_strategy_version x 8 bindings) whose value is literally "unset". The extractor
+    # must count them honestly rather than mint anything that implies a real version.
+    result = _result()
+    role_bindings = next(
+        n for n in result.nodes
+        if n.kind is NodeKind.POLICY and n.attrs["path"] == "policy/role-bindings.json"
+    )
+    assert role_bindings.attrs["unset_field_count"] == "24"
+    assert "unset" not in role_bindings.title.lower()

@@ -33,4 +33,8 @@ generated: true
 ## Binds
 
 - **see_also** → [[adr__ADR-0049|Agent-stated intent is rendered on the live view and nowhere a decision is taken]]
+- [[adr__ADR-0062|Amending a frozen ci-gate document is a D28 waiver; ADR-0050 is retroactively the third ag]] **amends** → this
 - [[adr__ADR-0051|The live view is pulled forward ahead of its trigger, and the trigger's reasoning is not d]] **see_also** → this
+- [[adr__ADR-0062|Amending a frozen ci-gate document is a D28 waiver; ADR-0050 is retroactively the third ag]] **see_also** → this
+- [[adr__ADR-0063|The structure fence is split out and reclassified provisional, discharging the falsificati]] **see_also** → this
+- [[adr__ADR-0062|Amending a frozen ci-gate document is a D28 waiver; ADR-0050 is retroactively the third ag]] **supersedes** → this

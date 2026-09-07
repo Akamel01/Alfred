@@ -118,6 +118,13 @@ Each piece here ran verbatim, or near eno
 - **enforced_by** → [[module__scripts__lintkit|Shared machinery for the lints in `scripts/`, moved out of their siblings.]] — """D57. A scan that saw nothing writes its VACUOUS line and fails; returns True then.
 
     A guard that could pass for f
+- **enforced_by** → [[module__scripts_lint_bench_append_only|`bench/results/` and `bench/fingerprints/` are append-only. This is what says so.]] — """`bench/results/` and `bench/fingerprints/` are append-only. This is what says so.
+
+ADR-0038 decided *harden* and name
+- **enforced_by** → [[module__scripts_lint_bench_append_only|`bench/results/` and `bench/fingerprints/` are append-only. This is what says so.]] — """Tracked file count under the append-only prefixes, and the per-prefix report.
+
+    The count is what D57 is applied t
+- **enforced_by** → [[module__scripts_lint_bench_append_only|`bench/results/` and `bench/fingerprints/` are append-only. This is what says so.]] — "modification behind a later commit each fire; an empty corpus trips D57; a "
 - **enforced_by** → [[module__scripts_lint_harness_gate|How much of `harness/` the lint gate actually collects, and whether it can go red.]] — """How much of `harness/` the lint gate actually collects, and whether it can go red.
 
 `harness/` is the tree everything

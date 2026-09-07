@@ -4,7 +4,7 @@ id: "gate-step:integrity.19"
 title: "ACS-1 vectors regenerate byte-identically"
 shape: "step"
 job: "integrity"
-source: ".github/workflows/gates.yml:167"
+source: ".github/workflows/gates.yml:174"
 extractor: "workflows"
 tags: [protected]
 aliases:
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `.github/workflows/gates.yml:167`
+**Source** · `.github/workflows/gates.yml:174`
 
 ## Statement
 

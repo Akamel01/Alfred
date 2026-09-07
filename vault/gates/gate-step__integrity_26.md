@@ -1,34 +1,34 @@
 ---
 kind: gate-step
 id: "gate-step:integrity.26"
-title: "Ownership router homes exist and no gate cites runtime state"
+title: "State authority lint checks its own vacuity"
 shape: "step"
 job: "integrity"
-source: ".github/workflows/gates.yml:230"
+source: ".github/workflows/gates.yml:232"
 extractor: "workflows"
 tags: [protected]
 aliases:
-  - "Ownership router homes exist and no gate cites runtime state"
+  - "State authority lint checks its own vacuity"
   - "integrity.26"
 generated: true
 ---
 
-# Ownership router homes exist and no gate cites runtime state
+# State authority lint checks its own vacuity
 
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `.github/workflows/gates.yml:230`
+**Source** · `.github/workflows/gates.yml:232`
 
 ## Statement
 
-python3 scripts/lint_state_authority.py
+python3 scripts/lint_state_authority.py --self-test
 
 ## Fields
 
 | Field | Value |
 |---|---|
-| `command` | python3 scripts/lint_state_authority.py |
+| `command` | python3 scripts/lint_state_authority.py --self-test |
 | `kind` | run |
 | `ordinal` | 26 |
 

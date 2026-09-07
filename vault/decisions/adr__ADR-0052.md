@@ -36,6 +36,7 @@ generated: true
 - **see_also** → [[adr__ADR-0033|The structure fence names every top-level directory, and the vault floors it]]
 - **see_also** → [[adr__ADR-0035|The protected set's single home names its fourth shape as a projection, not a second autho]]
 - **see_also** → [[adr__ADR-0040|The structure fence grows to eighteen]]
+- [[adr__ADR-0062|Amending a frozen ci-gate document is a D28 waiver; ADR-0050 is retroactively the third ag]] **see_also** → this
 
 ## Enforced by (code)
 

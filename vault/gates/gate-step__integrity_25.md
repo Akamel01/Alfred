@@ -1,38 +1,38 @@
 ---
 kind: gate-step
 id: "gate-step:integrity.25"
-title: "State authority lint checks its own vacuity"
+title: "Topology file is valid"
 shape: "step"
 job: "integrity"
-source: ".github/workflows/gates.yml:227"
+source: ".github/workflows/gates.yml:229"
 extractor: "workflows"
 tags: [protected]
 aliases:
-  - "State authority lint checks its own vacuity"
+  - "Topology file is valid"
   - "integrity.25"
 generated: true
 ---
 
-# State authority lint checks its own vacuity
+# Topology file is valid
 
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `.github/workflows/gates.yml:227`
+**Source** · `.github/workflows/gates.yml:229`
 
 ## Statement
 
-python3 scripts/lint_state_authority.py --self-test
+python3 scripts/lint_topology.py
 
 ## Fields
 
 | Field | Value |
 |---|---|
-| `command` | python3 scripts/lint_state_authority.py --self-test |
+| `command` | python3 scripts/lint_topology.py |
 | `kind` | run |
 | `ordinal` | 25 |
 
 ## Binds
 
-- **runs** → [[module__scripts_lint_state_authority|SA001-SA003: the ownership router's mechanical half, checked.]]
+- **runs** → [[module__scripts_lint_topology|Topology lint — TOP001-TOP009 per orchestration-canvas-spec §6.]]
 - [[gate__integrity|integrity (fixtures and register)]] **contains** → this

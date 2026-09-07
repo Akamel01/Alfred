@@ -52,6 +52,7 @@ KIND_COLOURS = {
     NodeKind.SCHEMA: "#3F5C52",
     NodeKind.GATE: "#2F6B4F",
     NodeKind.GATE_STEP: "#6BBF95",
+    NodeKind.POLICY: "#8A4B6B",
 }
 
 #: Attributes the inspector shows. Everything else stays in the vault, where a full record

@@ -103,38 +103,13 @@ Adding a dependency requires a technology selection record naming what was rejec
 
 ## Structure
 
-```
-src/
-  domain/        Pydantic trajectory and scenario schemas — the load-bearing abstraction
-  metrics/       metric implementations; formulas pinned to citations
-  provenance/    result stamping
-  thresholds/    declared, cited, versioned config — never agent-authored
-  ingest/        dataset adapters
-  replay/        deterministic harness
-  api/           FastAPI surface
-  mission_control/  the operator read model — SELECT-only, agent-writable; the command
-                    surface is harness/mission_control/ and is protected (ADR-0050)
-tests/
-  properties/    Hypothesis property tests over composed operations
-  reference/     oracle reproduction fixtures
-  heldout/       composed and perturbed criteria — never in agent context
-migrations/
-harness/         OUTSIDE the agent tree — CriterionRunner, egress canary, floor test
-scripts/
-docs/
-.github/         CI — the five-job gate; protected
-bench/           Phase −1 inference measurements — immutable per-seed records
-deploy/          release machinery — identity-baked image, ledger, rollback
-plan/            the plan-of-record mirror — sha256-pinned; history, not instruction
-policy/          machine-readable tier 4 — allowlists, denylists, the protected set
-tools/           vaultgraph and the generators — CI-gated, not the protected set
-vault/           generated read model — byte-compared in CI; never hand-edited
-projects/        one nested git repository per product Alfred builds — git-ignored subdirectories
-_archive/        dead material superseded but kept for provenance — not the protected set
-_templates/      blank templates instantiated by copy — never edited in place
-orchestration/   protected topology source (ADR-0039) — hand-authored, palette-bound
-stages/          numbered pipeline 01_s0 … 10_s9 — one folder per stage, evidence in output/exit.md
-```
+Moved to [the structure fence](structure-fence.md) by ADR-0063.
+
+The fence tracks a directory tree, so it must move when the tree moves; freezing it here
+cost three D28 waivers (ADR-0033, ADR-0040, and ADR-0050 once #78 reclassified it) and
+tripped the falsification clause at `docs/tier0/operating-principles.md:6`. It now lives in
+its own `provisional` document, keeping its `ci-gate`, so this document's strict-typing
+commitments can stay `frozen` without the fence dragging them along.
 
 `harness/` sits outside the agent tree deliberately and is in the protected set. No file
 under it is ever agent-writable.

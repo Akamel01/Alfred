@@ -1,9 +1,9 @@
 ---
-status:        frozen
+status:        provisional
 owner:         executable
 enforcement:   ci-gate
-evidence:      Each invariant is included because its retrofit cost is a migration or a rewrite, and several are the specific omissions that made a prior attempt expensive to correct.
-falsifies_if:  An invariant is found violated in merged code, meaning the CI lint does not actually enforce what this document claims.
+evidence:      Each invariant is included because its retrofit cost is a migration or a rewrite, and several are the specific omissions that made a prior attempt expensive to correct. Reclassified from frozen by ADR-0064, applying ADR-0063's lesson before a third waiver rather than after: what enforces which invariant moves as enforcement is built out, and a frozen document cannot follow that without a waiver each time. The invariants themselves are the commitment; the enforcement map is what moves.
+falsifies_if:  An invariant is found violated in merged code, meaning its stated holder — lint or review — does not actually hold it; or this document describes an invariant as lint-held when scripts/lint_invariants.py's ENFORCEMENT map says review, or the reverse, meaning the description drifted from the code that is the authority.
 review_after:  Phase 2
 ---
 
@@ -12,7 +12,11 @@ review_after:  Phase 2
 Properties that hold at every phase. These are the actual source of
 forward-compatibility: each costs hours in Phase 0 and costs a migration later.
 
-Enforced by CI lint. A violation fails the build.
+**Enforcement is split, and `scripts/lint_invariants.py`'s `ENFORCEMENT` map is the authority
+on which invariant sits where.** Some are held by a CI lint, where a violation fails the build.
+The rest are held by review, or by a database constraint, each with its reason stated in that
+map. This document deliberately does not re-list which is which: it did, the list drifted, and
+#79 is the ticket that caught it.
 
 ## The invariants
 
@@ -38,14 +42,21 @@ Enforced by CI lint. A violation fails the build.
 
 ## What the lint checks
 
-- every table in a migration carries `org_id` and `project_id` (I1)
-- evidence and verdict migrations are additive-only — no `ALTER`/`UPDATE` of existing rows (I2)
-- artifact writes go through the content-addressed store, never a raw path (I3)
-- no bare `uuid4()` or integer primary keys on entity tables (I4)
-- mutating API handlers declare an idempotency key parameter (I5)
-- state, criterion and artifact models declare `schema_version` (I6)
-- no agent-invoking node's return annotation includes a verdict field (I17)
-- the verdict module has no import path from any agent module (I17)
+**Read it from `scripts/lint_invariants.py`'s `ENFORCEMENT` map, not from here.** The map names
+every invariant's holder and, for the ones review holds, the reason a static check cannot reach
+them. Running the lint prints the split with its scanned counts.
+
+This section previously duplicated that map as a hand-maintained list, and the copy went stale
+in both directions: it listed **I3** as lint-checked when the map records it as held by the
+`evidence.artifact` `uq_artifact_content` constraint rather than a lint, and it omitted **I10**,
+which the lint does check. That is why the list is gone rather than corrected — a second copy of
+a machine-readable fact is a copy that drifts, and correcting it would only reset the clock.
+
+Note the asymmetry with the structure fence (ADR-0063), which was deliberately *not* pointed at
+its source: the fence is a human declaration that must be able to disagree with the tree, or
+`layout-miss` and `layout-ghost` could never fire. This section is the opposite shape — a
+description of what code already does, where the code is the authority and disagreement is
+simply an error.
 
 ## Confidently deferred
 

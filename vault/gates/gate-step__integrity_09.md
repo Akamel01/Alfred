@@ -4,7 +4,7 @@ id: "gate-step:integrity.09"
 title: "Cross-stage invariants hold"
 shape: "step"
 job: "integrity"
-source: ".github/workflows/gates.yml:94"
+source: ".github/workflows/gates.yml:101"
 extractor: "workflows"
 tags: [protected]
 aliases:
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `.github/workflows/gates.yml:94`
+**Source** · `.github/workflows/gates.yml:101`
 
 ## Statement
 

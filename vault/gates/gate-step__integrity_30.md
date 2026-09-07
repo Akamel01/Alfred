@@ -1,38 +1,38 @@
 ---
 kind: gate-step
 id: "gate-step:integrity.30"
-title: "Vault generator suites"
+title: "Orchestration canvas is current"
 shape: "step"
 job: "integrity"
-source: ".github/workflows/gates.yml:242"
+source: ".github/workflows/gates.yml:244"
 extractor: "workflows"
 tags: [protected]
 aliases:
-  - "Vault generator suites"
+  - "Orchestration canvas is current"
   - "integrity.30"
 generated: true
 ---
 
-# Vault generator suites
+# Orchestration canvas is current
 
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `.github/workflows/gates.yml:242`
+**Source** · `.github/workflows/gates.yml:244`
 
 ## Statement
 
-uv run pytest tools/tests
+python3 tools/orchestration/gen_canvas.py --check
 
 ## Fields
 
 | Field | Value |
 |---|---|
-| `command` | uv run pytest tools/tests |
+| `command` | python3 tools/orchestration/gen_canvas.py --check |
 | `kind` | run |
 | `ordinal` | 30 |
 
 ## Binds
 
-- **runs** → [[module__tools_tests|tools.tests]]
+- **runs** → [[module__tools_orchestration_gen_canvas|Factory generator for orchestration canvas.]]
 - [[gate__integrity|integrity (fixtures and register)]] **contains** → this

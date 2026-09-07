@@ -4,7 +4,7 @@ id: "layout:migrations"
 title: "migrations/"
 status: "named"
 shape: "fence-line"
-source: "docs/tier2/coding-standards.md:121"
+source: "docs/tier2/structure-fence.md:39"
 extractor: "layout"
 aliases:
   - "migrations"
@@ -17,7 +17,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `docs/tier2/coding-standards.md:121`
+**Source** · `docs/tier2/structure-fence.md:39`
 
 ## Fields
 

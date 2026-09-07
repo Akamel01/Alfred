@@ -39,6 +39,8 @@ generated: true
 - [[adr__ADR-0041|The S0–S9 build materialized as a numbered pipeline]] **see_also** → this
 - [[adr__ADR-0043|Dead material archived and templates shelved]] **see_also** → this
 - [[adr__ADR-0052|The D28 waiver ordinal becomes derived, and ADR-0040's is corrected in place]] **see_also** → this
+- [[adr__ADR-0062|Amending a frozen ci-gate document is a D28 waiver; ADR-0050 is retroactively the third ag]] **see_also** → this
+- [[adr__ADR-0063|The structure fence is split out and reclassified provisional, discharging the falsificati]] **see_also** → this
 
 ## Enforced by (code)
 

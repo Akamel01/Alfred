@@ -38,6 +38,10 @@ generated: true
 - [[adr__ADR-0020|The run fingerprint record, and the two assertions that were waiting on it]] **see_also** → this
 - [[adr__ADR-0029|The tree that verifies every other tree is verified by nothing]] **see_also** → this
 - [[adr__ADR-0053|The cross-stage invariants get the lint their register claims, and a checked map of what e]] **see_also** → this
+- [[adr__ADR-0056|The requalification trigger covers the whole binding, and the five fields that would recor]] **see_also** → this
+- [[adr__ADR-0057|The C13/C7 archive-suffix split is defensible only under a wiring premise nothing in this ]] **see_also** → this
+- [[adr__ADR-0060|ADR-0038 decided harden; what was built does not enforce it, names a script that does not ]] **see_also** → this
+- [[adr__ADR-0065|The bench append-only guarantee gets the lint ADR-0038 said it already had, and the shallo]] **see_also** → this
 
 ## Enforced by (code)
 

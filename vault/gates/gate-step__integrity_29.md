@@ -1,38 +1,38 @@
 ---
 kind: gate-step
 id: "gate-step:integrity.29"
-title: "Orchestration canvas is current"
+title: "Model routing policy conforms to the bindings"
 shape: "step"
 job: "integrity"
-source: ".github/workflows/gates.yml:239"
+source: ".github/workflows/gates.yml:241"
 extractor: "workflows"
 tags: [protected]
 aliases:
-  - "Orchestration canvas is current"
+  - "Model routing policy conforms to the bindings"
   - "integrity.29"
 generated: true
 ---
 
-# Orchestration canvas is current
+# Model routing policy conforms to the bindings
 
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `.github/workflows/gates.yml:239`
+**Source** · `.github/workflows/gates.yml:241`
 
 ## Statement
 
-python3 tools/orchestration/gen_canvas.py --check
+python3 scripts/lint_model_routing.py
 
 ## Fields
 
 | Field | Value |
 |---|---|
-| `command` | python3 tools/orchestration/gen_canvas.py --check |
+| `command` | python3 scripts/lint_model_routing.py |
 | `kind` | run |
 | `ordinal` | 29 |
 
 ## Binds
 
-- **runs** → [[module__tools_orchestration_gen_canvas|Factory generator for orchestration canvas.]]
+- **runs** → [[module__scripts_lint_model_routing|MR001-MR005: model routing policy conformance, checked before any spawn.]]
 - [[gate__integrity|integrity (fixtures and register)]] **contains** → this

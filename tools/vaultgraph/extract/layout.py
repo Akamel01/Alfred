@@ -23,7 +23,7 @@ from ..protocol import Anomaly, Context, ExtractorSpec, Harvest
 from ..textio import read_lines
 
 NAME = "layout"
-STANDARDS = "docs/tier2/coding-standards.md"
+STANDARDS = "docs/tier2/structure-fence.md"
 HEADING = "## Structure"
 
 #: ADR-0040's floor: every tracked top-level directory is named in the fence.
@@ -120,7 +120,7 @@ def extract(ctx: Context) -> Harvest:
     for name in sorted(d for d in tree if d not in fence):
         harvest.anomalies.append(Anomaly(
             kind="layout-miss",
-            detail=f"top-level directory {name}/ is not named in the coding-standards structure fence",
+            detail=f"top-level directory {name}/ is not named in the structure fence",
         ))
     for name in sorted(n for n in fence if n not in on_disk):
         harvest.anomalies.append(Anomaly(

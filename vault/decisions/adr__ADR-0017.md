@@ -36,6 +36,9 @@ generated: true
 - [[adr__ADR-0018|The executor moved, and eleven of thirteen premises were wrong]] **see_also** → this
 - [[adr__ADR-0019|D38's sandbox rationale, verified: true of one configuration, false of the default]] **see_also** → this
 - [[adr__ADR-0020|The run fingerprint record, and the two assertions that were waiting on it]] **see_also** → this
+- [[adr__ADR-0057|The C13/C7 archive-suffix split is defensible only under a wiring premise nothing in this ]] **see_also** → this
+- [[adr__ADR-0061|An interruption is recorded as a termination, not a verdict: the record-shape half of #69]] **see_also** → this
+- [[adr__ADR-0065|The bench append-only guarantee gets the lint ADR-0038 said it already had, and the shallo]] **see_also** → this
 
 ## Enforced by (code)
 

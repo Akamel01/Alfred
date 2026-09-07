@@ -20,7 +20,9 @@ explain. For what Alfred is and will not do, read the
 - **The canonical branch is `main`.** Work happens on branches; `main` is the tree.
   Parked worktrees and unmerged branches are not the state of record.
 - **The plan of record is history, not instruction.** It is mirrored at `plan/`
-  (sha256-pinned by its manifest; CI verifies the hash on every runner) and is
+  (sha256-pinned by its manifest; CI verifies the mirror against that manifest on
+  every runner — drift from the live origin is only detectable where the origin is
+  reachable, which is never true on a runner) and is
   excluded from factory dispatch workspaces and seeds. Where it disagrees with
   `docs/`, the register wins.
 - **The protected set is `policy/protected-paths.json`** — what an agent may never

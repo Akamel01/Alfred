@@ -101,9 +101,11 @@ REGISTER: list[Doc] = [
         "The Postgres schema, its tenancy scoping, append-only evidence tables, and the migration "
         "split between product and harness roles. Executable as Alembic migrations.",
         "A table lacks org/project scoping, or an evidence row is mutated after write.", "Phase 2"),
-    Doc(1, "cross-stage-invariants", "Cross-Stage Invariants", "executable", "ci-gate", "frozen",
+    Doc(1, "cross-stage-invariants", "Cross-Stage Invariants", "executable", "ci-gate", "provisional",
         "The dozen properties that must hold from the first commit because each costs hours now and a "
-        "migration later. Enforced by CI lint rather than by intention.",
+        "migration later. Enforcement is split between a CI lint and review, with lint_invariants.py's "
+        "ENFORCEMENT map as the authority on which holds which; provisional per ADR-0064 because that "
+        "split moves as enforcement is built out.",
         "Any invariant is found violated in merged code.", "Phase 2"),
     Doc(1, "mission-control-specification", "Mission Control Specification", "executable", "schema", "provisional",
         "The operator surface: queue, escalation inbox, criterion-first evidence bundle, and run record. "
@@ -144,6 +146,12 @@ REGISTER: list[Doc] = [
         "The ruff and pyright --strict configuration, enforced as a hard gate rather than advice. Strict "
         "mode is enforced while the codebase is small because retrofitting it later is impractical.",
         "Merged code carries a type suppression without a recorded justification.", "Phase 2"),
+    Doc(2, "structure-fence", "Structure Fence", "executable", "ci-gate", "provisional",
+        "The declared top-level layout, hand-authored and checked against the tree. Split out of the "
+        "coding standards by ADR-0063: it is provisional because a list tracking a directory tree must "
+        "move when the tree does, and freezing it cost three D28 waivers.",
+        "A top-level directory exists in the tree and neither a fence line nor a committed layout-miss "
+        "anomaly accounts for it.", "Phase 2"),
     Doc(2, "testing-strategy", "Testing Strategy", "human", "ci-gate", "frozen",
         "Property tests over composed operations as the load-bearing correctness control, with the visible "
         "and held-out criterion classes and their separation. Mutation score has no gating role.",

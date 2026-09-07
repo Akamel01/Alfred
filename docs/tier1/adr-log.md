@@ -5295,3 +5295,1521 @@ dangling edge endpoint.
 it claims to. Or an evidence row or `heldout.reference_value` row written after this commit
 is found with a non-v7 primary key, meaning a write path was reached that does not pass
 through `harness.ids.uuid7()`.
+
+## ADR-0056 — The requalification trigger covers the whole binding, and the five fields that would record it are all unset
+
+**Date:** 2026-09-05 · **Status:** Accepted · **Supersedes:** none · **Amends:** `policy/role-bindings.json`'s third note · **See also:** `docs/tier7/ticket-43-role-bindings-decision.md` D7 (the ruling this restates and does not invent), `docs/tier0/autonomy-boundaries.md:123` (the tiering), `harness/fingerprint/factory.py` (which already named this hole), ADR-0007 (the vacuity class), #84, #85 · **D28 waiver:** no
+
+### Context
+
+`policy/role-bindings.json` contradicts itself on its own trigger, and two open tickets
+depend on which half wins.
+
+Its authority line says a change to the file "is a requalification event" — unqualified. Its
+third note then narrows the same claim to a named subset: *"The version fields below are the
+fingerprint's D19 group. Editing one is a requalification event."* `agents` — the roster
+naming which runtime agent serves a capability — is not among those fields. Read narrowly,
+swapping every agent in every roster is a free edit. [#85](https://github.com/Akamel01/Alfred/issues/85)
+proposes exactly such a roster edit; [#84](https://github.com/Akamel01/Alfred/issues/84)
+assumes a live control could perform one.
+
+The tiebreaker is not in the file. `docs/tier7/ticket-43-role-bindings-decision.md` **D7**
+already decided this, under the heading *"A binding edit is a requalification event,"* and
+rejected the narrow reading by name:
+
+> *Beat:* "only some fields trigger" — which invites the argument you least want during an
+> incident, over which half of the binding changed and whether it counted.
+
+D7 supplies the a-fortiori as well: `tool-specification-standard.md` hashes tool
+*descriptions* into the fingerprint *"because descriptions alone can change behaviour."* A
+roster edit substitutes a different agent — a different prompt and a different tool set. It
+is strictly more than a description. D7 is unsuperseded; no later ADR touches it.
+
+So the authority line is right and **note 3 is the drift**. That much is a restatement, not a
+new decision, and this ADR would not be worth writing for it alone.
+
+**What makes it worth writing.** All twenty-four version fields, across all eight bindings,
+are the string `"unset"` — every `prompt_version`, every `tool_version`, every
+`context_strategy_version`. Under note 3's narrow reading the trigger is not merely too
+small; it is **inoperative**. No roster edit, and no edit of any kind reachable today, moves
+a field off `"unset"`, so the condition note 3 names can never be met. A rule that fires on
+zero inputs and reports nothing wrong is the vacuity class of ADR-0007 and of the D57 guard:
+a check that scanned zero items must fail, not pass.
+
+`harness/fingerprint/factory.py` had already written this down before this ADR looked:
+without a factory fingerprint record, `policy/role-bindings.json`'s claim that a binding edit
+is a requalification event *"has nothing to attach to."* `harness/fingerprint/record.py`
+states the general form — *"a field defaulted at construction is a field that silently stops
+discriminating."* `"unset"` is that default, twenty-four times.
+
+The cause is known and is not a bug in this file: **no dispatcher exists.** Nothing reads
+`policy/role-bindings.json` at spawn time. Its only readers are `scripts/lint_topology.py`,
+`scripts/lint_model_routing.py` and the documentation generators. There is no run from which
+a real `prompt_version` could be captured, so the fields are honestly empty rather than
+wrongly filled.
+
+### Decision
+
+1. **The trigger is the whole binding record, not a field subset.** Any edit to a binding —
+   `agents` included — is a requalification event. This restates #43 D7 and adds nothing to
+   it; it is recorded here because the file that carries the rule contradicts it, and two
+   tickets were about to be worked against the wrong half.
+
+2. **`policy/role-bindings.json`'s third note is corrected** to stop scoping the trigger to
+   the version fields, and to state that the version fields *record* which component moved
+   rather than *determining whether* anything did. The authority line is left as written; it
+   was already correct. `policy/` is protected, so this is a **Gate D** change — see
+   *Consequences*.
+
+3. **The tier is the smoke subset.** `docs/tier0/autonomy-boundaries.md:123` tiers
+   requalification by what moved: prompt or context strategy to a smoke subset, serving stack
+   or lockfile to smoke plus tool-calling probes, weights or quantization or orchestrator to
+   the full golden set. A roster edit changes which prompt and which tools run; it is a
+   prompt-and-context change. It is **not** an orchestrator change, so it is not a
+   criterion-set epoch boundary and prior measurements stay comparable across it.
+
+4. **The requalification this triggers today is vacuous, and must be recorded as vacuous
+   rather than as passed.** There are no autonomy grants, no factory fingerprint records, and
+   no dispatcher to produce either. A roster edit merged now suspends nothing, because
+   nothing is granted. Under D57 the correct report is `indeterminate` — the check did not
+   run — and never `pass`. An `indeterminate` here is excluded from merge rate on both sides
+   and tracked as harness health, which is the existing three-valued shape and needs no new
+   machinery.
+
+5. **This ADR does not fill the version fields.** Writing real values requires a run to
+   capture them from, and the dispatcher that would produce one does not exist. Inventing
+   values to make the fields non-empty would put numbers in a hash that nothing can check —
+   the precise failure `factory.py` refuses when it declines to widen `RunFingerprint` with
+   nullable fields. **The `"unset"` field set gets its own ticket** rather than a fix here.
+
+**Rejected: let note 3 stand and rule roster edits free.** It is the cheaper reading and it
+is what the narrow text says. It fails on D7's own ground — it relocates the argument to an
+incident, where the question becomes which half of a binding changed — and it fails harder on
+the vacuity finding, because the subset it privileges is empty. A trigger scoped to fields
+that are all `"unset"` is not a narrower rule than the broad one; it is no rule.
+
+**Rejected: rule now that a UI control may write the roster.** That is #84's question, not
+this one. It engages #45's prohibition on the caller picking who runs a role, which deserves
+its own interrogation and its own ADR. Deciding it as a corollary here would settle by
+adjacency a question that was never asked.
+
+### Consequences
+
+**#85 is unblocked and is not free.** Expanding the reviewer roster by language is a
+requalification event at the smoke-subset tier, and merges with that recorded. The ticket may
+proceed on that basis.
+
+**#84 gets its premise and not its answer.** It still needs the separate ruling on whether a
+live control may write protected policy. Until that lands, #84 is an ADR ticket, not an
+implementation ticket — there is no runtime for a routing dropdown to be authoritative over.
+
+**A Gate D read is owed and is not discharged by this ADR.** `policy/` is protected;
+`docs/tier4/protected-paths-policy.md:100` permits an agent-drafted patch to the protected set
+only under line-by-line human review *with* a mandatory ADR. This ADR is the second half. The
+first half — an operator read of the `policy/role-bindings.json` diff — **has not happened**,
+and is recorded here as owed rather than assumed, in the same explicit form as the read
+outstanding on PR #82.
+
+**Falsification trigger.** This decision is wrong if a binding edit merges and a
+requalification note is neither recorded nor deliberately waived; or if a version field
+acquires a concrete value while no dispatcher exists to have measured it, which would mean a
+number was invented to satisfy the schema rather than captured from a run.
+
+## ADR-0057 — The C13/C7 archive-suffix split is defensible only under a wiring premise nothing in this repository can confirm, and the spec fix it implies is blocked on #78
+
+**Date:** 2026-09-05 · **Status:** Accepted · **Supersedes:** none · **Amends:** nothing · **See also:** commit `6f6d5de` (froze the split as declared contract), `harness/containment/test_archive_suffix_binding.py`, `docs/tier4/sandbox-specification.md` C13 and layer 3, ADR-0017 (an unread hole yields `not_executed`, never `passed`), ADR-0007 (the vacuity class), #7, #78 · **D28 waiver:** no
+
+### Context
+
+[#7](https://github.com/Akamel01/Alfred/issues/7) records that `harness/containment/inside.py`
+scans 7 archive suffixes for C13 while `harness/containment/oracle_absence.py` scans 4 for
+C7's layer-3 path scan, with no authority anywhere explaining the divergence. Commit `6f6d5de`
+froze both tuples in a binding test and said so plainly rather than inventing a reason. The
+ticket asks the sandbox-spec owner to document why the split is legitimate or unify the sets.
+
+**The shape is a three-level nesting, not two unrelated sets.** Computed rather than asserted:
+
+```
+spec prose (3):  .whl .tar.gz .zip
+C7   (4):        .whl .tar.gz .tgz .zip
+C13  (7):        .whl .tar.gz .tgz .zip .tar.bz2 .tar.xz .egg
+```
+
+`spec ⊂ C7 ⊂ C13`, both strict. Two consequences the ticket did not name. First, **the spec row
+has never matched the code it describes** — C13's implementation exceeds it by four suffixes and
+no commit updated the row when they were added. Second, and more pointed, the spec's layer-3
+paragraph says C7 scans *"the archives and caches C13 covers."* That reads as an instruction to
+reuse C13's set. C7 instead declares its own literal tuple at `oracle_absence.py:67`. **The spec
+text is evidence against the split being deliberate**, not for it.
+
+`git log -S "ARCHIVE_SUFFIXES"` returns exactly one commit per file — `f26d63f` for C7's tuple,
+`6d86fe2` for C13's — and neither message gives a reason. No ADR, comment, or spec line explains
+it. Any rationale is therefore reconstructed from mechanics, not recovered.
+
+### Decision
+
+**1. The divergence is defensible in design, and the finding is recorded as `indeterminate` on
+the wiring point rather than `pass`.**
+
+The two scanners have different shapes, and the difference carries the argument. C13
+(`inside.py:410`) is recursive — `root.rglob("*")` — over roots its docstring calls "under any
+mount". C7 (`oracle_absence.py:181`) is shallow — `base.iterdir()`, one level — over each
+interpreter's effective import path. Both are fail-closed boot gates: failure means the run does
+not start.
+
+Worked out per direction: a suffix missing from **C13's 7** is a true blind spot, because nothing
+else sweeps every mount recursively — which is why that set must be maximal, and is. A suffix
+missing from **C7's 4** but present in C13's 7 (`.tar.bz2`, `.tar.xz`, `.egg`) cannot go
+undetected *provided C13 also runs and both are required*, because every directory C7 walks lies
+under some mount that C13's recursive scan already visits, at equal or greater depth, against a
+strictly larger suffix set. C7's archive check is then redundant defense-in-depth inside a probe
+whose primary job is denylist and import-hook detection.
+
+**2. That premise is unverified, and this is the load-bearing caveat.** There is **no production
+call site anywhere in this repository** for either assertion. Every reference to
+`assert_no_archives_or_caches` is its definition, its `__all__` export, or a test supplying a
+`tmp_path` fixture. Nothing confirms that the real boot sequence invokes C13 with roots set to
+every mount, that both C7 and C13 run on every boot, or that both are required to pass. This is
+the same class of fact as the absent dispatcher: the declaration exists, the runtime does not.
+
+If C13 is ever wired with a narrower `roots` set than "every mount" — scoped to the writable set,
+say, rather than every read-only mount — **the subsumption argument collapses and C7's narrower
+list becomes a real gap** for `.tar.bz2` / `.tar.xz` / `.egg` on an import path outside whatever
+C13 actually scans. So this ADR licenses the split conditionally and names the condition, in
+keeping with ADR-0017: an unread hole yields `not_executed`, never `passed`.
+
+**3. The frozen binding test remains the answer of record.** Neither tuple and neither test is
+touched. Drift still fails a test; the semantic question is now answered conditionally rather
+than left open.
+
+**4. The spec correction this implies is blocked and is not taken here.** The natural remedy —
+write the failure-direction argument into `docs/tier4/sandbox-specification.md` beside C13 and
+layer 3, and correct the stale 3-suffix row — cannot be executed now. That document is
+`status: frozen`, `enforcement: ci-gate`, which is precisely the class
+[#78](https://github.com/Akamel01/Alfred/issues/78) disputes: ADR-0033 and ADR-0040 hold that
+amending a frozen ci-gate document is a D28 waiver, ADR-0050 holds that it is not, and the
+waiver totals straddle the three-waiver falsification trigger at
+`docs/tier0/operating-principles.md:6`. Amending the spec would either create a waiver or not
+depending on which merged ADR one follows — that is the tie #78 exists to break, and it is an
+operator decision. **This ADR does not break it.** The spec edit waits on #78.
+
+**Rejected: unify the two tuples now.** Textually the best-supported option — layer 3 already
+says C7 covers what C13 covers, so importing `inside.ARCHIVE_SUFFIXES` would make code match
+spec. It is rejected here only because `harness/` is protected: unification is a Gate D change
+needing line-by-line human review, and it would also have to move the frozen binding test that
+currently pins the split. It remains the right answer if the wiring premise in (2) cannot be
+confirmed, and is recorded as the fallback rather than dismissed.
+
+**Rejected: assert the split is fine and close the question.** The mechanics permit it; the
+evidence does not establish it. Manufacturing a clean rationale for a real inconsistency, in a
+containment control, is the failure this repository's `not_executed` discipline exists to
+prevent.
+
+### Consequences
+
+**#7 is answered but not dischargeable.** The answer of record now exists as a durable artifact
+rather than a frozen test plus an open question. The spec-synchronisation half is blocked on
+#78; #7 should be re-labelled blocked rather than workable.
+
+**A verification obligation is created and owned by whoever assembles the boot sequence:**
+confirm C13 is invoked with every-mount scope, on every boot, as a required gate co-equal with
+C7. Until then the split's legitimacy is conditional.
+
+**Falsification trigger.** This decision is wrong if the boot sequence lands with C13 scoped to
+anything narrower than every mount, or with C7 and C13 not both required to pass — either of
+which turns the three suffixes C7 omits into a live false negative and makes unification, not
+documentation, the correct remedy.
+
+## ADR-0058 — The dispatch-workspace exclusion contract: what a dispatch mount excludes, and that nothing dispatches yet
+
+**Date:** 2026-09-05 · **Status:** Accepted · **Supersedes:** none · **Amends:** nothing · **See also:** ADR-0035 (the prototype `harness/containment/dispatch_mount.py` cites, `docs/tier1/adr-log.md:3790`), ADR-0054 (the same "written, tested, dormant" shape for `begin_attempt`), issue #6, issue #7 (the C13/C7 unwired finding this record extends to C12), `plan/README.md`, `policy/protected-paths.json` · **D28 waiver:** no
+
+### Context
+
+`CLAUDE.md:24` and `plan/README.md:6` both state that `plan/` "is excluded from factory
+dispatch workspaces and seeds" (the W3 ruling, per issue #6). Issue #6 is explicit that this
+is "a constraint on the future (unbuilt, D20-protected) OpenHands adaptor — it is not a file
+change now," and that no ADR records it. This ADR establishes what is actually true today,
+before recording the constraint, so the record does not overstate what exists.
+
+**No dispatcher exists.** `WorkerSpec.read_mounts` and `WorkerSpec.write_mount`
+(`harness/worker/port.py:142-143`) are typed as `MountSpec` tuples "fixed by the harness at
+dispatch" (`harness/worker/port.py:58`) — but grepping the whole tree for a production
+construction of `MountSpec(...)` or a `read_mounts=`/`write_mount=` assignment outside test
+files returns **zero results**. `harness/worker/adapters/open_hands.py` (504 lines) exists
+and implements the `Worker` protocol, but it only *consumes* a `SandboxHandle.mounts` it is
+handed (`harness/worker/adapters/open_hands.py:352`, `:495`) — it does not construct the
+mount set. Nothing in this repository builds a `WorkerSpec` for a live attempt. This matches
+`docs/tier1/adr-log.md:5116-5119`'s finding for `begin_attempt`: the gap is doctrine
+(`docs/tier2/execution-order.md` § *What must not be built yet* bars orchestration before
+per-task merge rate clears K3's bound), not oversight.
+
+**A piece of the exclusion mechanism is built, and it is also unwired.**
+`harness/containment/dispatch_mount.py` (77 lines) implements `is_dispatch_mount`,
+`filter_dispatch_mounts`, and `filter_dispatch_from_c13_roots`, docstringed as "Prototype for
+ADR-0035" (`harness/containment/test_dispatch_mount.py:3-4`). These three functions are
+consumed by exactly two call sites, both inside `harness/containment/inside.py`:
+`assert_writable_set` (C12, `inside.py:286`) and `assert_no_archives_or_caches` (C13,
+`inside.py:392`). Grepping for callers of `assert_writable_set` and
+`assert_no_archives_or_caches` across the tree finds only their own definitions, their own
+docstring cross-references, and test files — **zero production callers**, the identical
+shape issue #7 already established for the C7 oracle-absence probe and for C13's own
+archive-suffix scan. So the dispatch-mount exclusion that *is* written is exercised only by
+`test_dispatch_mount.py`; nothing calls C12 or C13 with real mounts, dispatch or otherwise.
+This is not new information this ADR discovers about C12/C13 in general — it is the same
+"no production call sites anywhere" finding from the orchestrator's ADR answering issue #7,
+extended here to confirm it also covers the dispatch-exclusion logic layered on top.
+
+**Why `plan/` specifically.** `plan/README.md:2-3` states the mirror is "**history, not
+instruction** — where it disagrees with `docs/`, the register wins." An agent whose context
+includes superseded decision history has no marker distinguishing a decision the plan
+recorded from a decision the register (`docs/`) currently holds; reading `plan/` as if it
+were instruction risks the agent re-deriving or re-applying a decision the register has since
+overturned. That is a containment reason (context contamination with stale authority), not a
+disk-space or tidiness one — the same class of reasoning `docs/tier1/adr-log.md` uses
+elsewhere to justify D20's factory/inspector split (`adr-log.md:2717`).
+
+**The sha256 pinning covers integrity, not the exclusion.** `tools/vaultgraph/mirror.py`'s
+`check()` (`mirror.py:104-135`) verifies two different things depending on machine state: the
+committed mirror always against `manifest.json`'s pinned `sha256`/`bytes`/`lines`
+(`mirror.py:113-119`, "integrity always"), and, only where the origin path
+(`~/.claude/plans/...`) is reachable on that machine, the mirror against the *live* origin
+(`mirror.py:121-128`, "drift only where the origin is reachable"). `CLAUDE.md:22` says "CI
+verifies the hash on every runner" — true for the integrity half; the drift half is
+structurally unrunnable in CI, since CI never has the operator's `~/.claude/plans/` origin
+(`mirror.py:123-128`, "Absence is never a failure"). **The manifest pins byte-fidelity of the
+mirror to its origin. It says nothing about which processes may read the mirror, and nothing
+in `mirror.py` or `manifest.json` enforces the dispatch-workspace exclusion** — that exclusion
+is stated only in prose (`CLAUDE.md:24`, `plan/README.md:6`), with no code path checking it,
+consistent with there being no dispatcher to check it in.
+
+**`tests/heldout/` — the exclusion the protected set calls a guarantee.**
+`policy/protected-paths.json:18-19` names `tests/heldout/` as "composed and perturbed held-out
+criteria — **never in agent context**." That is stronger language than `plan/`'s "excluded
+from... workspaces" — it is a containment guarantee, not a provenance preference. Since no
+dispatcher exists and no mount-set construction exists in production, **there is no code
+anywhere that actually keeps `tests/heldout/` out of an agent's mounts** — the guarantee rests
+entirely on the fact that nothing dispatches yet, not on an enforced exclusion. The same is
+true of every other protected-paths entry checked (`bench/results/`, `bench/fingerprints/`,
+`.github/`, `scripts/`, `policy/` itself, `docs/tier0/`, `orchestration/`,
+`policy/protected-paths.json:5-32`): all are protected from *agent edits* by
+`docs/tier4/protected-paths-policy.md` plus human review, which is a write-side control. None
+of them has a read-side (mount) exclusion implemented, because there is no mount construction
+to exclude them from.
+
+### Decision
+
+1. **Record the exclusion contract now, as a specification for the unbuilt dispatcher, not as
+   a claim about running code.** When the S9-remainder adaptor is built (per issue #6), the
+   component that constructs `WorkerSpec.read_mounts`/`write_mount` **must**:
+   - Exclude `plan/` from every read mount, for the context-contamination reason established
+     above (stale decision history read as current instruction).
+   - Exclude `tests/heldout/` from every read mount, discharging the "never in agent context"
+     guarantee `policy/protected-paths.json:18-19` currently states but nothing enforces.
+   - Exclude `.git/` (its history and reflog can carry content from before a path was
+     protected) and any path under `bench/results/`, `bench/fingerprints/`, `.github/`,
+     `scripts/`, `policy/`, `docs/tier0/`, `orchestration/` that is not explicitly required as
+     a read mount for the task at hand — the protected set's write-side rationale
+     (`policy/protected-paths.json`) applies with equal force to read exposure, since an agent
+     that has read a held-out criterion or an inspector's internals has the same problem
+     whether or not it can write them back.
+   - The dispatch mount itself (`/dispatch` or whatever host path the adaptor uses to emit
+     patches) is excluded from C12/C13 **findings**, not from the container — that is what
+     `harness/containment/dispatch_mount.py` already implements, and this ADR does not change
+     it.
+   2. **This is a declaration, not a guarantee, until three things are wired**: the dispatcher
+   constructs a real `WorkerSpec.read_mounts` set applying the exclusions in (1); C12
+   (`assert_writable_set`) and C13 (`assert_no_archives_or_caches`) gain a production caller
+   that runs them against that real mount set before an attempt starts; and that caller is on
+   the fail-closed path `check_handle` gates, the same shape ADR-0054 used for
+   `begin_attempt`. Until then, stating the exclusion here is honest specification of intent,
+   not evidence of enforcement — and the ADR says so rather than implying otherwise.
+
+### Consequences
+
+The exclusion list a reader needs is now in one place with `path:line` citations, instead of
+being re-derived from `CLAUDE.md`, `plan/README.md`, and three separate containment modules
+each time someone asks "what does dispatch exclude." The held-out-criteria question is
+resolved: **no**, dispatch does not exclude `tests/heldout/` today, because no dispatch
+exists; the "never in agent context" language in `policy/protected-paths.json` is currently
+true only because nothing has dispatched anything, not because a check would catch a
+violation. That is the finding this ADR is written to make plain rather than bury under the
+ADR's more ceremonial half.
+
+The C12/C13 dormancy is not a new defect this ADR introduces — it is the same shape #7 found
+for C7, now confirmed to extend to the dispatch-exclusion layer built on top of C12/C13.
+Wiring one (a production caller for C12/C13) without the other (a real mount set that
+actually excludes `plan/`, `tests/heldout/`, etc.) would leave the assertions passing
+vacuously against an empty or synthetic mount list — the D57 vacuity guard this codebase
+already applies elsewhere (`inside.py`'s "zero mounts... NOT_EXECUTED" branches,
+`inside.py:261-268`, `inside.py:391-396`) is the control that would catch that, provided the
+caller is wired to read its result rather than discard it.
+
+### Enforcement
+
+None today — `review` only, pending the S9-remainder dispatcher. When built: `ci-gate` via a
+test asserting the dispatcher's constructed `read_mounts` never includes `plan/` or
+`tests/heldout/` (mirroring `test_dispatch_mount.py`'s existing pattern for the dispatch mount
+itself), plus a runtime C12/C13 call on the fail-closed `check_handle` path.
+
+### Falsifies if
+
+A dispatcher is merged that constructs `WorkerSpec.read_mounts` including `plan/` or
+`tests/heldout/`, with CI green — meaning either no test checks the constructed mount set, or
+one does and reads the wrong field. Or: this ADR is cited as evidence that the exclusion is
+currently enforced, when re-reading `harness/worker/port.py`, `harness/worker/adapters/open_hands.py`,
+and the grep for `MountSpec(` / `read_mounts=` / `write_mount=` outside tests still returns no
+production construction site — meaning the record has been read as a guarantee instead of the
+specification-for-the-unbuilt it is.
+
+## ADR-0059 — The live view's model dropdown may not write routing policy, standing or split; the affordance the ticket wants does not exist as infrastructure yet
+
+**Date:** 2026-09-05 · **Status:** Accepted · **Supersedes:** none · **Amends:** none (no file changes; this is a ruling, not an implementation) · **See also:** `docs/tier7/ticket-45-state-authority-decision.md`, `docs/tier7/ticket-46-model-routing-decision.md` (D2, D3, D4), `docs/tier4/protected-paths-policy.md`, `docs/tier1/mission-control-specification.md` (R6, DB roles), `policy/model-routing.json`, `src/mission_control/prototype/index.html`, issue #84, issue #86 · **D28 waiver:** no — nothing here overrides a stage gate or threshold
+
+### Context
+
+Issue #84 asks whether the Mission Control live view's per-agent model dropdown should
+become "the routing authority" for `policy/model-routing.json`, and proposes a shape:
+split the file into a protected constraint half (`forbidden`, `loud_default`,
+`trivial_class` entry condition) and a mutable "routes" half moved to a new record,
+`control.model_route`, writable by the operator through the UI and gated at write time by
+the constraint file.
+
+This ticket was scoped by the orchestrator as a **decision ticket**: rule on whether a live
+control may write protected routing policy at all, and if not, name the correct shape for
+the affordance. Nothing is to be built regardless of the answer.
+
+**What exists today, verified rather than assumed.** `src/mission_control/prototype/index.html`
+has five `.modelctl` controls (`data-model-ctl`, one per bound capability rendered: researcher,
+architect, planner, code-writer, reviewer — out of 8 routes in `policy/model-routing.json`).
+Their handler (`select.dataset.applied = to`, confirmed via `grep -n "applied|modeldlgok" `)
+only ever writes a DOM dataset attribute and fires a client-side toast. `grep -n
+"fetch(|XMLHttpRequest|WebSocket"` over the same file returns zero matches. There is no
+backend, no write path, and nothing the dropdown does today moves `model_version` anywhere
+a fingerprint or a grant would ever see it. The bug named in #84 is real but is in the
+**dialog copy** ("Changing this is an action, not a read... suspends the autonomy grant"),
+which asserts a consequence the prototype cannot currently produce, not in an existing
+write path that needs to be closed.
+
+### The four questions, worked
+
+**1. Is a model-selecting dropdown "the caller picks who runs this role," and is that the
+same thing #45 forbade?** No literal sentence in `docs/tier7/ticket-45-state-authority-decision.md`
+or GitHub issue #45 uses that phrase (checked by grep across `docs/tier1`, `tier2`, `tier3`,
+`tier7` — zero hits); it is the orchestrator's gloss, not a quotation. But the substance
+holds regardless of the wording. #45's homes table has an exact, on-point row:
+
+> Model + harness selected | declared by #46; *selection recorded* in `attempt_start` and
+> the Run Fingerprint | Declaration and record are different facts
+
+That row names two homes and only two: the **policy file** declares which model a
+capability runs on, and `attempt_start`/the fingerprint **records** what actually ran. A
+UI control that lets an operator pick a model live, with the pick taking effect for future
+spawns, is a third home for the same fact — the exact failure #45's own closing question
+targets: *"What lint fails when a second writer appears for a fact that already has a
+home?"* #46 D3 then closes the loop by name: it considered and rejected "permit `inherit`
+but resolve-and-record at spawn" as *"the reasonable-sounding middle and... the trap,"*
+because it *"makes the record honest while leaving the policy unable to answer 'which model
+reviews this capability?' without knowing a UI state at a past moment. That is a fact with
+no home — precisely what #45 spent a ticket eliminating."* A live dropdown that becomes
+"the authority" is that rejected shape, decided against by name two tickets ago. It is the
+same thing, not a meaningfully different one.
+
+**2. Is the override a policy edit or a per-run parameter? This is the crux.** It is a
+policy edit, because of what the ticket itself asks for. #84 wants the dropdown to become
+*"the authority on which model each capability routes to"* — a **standing** rule that
+governs every future spawn of that capability, not a value scoped to one attempt. An
+ongoing rule keyed by `capability_id` is definitionally what `policy/model-routing.json`'s
+`routes` array already is (`capability_id` → pinned `model`, per #46 D4: *"The routing key
+is `capability_id`. No override layer"* — explicitly rejecting even a second, narrower key
+for the same reason: *"a precedence rule between two keys is the two-authorities-for-one-
+fact shape #45 eliminated"*). Relocating that array from `policy/model-routing.json` to a
+new table (`control.model_route`) does not change what the fact is, it only changes which
+file holds it — and #46 D4's own rejected alternative (constraint file plus an override
+layer) is structurally identical to #84's proposed split: answering "what model does
+capability X run on" would require joining a protected constraint file with a mutable
+route record, the exact two-homes-for-one-question shape D4 already refused once. A
+genuine per-run parameter is a different object: a value that applies to one
+not-yet-dispatched attempt and does not alter what the next spawn of that capability
+defaults to. #46 D2 already has a live example of that shape — the ECC seam, where "Alfred
+passes the model explicitly on every spawn" as an override of a vendored default — but
+that pattern does not extend to Alfred's own routing table, because there the "vendored
+default" being overridden is not itself the thing an autonomy grant is measured against.
+The dropdown as drawn (`aria-label="Model for capability:researcher@1"`, scoped to the
+capability, not to one task or attempt) is the standing-rule shape, not the per-run shape.
+So: as specified, it is a policy edit, full stop.
+
+**3. Is a control that writes policy distinguishable from an agent that does?** Not in the
+way that matters here. `docs/tier4/protected-paths-policy.md` frames protection *"by
+provenance, not enumeration"* — a path is protected because of what the thing inside it
+does, not because of who is asking to write it. `policy/` is protected because it holds
+"protected paths, permissions, network allowlist, sandbox specification," and separately
+the same document lists "fingerprint tracker — the identity every autonomy grant is keyed
+to" as its own protected row. `model_version` is a D19 fingerprint field (#46 D1), so the
+routing table that sets it is fingerprint-tracker-adjacent by function regardless of which
+directory holds it. Mission Control's own specification settles the operator-vs-agent
+distinction directly and does not carve out an exception for a human operator: R6 states
+*"No editing of policy, thresholds, protected paths, criteria, held-out values, prompts or
+the graph definition. All are rendered read-only. Changing them requires the service
+account and a pull request. The endpoints do not exist."* The DB-role grants enforce this
+structurally: `alfred_operator` holds *"INSERT on operator-action evidence only — no grant
+on any verdict, held-out or policy table"*, and `alfred_readmodel` is *"SELECT only,
+everywhere."* There is no credential the live view holds, today or in the proposed split,
+that can write a policy-classified fact — and giving it one (a new grant for
+`control.model_route`) is itself a `migrations/roles/`-protected change requiring its own
+ADR, which is precisely the friction #84's "Requires" section already concedes. So: no, a
+UI control writing a standing routing rule is not distinguishable from an agent doing the
+same thing, under the document that defines what "distinguishable" means here.
+
+**4. What happens to the fingerprint if the dropdown could move `model_version`?**
+`model_version` is a D19 field (#46 D1), and the glossary is unconditional: *"Autonomy
+grant... suspended by any fingerprint change."* If a live control could move it, every
+future spawn of that capability would run at a freshly-unmeasured fingerprint the instant
+the operator clicks — merge rate would reset to n = 0 on that fingerprint, with no ADR, no
+diff, no line-by-line review, and no requirement that the change be deliberate rather than
+exploratory. Two consequences follow, both bad: (a) "X% merge, on fingerprint Z" stops
+being comparable over time, because Z now moves on operator whim rather than on a reviewed
+decision; (b) it creates exactly the gaming vector `protected-paths-policy.md`'s own threat
+model exists to close — an actor who does not like a capability's measured streak can reset
+it by "changing its model" through a control that leaves no git diff and no required
+review. `#46 D3` names the friction of the ADR path as *deliberate*, not incidental:
+*"That is real friction on something currently one dropdown away, and it will be felt
+weekly rather than theoretically. It is the correct friction."* A live control removes
+exactly that friction, for exactly the fact the friction was built to slow down.
+
+### Decision
+
+1. **A live UI control may never write a standing model route, whether it lands in
+   `policy/model-routing.json` or in any other table.** The fact ("which model does
+   capability X run on") is policy by function — an ongoing rule, not a per-invocation
+   value — regardless of which file or schema holds it. Relocating it out of `policy/`
+   does not de-protect it; protection here is defined by what the fact does
+   (fingerprint-determining, autonomy-grant-gating), not by its file path.
+
+2. **The proposed split (constraints stay protected, routes move to `control.model_route`,
+   operator-writable) is rejected as stated.** It reproduces, in a new location, the
+   two-homes-for-one-fact shape #46 D4 already rejected once (capability plus an override
+   layer) and the "resolve-and-record" shape #46 D3 already rejected once (`inherit` with
+   after-the-fact recording). Neither rejection was about which file was involved; both
+   were about a fact needing exactly one home. Moving the routes to Postgres does not
+   answer either rejection, it relitigates them under a new name.
+
+3. **The correct shape for the affordance the ticket actually wants — a standing decision
+   about a capability's model — is unchanged from #46 D3: a diff to
+   `policy/model-routing.json`, under an ADR, with line-by-line human review (Gate D,
+   `policy/` prefix).** The live view may **render** the current route, read-only, exactly
+   as R6 already specifies for every other policy fact. That is not a downgrade of what
+   Mission Control does today — no write path exists there now either.
+
+4. **A genuinely different affordance — a one-off, per-attempt model override that does
+   not alter the capability's standing route — is not ruled out in principle, but does not
+   exist as infrastructure and cannot be built as part of this ticket.** No dispatcher
+   exists (per the orchestrator's brief: nothing reads `policy/model-routing.json` or
+   `policy/role-bindings.json` at spawn time). `FactoryFingerprint`'s Check A
+   (`assert_matches`, landed in ADR-0054) has no production caller. Building the per-run
+   affordance today would be building a control for a runtime that is not there, which is
+   the same defect class the orchestrator's brief already names for this ticket's premise.
+   If it is built later, it should be scoped to one not-yet-dispatched attempt (not a
+   capability generally, which is the current dropdown's scope), written as an
+   `operator_action` record (a home `#45`'s table and `run-instrumentation-specification.md`
+   already assign to exactly this kind of fact — *"written by a process holding an operator
+   credential, not an agent"*), still refused at dispatch by the constraint half of
+   `model-routing.json` (Check P), and still asserted against what actually ran (Check A)
+   before the attempt starts. That attempt's own fingerprint moves and its own grant
+   evaluates however a fresh fingerprint always evaluates (dormant until measured) — it
+   does not touch the capability's standing route or any other attempt's fingerprint.
+
+5. **The dialog copy bug is real and narrow.** The prototype's confirm dialog currently
+   asserts a consequence ("suspends the autonomy grant") that the prototype cannot produce,
+   because nothing is wired to a backend. Fixing the copy to state that the control is
+   read-only today and that a route change happens only via ADR is in scope for a follow-up
+   ticket; it is a one-file text edit, not the routing-authority question this ticket
+   resolves.
+
+### Consequences
+
+Issue #84 closes as answered-by-artifact: the dropdown does not become the routing
+authority, in either its current form or the proposed split. Nothing is built. The
+standing route stays exactly where #46 D3 put it — a pinned identity in a protected file,
+changed only by ADR. The one legitimate extension identified (per-attempt override,
+recorded via `operator_action`) is named as a future possibility, not committed to any
+timeline, and is explicitly blocked on the dispatcher not existing yet.
+
+The honest cost: the operator's stated want — a live control that changes routing — does
+not get built, and the reason is architectural rather than a missing feature. Anyone
+reopening this should not re-derive the split-authority argument from scratch; it traces to
+#45's closing question and #46 D3/D4, both already decided.
+
+### Enforcement
+
+None — this is a ruling with no code or policy change. If a future ticket implements the
+per-attempt override, it inherits `scripts/lint_model_routing.py` (Check P, extended to gate
+attempt-level overrides the same way it gates standing routes) and `FactoryFingerprint`'s
+Check A as its enforcement, per #46 D6.
+
+### Falsifies if
+
+A future change lets any live-view control cause a write to `policy/model-routing.json`,
+or to any other table whose value a capability's default model resolution reads at spawn
+time, without that write being a git diff to a protected path carrying an ADR and
+line-by-line human review — regardless of what the table backing that write is named.
+
+### Open questions this did not settle
+
+- Whether `control.model_route`-shaped per-attempt overrides are worth building at all
+  before a dispatcher exists is a scheduling question, not a doctrine question, and is left
+  to the register (execution-order.md), not to this ADR.
+- The dialog-copy fix (item 5) is flagged but not filed as its own ticket; it is small
+  enough that the orchestrator may prefer a direct fix over a ticket.
+
+### Scan counts (D57 vacuity guard)
+
+- `policy/model-routing.json` `routes`: 8 scanned, all pinned (none read `inherit`).
+- `policy/model-routing.json` `forbidden.gpt-5-nano`: 11 entries scanned.
+- `src/mission_control/prototype/index.html` `.modelctl` controls: 5 scanned (one per
+  rendered capability: researcher, architect, planner, code-writer, reviewer).
+- Grep for a write path (`fetch(`, `XMLHttpRequest`, `WebSocket`) in that same file: 0
+  matches — confirms the control has no backend today.
+- Grep for the literal phrase "caller picks who runs this role" across `docs/tier1`,
+  `tier2`, `tier3`, `tier7`, and GitHub issue #45's body: 0 matches — the phrase is the
+  orchestrator's paraphrase, not a quotation; verdict above is reasoned from the actual
+  text of #45's homes table and #46 D3/D4, not from the paraphrase.
+
+## ADR-0060 — ADR-0038 decided harden; what was built does not enforce it, names a script that does not exist, and has never scanned a real diff
+
+**Date:** 2026-09-05 · **Status:** Accepted · **Supersedes:** none · **Amends:** ADR-0038's enforcement description · **See also:** ADR-0038 (the harden decision this audits rather than re-litigates), ADR-0031 (the protected set), ADR-0007 (the vacuity class), D57, #4, #88 · **D28 waiver:** no
+
+## Context
+
+Issue #4 poses harden-or-accept. It is already answered on the record: **ADR-0038**
+("bench Immutability: Convention → Git-Level Control", `docs/tier1/adr-log.md:3933`,
+status Accepted, dated 2026-08-24, "See also: Issue #4") decided **harden**, added
+`bench/results/` and `bench/fingerprints/` to `policy/protected-paths.json` as
+append-only prefixes, and named its enforcement as `scripts/lint_protected_paths.py`
+plus a CI step.
+
+This ADR does not re-litigate harden-versus-accept. It audits what ADR-0038's
+decision actually produced, on the evidence, and finds three defects severe enough
+that the "harden" box is checked in name only:
+
+1. **The enforcement ADR-0038 cites does not exist.** `scripts/lint_protected_paths.py`
+   is nowhere in the repository (`find . -iname '*lint_protected_paths*'` → nothing).
+   What actually runs is an inline bash step in `.github/workflows/gates.yml`, added in
+   commit `a3b551e` ("chore: workflow gates for topology/canvas + fingerprint"), named
+   "Protected paths append-only (bench/results/, bench/fingerprints/)". The ADR's own
+   Enforcement section misdescribes the mechanism it claims to be reporting on.
+
+2. **The mechanism that does run does not check what it claims to check, and would
+   currently reject the operation it says it permits.** The step is:
+
+   ```bash
+   modified=$(git diff --name-only HEAD~1 -- bench/results/ bench/fingerprints/ 2>/dev/null || true)
+   if [ -n "$modified" ]; then
+     echo "Protected paths modified (not just added):"
+     echo "$modified"
+     echo "Only new files (status 'A') are allowed under bench/results/ and bench/fingerprints/ (ADR-0038)."
+     exit 1
+   fi
+   ```
+
+   `git diff --name-only` does not carry a status column — it lists a path the moment
+   it differs between the two trees, whether that path was **added**, modified, or
+   deleted. Verified directly:
+
+   ```
+   $ git diff --name-only HEAD~1     # after committing a brand-new file
+   bench/results/seed2.json
+   $ git diff --name-status HEAD~1
+   A       bench/results/seed2.json
+   ```
+
+   The script's own echo text — "Only new files (status 'A') are allowed" — describes
+   a filter the command does not apply. As written, this step fails CI on the very
+   next legitimate seed result anyone commits. It has never been caught because of
+   finding 3.
+
+3. **It has scanned zero commits in its entire existence — the D57 case, not a green
+   check.** `git log --oneline -- bench/results/` shows exactly **one** commit ever
+   touching the directory: `3e91c20`, the initial commit that laid down all 32 files
+   (26 `.json`, 6 `.log`, 2 of the `.json` being rollups) — and that commit predates
+   `a3b551e`, which is when the CI step was introduced. `bench/fingerprints/` has
+   **zero** commits, ever (`git log --all -- bench/fingerprints/` → empty) — the
+   directory does not exist in the tree; `scripts/capture_run_fingerprint.py` writes
+   run-level environment fingerprints (docker image digest, lockfile hash, executor
+   commit — not a hash of `bench/results/` content) to that path only inside a CI job,
+   and `fingerprint.yml` uploads them as a GitHub Actions **artifact**, never commits
+   them. `git log --diff-filter=M --all -- bench/results/ bench/fingerprints/` returns
+   **zero** rows.
+
+   **Count, reported per the project's own convention: this check has scanned 0
+   post-introduction diffs against `bench/results/` and 0 against `bench/fingerprints/`
+   across its entire lifetime.** A step that has never fired, on a path that has never
+   changed since the step existed, has demonstrated nothing — not that modifications
+   are caught, not that additions are permitted, not that the mechanism even parses
+   correctly under real conditions. Green here means "never ran," not "verified safe,"
+   which is exactly the D57 failure this project has a name for.
+
+## Threat model — which failures are invisible today
+
+Per the ticket's framing, the interesting failures are not malicious rewrites in a
+supervised factory; they are well-meant ones.
+
+| Failure | Caught today? | Why |
+|---|---|---|
+| A well-meaning regeneration silently overwrites a seed's record, landed as the sole change in a single commit pushed to `main` | **Accidentally caught** (git diff shows the path; the finding-1 bug means the step doesn't distinguish this from an addition — but it still exits 1 on `HEAD~1` diffing to something that differs) | The blanket `git diff --name-only` treats "differs at all" as failure. Coarser than intended, but not blind to this one case — *if* the modifying commit is `HEAD` at CI time. |
+| Same overwrite, but landed as a non-tip commit in a multi-commit `push` to `main` (not squash-merged, not a PR merge commit) | **Invisible** | `HEAD~1` diffs only the immediate parent of the pushed tip. A change in an earlier commit of the same push is never the subject of any CI comparison — GitHub Actions fires once per push, at the new HEAD, and this script looks back exactly one commit. |
+| Same overwrite, landed via a commit that skipped or bypassed this CI job (branch-protection admin override, `[skip ci]`, a red run overridden by hand) | **Invisible, permanently** | Nothing re-verifies `bench/results/` content against a stored reference on any *later* run. The check is a diff against the previous commit at commit-time only; there is no independent hash manifest a subsequent CI run could re-check to catch a change that got past it once. |
+| A rollup (`agentic-qwen3-next-80b-a3b-instruct-rollup.json`) recomputed from changed per-seed inputs while the per-seed files stay byte-identical | **Invisible** | Nothing here compares rollup content against a recomputation from its declared per-seed inputs. The append-only check only sees `bench/results/` as an undifferentiated bag of paths — it has no notion of "this rollup is derived from these seeds" and cannot notice a stale-relative-to-inputs rollup, only a changed file. |
+| A record edited "to fix a formatting nit" (re-serialized JSON, changed key order, a trailing newline) | **Would be caught by the coarse diff today (accidentally) — but see the multi-commit and bypass rows** | Same caveats as row 1: caught only if it is the sole change in the commit that is `HEAD` when CI runs, and never re-checked afterward. There is no hash stored anywhere independent of git history itself — "nothing re-checks" is literally true: the only record of what a file's content *should* be is the file itself. |
+
+**Conclusion of the threat-model pass:** the mechanism ADR-0038 put in place is not
+absent, but it is *unproven* (zero real executions), *misdocumented* (wrong script
+name), *commit-boundary-limited* (only the diff against the immediate parent, only at
+commit time, no re-verification), and has *no independent content reference*
+(a manifest of expected hashes) that a later, unrelated CI run could check regardless
+of when or how a change landed. The multi-commit-push and CI-bypass rows are exactly
+the "invisible today" answer the ticket asks for.
+
+## Decision
+
+**Harden — not by re-deciding harden-versus-accept (ADR-0038 already did, correctly,
+in principle), but by fixing the enforcement so the decision is actually implemented.**
+Accept is not argued here because the record already argues harden and the gap is
+implementation, not principle; nothing found in this audit weakens the case ADR-0038
+made (measurement rests on these records; the plan cites them; an autonomy grant is
+keyed to the fingerprint tracker specifically).
+
+### 1. Fix the existing gates.yml step to test what it claims
+
+Replace `--name-only` with `--diff-filter` so the check tests status, not mere
+presence:
+
+```bash
+non_additions=$(git diff --name-status --diff-filter=MDR HEAD~1 -- bench/results/ bench/fingerprints/ 2>/dev/null || true)
+if [ -n "$non_additions" ]; then
+  echo "Non-addition change(s) under append-only protected paths:"
+  echo "$non_additions"
+  echo "Only additions (status 'A') are allowed under bench/results/ and bench/fingerprints/ (ADR-0038)."
+  exit 1
+fi
+```
+
+This alone fixes finding 2 — it now permits legitimate additions and still rejects
+modification (M), deletion (D), and rename (R), which is the actual ADR-0038 intent.
+
+### 2. Add a hash manifest as the second, commit-boundary-independent layer
+
+`bench/fingerprints/` is not a hash manifest over `bench/results/` — confirmed by
+reading `scripts/capture_run_fingerprint.py`: it records run/environment identity
+(docker image digest, `uv.lock` sha256, executor commit), not content hashes of
+evidence files, and it is never committed (upload-artifact only). No existing
+mechanism does what is proposed here; this is not duplicate work.
+
+Add `bench/results/MANIFEST.json` (or `bench/manifest.json`, sibling rather than
+inside the protected directory so its own diff is visible in review): `{path:
+sha256}` for every file under `bench/results/`. A CI step recomputes the hash of
+every currently-tracked file and compares against the manifest:
+
+```bash
+python3 scripts/check_bench_manifest.py --check
+```
+
+which:
+- walks `bench/results/` (recursively, including `.log` files — evidence is not
+  only the `.json` shape),
+- recomputes sha256 for every file found,
+- compares against `MANIFEST.json`,
+- **fails if the file count scanned is 0** — the vacuity guard the ticket requires,
+  in the style already established by `scripts/lint_migrations.py` ("OK — no
+  migrations to check yet" is the *only* accepted zero-count message, printed
+  distinctly from a pass on real content; an empty `bench/results/` reporting green
+  the same way a populated, verified one does is exactly the failure class this
+  project already has a name for),
+- fails on any path present in one side and not the other (deleted, or added without
+  a manifest update — this closes the append-only gap left by relying on git diff
+  alone), and
+- fails on any hash mismatch, **independent of which commit introduced it and
+  independent of whether the append-only CI step above ran on that commit at all** —
+  this is what answers the "CI-bypass" and "multi-commit push" rows of the threat
+  table: the manifest is compared against the *current working tree* on every run,
+  not against `HEAD~1`, so a change that slipped past step 1 on the commit it landed
+  is still caught on the next run, and the one after that, for as long as the
+  manifest and the file disagree.
+
+Report format, matching this project's established convention: `"{scanned} file(s)
+checked against manifest, {mismatches} mismatch(es)"` on every run, pass or fail —
+so the count is visible in the log of a green run, not only a red one.
+
+### 3. Reconcile the manifest with additions
+
+A `MANIFEST.json` covering an append-only directory needs its own update path when a
+new seed record is legitimately added — otherwise step 2 fails on every honest
+addition, re-creating finding 2's bug one layer up. `scripts/check_bench_manifest.py`
+should take `--update` to add hash entries for paths not yet in the manifest **but
+refuse to change or remove an existing entry** (the operation itself enforces
+append-only at the manifest level, independent of git). Both the new file and the
+updated manifest land in the same commit, so a reviewer sees exactly what evidence
+was added and that no existing entry moved.
+
+### 4. Register and fence
+
+- `docs/tier4/protected-paths-policy.md` rows for `bench/results/` and
+  `bench/fingerprints/` gain a note: "append-only enforced by git-diff-status
+  (gates.yml) plus content hash manifest (`scripts/check_bench_manifest.py`)."
+- `policy/protected-paths.json` stays at version 1 — no new prefix, this hardens
+  existing entries rather than adding one.
+- `bench/fingerprints/` remains named in both the git-diff step and, once that
+  directory is first populated by a committed (not merely artifact-uploaded) record,
+  the same manifest treatment applies — today it stays correctly reported as
+  scanning 0 files there, not silently dropped from the check.
+
+## Consequences
+
+- The append-only guarantee for `bench/results/` (and, once populated,
+  `bench/fingerprints/`) becomes independently re-checkable on every CI run,
+  regardless of which commit introduced a change or whether an earlier gate ran
+  against it — closing the multi-commit-push and CI-bypass gaps identified above.
+- Legitimate evidence additions stop being blocked by the fixed `--diff-filter` (a
+  latent break this audit found before anyone hit it in practice).
+- `bench/manifest.json`'s own diff makes every future addition to `bench/results/`
+  visible and reviewable as a single, small, expected change — an unexpected diff to
+  the manifest (any entry other than a pure addition) is itself a signal.
+- Cost: one more script (Gate D, drafted not implemented here), one more CI step,
+  one more file whose presence must itself be explained in
+  `docs/tier4/protected-paths-policy.md` and reviewed alongside `bench/results/`
+  additions rather than by convention.
+- This ADR does not touch `scripts/`, `.github/`, or `bench/results/` — all three are
+  protected and Gate D. It specifies; a human implements.
+
+## Enforcement (drafted, not implemented)
+
+- `.github/workflows/gates.yml` — corrected `--diff-filter=MDR` step (fixes existing
+  step; specified above).
+- `scripts/check_bench_manifest.py --check` (drafted above) — new CI step under
+  `integrity:`, alongside the existing protected-paths step; reports scanned-file
+  count on every run and fails closed on a 0-file scan of a non-empty
+  `bench/results/`.
+- `scripts/check_bench_manifest.py --update` — the only sanctioned way to add a hash
+  entry; refuses to alter or remove an existing one.
+- `docs/tier4/protected-paths-policy.md` — row annotations for both enforcement
+  layers, so the register names what actually runs (closing the misdescription this
+  audit found in ADR-0038 itself).
+
+## Evidence appendix — counts
+
+- `bench/results/`: 32 files (26 `.json`, 6 `.log`); 2 of the `.json` files are
+  rollups (`*-rollup.json`).
+- `bench/fingerprints/`: 0 files, 0 commits, directory absent from the working tree
+  and from all of git history.
+- Commits ever touching `bench/results/`: **1** (`3e91c20`, the initial commit).
+- Commits ever touching `bench/fingerprints/`: **0**.
+- Modified-after-write records (`git log --diff-filter=M --all -- bench/results/
+  bench/fingerprints/`): **0**. Zero is the honest finding — not because nothing
+  could go wrong, but because nothing has been committed to touch since the gate
+  that would have caught it was added.
+- `scripts/lint_protected_paths.py` (the script ADR-0038's Enforcement section
+  names): **0 matches**, does not exist.
+- `scripts/check_bench_manifest.py` (this ADR's proposal): does not exist yet —
+  drafted above, not implemented.
+
+## ADR-0061 — An interruption is recorded as a termination, not a verdict: the record-shape half of #69
+
+**Date:** 2026-09-05 · **Status:** Accepted · **Supersedes:** none · **Amends:** nothing on disk; it specifies changes to the Run Instrumentation and Mission Control specifications and `docs/tier1/data-architecture.md` for a later, separately reviewed commit · **Discharges:** the record-shape half of #69 · **See also:** ADR-0017 (a hole never passes), ADR-0055 (evidence chain link keys), `harness/verdicts/__init__.py` (the three-valued vocabulary), D51 (operator actions as evidence), #69 · **D28 waiver:** no — `data-architecture.md` is `status: frozen` but `enforcement: schema`, not `ci-gate`, so this falls outside the class disputed by #78, and no document is amended by this ADR itself
+
+### Scope note
+
+This worktree's ticket text splits #69 into a record-shape half (mine) and a runtime half
+(explicitly not mine, doctrine-blocked: no dispatcher exists, so there is nothing to signal).
+Everything below is the first half. § *Where the split falls* at the end states the second
+half plainly, for filing as its own ticket.
+
+---
+
+### 1. How verdicts and evidence are recorded today
+
+**Verdicts are a closed three-value enum, authored in exactly one place and mirrored by a DB
+CHECK constraint that is the real authority.** `harness/verdicts/__init__.py:36` declares
+`VERDICTS: Final[frozenset[str]] = frozenset({"pass", "fail", "indeterminate"})` and its
+docstring (`harness/verdicts/__init__.py:19-23`) states the module exists precisely because this
+vocabulary used to be spelled out in four places and drifted; a binding test
+(`harness/verdicts/test_verdicts.py`, per the module docstring) asserts the migration's CHECK
+constraint text equals `VERDICTS`. `indeterminate` means, per Failure Semantics
+(`docs/tier1/failure-semantics.md:30`), "at least one criterion did not execute to completion,"
+and per line 33-35 is "excluded from merge rate entirely and tracked separately as a harness
+health metric" — **on both sides of the ratio**, not just the numerator.
+
+**Only `CriterionRunner` may write a verdict row, and this is a database grant, not a
+convention.** `docs/tier1/data-architecture.md:107` gives `alfred_criterion` the only `INSERT`
+on `evidence.verdict` in the entire cluster (bolded in the source table for exactly this
+reason); `alfred_harness` (data-architecture.md:106) holds `SELECT`/`USAGE` on
+`evidence.verdict` but no `INSERT`; `alfred_operator` (data-architecture.md:109) holds neither,
+and N4 (data-architecture.md:144) is the negative assertion that makes this a **global** claim:
+"`INSERT` for `alfred_operator` on any object other than `evidence.operator_action`; any write
+for it on `evidence.verdict`" is a forbidden grant, checked by connecting as the role and
+requiring Postgres to raise `SQLSTATE 42501` (data-architecture.md:160,194).
+`harness/evidence/store.py:196-231`'s `append_verdict` is the one method that can produce that
+row, and its docstring says so directly: "The one row `CriterionRunner` writes and nothing else
+may."
+
+**The evidence chain is hash-linked, append-only, and the reference class for correctness is a
+*re-walk*, not a per-row check.** `harness/evidence/store.py:99-117`'s `link_digest` hashes
+`body_sha256`, `chain_id`, `prev_sha256` and `record_type` — nothing about the row's ordinal
+position, which ADR-0055 (`docs/tier1/adr-log.md:5163-5171`) confirms is deliberate: the row id
+was never part of the digest, so changing the id generator (ADR-0055's own subject) is invisible
+to chain integrity. `verify_chain` (`harness/evidence/store.py:389-465`) makes three separate
+claims, stated in its own docstring: every link's digest recomputes, there is exactly one
+genesis, and **the walk is total** — every row in the table for that `chain_id` is visited
+exactly once, or `ChainForked` is raised. This is a check for *internal consistency of what is
+present*. It says nothing about whether more rows *should* be present — see Finding 3 below,
+which is the sharp one.
+
+**`attempt_end.termination` is already a three-way disposition, separate from `verdict`, and is
+the precedent this proposal extends rather than invents.**
+`docs/tier3/run-instrumentation-specification.md:333-334`:
+
+| `termination` | `verdict` |
+|---|---|
+| `verdict` | `pass` \| `fail` \| `indeterminate` |
+| `escalation` | null |
+| `harness_fault` | null |
+
+`termination` answers *why the attempt stopped*; `verdict` answers *what the criteria said*, and
+the two are already independent fields on the same record, with `verdict` already nullable
+precisely because not every termination reaches one. This existing shape is exactly what
+interruption needs, and the rest of this document is the argument for extending it rather than
+inventing a fourth verdict value.
+
+---
+
+### 2. Testing the ticket's own proposal: is `interrupted` the same shape as `indeterminate`?
+
+#69 proposes `interrupted` follow `indeterminate`'s merge-rate shape (excluded from both sides).
+That specific consequence is correct and is argued for below (§4). But the ticket's checklist
+also leaves open *what kind of thing* `interrupted` is, and treating it as a peer of
+`indeterminate` — i.e., a fourth `verdict` value — does not survive contact with the grant
+matrix, independent of any semantic argument:
+
+**`indeterminate` is a verdict.** It is written by `CriterionRunner`, into `evidence.verdict`,
+by the one role authorized to write there. It presumes `CriterionRunner` ran (fully or
+partially) and could not certify an outcome — F5 (`docs/tier1/failure-semantics.md:51`,
+"`CriterionRunner` crashes mid-execution → `indeterminate`") and F4 (line 50, "held-out schema
+unreachable at verdict time → `indeterminate`; never a `pass` on visible criteria alone") are
+both *criterion-execution* failures. The record answers "the criteria did not finish"; someone
+still had to ask the criteria to run.
+
+**An in-flight interruption, in the case #69 is actually about — "a task whose wall-clock
+exceeds its budget" (`docs/tier1/mission-control-specification.md:395`) — happens *during
+agent work, before `CriterionRunner` is ever invoked*.** There is no verdict to be
+indeterminate about: nothing asked the question yet. Forcing this case to produce a `verdict`
+row would require either (a) `CriterionRunner` itself to write it, which is false — the runner
+never ran — or (b) the interrupting surface (the command surface, `alfred_operator`, per
+D51/`docs/tier1/mission-control-specification.md:224-227`) to write it, which the grant matrix
+forbids outright per N4 above. There is no third writer with a legal path to `evidence.verdict`.
+**The ticket's literal proposal — `interrupted` as a value alongside `pass`/`fail`/`indeterminate`
+— is therefore not implementable without reopening the grant matrix, which is exactly the kind
+of "only `CriterionRunner` writes verdict" invariant `harness/evidence/store.py`'s own docstring
+treats as load-bearing.** That is a strong enough objection to settle the shape question by
+itself, independent of the semantic argument below.
+
+The semantic argument agrees with the mechanical one: an interrupted run may have done
+**substantial, real work** before stopping — turns taken, tools called, a tree mutated,
+progress assertions partially passing — none of which is true of "did not execute to
+completion" in the `indeterminate` sense, which is a statement about the *check*, not about the
+*work*. Collapsing "the agent did real work and was stopped by an operator" into the same
+bucket as "the harness's own measurement apparatus broke" erases exactly the distinction an
+audit needs later: was this attempt's partial trajectory produced under a working harness (so
+it is admissible evidence about the agent, even if unfinished — cf. `no_work` /
+`stopped_short` under *Premature termination*,
+`docs/tier3/run-instrumentation-specification.md:352-355`, which already distinguish *how* a
+`verdict` termination fell short) or was the measurement apparatus itself compromised
+(`indeterminate`)? An interrupted attempt is closer in kind to the first — the harness worked
+correctly and was told to stop — than to the second.
+
+**Conclusion: `interrupted` is a fourth value of `attempt_end.termination`, not a fourth value
+of `verdict`, and not an attribute stapled onto an existing verdict row.** It is a property of
+*the attempt's termination*, the same category `escalation` already occupies, extended by one
+member.
+
+---
+
+### 3. The evidence-chain question — can an auditor distinguish a truncated chain from a complete one?
+
+**No, not today, and this is the most important finding in this ticket.**
+
+`harness/evidence/store.py` defines no terminator record and no chain-completeness check.
+`verify_chain`'s three claims (link recomputes, one genesis, total walk — §1 above) are all
+properties of the rows *present*. Nothing in `harness/evidence/store.py`,
+`docs/tier3/run-instrumentation-specification.md`'s validator groups L1–L7
+(lines 537–543), or the fail-closed table in `docs/tier1/failure-semantics.md:45-74` asserts
+"every `attempt_id` that appears on a `turn`/`tool_call`/`progress`/`phase_*` row has exactly
+one `attempt_end` row" or "every `task_id` that reached a final attempt has exactly one
+`task_end` row." L4 (`run-instrumentation-specification.md:540`) is described as "the group that
+catches an instrument that stopped emitting halfway" — but L4's rules are stated **as
+constraints on `attempt_end`'s own counters** ("`attempt_end`'s `turns`, `tool_calls`, ...
+each equal the value recomputed from the records they summarize"). L4 only fires when
+`attempt_end` exists to check. **If `attempt_end` itself never arrives — the exact case an
+ungraceful interruption produces — L4 has nothing to apply to, and vacuously passes by having
+nothing to say, which is the same class of defect the D57 vacuity guard exists to catch
+elsewhere ("a check that scanned zero items fails"): here, a check that had zero applicable
+rows is never reported as having scanned zero, because no group audits "is there an
+`attempt_end` at all."**
+
+So: a genuinely short, complete attempt (three turns, clean `attempt_end`, `verdict=pass`) and
+an attempt truncated after its third turn by a hard kill are **structurally identical** to
+every rule stated in the specification today — both are "a chain that recomputes, has one
+genesis, and is total over the rows present." The only distinguishing fact — that the second
+one is missing a row the first one has — is not itself checked by any named rule, and
+`verify_chain`'s "total" claim cannot detect an absence it was never told to expect, because it
+has no notion of what a *complete* chain for a given `attempt_id` looks like versus a partial
+one — it only walks the links that exist.
+
+This does not mean every interruption is silent forever — see the two-chain correlation in §4 —
+but the `evidence.run_record` chain **alone**, walked on its own terms, cannot tell a truncated
+attempt from a short complete one, and that gap exists independent of interruption: it is
+equally true of an uncaught harness crash today, which is presumably rarer in practice than an
+operator-initiated stop will be once §*Where the split falls* below is built. This ticket is
+what surfaces it, not what causes it.
+
+**Recommended fix (record-shape, specifiable now): an explicit completeness rule, additive to
+the validator's existing groups** — call it L8 pending the validator owner's numbering. For a
+stream presented as *closed* (not "still in flight," a status the caller states, since Phase 1's
+linter runs "on every emitted stream, before the chain writer hashes it" per
+`run-instrumentation-specification.md:586` and needs to know whether more rows are still coming):
+every `attempt_id` appearing on any row must have exactly one `attempt_end` row, and every
+`task_id` whose final attempt closed must have exactly one `task_end` row. A stream lacking one
+is not malformed in the L1–L7 sense (no field is wrong) — it is **incomplete**, a distinct
+finding, and should fail the same way L1–L7 failures do: "the run is `indeterminate` and the
+records are retained for diagnosis" (`run-instrumentation-specification.md:587`), *unless* the
+absence is explained by a positive record — which is exactly what §4 supplies for the
+interruption case specifically, and is the reason `interrupted` needs to exist as a record at
+all rather than being inferred from silence.
+
+---
+
+### 4. The record shape, and why it does not let an interrupted run reach `pass`
+
+**Two records, two writers, matching the split the architecture already uses everywhere else.**
+
+**a. `operator_action.action` gains `interrupt`.** Written by the command surface under
+`alfred_operator`, the same role and the same table every other operator decision already uses
+(`docs/tier1/mission-control-specification.md:206,224-227`). `verdict_ref` is null — mirroring
+`escalate_to_self`, `reopen` and `heldout_read` (line 207), which already null it for actions
+that are not about an existing verdict. This record is **durable the instant the operator acts,
+independent of whether the running attempt ever gets to write anything back.** That
+independence is load-bearing: `operator_action` and `run_record` are separate chained tables
+(`CHAINED_TABLES` in `harness/evidence/store.py:69`), written by different roles, so an
+ungraceful teardown of the attempt process cannot take the interrupt request down with it. This
+is the anchor an audit reads even when the attempt's own chain is truncated.
+
+Proposed additional field on this action, in the same spirit as `waiver_adr_ref` riding on
+`waive`: `disposition` (enum: `requeue` · `escalate` · `abandon`), the operator's stated intent
+for the work at the moment of stopping it — #69 asks explicitly "does the task return to the
+queue, escalate, or end," and that is a decision an operator makes and evidence should capture,
+even though *enacting* it (requeuing, escalating) is runtime.
+
+**b. `attempt_end.termination` gains `interrupted`.** Written by the harness
+(`alfred_harness`, which already holds `INSERT` on the `evidence.*` artifacts group per
+`data-architecture.md:106`, the same grant every other `attempt_end` uses — no grant change
+needed), when and if the attempt can flush a graceful terminal record before teardown. `verdict`
+is null on this termination value, extending the existing null-on-`escalation` rule
+(`run-instrumentation-specification.md:334`) to a second member — proposed as a DB CHECK:
+`termination IN ('escalation','interrupted') → verdict IS NULL`. No other `attempt_end` field
+needs to change: `turns`, `tool_calls`, `wallclock_ms`, `progress_final`, `tree_sha256` etc. are
+already computed from whatever happened before the stop, and already report partial state
+correctly for any early termination — this is the same reasoning `no_work` and `stopped_short`
+already rely on (`run-instrumentation-specification.md:349-359`).
+
+**Why this cannot reach `pass`, under the ADR-0017 discipline of "an unread hole never passes":**
+three independent guarantees, not one:
+- No verdict row is written for an attempt interrupted before `CriterionRunner` runs — there is
+  nothing to certify, so nothing is certified, and the merge gate reads absence-of-verdict the
+  same way it reads a task still queued.
+- The proposed CHECK constraint makes it structurally impossible for a row with
+  `termination = interrupted` to carry `verdict = 'pass'` (or any value) even if some future
+  writer tried.
+- If `CriterionRunner` had *already* produced a verdict before the interrupt signal reached the
+  process — a narrow race, not the "in-flight run" case #69 is about — that verdict row stands
+  on its own merits, written by the one role authorized to write it, and `attempt_end`'s
+  `termination` value describes the *attempt's* shutdown, not a re-judgment of a verdict that
+  already exists. The two facts (a verdict was reached; the attempt was then told to stop) are
+  not in tension and require no special-casing beyond recording both truthfully.
+
+**Why not fold interruption into the existing `escalation` cause enum instead of a new
+`termination` value?** Escalation's closed set (`turn_cap` · `token_cap` · `wallclock_cap` ·
+`iteration_cap` · `criterion_red_after_n` · `no_monotone_progress` · `protected_path_attempt` ·
+`tool_unavailable` · `policy_violation` · `agent_initiated` · `harness_fault` ·
+`fingerprint_drift`; `run-instrumentation-specification.md:306-309`) is entirely about
+conditions the **harness observes from inside the running attempt** — caps, stalls, protected
+paths, denied tools. An operator interruption is not observed from inside the attempt; it is an
+**external act against a still-running process**, structurally different from every member of
+that set, and closer in kind to `phase_start`/`phase_end`'s split from `attempt_end` — a
+different actor initiating a different kind of event — than to any escalation cause. Giving it
+its own `termination` value keeps the escalation enum's existing claim ("every member is
+something the harness itself detected") true, rather than diluting it with the one member that
+isn't.
+
+---
+
+### 5. Merge-rate treatment
+
+**Interruption is excluded from merge rate structurally, not via the `indeterminate` label, and
+that is a stronger exclusion than `indeterminate` gets.** An attempt interrupted before
+`CriterionRunner` runs produces no verdict row and, ordinarily, no `task_end` (the task is
+requeued, escalated, or abandoned per the operator's `disposition` — §4a). Merge rate is
+computed from `task_end.outcome` joined to verdicts
+(`data-architecture.md:489`, "Per-task merge rate after the retry budget, on a fingerprint |
+`task_end.outcome` joined to `control.fingerprint`"); a task with no `task_end` is not yet in
+that population, exactly like a task still in the queue. The interrupted attempt itself never
+enters either side of the ratio — it is not merely "counted in neither," it is not counted at
+all, the same way an attempt in progress right now is not counted. If the task is requeued and a
+later attempt completes, *that* attempt's outcome is what merge rate reads, and the interrupted
+attempt is a `retry_budget`-consuming event that happened along the way, already visible via
+`task_end.attempts` (`run-instrumentation-specification.md:365`).
+
+**This creates a visibility gap `indeterminate` does not have, and it needs its own metric,
+by the same pattern already used for waivers.** `indeterminate` is explicitly "tracked
+separately as a harness health metric" (`failure-semantics.md:33-34`) — it gets a name and a
+denominator. An interrupted attempt with no verdict row is invisible to that machinery entirely
+unless something else surfaces it. The fix already exists in the architecture for a structurally
+identical problem: "Waiver count is a health metric, queried from these rows"
+(`mission-control-specification.md:242-243`) — `operator_action` rows are themselves the
+queryable source, no separate table needed. **Interruption rate should be read the same way:
+`count(operator_action: action = interrupt) / count(task dispatched)` over a window**, tracked
+as an operator-experience / harness-health metric parallel to waiver count, not folded into the
+merge-rate ratio and not folded into `indeterminate`'s harness-health bucket either — it is a
+different kind of health signal (operator judgment about wall-clock, not the harness's own
+measurement apparatus failing) and conflating the two metrics would make an operator who
+babysits budgets look like a harness that is unreliable.
+
+---
+
+### 6. Where the record-shape half ends and the doctrine-blocked runtime half begins
+
+**Everything above is specifiable today because it is a shape: an enum member, a field, a CHECK
+constraint, a validator rule, a query over existing tables.** None of it requires anything to be
+running.
+
+**Everything below requires a dispatcher, and none exists:**
+
+- How a signal actually reaches a running attempt process or its sandbox/container, and what
+  mechanism delivers it (a cooperative check-in the agent's own loop polls; a process signal to
+  the container; something else) — there is no running process today to receive anything, per
+  the ticket's own framing ("No dispatcher exists... there is no runtime to interrupt").
+- What "graceful" means mechanically — how much time the attempt gets to flush a real
+  `attempt_end(interrupted)` row before an ungraceful kill is forced, and what happens if the
+  evidence write itself cannot complete in that window (F6, `failure-semantics.md:52`, already
+  says "run halts; no work proceeds unrecorded" for evidence-store-unwritable in general, but the
+  interaction with an interrupt deadline is new and is runtime, not shape).
+- Who is authorized to call the interrupt endpoint and how the command surface's request reaches
+  whatever eventually holds the running attempt (queue message, direct process handle, etc.).
+- The actual enactment of `disposition` — requeuing a task, raising an escalation, marking it
+  abandoned — as opposed to recording the operator's stated intent, which §4a specifies.
+- Whether interruption is reachable from the live view alone, from the queue alone, or both —
+  a UI/surface-routing question the ticket lists, resting entirely on a live view and a
+  dispatcher that do not exist yet.
+
+**File this as a separate ticket** — "An interruption *mechanism*: how a signal reaches and
+stops a running attempt, and how the harness commits a graceful `attempt_end(interrupted)`
+before teardown" — explicitly blocked on a dispatcher existing, so the split recorded here
+stays durable rather than being re-litigated the next time #69 (or its blocking issue #67) is
+picked up. The record shape above does not need that ticket to land first; the runtime ticket
+needs this one to land first, so it has a terminal record to write into.
+
+---
+
+### Summary of the concrete proposal
+
+| Change | Where | Kind |
+|---|---|---|
+| `interrupted` added to `attempt_end.termination` | Run Instrumentation Specification | new enum member |
+| `verdict IS NULL` required when `termination IN ('escalation','interrupted')` | same, as a DB CHECK | new constraint, extends existing implicit rule |
+| `interrupt` added to `operator_action.action` | Mission Control Specification | new enum member |
+| `disposition` (`requeue`\|`escalate`\|`abandon`) added to `operator_action`, present iff `action = interrupt` | Mission Control Specification | new field, versioned by `field_set_version` per the existing rule (`run-instrumentation-specification.md:557-561`) |
+| Completeness rule (proposed L8): every `attempt_id`/`task_id` in a *closed* stream has exactly one `attempt_end`/`task_end` | Run Instrumentation Specification § Enforcement | new validator group |
+| Interruption rate read from `operator_action` counts, parallel to waiver count | Data Architecture / Mission Control | new derived metric, no new table |
+| No change to `evidence.verdict`, its CHECK constraint, or the grant matrix | — | explicitly rejected in §2 |
+
+No protected path was written. `harness/`, `migrations/harness/`, `docs/tier1/adr-log.md` and
+every other protected prefix were only read. This document is the specification the orchestrator
+can turn into an ADR number, a migration description, and a validator-rule ticket.
+
+## ADR-0062 — Amending a frozen ci-gate document is a D28 waiver; ADR-0050 is retroactively the third against the structure fence, and the falsification clause fires
+
+**Date:** 2026-09-06 · **Status:** Accepted · **Supersedes:** ADR-0050's `D28 waiver: no` classification · **Amends:** ADR-0050's waiver header · **See also:** ADR-0033 and ADR-0040 (the reading this adopts), ADR-0050 (the reading this overrules), ADR-0052 (the derived ordinal), ADR-0022 and ADR-0035 (the other two waivers), `docs/tier0/operating-principles.md:6` (the falsification clause this trips), #78 · **D28 waiver:** no — this record classifies waivers, it does not amend a frozen document
+
+### Context
+
+[#78](https://github.com/Akamel01/Alfred/issues/78) recorded that two merged ADRs disagree on
+whether amending a frozen `ci-gate` document is a D28 waiver. ADR-0033 and ADR-0040 say it is
+and each carries `D28 waiver: yes`. ADR-0050 amends
+`docs/tier2/coding-standards.md § Structure (frozen, ci-gate)` — naming the freeze and the
+gate in its own header — and carries `D28 waiver: no`.
+
+The disagreement is not cosmetic. The waiver count feeds the falsification clause at
+`docs/tier0/operating-principles.md:6`, and the totals straddled the threshold, so the tie
+could not be broken by whoever noticed it. It was escalated and held open as an operator
+decision.
+
+**The operator decided on 2026-09-06: amending a frozen `ci-gate` document is a D28 waiver.
+ADR-0033 and ADR-0040's reading governs; ADR-0050's does not.**
+
+### Decision
+
+**1. The rule.** An ADR that amends a document whose header carries `status: frozen` **and**
+`enforcement: ci-gate` declares `D28 waiver: yes`. The freeze plus the gate is what makes the
+document's content a commitment rather than a draft; overriding it is the waiver, whatever
+the size of the diff.
+
+**2. ADR-0050 is reclassified.** Its `Amends` line already names
+`docs/tier2/coding-standards.md § Structure (frozen, ci-gate)` explicitly, so it meets the
+rule on its own text. Its `D28 waiver: no` was wrong under the reading now adopted. The ADR
+log is append-only, so this record carries the correction rather than editing ADR-0050 in
+place, and `scripts/lint_adr_numbers.py`'s derived-ordinal check (ADR-0052) must be updated
+to read the corrected classification from here.
+
+**3. The waiver total is five**, not four: ADR-0022, ADR-0033, ADR-0035, ADR-0040, ADR-0050.
+
+### The falsification clause fires, and this is the substance of the record
+
+`docs/tier0/operating-principles.md:6`:
+
+> A principle is repeatedly waived under D28's ADR discipline — **three waivers against the
+> same principle means the principle is wrong, not the situations.**
+
+Against the specific gate ADR-0040 names — *"the frozen status over the coding standards'
+structure fence"* — the waivers are now:
+
+| ADR | What it amended | Was | Now |
+|---|---|---|---|
+| ADR-0033 | the structure fence of the coding standards | waiver | waiver |
+| ADR-0040 | the structure fence of the coding standards | waiver | waiver |
+| ADR-0050 | `coding-standards.md § Structure` (frozen, ci-gate) | not a waiver | **waiver** |
+
+**Three waivers, one gate.** The clause is not a warning; it is a falsification condition with
+a stated conclusion: *the principle is wrong, not the situations.* Three independent efforts
+found the fence's frozen content had to move, and each was correct on its own facts. The
+register's own discipline says the fault is the freeze, not the three amendments.
+
+**What that does and does not mean.** It does not mean the structure fence is wrong — the
+fence catches real drift, and `tools/vaultgraph/extract/layout.py` floors it at eighteen with
+`layout-miss` and `layout-ghost` anomalies that fire. It means the fence's **`status: frozen`
+is the wrong classification for a list that tracks a directory tree**, because a tree grows
+and a frozen list cannot. A document that must be amended whenever the repository gains a
+top-level directory is a `provisional` document with a gate, not a frozen one.
+
+**The remedy is not this ADR's to apply.** Changing that classification means editing
+`docs/tier2/coding-standards.md`'s header, and re-deriving the waiver total once the fence
+stops generating waivers. More importantly, the falsification clause itself lives in
+`docs/tier0/operating-principles.md` — the constitution, protected, permanently human-authored
+under ADR-0005. **An agent may not discharge a falsification of a principle it is measured
+against.** This record states that the condition is met and hands it to the operator.
+
+### Consequences
+
+**[#7](https://github.com/Akamel01/Alfred/issues/7) is unblocked, and its price is now known.**
+ADR-0057 left the sandbox-specification correction blocked on this question. The answer:
+amending `docs/tier4/sandbox-specification.md` (frozen, `ci-gate`) to document the C13/C7
+archive-suffix asymmetry **is** a D28 waiver, and would be the sixth. Whether to spend it, or
+to unify the tuples under Gate D instead — ADR-0057 recorded unification as the fallback and
+the textually better-supported option — is now a live choice rather than a blocked one.
+
+**[#88](https://github.com/Akamel01/Alfred/issues/88) is partly unblocked.** Correcting the
+inverted `--diff-filter` in `.github/workflows/gates.yml` amends no frozen document and needs
+no waiver. Correcting ADR-0038's prose about a script that does not exist needs no waiver
+either. Only a change to a frozen ci-gate document would.
+
+**A lint obligation.** `scripts/lint_adr_numbers.py` derives each waiver's ordinal by counting
+prior `D28 waiver: yes` headers. ADR-0050's header still reads `no`. Until the lint reads this
+correction, the derived count and the true count disagree by one — and that disagreement is
+exactly the drift ADR-0052 closed the class on. `scripts/` is protected, so this is Gate D.
+
+**Falsification trigger.** This decision is wrong if a fourth waiver lands against the
+structure fence gate while the fence is still `frozen` — which would mean the falsification
+clause fired, was recorded, and changed nothing, making the clause decorative.
+
+## ADR-0063 — The structure fence is split out and reclassified provisional, discharging the falsification ADR-0062 recorded
+
+**Date:** 2026-09-06 · **Status:** Accepted · **Supersedes:** none · **Amends:** `docs/tier2/coding-standards.md` (removes § Structure), `docs/README.md` (register row), `scripts/gen_doc_stubs.py` (stub register), `tools/vaultgraph/extract/layout.py` and `extract/effect.py` (repointed) · **See also:** ADR-0062 (the falsification this discharges), ADR-0033, ADR-0040 and ADR-0050 (the three waivers), ADR-0005 (the constitution is human-authored), `docs/tier0/operating-principles.md:6`, #78, #79 · **D28 waiver:** yes — the fifth by the log's derivation and the sixth in fact (ADR-0050's header is not yet corrected; see the Decision), and the fourth and terminal one against this fence
+
+### Context
+
+ADR-0062 recorded that the falsification clause at `docs/tier0/operating-principles.md:6` had
+fired: three D28 waivers landed against the frozen status of the coding standards' structure
+fence — ADR-0033, ADR-0040, and ADR-0050 once #78's ruling reclassified it. The clause does not
+warn, it concludes: *"three waivers against the same principle means the principle is wrong,
+not the situations."*
+
+ADR-0062 stopped at recording the condition. This ADR discharges it.
+
+**What is wrong is the classification, not the fence.** The fence catches real drift:
+`tools/vaultgraph/extract/layout.py` floors it at eighteen and surfaces `layout-miss` and
+`layout-ghost` anomalies that fire. What cannot hold is `status: frozen` on a list that tracks
+a directory tree — the tree grows, and a frozen list cannot follow it without a waiver each
+time. Three independent efforts each discovered that and each was correct on its own facts.
+
+### Decision
+
+**1. § Structure moves to its own document,** `docs/tier2/structure-fence.md`, with
+`status: provisional` and `enforcement: ci-gate` retained. `docs/tier2/coding-standards.md`
+keeps a pointer and stays `frozen`.
+
+**The split is the point, not a convenience.** `status:` is a per-document field, so
+reclassifying the fence in place would have reclassified the whole of `coding-standards.md` —
+including its strict-typing commitments, whose own evidence line says they are enforced now
+*"because retrofitting it onto a grown codebase is impractical."* Declaring those "expected to
+move" as a side effect of fixing the fence would have loosened a real control while appearing
+to be bookkeeping. The fence moves; typing does not; they therefore cannot share a header.
+
+**2. Rejected: generate the fence from the tree.** This looks like the strongest fix — a
+generated fence can never go stale, so it would never need amending and the waiver source would
+vanish. It is wrong, and instructively so. **A fence generated from the thing it fences can
+never disagree with it**, so `layout-miss` and `layout-ghost` could never fire and the check
+would be scanning itself. That is the D57 vacuity class: the change would have deleted the
+detection while presenting as its perfection. The fence stays hand-authored because a
+declaration checked against reality is the only kind that can fail.
+
+**3. This ADR is itself a D28 waiver — the sixth — and that is not a technicality to argue
+away.** It amends `coding-standards.md` while that document is still `frozen` and `ci-gate`, so
+under #78's ruling it is a waiver. The tempting reading is that repairing a falsified principle
+should not cost a waiver, on the grounds that the gate has just been declared wrong. That
+reading is rejected: **it is exactly the reasoning ADR-0050 used, and #78 overruled it three
+days ago.** A rule that binds ADR-0050 and exempts this ADR is not a rule. The waiver is
+recorded plainly and spent once.
+
+This is a **D28 waiver** and counts toward the waiver total the operating principles use as a
+health metric. **It is the fifth.** The gate is the frozen status over the coding standards'
+structure fence.
+
+**That ordinal is the log's arithmetic, and it under-reports by one.** The true count is six:
+ADR-0050 is a waiver under #78's ruling, but its header still reads `no`, and
+`scripts/lint_adr_numbers.py` derives ordinals by counting `D28 waiver: yes` headers.
+ADR-0050's header cannot be corrected on this branch — the same lint refuses any change to a
+record `origin/main` has already issued, because that would land two ADRs under one number.
+So the correction is owed at merge, or in a record issued after ADR-0050 is reachable, and
+until then the derived ordinal is one behind. **The correct reading of this ADR is: fifth by
+the log's derivation, sixth in fact.** Stated here rather than left for an auditor to notice
+that the numbers do not add up.
+
+It is also **terminal against this fence.** It is the fourth waiver against that one gate, and
+it is the one that removes the need for a fifth. `structure-fence.md`'s own `falsifies_if` says
+so: a waiver spent against the fence at any point *after* this ADR would mean the
+reclassification failed to remove the waiver source.
+
+**4. The constitution is untouched.** `docs/tier0/operating-principles.md` is protected and
+permanently human-authored under ADR-0005, and needs no edit: the falsification clause fired
+correctly and is working as designed. ADR-0062's statement that an agent may not discharge the
+falsification was imprecise about *where* the remedy lives. What was falsified is the fence's
+classification, which lives in `docs/tier2/` and is not protected. The clause itself is
+unchanged and remains armed.
+
+### Consequences
+
+**Fence amendments stop costing waivers.** A new top-level directory now needs an ADR, as any
+provisional-document change does, and no waiver. The `ci-gate` is retained, so the fence still
+fails the build when it disagrees with the tree.
+
+**One protected-path write, and a Gate D read is owed.** `scripts/gen_doc_stubs.py` holds the
+stub register, and `scripts/lint_docs.py:194` requires every document on disk to appear in it,
+so creating the new document required adding one `Doc(...)` entry there. `scripts/` is
+protected. Per `docs/tier4/protected-paths-policy.md:100` this lands with an ADR — this one —
+**and an operator line-by-line read that has not happened.** Recorded as owed rather than
+assumed.
+
+**[#79](https://github.com/Akamel01/Alfred/issues/79) now has a precedent rather than a bill.**
+`docs/tier1/cross-stage-invariants.md` is the same shape: frozen over a claim about what
+enforces which invariant, which must move as enforcement is built out. It can follow this ADR's
+path — reclassify rather than waive — instead of spending a seventh waiver on a one-sentence
+repair. That is a separate decision on a separate document and is not taken here.
+
+**The waiver count is now six, and the lint still reports four.**
+`scripts/lint_adr_numbers.py` derives ordinals by counting `D28 waiver: yes` headers; ADR-0050's
+header still literally reads `no`, and this ADR adds one. True count six, derived count five
+once this lands. The discrepancy was recorded in ADR-0062 and is still owed a Gate D fix.
+
+**Falsification trigger.** This decision is wrong if a D28 waiver is spent against the structure
+fence after this ADR — meaning the reclassification did not remove the waiver source — or if
+`coding-standards.md` is later found to have grown content that must track a moving reality,
+meaning the split drew the seam in the wrong place.
+
+## ADR-0064 — The cross-stage invariants are reclassified provisional and stop re-listing what the lint checks, applying ADR-0063's lesson before a third waiver rather than after
+
+**Date:** 2026-09-06 · **Status:** Accepted · **Supersedes:** none · **Amends:** `docs/tier1/cross-stage-invariants.md` (header, the enforcement claim, and § *What the lint checks*), `docs/README.md` (register row), `scripts/gen_doc_stubs.py` (stub register) · **See also:** ADR-0063 (the precedent, and the contrast in decision 3), ADR-0062 (the falsification that produced the lesson), ADR-0053 (the lint the split describes), #78, #79 · **D28 waiver:** yes — the sixth by the log's derivation, seventh in fact
+
+### Context
+
+[#79](https://github.com/Akamel01/Alfred/issues/79) reported that
+`docs/tier1/cross-stage-invariants.md` declares `enforcement: ci-gate` and states *"Enforced by
+CI lint. A violation fails the build,"* while after ADR-0053 that holds for only some of its
+invariants. Verified against `scripts/lint_invariants.py`'s `ENFORCEMENT` map: **17 entries, 7
+lint-held (I1, I2, I4, I5, I6, I10, I17), 10 review-held.**
+
+**Two defects, not one.** The blanket sentence is the one #79 names. The second is worse and
+was found while fixing the first: § *What the lint checks* duplicated the map as a
+hand-maintained list, and that copy had drifted **in both directions** — it listed **I3** as
+lint-checked when the map records it as held by the `evidence.artifact` `uq_artifact_content`
+constraint *"not by a lint"*, and it omitted **I10**, which the lint does check.
+
+**A correction to #79's own text, for the record:** its prose says enforcement is true for
+*"six of the seventeen"* and false for ten, which is sixteen. The missing invariant is I2,
+which is `Enforcement("script", ...)` and therefore lint-held. #79's table is right; the
+sentence above it is a stale echo of ADR-0053 with the "+1" dropped.
+
+### Decision
+
+**1. `status: frozen` → `provisional`.** This is ADR-0063's lesson applied to a second document.
+The invariants themselves are a commitment and do not move; **what enforces which invariant
+moves as enforcement is built out**, and a frozen document cannot follow that without spending
+a waiver each time. `enforcement: ci-gate` is retained — the gate is real for the lint-held
+subset and is what gives the document teeth.
+
+**2. Applied before a third waiver, not after.** ADR-0062 recorded the falsification clause
+firing at three waivers against the structure fence, and ADR-0063 discharged it. **Zero waivers
+had been spent against this document.** Waiting for two more in order to earn the same
+conclusion would be following the letter of the falsification clause while ignoring what it
+just taught. The clause is a detector, not a quota.
+
+**3. § *What the lint checks* stops duplicating the map and points at it.** A second copy of a
+machine-readable fact is a copy that drifts, and this one already had. Correcting the list
+in place would only have reset the clock.
+
+**The contrast with ADR-0063 is the interesting part, and the two are not in conflict.**
+ADR-0063 *rejected* generating the structure fence from the tree, because a fence generated from
+the thing it fences can never disagree with it and `layout-miss` / `layout-ghost` could never
+fire — the D57 vacuity trap. This section is the opposite shape. The fence is a **human
+declaration about reality that must be able to disagree**; this section is a **description of
+what code already does, where the code is the authority** and disagreement is simply an error.
+Pointing a description at its source removes drift; pointing a check at its subject removes the
+check. The distinction is stated here because the two decisions look contradictory read as
+slogans and are not.
+
+**4. This ADR is a D28 waiver.** It amends `cross-stage-invariants.md` while that document is
+still `frozen` and `ci-gate`. Under #78's ruling that is a waiver, and the reasoning is
+ADR-0063's verbatim: the exemption for "a change that repairs the classification itself" is the
+argument ADR-0050 made and #78 overruled. It is terminal against this document — a waiver spent
+here after this ADR would mean the reclassification failed.
+
+### Consequences
+
+**#79's ask is discharged without a seventh waiver later.** The document now describes its
+enforcement truthfully, and future movement in the lint/review split costs an ADR rather than a
+waiver.
+
+**Nothing yet cross-checks the prose against `ENFORCEMENT`.** `INVMAP` checks the map's internal
+consistency, not its agreement with this markdown. The deferred-pointer wording is honest only
+because it stops asserting specifics — nothing would catch a stale list if someone re-added one.
+The document's `falsifies_if` now names that condition explicitly so it is at least stated. A
+lint that reads the map and fails on a re-added list would close the class; `scripts/` is
+protected, so that is Gate D and is not taken here.
+
+**One protected-path write, and a Gate D read is owed.** `scripts/gen_doc_stubs.py` carries the
+document's declared status in its stub register, so the reclassification is not complete without
+editing it. **The operator's line-by-line read of that diff has not happened** and is recorded as
+owed, not assumed.
+
+**The waiver count is now seven in fact and six by derivation.** ADR-0050's header still reads
+`no` and cannot be corrected on this branch — `scripts/lint_adr_numbers.py` refuses any change to
+a record `origin/main` has issued, since that would land two ADRs under one number. The
+correction is owed at merge. As in ADR-0063, the ordinal below is the log's arithmetic and is
+one behind the truth.
+
+This is a **D28 waiver** and counts toward the waiver total the operating principles use as a
+health metric. It is the sixth. The gate is the frozen status over the cross-stage invariants.
+
+**Falsification trigger.** This decision is wrong if a D28 waiver is spent against
+`cross-stage-invariants.md` after this ADR, meaning the reclassification did not remove the
+waiver source; or if a hand-maintained enforcement list reappears in this document, meaning
+pointing at the map did not stop the duplication it was meant to end.
+
+## ADR-0065 — The bench append-only guarantee gets the lint ADR-0038 said it already had, and the shallow checkout that would have made it vacuous is fixed with it
+
+**Date:** 2026-09-07 · **Status:** Accepted · **Supersedes:** none · **Amends:** `.github/workflows/gates.yml` (replaces the inline step, adds `fetch-depth: 0` to `integrity`); corrects ADR-0038's enforcement paragraph, which cannot be edited in place · **See also:** ADR-0038 (the harden decision this finally implements), ADR-0060 (the audit that found this), ADR-0007 and D57 (the vacuity class), ADR-0017 (a hole never passes), #4, #88 · **D28 waiver:** no — no register document is amended; `gates.yml` and `scripts/` are code, not documents carrying a status header
+
+### Context
+
+ADR-0060 audited ADR-0038's *harden* decision and found that what shipped does not implement
+it. Three findings, each verified again before this change:
+
+1. **ADR-0038 names enforcement that has never existed.** Its line 25 reads *"`scripts/lint_protected_paths.py` (existing) asserts no modified files under protected prefixes."* `find . -name "lint_protected_paths.py"` returns nothing.
+2. **What actually ran was inverted.** The inline step in `gates.yml` used `git diff --name-only HEAD~1`, which does not filter by status, while its own echo promised *"Only new files (status 'A') are allowed"*. Demonstrated again in a scratch repository: committing a **new** bench result makes the step exit 1. The next legitimate bench result would have failed CI.
+3. **It had never seen a real diff.** `git log --oneline -- bench/results/` returns one commit, `bench/fingerprints/` has none and does not exist in the tree, and `git log --diff-filter=M --all` over both returns zero. Green had always meant "never ran" — which is why the inversion in (2) survived every run it was in.
+
+Two further weaknesses were in the same six lines: `HEAD~1` inspects only the tip commit, so a
+modification in any non-tip commit of a multi-commit push was never diffed; and
+`2>/dev/null || true` failed open, so a `git` error reported success.
+
+### Decision
+
+**1. `scripts/lint_bench_append_only.py` replaces the inline step,** in the shape every other
+gate in this repository already has: a module with a `--self-test`, a vacuity guard, and a
+scanned count on every run. The inline bash was the anomaly, and ADR-0038's phantom script
+name is evidence that a script was always the intent.
+
+The four defects are fixed and each is named in the module's own docstring, so the next reader
+does not have to recover this from the log: an explicit `--diff-filter=MDR` so additions pass
+and modifications, deletions and renames fail; a merge-base range against the branch being
+merged into rather than `HEAD~1`; and a `git` wrapper that raises rather than swallowing.
+
+**2. D57 is applied to the corpus, not to the diff, and that is the non-obvious part.** A
+commit that changes nothing under these prefixes is the common case, and reporting "0 changed
+paths" is a true answer to a real question — guarding *that* would fail every ordinary build.
+What is genuinely vacuous is guarding an **empty corpus**: if nothing is tracked under any
+append-only prefix, the check cannot fail and protects nothing, which is precisely the state
+the predecessor sat in unnoticed. So the guard fires on a zero-file corpus, and the per-prefix
+counts print on every run — `bench/results/32, bench/fingerprints/absent` today. **ADR-0060's
+finding that `bench/fingerprints/` does not exist is now visible on every CI run instead of
+being something an audit had to go looking for.**
+
+**3. The `integrity` job gets `fetch-depth: 0`, and this was found while building the fix
+rather than planned.** `actions/checkout@v4` defaults to a shallow clone. On a depth-1
+checkout `origin/main` does not resolve, the base chain falls through to its last candidate
+`HEAD`, and a `HEAD...HEAD` comparison finds nothing while reporting success. **The
+replacement would have been vacuous in CI on its first run** — the same class of failure it
+was written to end, reintroduced by the checkout rather than by the check.
+
+Two things guard it, because one of them is a workflow setting that a later edit could quietly
+drop: the checkout fetches full history, **and** the module fails when its base resolves to
+`HEAD` while `GITHUB_ACTIONS` is set. Locally an unforked tree comparing against itself is the
+honest answer and passes; in CI it means the guarantee evaporated and must not read as green.
+The base is named in the OK line — `against origin/main` — so a degradation is legible rather
+than silent.
+
+**This finding is not confined to this check.** `scripts/lint_adr_numbers.py` resolves its base
+through the same chain with the same `HEAD` fallback, so it carried the same latent vacuity on
+a shallow checkout. The `fetch-depth: 0` added here fixes both; the ADR-numbering lint is not
+otherwise touched.
+
+**4. The self-test is two-sided and then some.** Six planted arms: an addition stays quiet — the
+arm whose absence let the inversion survive — while a modification, a deletion, and a
+modification hidden behind a later commit each fire; an empty corpus trips the vacuity guard;
+and a base falling through to `HEAD` fails under CI and passes outside it. The first run of that
+self-test failed and was right to: the fixtures committed on `main` with `HEAD` equal to `main`,
+so every arm was comparing an empty range and passing for the wrong reason.
+
+**5. ADR-0038's enforcement paragraph is corrected here rather than there.** That record is
+issued by `origin/main`, and `scripts/lint_adr_numbers.py` refuses any edit to such a record
+because it would land two ADRs under one number. So: **ADR-0038's citation of
+`scripts/lint_protected_paths.py` was never true, and its enforcement is now
+`scripts/lint_bench_append_only.py`, wired at `gates.yml` in the `integrity` job.** Its
+decision — harden — stands unamended and is what this implements.
+
+### Consequences
+
+**The next bench result can land.** Verified end-to-end in a scratch repository: an
+addition-only branch that the old step failed now passes, and modifying a landed record fails
+with the path, the status and the base named.
+
+**A Gate D read is owed on two protected paths.** `scripts/lint_bench_append_only.py` is new and
+`.github/workflows/gates.yml` is amended; both prefixes are protected, and
+`docs/tier4/protected-paths-policy.md:100` permits an agent-drafted patch only under
+line-by-line human review with a mandatory ADR. This is the ADR. **The operator read has not
+happened** and is recorded as owed rather than assumed.
+
+**`bench/fingerprints/` still does not exist.** This change makes that visible on every run and
+does not create it. Whether the directory should exist, or should leave `APPEND_ONLY`, is
+ADR-0038's territory and is left open deliberately — a check that invented the directory to
+make its own report tidier would be asserting something no one decided.
+
+**Falsification trigger.** This decision is wrong if a modification to a landed bench record
+merges without this check failing; or if the check reports `OK` while naming a base of `HEAD` in
+CI, meaning both the checkout depth and the self-comparison guard were defeated at once; or if a
+future edit restores a status-blind diff, which the self-test's addition arm now exists to catch.

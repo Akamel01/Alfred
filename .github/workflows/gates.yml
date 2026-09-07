@@ -38,7 +38,14 @@ jobs:
     name: integrity (fixtures and register)
     runs-on: ubuntu-latest
     steps:
+      # Full history, not the default shallow clone. `lint_bench_append_only.py` and
+      # `lint_adr_numbers.py` both resolve a base ref and compare against it. On a
+      # depth-1 checkout `origin/main` does not resolve, the chain falls through to
+      # `HEAD`, and a `HEAD...HEAD` comparison finds nothing while reporting success —
+      # the vacuous pass those checks exist to prevent (ADR-0065).
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Install uv
         uses: astral-sh/setup-uv@v5
@@ -206,17 +213,15 @@ jobs:
       - name: Vault and published graph are current
         run: python3 tools/gen_vault.py --check
 
-      - name: Protected paths append-only (bench/results/, bench/fingerprints/)
-        run: |
-          set -euo pipefail
-          modified=$(git diff --name-only HEAD~1 -- bench/results/ bench/fingerprints/ 2>/dev/null || true)
-          if [ -n "$modified" ]; then
-            echo "Protected paths modified (not just added):"
-            echo "$modified"
-            echo "Only new files (status 'A') are allowed under bench/results/ and bench/fingerprints/ (ADR-0038)."
-            exit 1
-          fi
-          echo "No modifications to append-only protected paths."
+      # Replaces the inline `git diff --name-only HEAD~1` step this job carried until
+      # ADR-0065. That step did not filter by status, so it failed on the additions it
+      # existed to permit; it only ever looked at the tip commit; and its `|| true` made a
+      # git failure read as success. It had never seen a real diff, so none of that showed.
+      - name: Bench append-only lint checks its own vacuity
+        run: python3 scripts/lint_bench_append_only.py --self-test
+
+      - name: Bench records are append-only (bench/results/, bench/fingerprints/)
+        run: python3 scripts/lint_bench_append_only.py
 
       - name: Topology lint checks its own vacuity
         run: python3 scripts/lint_topology.py --self-test

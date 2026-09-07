@@ -29,3 +29,7 @@ generated: true
 | Field | Value |
 |---|---|
 | `status_raw` | accepted |
+
+## Binds
+
+- [[adr__ADR-0063|The structure fence is split out and reclassified provisional, discharging the falsificati]] **see_also** → this

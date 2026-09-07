@@ -33,6 +33,7 @@ generated: true
 ## Binds
 
 - **see_also** → [[adr__ADR-0047|The ownership router gains the factory's facts, and runtime state is never evidence]]
+- [[adr__ADR-0058|The dispatch-workspace exclusion contract: what a dispatch mount excludes, and that nothin]] **see_also** → this
 
 ## Enforced by (code)
 

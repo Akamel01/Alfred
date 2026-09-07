@@ -4,7 +4,7 @@ id: "gate-step:integrity.14"
 title: "CI coverage lint detects planted violations"
 shape: "step"
 job: "integrity"
-source: ".github/workflows/gates.yml:132"
+source: ".github/workflows/gates.yml:139"
 extractor: "workflows"
 tags: [protected]
 aliases:
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `.github/workflows/gates.yml:132`
+**Source** · `.github/workflows/gates.yml:139`
 
 ## Statement
 
