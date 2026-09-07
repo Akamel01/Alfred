@@ -23,7 +23,7 @@ the stub policy, and the authorship boundary.
 | Document | Status | Owner | Enforcement | Written |
 |---|---|---|---|---|
 | [ADR Log](tier1/adr-log.md) | frozen | human | `none` | full |
-| [Cross-Stage Invariants](tier1/cross-stage-invariants.md) | frozen | executable | `ci-gate` | full |
+| [Cross-Stage Invariants](tier1/cross-stage-invariants.md) | provisional | executable | `ci-gate` | full |
 | [Data Architecture](tier1/data-architecture.md) | frozen | executable | `schema` | full |
 | [Domain Model](tier1/domain-model.md) | provisional | generated | `generated` | stub |
 | [Failure Semantics and Error Handling](tier1/failure-semantics.md) | frozen | executable | `ci-gate` | full |

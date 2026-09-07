@@ -34,3 +34,4 @@ generated: true
 
 - **see_also** → [[adr__ADR-0007|Executor-premise assertions may pass vacuously, and that is a third outcome]]
 - [[adr__ADR-0055|Evidence and heldout primary keys become UUIDv7, by a duplicated generator the harness sui]] **see_also** → this
+- [[adr__ADR-0064|The cross-stage invariants are reclassified provisional and stop re-listing what the lint ]] **see_also** → this

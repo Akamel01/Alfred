@@ -37,6 +37,7 @@ generated: true
 - **see_also** → [[adr__ADR-0040|The structure fence grows to eighteen]]
 - **see_also** → [[adr__ADR-0050|Mission Control is hosted off-host, and the loopback bind is replaced rather than relaxed]]
 - **see_also** → [[adr__ADR-0062|Amending a frozen ci-gate document is a D28 waiver; ADR-0050 is retroactively the third ag]]
+- [[adr__ADR-0064|The cross-stage invariants are reclassified provisional and stop re-listing what the lint ]] **see_also** → this
 
 ## Enforced by (code)
 

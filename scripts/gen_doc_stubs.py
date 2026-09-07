@@ -101,9 +101,11 @@ REGISTER: list[Doc] = [
         "The Postgres schema, its tenancy scoping, append-only evidence tables, and the migration "
         "split between product and harness roles. Executable as Alembic migrations.",
         "A table lacks org/project scoping, or an evidence row is mutated after write.", "Phase 2"),
-    Doc(1, "cross-stage-invariants", "Cross-Stage Invariants", "executable", "ci-gate", "frozen",
+    Doc(1, "cross-stage-invariants", "Cross-Stage Invariants", "executable", "ci-gate", "provisional",
         "The dozen properties that must hold from the first commit because each costs hours now and a "
-        "migration later. Enforced by CI lint rather than by intention.",
+        "migration later. Enforcement is split between a CI lint and review, with lint_invariants.py's "
+        "ENFORCEMENT map as the authority on which holds which; provisional per ADR-0064 because that "
+        "split moves as enforcement is built out.",
         "Any invariant is found violated in merged code.", "Phase 2"),
     Doc(1, "mission-control-specification", "Mission Control Specification", "executable", "schema", "provisional",
         "The operator surface: queue, escalation inbox, criterion-first evidence bundle, and run record. "

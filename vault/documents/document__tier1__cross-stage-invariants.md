@@ -2,7 +2,7 @@
 kind: document
 id: "document:tier1/cross-stage-invariants"
 title: "Cross-Stage Invariants"
-status: "frozen"
+status: "provisional"
 shape: "file"
 owner: "executable"
 enforcement: "ci-gate"
@@ -27,7 +27,7 @@ generated: true
 
 ## Falsifies if
 
-> An invariant is found violated in merged code, meaning the CI lint does not actually enforce what this document claims.
+> An invariant is found violated in merged code, meaning its stated holder — lint or review — does not actually hold it; or this document describes an invariant as lint-held when scripts/lint_invariants.py's ENFORCEMENT map says review, or the reverse, meaning the description drifted from the code that is the authority.
 
 ## Fields
 
@@ -38,7 +38,7 @@ generated: true
 
 **evidence**
 
-> Each invariant is included because its retrofit cost is a migration or a rewrite, and several are the specific omissions that made a prior attempt expensive to correct.
+> Each invariant is included because its retrofit cost is a migration or a rewrite, and several are the specific omissions that made a prior attempt expensive to correct. Reclassified from frozen by ADR-0064, applying ADR-0063's lesson before a third waiver rather than after: what enforces which invariant moves as enforcement is built out, and a frozen document cannot follow that without a waiver each time. The invariants themselves are the commitment; the enforcement map is what moves.
 
 ## Binds
 

@@ -6630,3 +6630,92 @@ once this lands. The discrepancy was recorded in ADR-0062 and is still owed a Ga
 fence after this ADR — meaning the reclassification did not remove the waiver source — or if
 `coding-standards.md` is later found to have grown content that must track a moving reality,
 meaning the split drew the seam in the wrong place.
+
+## ADR-0064 — The cross-stage invariants are reclassified provisional and stop re-listing what the lint checks, applying ADR-0063's lesson before a third waiver rather than after
+
+**Date:** 2026-09-06 · **Status:** Accepted · **Supersedes:** none · **Amends:** `docs/tier1/cross-stage-invariants.md` (header, the enforcement claim, and § *What the lint checks*), `docs/README.md` (register row), `scripts/gen_doc_stubs.py` (stub register) · **See also:** ADR-0063 (the precedent, and the contrast in decision 3), ADR-0062 (the falsification that produced the lesson), ADR-0053 (the lint the split describes), #78, #79 · **D28 waiver:** yes — the sixth by the log's derivation, seventh in fact
+
+### Context
+
+[#79](https://github.com/Akamel01/Alfred/issues/79) reported that
+`docs/tier1/cross-stage-invariants.md` declares `enforcement: ci-gate` and states *"Enforced by
+CI lint. A violation fails the build,"* while after ADR-0053 that holds for only some of its
+invariants. Verified against `scripts/lint_invariants.py`'s `ENFORCEMENT` map: **17 entries, 7
+lint-held (I1, I2, I4, I5, I6, I10, I17), 10 review-held.**
+
+**Two defects, not one.** The blanket sentence is the one #79 names. The second is worse and
+was found while fixing the first: § *What the lint checks* duplicated the map as a
+hand-maintained list, and that copy had drifted **in both directions** — it listed **I3** as
+lint-checked when the map records it as held by the `evidence.artifact` `uq_artifact_content`
+constraint *"not by a lint"*, and it omitted **I10**, which the lint does check.
+
+**A correction to #79's own text, for the record:** its prose says enforcement is true for
+*"six of the seventeen"* and false for ten, which is sixteen. The missing invariant is I2,
+which is `Enforcement("script", ...)` and therefore lint-held. #79's table is right; the
+sentence above it is a stale echo of ADR-0053 with the "+1" dropped.
+
+### Decision
+
+**1. `status: frozen` → `provisional`.** This is ADR-0063's lesson applied to a second document.
+The invariants themselves are a commitment and do not move; **what enforces which invariant
+moves as enforcement is built out**, and a frozen document cannot follow that without spending
+a waiver each time. `enforcement: ci-gate` is retained — the gate is real for the lint-held
+subset and is what gives the document teeth.
+
+**2. Applied before a third waiver, not after.** ADR-0062 recorded the falsification clause
+firing at three waivers against the structure fence, and ADR-0063 discharged it. **Zero waivers
+had been spent against this document.** Waiting for two more in order to earn the same
+conclusion would be following the letter of the falsification clause while ignoring what it
+just taught. The clause is a detector, not a quota.
+
+**3. § *What the lint checks* stops duplicating the map and points at it.** A second copy of a
+machine-readable fact is a copy that drifts, and this one already had. Correcting the list
+in place would only have reset the clock.
+
+**The contrast with ADR-0063 is the interesting part, and the two are not in conflict.**
+ADR-0063 *rejected* generating the structure fence from the tree, because a fence generated from
+the thing it fences can never disagree with it and `layout-miss` / `layout-ghost` could never
+fire — the D57 vacuity trap. This section is the opposite shape. The fence is a **human
+declaration about reality that must be able to disagree**; this section is a **description of
+what code already does, where the code is the authority** and disagreement is simply an error.
+Pointing a description at its source removes drift; pointing a check at its subject removes the
+check. The distinction is stated here because the two decisions look contradictory read as
+slogans and are not.
+
+**4. This ADR is a D28 waiver.** It amends `cross-stage-invariants.md` while that document is
+still `frozen` and `ci-gate`. Under #78's ruling that is a waiver, and the reasoning is
+ADR-0063's verbatim: the exemption for "a change that repairs the classification itself" is the
+argument ADR-0050 made and #78 overruled. It is terminal against this document — a waiver spent
+here after this ADR would mean the reclassification failed.
+
+### Consequences
+
+**#79's ask is discharged without a seventh waiver later.** The document now describes its
+enforcement truthfully, and future movement in the lint/review split costs an ADR rather than a
+waiver.
+
+**Nothing yet cross-checks the prose against `ENFORCEMENT`.** `INVMAP` checks the map's internal
+consistency, not its agreement with this markdown. The deferred-pointer wording is honest only
+because it stops asserting specifics — nothing would catch a stale list if someone re-added one.
+The document's `falsifies_if` now names that condition explicitly so it is at least stated. A
+lint that reads the map and fails on a re-added list would close the class; `scripts/` is
+protected, so that is Gate D and is not taken here.
+
+**One protected-path write, and a Gate D read is owed.** `scripts/gen_doc_stubs.py` carries the
+document's declared status in its stub register, so the reclassification is not complete without
+editing it. **The operator's line-by-line read of that diff has not happened** and is recorded as
+owed, not assumed.
+
+**The waiver count is now seven in fact and six by derivation.** ADR-0050's header still reads
+`no` and cannot be corrected on this branch — `scripts/lint_adr_numbers.py` refuses any change to
+a record `origin/main` has issued, since that would land two ADRs under one number. The
+correction is owed at merge. As in ADR-0063, the ordinal below is the log's arithmetic and is
+one behind the truth.
+
+This is a **D28 waiver** and counts toward the waiver total the operating principles use as a
+health metric. It is the sixth. The gate is the frozen status over the cross-stage invariants.
+
+**Falsification trigger.** This decision is wrong if a D28 waiver is spent against
+`cross-stage-invariants.md` after this ADR, meaning the reclassification did not remove the
+waiver source; or if a hand-maintained enforcement list reappears in this document, meaning
+pointing at the map did not stop the duplication it was meant to end.

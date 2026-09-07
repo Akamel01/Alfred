@@ -1,7 +1,7 @@
 {
   "anomalies": [],
   "counts": {
-    "adr": 63,
+    "adr": 64,
     "amendment": 12,
     "decision": 57,
     "document": 78,
@@ -26,12 +26,12 @@
     "blocks": 32,
     "contains": 308,
     "discharges": 1,
-    "enforced_by": 384,
+    "enforced_by": 385,
     "imports": 263,
     "needs": 4,
     "references": 2,
     "runs": 40,
-    "see_also": 78,
+    "see_also": 81,
     "supersedes": 2
   },
   "edges": [
@@ -6971,11 +6971,24 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 149,
-        "line": 149,
+        "end_line": 151,
+        "line": 151,
         "path": "scripts/gen_doc_stubs.py"
       },
       "src": "adr:ADR-0063"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:scripts.gen_doc_stubs",
+      "evidence": "\"ENFORCEMENT map as the authority on which holds which; provisional per ADR-0064 because that \"",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 107,
+        "line": 107,
+        "path": "scripts/gen_doc_stubs.py"
+      },
+      "src": "adr:ADR-0064"
     },
     {
       "confidence": "derived",
@@ -7686,8 +7699,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 150,
-        "line": 150,
+        "end_line": 152,
+        "line": 152,
         "path": "scripts/gen_doc_stubs.py"
       },
       "src": "decision:D28"
@@ -7868,8 +7881,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 324,
-        "line": 324,
+        "end_line": 326,
+        "line": 326,
         "path": "scripts/gen_doc_stubs.py"
       },
       "src": "decision:D32"
@@ -14675,6 +14688,45 @@
     },
     {
       "confidence": "structural",
+      "dst": "adr:ADR-0053",
+      "evidence": "**See also:** ADR-0063 (the precedent, and the contrast in decision 3), ADR-0062 (the falsification that produced the lesson), ADR-0053 (the lint the split describes), #78, #79",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 6634,
+        "line": 6634,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0064"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0062",
+      "evidence": "**See also:** ADR-0063 (the precedent, and the contrast in decision 3), ADR-0062 (the falsification that produced the lesson), ADR-0053 (the lint the split describes), #78, #79",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 6634,
+        "line": 6634,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0064"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0063",
+      "evidence": "**See also:** ADR-0063 (the precedent, and the contrast in decision 3), ADR-0062 (the falsification that produced the lesson), ADR-0053 (the lint the split describes), #78, #79",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 6634,
+        "line": 6634,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0064"
+    },
+    {
+      "confidence": "structural",
       "dst": "adr:ADR-0050",
       "evidence": "**Supersedes:** ADR-0050's `D28 waiver: no` classification",
       "extractor": "adrs",
@@ -14702,14 +14754,14 @@
   ],
   "extractors": [
     {
-      "edges": 91,
+      "edges": 94,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 4,
       "min_nodes": 14,
       "name": "adrs",
-      "nodes": 63,
+      "nodes": 64,
       "rejected": 0,
       "scanned": 1,
       "unparsed": 0
@@ -14845,7 +14897,7 @@
       "unparsed": 0
     },
     {
-      "edges": 384,
+      "edges": 385,
       "expect_rejected": null,
       "max_nodes": 0,
       "max_unparsed": 0,
@@ -16212,6 +16264,27 @@
       "status": "accepted",
       "tags": [],
       "title": "The structure fence is split out and reclassified provisional, discharging the falsification ADR-0062 recorded"
+    },
+    {
+      "attrs": {
+        "date": "2026-09-06",
+        "status": "accepted",
+        "status_raw": "Accepted"
+      },
+      "body": "**Date:** 2026-09-06 · **Status:** Accepted · **Supersedes:** none · **Amends:** `docs/tier1/cross-stage-invariants.md` (header, the enforcement claim, and § *What the lint checks*), `docs/README.md` (register row), `scripts/gen_doc_stubs.py` (stub register) · **See also:** ADR-0063 (the precedent, and the contrast in decision 3), ADR-0062 (the falsification that produced the lesson), ADR-0053 (the lint the split describes), #78, #79 · **D28 waiver:** yes — the sixth by the log's derivation, seventh in fact",
+      "extractor": "adrs",
+      "id": "adr:ADR-0064",
+      "kind": "adr",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 6634,
+        "line": 6634,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "accepted",
+      "tags": [],
+      "title": "The cross-stage invariants are reclassified provisional and stop re-listing what the lint checks, applying ADR-0063's lesson before a third waiver rather than after"
     },
     {
       "attrs": {
@@ -17844,8 +17917,8 @@
     {
       "attrs": {
         "enforcement": "ci-gate",
-        "evidence": "Each invariant is included because its retrofit cost is a migration or a rewrite, and several are the specific omissions that made a prior attempt expensive to correct.",
-        "falsifies_if": "An invariant is found violated in merged code, meaning the CI lint does not actually enforce what this document claims.",
+        "evidence": "Each invariant is included because its retrofit cost is a migration or a rewrite, and several are the specific omissions that made a prior attempt expensive to correct. Reclassified from frozen by ADR-0064, applying ADR-0063's lesson before a third waiver rather than after: what enforces which invariant moves as enforcement is built out, and a frozen document cannot follow that without a waiver each time. The invariants themselves are the commitment; the enforcement map is what moves.",
+        "falsifies_if": "An invariant is found violated in merged code, meaning its stated holder — lint or review — does not actually hold it; or this document describes an invariant as lint-held when scripts/lint_invariants.py's ENFORCEMENT map says review, or the reverse, meaning the description drifted from the code that is the authority.",
         "owner": "executable",
         "path": "docs/tier1/cross-stage-invariants.md",
         "review_after": "Phase 2",
@@ -17864,7 +17937,7 @@
         "line": 1,
         "path": "docs/tier1/cross-stage-invariants.md"
       },
-      "status": "frozen",
+      "status": "provisional",
       "tags": [
         "tier1",
         "executable",
