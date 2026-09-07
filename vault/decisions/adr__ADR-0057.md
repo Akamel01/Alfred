@@ -5,7 +5,7 @@ title: "The C13/C7 archive-suffix split is defensible only under a wiring premis
 status: "accepted"
 shape: "heading"
 date: "2026-09-05"
-source: "docs/tier1/adr-log.md:5418"
+source: "docs/tier1/adr-log.md:5435"
 extractor: "adrs"
 aliases:
   - "ADR-0057"
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `docs/tier1/adr-log.md:5418`
+**Source** · `docs/tier1/adr-log.md:5435`
 
 ## Statement
 

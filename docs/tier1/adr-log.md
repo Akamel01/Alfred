@@ -4752,6 +4752,23 @@ Or: the deployed prototype is found connected to any database, or presenting any
 
 The startup assertion that currently refuses a non-loopback bind stays in place and is the thing item 2 must earn the right to change. Removing it before the replacement exists is what decision 2 forbids, and no lint can check that — which is why it is stated as the first falsification condition rather than left implied.
 
+> **Declaration correction (2026-09-07, #78, ADR-0066).** The header above declares no
+> waiver. That is wrong, and the correct declaration is **D28 waiver:** yes.
+> **It is the fifth.** This record amends `docs/tier2/coding-standards.md` § *Structure* while that
+> section was `frozen` and `ci-gate`, and #78 settled that amending a frozen `ci-gate`
+> document is a D28 waiver. ADR-0050 held the opposite and was overruled.
+>
+> The body is not rewritten. The declaration a record made is part of the record, and
+> editing it in place would present the merge with two ADRs under one number — the very
+> thing `scripts/lint_adr_numbers.py` exists to refuse. The correction travels in the
+> blockquote form ADR-0052 established for the ordinal and ADR-0066 extended to the
+> declaration, which until then had no repair channel at all.
+>
+> The error ran in the under-reporting direction — the direction that makes the waiver
+> count, a health metric feeding the falsification clause at
+> `docs/tier0/operating-principles.md:6`, look healthier than it is. It is also the
+> direction that goes unnoticed, which is why the count is derived rather than asserted.
+
 ---
 
 ## ADR-0051 — The live view is pulled forward ahead of its trigger, and the trigger's reasoning is not discharged
@@ -6631,6 +6648,14 @@ fence after this ADR — meaning the reclassification did not remove the waiver 
 `coding-standards.md` is later found to have grown content that must track a moving reality,
 meaning the split drew the seam in the wrong place.
 
+> **Ordinal correction (2026-09-07, ADR-0066).** The waiver paragraph above claims the
+> fifth position, and the paragraph following it records that the true count was six, that
+> ADR-0050's header was the reason, and that the fix was owed at merge. That fix has now
+> landed: ADR-0050's declaration was corrected under ADR-0066's channel, so the derived
+> count and the true count agree and the note above is discharged. **It is the sixth.**
+>
+> Nothing about this decision changed. The arithmetic it was waiting on did.
+
 ## ADR-0064 — The cross-stage invariants are reclassified provisional and stop re-listing what the lint checks, applying ADR-0063's lesson before a third waiver rather than after
 
 **Date:** 2026-09-06 · **Status:** Accepted · **Supersedes:** none · **Amends:** `docs/tier1/cross-stage-invariants.md` (header, the enforcement claim, and § *What the lint checks*), `docs/README.md` (register row), `scripts/gen_doc_stubs.py` (stub register) · **See also:** ADR-0063 (the precedent, and the contrast in decision 3), ADR-0062 (the falsification that produced the lesson), ADR-0053 (the lint the split describes), #78, #79 · **D28 waiver:** yes — the sixth by the log's derivation, seventh in fact
@@ -6719,6 +6744,12 @@ health metric. It is the sixth. The gate is the frozen status over the cross-sta
 `cross-stage-invariants.md` after this ADR, meaning the reclassification did not remove the
 waiver source; or if a hand-maintained enforcement list reappears in this document, meaning
 pointing at the map did not stop the duplication it was meant to end.
+
+> **Ordinal correction (2026-09-07, ADR-0066).** The waiver paragraph above claims the
+> sixth position, and this record's header already anticipated the discrepancy in prose —
+> *"the sixth by the log's derivation, seventh in fact."* ADR-0050's declaration has now
+> been corrected under ADR-0066's channel, so the derivation has caught up with the fact
+> and the header's hedge is spent. **It is the seventh.**
 
 ## ADR-0065 — The bench append-only guarantee gets the lint ADR-0038 said it already had, and the shallow checkout that would have made it vacuous is fixed with it
 
@@ -6813,3 +6844,158 @@ make its own report tidier would be asserting something no one decided.
 merges without this check failing; or if the check reports `OK` while naming a base of `HEAD` in
 CI, meaning both the checkout depth and the self-comparison guard were defeated at once; or if a
 future edit restores a status-blind diff, which the self-test's addition arm now exists to catch.
+
+---
+
+## ADR-0066 — A D28 waiver declaration becomes correctable in the same append-only channel as its ordinal, and ADR-0050's is corrected
+
+**Date:** 2026-09-07 · **Status:** Accepted · **Supersedes:** none · **Amends:** `scripts/lint_adr_numbers.py` (the declaration becomes an effective value, not a header read); corrects the declaration of ADR-0050 and the ordinals of ADR-0063 and ADR-0064, none of which can be edited in place · **See also:** ADR-0052 (which built this channel for the ordinal and stopped there), #78 (the ruling that reclassified ADR-0050), ADR-0063 and ADR-0064 (which recorded the discrepancy and could not fix it), `docs/tier0/operating-principles.md` (the falsification clause the count feeds) · **D28 waiver:** no — `scripts/` is code, and the ADR log is `frozen` with `enforcement: none` and append-only by construction, so neither is the frozen `ci-gate` shape #78 ruled on
+
+### Context
+
+#78 settled that amending a `frozen` + `ci-gate` document is a D28 waiver. ADR-0050 had held
+the opposite and was overruled, which reclassified it, after issue, as a waiver. Its header
+still read `no`.
+
+That correction turned out to be **impossible to make**, and not by oversight. Two checks in
+`scripts/lint_adr_numbers.py` closed on it from opposite sides:
+
+- Editing the header in place changes the record's text, and `audit` compares each record
+  against the one `origin/main` issued. A changed record under an issued number is the
+  two-ADRs-under-one-number failure the lint exists to prevent.
+- Appending a correction note instead leaves the header at `no` while the note claims an
+  ordinal, which `audit_waivers` reports as WAV-ORPHAN — prose entering a count the header
+  excludes it from.
+
+ADR-0052 had already met this problem for the **ordinal** and solved it: a record's body is
+not rewritten, a blockquote note is appended, and the last claim wins. It built that channel
+for the ordinal alone. The declaration the ordinal depends on kept no repair channel, so a
+record misclassified after issue could not be repaired at all.
+
+ADR-0063 and ADR-0064 both hit this. Each carries prose recording that the derived count was
+one behind the true count, that ADR-0050 was the reason, and that the fix was owed at some
+later point. Two records carrying an apology for arithmetic neither could fix is the symptom;
+the missing channel is the defect.
+
+### Decision
+
+**1. The declaration is an effective value, derived the same way the ordinal is.** `_declaration`
+returns the header unless a trailing blockquote note overrides it, and the last statement wins —
+within a note as well as across notes, so a correction may quote the value it overturns before
+stating the replacement without being read backwards.
+
+**2. Only a note may override, never the body.** `_notes` is deliberately narrower than
+`_claim_sites`: a claim site is anywhere an ordinal counts, and a record's own waiver paragraph
+is one. If the body could override, a record could contradict its own header with no way to tell
+which statement came later. A note is the append-only repair shape, and repair is the only thing
+that may overturn what was declared.
+
+**3. The override runs both ways.** A note may withdraw a waiver as well as declare one. A
+channel that could only ever raise the count would be a ratchet, and this count is a health
+metric feeding a falsification clause, not a score to be defended. The self-test carries the
+withdrawal arm for that reason, and a withdrawal that leaves a live ordinal claim behind still
+fails as an orphan.
+
+**4. ADR-0050 is corrected, and the ordinals after it move.** ADR-0050 becomes the fifth
+waiver; ADR-0063 the sixth; ADR-0064 the seventh. All three corrections are appended notes.
+The total the register derives is now **seven**, and it agrees with the total in fact for the
+first time since #78's ruling.
+
+### Enforcement
+
+`ci-gate`, by the lint this record amends. The count is derived from the log on every run, so
+the arithmetic cannot drift from the records again without CI failing.
+
+Four self-test arms cover the new channel: a note declaring a waiver the header denied is
+honoured; that declaration genuinely shifts the ordinals of later waivers rather than merely
+passing quietly; a note may withdraw a waiver; and a withdrawal leaving a live ordinal claim
+fails. A fifth arm is the control — an ordinal-only note must leave the declaration untouched,
+because a change that made *every* note a declaration would pass all four of the others.
+
+**Falsification trigger.** This decision is wrong if a correction note is found altering a
+record's substance rather than its declaration or ordinal, meaning the channel became a way to
+rewrite issued decisions; or if the derived waiver total is again found disagreeing with the
+records, meaning the derivation is not the authority this record claims it is.
+
+---
+
+## ADR-0067 — Gate D's read is batched per pull request, and the comment-only exemption is rejected as unsafe here
+
+**Date:** 2026-09-07 · **Status:** Accepted · **Supersedes:** none · **Amends:** `docs/tier4/protected-paths-policy.md` § *The inspector stays small* (frozen, `ci-gate`) · **See also:** ADR-0028 (an agent cannot supply this approval for itself), ADR-0035 (the first waiver against this document), `tools/vaultgraph/extract/references.py` (why comments are not inert), #93 · **D28 waiver:** yes
+
+### Context
+
+Gate D requires *"line-by-line human review with a mandatory ADR"* for every protected-path
+write. The cost is real and it lands on the one person who may not delegate it: PR #91 carried
+five protected-path commits and therefore five reads, which blocked the branch for a day.
+
+Two reliefs were considered. The operator selected the **comment-only exemption** — a lint
+proving a protected diff changes no logic would auto-clear the read. Drafting it defeated it,
+on two independent grounds.
+
+**It is not safe in this repository.** `tools/vaultgraph/extract/references.py` reads decision
+references *out of comments*, and uses `tokenize` rather than `ast` specifically because the
+AST discards them. A comment-only edit under `scripts/` or `harness/` can therefore add or
+remove an edge in the register's own enforcement map — it can make a decision appear enforced
+where it is not. `extract/code.py` likewise takes each module node's title from the first line
+of its docstring. The exemption would have auto-cleared precisely the class of edit that can
+silently rewrite what the register claims about its own enforcement, reaching the gate from a
+direction nobody was watching.
+
+**And it buys almost nothing.** Of the 73 protected-path commits reachable from `origin/main`,
+**one** is comment-only. Charging all four commits the scan could not classify to the
+exemption puts the ceiling near 7%. It would have cleared none of the five reads that prompted
+the question.
+
+That measurement's first pass reported 70 of 73, because the `git show` carried its pathspec
+before the commit ref and every diff came back empty, so every commit scored as comment-only.
+The corrected scan reports an explicit empty-diff count. This is the D57 vacuity class arriving
+inside the very argument for relaxing a gate, which is the reason it is recorded here and not
+merely fixed.
+
+### Decision
+
+**1. The read is batched per pull request, not per commit.** Gate D's words are *line-by-line*,
+and they do not say *per commit*. One read of the union diff of protected paths across a branch
+satisfies them exactly. #91 becomes one read rather than five.
+
+**2. The path list is read from `policy/protected-paths.json`, never typed.** It spans both
+`prefixes` and `files`. A read built from the prefixes alone omits `pyproject.toml` and
+`uv.lock` — protected because a dependency change is an escalation, not an edit — and would
+under-read while appearing complete. The first draft of the command in #93 made exactly that
+mistake.
+
+**3. The per-commit list of protected paths touched is still enumerated.** Only the
+line-by-line read is batched. The policy at § *Recording* makes a protected-path write a
+structural escalation trigger because *"a denial that leaves no trace removes the signal that
+something is optimizing against the boundary."* A count of five reaches for the boundary is
+that signal, and a union diff averages it into one.
+
+**4. The residue is stated rather than discovered.** Content introduced and reverted inside a
+branch does not appear in the union diff and is not read line by line. It never merges, so
+containment is unaffected; the loss is signal, not containment, and it is a real cost of this
+decision rather than an oversight in it.
+
+**5. The comment-only exemption is rejected**, and this record is where a future proposal to
+revive it must start.
+
+### Enforcement
+
+`review-cadence`. The batching is a change to how a human discharges a human gate, and ADR-0028
+settled that no lint can stand in for it — a check that claimed to verify the read had happened
+would be the agent asserting its own supervision.
+
+This is a **D28 waiver** and counts toward the waiver total the operating principles use as a
+health metric. **It is the eighth.** The gate is the frozen `ci-gate` status over
+`docs/tier4/protected-paths-policy.md`, and it is the second waiver against that document after
+ADR-0035 — one short of the three the falsification clause reads as evidence the principle is
+wrong. It is *not* reclassified provisional the way ADR-0063 and ADR-0064 reclassified their
+documents: this is the security kernel's own policy, frozen is the correct status for it, and a
+document that should be hard to change is the one case where paying the waiver is the honest
+instrument rather than the lazy one.
+
+**Falsification trigger.** This decision is wrong if a protected-path change merges with no
+recorded read of the union diff, meaning batching became skipping; or if a branch is found to
+have carried protected content that was reverted before merge and never surfaced, meaning the
+residue in decision 4 is larger than stated; or if a third waiver lands against this document,
+which fires the falsification clause against the policy itself.

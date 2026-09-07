@@ -34,3 +34,4 @@ generated: true
 
 - **see_also** → [[adr__ADR-0027|An agent edited the inspector, and this record was drafted by the same agent]]
 - [[adr__ADR-0029|The tree that verifies every other tree is verified by nothing]] **see_also** → this
+- [[adr__ADR-0067|Gate D's read is batched per pull request, and the comment-only exemption is rejected as u]] **see_also** → this

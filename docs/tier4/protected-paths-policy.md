@@ -98,3 +98,28 @@ maintained and reviewed by the one person who may not edit it under agent assist
 
 Kernel lines-of-code is tracked as a health metric. Agent-drafted inspector patches are
 permitted only under line-by-line human review with a mandatory ADR.
+
+**That review is line-by-line over the change, not once per commit** (ADR-0067). A pull
+request discharges it with a single read of the union diff of protected paths across the
+branch:
+
+```bash
+git diff origin/main...HEAD -- \
+  $(python3 -c "import json;d=json.load(open('policy/protected-paths.json'));print(' '.join(e['path'] for e in d['prefixes']+d['files']))")
+```
+
+The path list is read from `policy/protected-paths.json` rather than typed, and it spans
+**both** `prefixes` and `files` — a read built on the prefixes alone silently omits
+`pyproject.toml` and `uv.lock`, which are protected precisely because a dependency change is
+an escalation rather than an edit.
+
+Two conditions keep the batch from weakening the gate:
+
+1. **The per-commit list of protected paths touched is still enumerated**, even though the
+   line-by-line read is of the union. The count is the signal: a branch that reaches for the
+   boundary repeatedly is a pattern, and a union diff averages that away.
+2. **The residue is stated, not hidden.** Content introduced and then reverted inside the
+   branch does not appear in the union diff and is therefore not read line by line. It never
+   merges, so containment is unaffected — but the *signal* that something reached for the
+   boundary and withdrew is weaker than a per-commit read, and this section is where that
+   cost is recorded rather than discovered later.

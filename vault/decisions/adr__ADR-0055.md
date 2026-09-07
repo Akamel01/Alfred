@@ -5,7 +5,7 @@ title: "Evidence and heldout primary keys become UUIDv7, by a duplicated generat
 status: "accepted"
 shape: "heading"
 date: "2026-09-04"
-source: "docs/tier1/adr-log.md:5146"
+source: "docs/tier1/adr-log.md:5163"
 extractor: "adrs"
 aliases:
   - "ADR-0055"
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `docs/tier1/adr-log.md:5146`
+**Source** · `docs/tier1/adr-log.md:5163`
 
 ## Statement
 

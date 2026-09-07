@@ -5,7 +5,7 @@ title: "The D28 waiver ordinal becomes derived, and ADR-0040's is corrected in p
 status: "accepted"
 shape: "heading"
 date: "2026-09-03"
-source: "docs/tier1/adr-log.md:4816"
+source: "docs/tier1/adr-log.md:4833"
 extractor: "adrs"
 aliases:
   - "ADR-0052"
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `docs/tier1/adr-log.md:4816`
+**Source** · `docs/tier1/adr-log.md:4833`
 
 ## Statement
 
@@ -37,8 +37,12 @@ generated: true
 - **see_also** → [[adr__ADR-0035|The protected set's single home names its fourth shape as a projection, not a second autho]]
 - **see_also** → [[adr__ADR-0040|The structure fence grows to eighteen]]
 - [[adr__ADR-0062|Amending a frozen ci-gate document is a D28 waiver; ADR-0050 is retroactively the third ag]] **see_also** → this
+- [[adr__ADR-0066|A D28 waiver declaration becomes correctable in the same append-only channel as its ordina]] **see_also** → this
 
 ## Enforced by (code)
 
 - **enforced_by** → [[module__scripts_lint_adr_numbers|ADR number claim lint: a branch may not claim a number the base has issued.]] — #: that record's claim. ADR-0052 is the instance — it quotes ADR-0040's line while explaining
+- **enforced_by** → [[module__scripts_lint_adr_numbers|ADR number claim lint: a branch may not claim a number the base has issued.]] — """The record's effective `D28 waiver` declaration: its header, unless a correction
+    note overrides it. `None` for a 
 - **enforced_by** → [[module__scripts_lint_adr_numbers|ADR number claim lint: a branch may not claim a number the base has issued.]] — #     outside a blockquote is not making that claim. ADR-0052 is the live instance,
+- **enforced_by** → [[module__scripts_lint_adr_numbers|ADR number claim lint: a branch may not claim a number the base has issued.]] — # ADR-0066's channel. The ordinal has been correctable since ADR-0052; the

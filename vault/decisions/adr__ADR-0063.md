@@ -5,7 +5,7 @@ title: "The structure fence is split out and reclassified provisional, dischargi
 status: "accepted"
 shape: "heading"
 date: "2026-09-06"
-source: "docs/tier1/adr-log.md:6530"
+source: "docs/tier1/adr-log.md:6547"
 extractor: "adrs"
 aliases:
   - "ADR-0063"
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `docs/tier1/adr-log.md:6530`
+**Source** · `docs/tier1/adr-log.md:6547`
 
 ## Statement
 
@@ -37,7 +37,9 @@ generated: true
 - **see_also** → [[adr__ADR-0040|The structure fence grows to eighteen]]
 - **see_also** → [[adr__ADR-0050|Mission Control is hosted off-host, and the loopback bind is replaced rather than relaxed]]
 - **see_also** → [[adr__ADR-0062|Amending a frozen ci-gate document is a D28 waiver; ADR-0050 is retroactively the third ag]]
+- [[adr__ADR-0066|A D28 waiver declaration becomes correctable in the same append-only channel as its ordina]] **amends** → this
 - [[adr__ADR-0064|The cross-stage invariants are reclassified provisional and stop re-listing what the lint ]] **see_also** → this
+- [[adr__ADR-0066|A D28 waiver declaration becomes correctable in the same append-only channel as its ordina]] **see_also** → this
 
 ## Enforced by (code)
 

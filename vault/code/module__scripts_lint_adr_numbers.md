@@ -37,12 +37,22 @@ generated: true
 
 ## Enforced by (code)
 
+- [[adr__ADR-0003|Canonical serialization for hashed structures (ACS-1)]] **enforced_by** → this — #     Without the override, ADR-0003 below would be the second and this would pass.
 - [[adr__ADR-0040|The structure fence grows to eighteen]] **enforced_by** → this — #: that record's claim. ADR-0052 is the instance — it quotes ADR-0040's line while explaining
 - [[adr__ADR-0040|The structure fence grows to eighteen]] **enforced_by** → this — """The record's effective ordinal claim: the **last** one across its claim sites.
 
     Last, not first, because the log 
+- [[adr__ADR-0050|Mission Control is hosted off-host, and the loopback bind is replaced rather than relaxed]] **enforced_by** → this — """The record's effective `D28 waiver` declaration: its header, unless a correction
+    note overrides it. `None` for a 
+- [[adr__ADR-0050|Mission Control is hosted off-host, and the loopback bind is replaced rather than relaxed]] **enforced_by** → this — #     position in the count. This is ADR-0050's shape exactly.
 - [[adr__ADR-0052|The D28 waiver ordinal becomes derived, and ADR-0040's is corrected in place]] **enforced_by** → this — #: that record's claim. ADR-0052 is the instance — it quotes ADR-0040's line while explaining
+- [[adr__ADR-0052|The D28 waiver ordinal becomes derived, and ADR-0040's is corrected in place]] **enforced_by** → this — """The record's effective `D28 waiver` declaration: its header, unless a correction
+    note overrides it. `None` for a 
 - [[adr__ADR-0052|The D28 waiver ordinal becomes derived, and ADR-0040's is corrected in place]] **enforced_by** → this — #     outside a blockquote is not making that claim. ADR-0052 is the live instance,
+- [[adr__ADR-0052|The D28 waiver ordinal becomes derived, and ADR-0040's is corrected in place]] **enforced_by** → this — # ADR-0066's channel. The ordinal has been correctable since ADR-0052; the
+- [[adr__ADR-0066|A D28 waiver declaration becomes correctable in the same append-only channel as its ordina]] **enforced_by** → this — """The record's effective `D28 waiver` declaration: its header, unless a correction
+    note overrides it. `None` for a 
+- [[adr__ADR-0066|A D28 waiver declaration becomes correctable in the same append-only channel as its ordina]] **enforced_by** → this — # ADR-0066's channel. The ordinal has been correctable since ADR-0052; the
 - [[decision__D28|Stage gates are executable where measurable; overriding one requires an immutable waiver A]] **enforced_by** → this — """ADR number claim lint: a branch may not claim a number the base has issued.
 
 The ADR log is append-only in one file, 
@@ -53,6 +63,8 @@ The ADR log is append-only in one file,
 - [[decision__D28|Stage gates are executable where measurable; overriding one requires an immutable waiver A]] **enforced_by** → this — """The paragraphs of a record in which an ordinal counts as a claim.
 
     Two shapes, and nothing else. A paragraph carr
+- [[decision__D28|Stage gates are executable where measurable; overriding one requires an immutable waiver A]] **enforced_by** → this — """The record's effective `D28 waiver` declaration: its header, unless a correction
+    note overrides it. `None` for a 
 - [[decision__D28|Stage gates are executable where measurable; overriding one requires an immutable waiver A]] **enforced_by** → this — """The ADR numbers declaring `D28 waiver: yes`, in numeric order.
 
     This list *is* the count the operating principles

@@ -1,7 +1,7 @@
 {
   "anomalies": [],
   "counts": {
-    "adr": 65,
+    "adr": 67,
     "amendment": 12,
     "decision": 57,
     "document": 78,
@@ -22,16 +22,16 @@
   },
   "edge_counts": {
     "amended_by": 2,
-    "amends": 13,
+    "amends": 16,
     "blocks": 32,
     "contains": 309,
     "discharges": 1,
-    "enforced_by": 392,
+    "enforced_by": 400,
     "imports": 263,
     "needs": 4,
     "references": 2,
     "runs": 42,
-    "see_also": 85,
+    "see_also": 91,
     "supersedes": 2
   },
   "edges": [
@@ -159,8 +159,8 @@
       "extractor": "adrs",
       "kind": "amends",
       "source": {
-        "end_line": 5878,
-        "line": 5878,
+        "end_line": 5895,
+        "line": 5895,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0060"
@@ -172,8 +172,8 @@
       "extractor": "adrs",
       "kind": "amends",
       "source": {
-        "end_line": 6436,
-        "line": 6436,
+        "end_line": 6453,
+        "line": 6453,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0062"
@@ -185,11 +185,50 @@
       "extractor": "adrs",
       "kind": "amends",
       "source": {
-        "end_line": 6723,
-        "line": 6723,
+        "end_line": 6754,
+        "line": 6754,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0065"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0050",
+      "evidence": "**Amends:** `scripts/lint_adr_numbers.py` (the declaration becomes an effective value, not a header read); corrects the declaration of ADR-0050 and the ordinals of ADR-0063 and ADR-0064, none of which",
+      "extractor": "adrs",
+      "kind": "amends",
+      "source": {
+        "end_line": 6850,
+        "line": 6850,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0066"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0063",
+      "evidence": "**Amends:** `scripts/lint_adr_numbers.py` (the declaration becomes an effective value, not a header read); corrects the declaration of ADR-0050 and the ordinals of ADR-0063 and ADR-0064, none of which",
+      "extractor": "adrs",
+      "kind": "amends",
+      "source": {
+        "end_line": 6850,
+        "line": 6850,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0066"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0064",
+      "evidence": "**Amends:** `scripts/lint_adr_numbers.py` (the declaration becomes an effective value, not a header read); corrects the declaration of ADR-0050 and the ordinals of ADR-0063 and ADR-0064, none of which",
+      "extractor": "adrs",
+      "kind": "amends",
+      "source": {
+        "end_line": 6850,
+        "line": 6850,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0066"
     },
     {
       "confidence": "prose",
@@ -5328,6 +5367,19 @@
     },
     {
       "confidence": "derived",
+      "dst": "module:scripts.lint_adr_numbers",
+      "evidence": "#     Without the override, ADR-0003 below would be the second and this would pass.",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 595,
+        "line": 595,
+        "path": "scripts/lint_adr_numbers.py"
+      },
+      "src": "adr:ADR-0003"
+    },
+    {
+      "confidence": "derived",
       "dst": "module:src.provenance.__init__",
       "evidence": "\"\"\"Result stamping and the one ACS-1 door (ADR-0003, ADR-0004, ADR-0006).\n\nCannot be retrofitted: results computed before stamping exists are permanently\nunrecallable.\n\n`ResultStam",
       "extractor": "references",
@@ -6906,8 +6958,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 239,
-        "line": 239,
+        "end_line": 287,
+        "line": 287,
         "path": "scripts/lint_adr_numbers.py"
       },
       "src": "adr:ADR-0040"
@@ -6941,6 +6993,32 @@
     {
       "confidence": "derived",
       "dst": "module:scripts.lint_adr_numbers",
+      "evidence": "\"\"\"The record's effective `D28 waiver` declaration: its header, unless a correction\n    note overrides it. `None` for a record predating the field.\n\n    The **last** statement wins",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 256,
+        "line": 256,
+        "path": "scripts/lint_adr_numbers.py"
+      },
+      "src": "adr:ADR-0050"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:scripts.lint_adr_numbers",
+      "evidence": "#     position in the count. This is ADR-0050's shape exactly.",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 584,
+        "line": 584,
+        "path": "scripts/lint_adr_numbers.py"
+      },
+      "src": "adr:ADR-0050"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:scripts.lint_adr_numbers",
       "evidence": "#: that record's claim. ADR-0052 is the instance — it quotes ADR-0040's line while explaining",
       "extractor": "references",
       "kind": "enforced_by",
@@ -6954,12 +7032,38 @@
     {
       "confidence": "derived",
       "dst": "module:scripts.lint_adr_numbers",
+      "evidence": "\"\"\"The record's effective `D28 waiver` declaration: its header, unless a correction\n    note overrides it. `None` for a record predating the field.\n\n    The **last** statement wins",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 256,
+        "line": 256,
+        "path": "scripts/lint_adr_numbers.py"
+      },
+      "src": "adr:ADR-0052"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:scripts.lint_adr_numbers",
       "evidence": "#     outside a blockquote is not making that claim. ADR-0052 is the live instance,",
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 504,
-        "line": 504,
+        "end_line": 561,
+        "line": 561,
+        "path": "scripts/lint_adr_numbers.py"
+      },
+      "src": "adr:ADR-0052"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:scripts.lint_adr_numbers",
+      "evidence": "# ADR-0066's channel. The ordinal has been correctable since ADR-0052; the",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 579,
+        "line": 579,
         "path": "scripts/lint_adr_numbers.py"
       },
       "src": "adr:ADR-0052"
@@ -7067,6 +7171,32 @@
         "path": ".github/workflows/gates.yml"
       },
       "src": "adr:ADR-0065"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:scripts.lint_adr_numbers",
+      "evidence": "\"\"\"The record's effective `D28 waiver` declaration: its header, unless a correction\n    note overrides it. `None` for a record predating the field.\n\n    The **last** statement wins",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 256,
+        "line": 256,
+        "path": "scripts/lint_adr_numbers.py"
+      },
+      "src": "adr:ADR-0066"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:scripts.lint_adr_numbers",
+      "evidence": "# ADR-0066's channel. The ordinal has been correctable since ADR-0052; the",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 579,
+        "line": 579,
+        "path": "scripts/lint_adr_numbers.py"
+      },
+      "src": "adr:ADR-0066"
     },
     {
       "confidence": "derived",
@@ -7864,12 +7994,25 @@
     {
       "confidence": "derived",
       "dst": "module:scripts.lint_adr_numbers",
+      "evidence": "\"\"\"The record's effective `D28 waiver` declaration: its header, unless a correction\n    note overrides it. `None` for a record predating the field.\n\n    The **last** statement wins",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 256,
+        "line": 256,
+        "path": "scripts/lint_adr_numbers.py"
+      },
+      "src": "decision:D28"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:scripts.lint_adr_numbers",
       "evidence": "\"\"\"The ADR numbers declaring `D28 waiver: yes`, in numeric order.\n\n    This list *is* the count the operating principles read as a health metric, which is\n    why it is computed ra",
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 257,
-        "line": 257,
+        "end_line": 305,
+        "line": 305,
         "path": "scripts/lint_adr_numbers.py"
       },
       "src": "decision:D28"
@@ -7881,8 +8024,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 273,
-        "line": 273,
+        "end_line": 320,
+        "line": 320,
         "path": "scripts/lint_adr_numbers.py"
       },
       "src": "decision:D28"
@@ -7894,8 +8037,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 383,
-        "line": 383,
+        "end_line": 430,
+        "line": 430,
         "path": "scripts/lint_adr_numbers.py"
       },
       "src": "decision:D28"
@@ -7907,8 +8050,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 403,
-        "line": 403,
+        "end_line": 460,
+        "line": 460,
         "path": "scripts/lint_adr_numbers.py"
       },
       "src": "decision:D28"
@@ -14446,8 +14589,8 @@
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 4757,
-        "line": 4757,
+        "end_line": 4774,
+        "line": 4774,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0051"
@@ -14459,8 +14602,8 @@
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 4757,
-        "line": 4757,
+        "end_line": 4774,
+        "line": 4774,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0051"
@@ -14472,8 +14615,8 @@
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 4816,
-        "line": 4816,
+        "end_line": 4833,
+        "line": 4833,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0052"
@@ -14485,8 +14628,8 @@
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 4816,
-        "line": 4816,
+        "end_line": 4833,
+        "line": 4833,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0052"
@@ -14498,8 +14641,8 @@
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 4816,
-        "line": 4816,
+        "end_line": 4833,
+        "line": 4833,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0052"
@@ -14511,8 +14654,8 @@
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 4816,
-        "line": 4816,
+        "end_line": 4833,
+        "line": 4833,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0052"
@@ -14524,8 +14667,8 @@
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 4923,
-        "line": 4923,
+        "end_line": 4940,
+        "line": 4940,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0053"
@@ -14537,8 +14680,8 @@
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 5036,
-        "line": 5036,
+        "end_line": 5053,
+        "line": 5053,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0054"
@@ -14550,8 +14693,8 @@
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 5146,
-        "line": 5146,
+        "end_line": 5163,
+        "line": 5163,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0055"
@@ -14563,8 +14706,8 @@
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 5299,
-        "line": 5299,
+        "end_line": 5316,
+        "line": 5316,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0056"
@@ -14576,8 +14719,8 @@
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 5418,
-        "line": 5418,
+        "end_line": 5435,
+        "line": 5435,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0057"
@@ -14589,8 +14732,8 @@
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 5418,
-        "line": 5418,
+        "end_line": 5435,
+        "line": 5435,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0057"
@@ -14602,8 +14745,8 @@
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 5523,
-        "line": 5523,
+        "end_line": 5540,
+        "line": 5540,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0058"
@@ -14615,8 +14758,8 @@
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 5523,
-        "line": 5523,
+        "end_line": 5540,
+        "line": 5540,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0058"
@@ -14628,8 +14771,8 @@
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 5878,
-        "line": 5878,
+        "end_line": 5895,
+        "line": 5895,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0060"
@@ -14641,8 +14784,8 @@
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 5878,
-        "line": 5878,
+        "end_line": 5895,
+        "line": 5895,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0060"
@@ -14654,8 +14797,8 @@
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 5878,
-        "line": 5878,
+        "end_line": 5895,
+        "line": 5895,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0060"
@@ -14667,8 +14810,8 @@
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 6115,
-        "line": 6115,
+        "end_line": 6132,
+        "line": 6132,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0061"
@@ -14680,8 +14823,8 @@
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 6115,
-        "line": 6115,
+        "end_line": 6132,
+        "line": 6132,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0061"
@@ -14693,8 +14836,8 @@
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 6436,
-        "line": 6436,
+        "end_line": 6453,
+        "line": 6453,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0062"
@@ -14706,8 +14849,8 @@
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 6436,
-        "line": 6436,
+        "end_line": 6453,
+        "line": 6453,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0062"
@@ -14719,8 +14862,8 @@
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 6436,
-        "line": 6436,
+        "end_line": 6453,
+        "line": 6453,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0062"
@@ -14732,8 +14875,8 @@
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 6436,
-        "line": 6436,
+        "end_line": 6453,
+        "line": 6453,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0062"
@@ -14745,8 +14888,8 @@
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 6436,
-        "line": 6436,
+        "end_line": 6453,
+        "line": 6453,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0062"
@@ -14758,8 +14901,8 @@
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 6436,
-        "line": 6436,
+        "end_line": 6453,
+        "line": 6453,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0062"
@@ -14771,8 +14914,8 @@
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 6530,
-        "line": 6530,
+        "end_line": 6547,
+        "line": 6547,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0063"
@@ -14784,8 +14927,8 @@
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 6530,
-        "line": 6530,
+        "end_line": 6547,
+        "line": 6547,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0063"
@@ -14797,8 +14940,8 @@
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 6530,
-        "line": 6530,
+        "end_line": 6547,
+        "line": 6547,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0063"
@@ -14810,8 +14953,8 @@
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 6530,
-        "line": 6530,
+        "end_line": 6547,
+        "line": 6547,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0063"
@@ -14823,8 +14966,8 @@
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 6530,
-        "line": 6530,
+        "end_line": 6547,
+        "line": 6547,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0063"
@@ -14836,8 +14979,8 @@
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 6634,
-        "line": 6634,
+        "end_line": 6659,
+        "line": 6659,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0064"
@@ -14849,8 +14992,8 @@
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 6634,
-        "line": 6634,
+        "end_line": 6659,
+        "line": 6659,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0064"
@@ -14862,8 +15005,8 @@
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 6634,
-        "line": 6634,
+        "end_line": 6659,
+        "line": 6659,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0064"
@@ -14875,8 +15018,8 @@
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 6723,
-        "line": 6723,
+        "end_line": 6754,
+        "line": 6754,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0065"
@@ -14888,8 +15031,8 @@
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 6723,
-        "line": 6723,
+        "end_line": 6754,
+        "line": 6754,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0065"
@@ -14901,8 +15044,8 @@
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 6723,
-        "line": 6723,
+        "end_line": 6754,
+        "line": 6754,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0065"
@@ -14914,11 +15057,89 @@
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 6723,
-        "line": 6723,
+        "end_line": 6754,
+        "line": 6754,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0065"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0050",
+      "evidence": "**See also:** ADR-0052 (which built this channel for the ordinal and stopped there), #78 (the ruling that reclassified ADR-0050), ADR-0063 and ADR-0064 (which recorded the discrepancy and could not fi",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 6850,
+        "line": 6850,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0066"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0052",
+      "evidence": "**See also:** ADR-0052 (which built this channel for the ordinal and stopped there), #78 (the ruling that reclassified ADR-0050), ADR-0063 and ADR-0064 (which recorded the discrepancy and could not fi",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 6850,
+        "line": 6850,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0066"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0063",
+      "evidence": "**See also:** ADR-0052 (which built this channel for the ordinal and stopped there), #78 (the ruling that reclassified ADR-0050), ADR-0063 and ADR-0064 (which recorded the discrepancy and could not fi",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 6850,
+        "line": 6850,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0066"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0064",
+      "evidence": "**See also:** ADR-0052 (which built this channel for the ordinal and stopped there), #78 (the ruling that reclassified ADR-0050), ADR-0063 and ADR-0064 (which recorded the discrepancy and could not fi",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 6850,
+        "line": 6850,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0066"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0028",
+      "evidence": "**See also:** ADR-0028 (an agent cannot supply this approval for itself), ADR-0035 (the first waiver against this document), `tools/vaultgraph/extract/references.py` (why comments are not inert), #93",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 6922,
+        "line": 6922,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0067"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0035",
+      "evidence": "**See also:** ADR-0028 (an agent cannot supply this approval for itself), ADR-0035 (the first waiver against this document), `tools/vaultgraph/extract/references.py` (why comments are not inert), #93",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 6922,
+        "line": 6922,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0067"
     },
     {
       "confidence": "structural",
@@ -14927,8 +15148,8 @@
       "extractor": "adrs",
       "kind": "supersedes",
       "source": {
-        "end_line": 6436,
-        "line": 6436,
+        "end_line": 6453,
+        "line": 6453,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0062"
@@ -14949,14 +15170,14 @@
   ],
   "extractors": [
     {
-      "edges": 99,
+      "edges": 108,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 4,
       "min_nodes": 14,
       "name": "adrs",
-      "nodes": 65,
+      "nodes": 67,
       "rejected": 0,
       "scanned": 1,
       "unparsed": 0
@@ -15092,7 +15313,7 @@
       "unparsed": 0
     },
     {
-      "edges": 392,
+      "edges": 400,
       "expect_rejected": null,
       "max_nodes": 0,
       "max_unparsed": 0,
@@ -16200,8 +16421,8 @@
       "occurrences": [],
       "shape": "heading",
       "source": {
-        "end_line": 4757,
-        "line": 4757,
+        "end_line": 4774,
+        "line": 4774,
         "path": "docs/tier1/adr-log.md"
       },
       "status": "accepted",
@@ -16221,8 +16442,8 @@
       "occurrences": [],
       "shape": "heading",
       "source": {
-        "end_line": 4816,
-        "line": 4816,
+        "end_line": 4833,
+        "line": 4833,
         "path": "docs/tier1/adr-log.md"
       },
       "status": "accepted",
@@ -16242,8 +16463,8 @@
       "occurrences": [],
       "shape": "heading",
       "source": {
-        "end_line": 4923,
-        "line": 4923,
+        "end_line": 4940,
+        "line": 4940,
         "path": "docs/tier1/adr-log.md"
       },
       "status": "accepted",
@@ -16263,8 +16484,8 @@
       "occurrences": [],
       "shape": "heading",
       "source": {
-        "end_line": 5036,
-        "line": 5036,
+        "end_line": 5053,
+        "line": 5053,
         "path": "docs/tier1/adr-log.md"
       },
       "status": "accepted",
@@ -16284,8 +16505,8 @@
       "occurrences": [],
       "shape": "heading",
       "source": {
-        "end_line": 5146,
-        "line": 5146,
+        "end_line": 5163,
+        "line": 5163,
         "path": "docs/tier1/adr-log.md"
       },
       "status": "accepted",
@@ -16305,8 +16526,8 @@
       "occurrences": [],
       "shape": "heading",
       "source": {
-        "end_line": 5299,
-        "line": 5299,
+        "end_line": 5316,
+        "line": 5316,
         "path": "docs/tier1/adr-log.md"
       },
       "status": "accepted",
@@ -16326,8 +16547,8 @@
       "occurrences": [],
       "shape": "heading",
       "source": {
-        "end_line": 5418,
-        "line": 5418,
+        "end_line": 5435,
+        "line": 5435,
         "path": "docs/tier1/adr-log.md"
       },
       "status": "accepted",
@@ -16347,8 +16568,8 @@
       "occurrences": [],
       "shape": "heading",
       "source": {
-        "end_line": 5523,
-        "line": 5523,
+        "end_line": 5540,
+        "line": 5540,
         "path": "docs/tier1/adr-log.md"
       },
       "status": "accepted",
@@ -16368,8 +16589,8 @@
       "occurrences": [],
       "shape": "heading",
       "source": {
-        "end_line": 5665,
-        "line": 5665,
+        "end_line": 5682,
+        "line": 5682,
         "path": "docs/tier1/adr-log.md"
       },
       "status": "accepted",
@@ -16389,8 +16610,8 @@
       "occurrences": [],
       "shape": "heading",
       "source": {
-        "end_line": 5878,
-        "line": 5878,
+        "end_line": 5895,
+        "line": 5895,
         "path": "docs/tier1/adr-log.md"
       },
       "status": "accepted",
@@ -16410,8 +16631,8 @@
       "occurrences": [],
       "shape": "heading",
       "source": {
-        "end_line": 6115,
-        "line": 6115,
+        "end_line": 6132,
+        "line": 6132,
         "path": "docs/tier1/adr-log.md"
       },
       "status": "accepted",
@@ -16431,8 +16652,8 @@
       "occurrences": [],
       "shape": "heading",
       "source": {
-        "end_line": 6436,
-        "line": 6436,
+        "end_line": 6453,
+        "line": 6453,
         "path": "docs/tier1/adr-log.md"
       },
       "status": "accepted",
@@ -16452,8 +16673,8 @@
       "occurrences": [],
       "shape": "heading",
       "source": {
-        "end_line": 6530,
-        "line": 6530,
+        "end_line": 6547,
+        "line": 6547,
         "path": "docs/tier1/adr-log.md"
       },
       "status": "accepted",
@@ -16473,8 +16694,8 @@
       "occurrences": [],
       "shape": "heading",
       "source": {
-        "end_line": 6634,
-        "line": 6634,
+        "end_line": 6659,
+        "line": 6659,
         "path": "docs/tier1/adr-log.md"
       },
       "status": "accepted",
@@ -16494,13 +16715,55 @@
       "occurrences": [],
       "shape": "heading",
       "source": {
-        "end_line": 6723,
-        "line": 6723,
+        "end_line": 6754,
+        "line": 6754,
         "path": "docs/tier1/adr-log.md"
       },
       "status": "accepted",
       "tags": [],
       "title": "The bench append-only guarantee gets the lint ADR-0038 said it already had, and the shallow checkout that would have made it vacuous is fixed with it"
+    },
+    {
+      "attrs": {
+        "date": "2026-09-07",
+        "status": "accepted",
+        "status_raw": "Accepted"
+      },
+      "body": "**Date:** 2026-09-07 · **Status:** Accepted · **Supersedes:** none · **Amends:** `scripts/lint_adr_numbers.py` (the declaration becomes an effective value, not a header read); corrects the declaration of ADR-0050 and the ordinals of ADR-0063 and ADR-0064, none of which can be edited in place · **See also:** ADR-0052 (which built this channel for the ordinal and stopped there), #78 (the ruling that reclassified ADR-0050), ADR-0063 and ADR-0064 (which recorded the discrepancy and could not fix it), `docs/tier0/operating-principles.md` (the falsification clause the count feeds) · **D28 waiver:** no — `scripts/` is code, and the ADR log is `frozen` with `enforcement: none` and append-only by construction, so neither is the frozen `ci-gate` shape #78 ruled on",
+      "extractor": "adrs",
+      "id": "adr:ADR-0066",
+      "kind": "adr",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 6850,
+        "line": 6850,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "accepted",
+      "tags": [],
+      "title": "A D28 waiver declaration becomes correctable in the same append-only channel as its ordinal, and ADR-0050's is corrected"
+    },
+    {
+      "attrs": {
+        "date": "2026-09-07",
+        "status": "accepted",
+        "status_raw": "Accepted"
+      },
+      "body": "**Date:** 2026-09-07 · **Status:** Accepted · **Supersedes:** none · **Amends:** `docs/tier4/protected-paths-policy.md` § *The inspector stays small* (frozen, `ci-gate`) · **See also:** ADR-0028 (an agent cannot supply this approval for itself), ADR-0035 (the first waiver against this document), `tools/vaultgraph/extract/references.py` (why comments are not inert), #93 · **D28 waiver:** yes",
+      "extractor": "adrs",
+      "id": "adr:ADR-0067",
+      "kind": "adr",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 6922,
+        "line": 6922,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "accepted",
+      "tags": [],
+      "title": "Gate D's read is batched per pull request, and the comment-only exemption is rejected as unsafe here"
     },
     {
       "attrs": {

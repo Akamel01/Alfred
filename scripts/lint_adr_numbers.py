@@ -235,6 +235,54 @@ def _claim_sites(record: str) -> list[str]:
     return sites
 
 
+def _notes(record: str) -> list[str]:
+    """The record's appended correction notes: its wholly-blockquoted paragraphs.
+
+    A subset of `_claim_sites`, kept separate because the two answer different questions.
+    A claim site is anywhere an ordinal *counts*, and the waiver paragraph in a record's
+    body is one. A note is specifically the append-only repair shape, and only a repair may
+    overturn what the header declared — otherwise a record's own body could contradict its
+    own header and there would be no way to tell which came later.
+    """
+    notes: list[str] = []
+    for paragraph in record.split("\n\n"):
+        lines = [line for line in paragraph.split("\n") if line.strip()]
+        if lines and all(line.lstrip().startswith(">") for line in lines):
+            notes.append(paragraph)
+    return notes
+
+
+def _declaration(record: str) -> str | None:
+    """The record's effective `D28 waiver` declaration: its header, unless a correction
+    note overrides it. `None` for a record predating the field.
+
+    The **last** statement wins, exactly as it does for the ordinal in `_claimed_ordinal`
+    and for the same reason: the log is append-only in spirit, so a record whose declaration
+    was wrong is repaired by a note travelling with it rather than by a rewrite.
+
+    ADR-0052 gave the *ordinal* that channel and did not give it to the *declaration*, which
+    left the one correction the log actually needed impossible to make. #78's ruling
+    reclassified ADR-0050 as a waiver after the fact, and its header could then be neither
+    edited — `audit` reads a changed body as two records under one number — nor annotated,
+    because `audit_waivers` reads an ordinal under a `no` header as WAV-ORPHAN. Both doors
+    shut on the same correction. ADR-0066 opens this one.
+
+    The override runs both ways: a note may withdraw a waiver as well as declare one. A
+    channel that could only ever raise the count would be a ratchet, and this count is a
+    health metric feeding a falsification clause, not a score to be protected.
+
+    Last wins *within* a note as well as across notes. A correction that quotes the value it
+    is overturning before stating the replacement would otherwise be read backwards — the
+    quotation is the first match and the correction the second.
+    """
+    found = _WAIVER_HEADER.search(record)
+    value = found.group(1).lower() if found else None
+    for note in _notes(record):
+        for override in _WAIVER_HEADER.finditer(note):
+            value = override.group(1).lower()
+    return value
+
+
 def _claimed_ordinal(record: str) -> str | None:
     """The record's effective ordinal claim: the **last** one across its claim sites.
 
@@ -264,8 +312,7 @@ def _waiver_numbers(text: str) -> list[str]:
     return [
         number
         for number in sorted(records)
-        if (found := _WAIVER_HEADER.search(records[number]))
-        and found.group(1).lower() == "yes"
+        if _declaration(records[number]) == "yes"
     ]
 
 
@@ -302,9 +349,9 @@ def audit_waivers(branch_text: str) -> tuple[list[str], list[str]]:
 
     declared: list[tuple[str, str]] = []  # (number, header value)
     for number in sorted(records):
-        header = _WAIVER_HEADER.search(records[number])
-        if header:
-            declared.append((number, header.group(1).lower()))
+        header = _declaration(records[number])
+        if header is not None:
+            declared.append((number, header))
 
     waivers = _waiver_numbers(branch_text)
 
@@ -388,6 +435,10 @@ def _planted_waiver_log(records: list[tuple[str, str | None, str | None]]) -> st
     for a body that states none. A `claim` prefixed with `note:` is appended as a trailing
     blockquote instead of stated in the body, which is the append-only correction shape the
     log actually uses.
+
+    A `note:` payload may carry a declaration override after a second colon —
+    `note:fifth:yes` — and may omit the ordinal entirely — `note::no` — for a note that
+    withdraws a waiver without claiming any position in the count.
     """
     blocks = []
     for number, header, claim in records:
@@ -397,7 +448,13 @@ def _planted_waiver_log(records: list[tuple[str, str | None, str | None]]) -> st
         body = f"Body of {number}.\n"
         note = ""
         if claim is not None and claim.startswith("note:"):
-            note = f"\n> Correction. It is the {claim[5:]}.\n"
+            ordinal, _, override = claim[5:].partition(":")
+            note = "\n> Correction."
+            if override:
+                note += f" **D28 waiver:** {override}."
+            if ordinal:
+                note += f" It is the {ordinal}."
+            note += "\n"
         elif claim is not None:
             body = (
                 "This is a **D28 waiver** and counts toward the waiver total the operating "
@@ -518,14 +575,69 @@ def self_test() -> int:
     expect(any("nothing to count" in f for f in no_waiver[0]),
            f"a log with no waiver reported clean: {no_waiver[0]}")
 
+    # ------------------------------------------------- declaration corrections
+    # ADR-0066's channel. The ordinal has been correctable since ADR-0052; the
+    # declaration it depends on was not, so a record misclassified after issue could
+    # not be repaired at all. Each direction gets an arm, and so does the control.
+
+    # 13. A note may declare a waiver the header denied, and the record then holds a
+    #     position in the count. This is ADR-0050's shape exactly.
+    declared_late = audit_waivers(_planted_waiver_log([
+        (_num(1), "yes", "first"),
+        (_num(2), "no", "note:second:yes"),
+        (_num(3), "yes", "third"),
+    ]))
+    expect(not declared_late[0],
+           f"a note declaring a waiver the header denied was not honoured: {declared_late[0]}")
+
+    # 14. And it really enters the count rather than merely passing quietly: the
+    #     record after it must now claim a *later* ordinal than its header alone implies.
+    #     Without the override, ADR-0003 below would be the second and this would pass.
+    shifted = audit_waivers(_planted_waiver_log([
+        (_num(1), "yes", "first"),
+        (_num(2), "no", "note:second:yes"),
+        (_num(3), "yes", "second"),
+    ]))
+    expect(any("claims to be the second" in f and _num(3) in f for f in shifted[0]),
+           f"a late-declared waiver did not shift the ordinals after it: {shifted[0]}")
+
+    # 15. The channel runs the other way too. A note may withdraw a waiver, and the
+    #     withdrawn record must leave the count rather than the correction being a
+    #     one-way ratchet on a metric that feeds a falsification clause.
+    withdrawn = audit_waivers(_planted_waiver_log([
+        (_num(1), "yes", "first"),
+        (_num(2), "yes", "note::no"),
+        (_num(3), "yes", "second"),
+    ]))
+    expect(not withdrawn[0],
+           f"a note withdrawing a waiver was not honoured: {withdrawn[0]}")
+
+    # 16. A withdrawal whose body still claims a slot fails as an orphan: the record
+    #     left the count and its prose did not follow.
+    half_withdrawn = audit_waivers(_planted_waiver_log([
+        (_num(1), "yes", "first"),
+        (_num(2), "yes", "note:second:no"),
+    ]))
+    expect(any("is not in" in f for f in half_withdrawn[0]),
+           f"a withdrawal leaving a live ordinal claim did not fail: {half_withdrawn[0]}")
+
+    # 17. The control: a note that corrects only the ordinal must not disturb the
+    #     declaration. Arm 8 proves such a note is honoured; this proves the new
+    #     override did not make every note a declaration too.
+    ordinal_only = _planted_waiver_log([(_num(1), "yes", "first"), (_num(2), "yes", "note:second")])
+    expect(_declaration(_parse(ordinal_only, strip=False)[0][_num(2)]) == "yes",
+           "an ordinal-only correction note silently changed the declaration")
+
     return self_test_exit(
         failures,
         "OK self-test — a new number passes, a re-claim fails, a deliberate skip prints "
         "without failing, an in-branch duplicate fails, a heading-less log fails "
         "rather than passing, correct waiver ordinals pass, a wrong one fails, an "
         "appended correction is honoured, a silent waiver fails, an orphan claim fails, a "
-        "quoted ordinal is not read as a claim, and a log with no waiver fails rather "
-        "than reporting clean\n",
+        "quoted ordinal is not read as a claim, a log with no waiver fails rather "
+        "than reporting clean, a note may declare a waiver the header denied and shifts "
+        "the ordinals after it, a note may withdraw one, a withdrawal leaving a live "
+        "ordinal claim fails, and an ordinal-only note leaves the declaration alone\n",
         failures_stream=sys.stderr,
         prefix="FAIL self-test:",
         tally=True,
