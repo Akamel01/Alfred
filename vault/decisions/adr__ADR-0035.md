@@ -38,6 +38,7 @@ generated: true
 - [[adr__ADR-0052|The D28 waiver ordinal becomes derived, and ADR-0040's is corrected in place]] **see_also** → this
 - [[adr__ADR-0058|The dispatch-workspace exclusion contract: what a dispatch mount excludes, and that nothin]] **see_also** → this
 - [[adr__ADR-0062|Amending a frozen ci-gate document is a D28 waiver; ADR-0050 is retroactively the third ag]] **see_also** → this
+- [[adr__ADR-0067|Gate D's read is batched per pull request, and the comment-only exemption is rejected as u]] **see_also** → this
 
 ## Enforced by (code)
 

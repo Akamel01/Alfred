@@ -1,7 +1,7 @@
 {
   "anomalies": [],
   "counts": {
-    "adr": 66,
+    "adr": 67,
     "amendment": 12,
     "decision": 57,
     "document": 78,
@@ -31,7 +31,7 @@
     "needs": 4,
     "references": 2,
     "runs": 42,
-    "see_also": 89,
+    "see_also": 91,
     "supersedes": 2
   },
   "edges": [
@@ -15117,6 +15117,32 @@
     },
     {
       "confidence": "structural",
+      "dst": "adr:ADR-0028",
+      "evidence": "**See also:** ADR-0028 (an agent cannot supply this approval for itself), ADR-0035 (the first waiver against this document), `tools/vaultgraph/extract/references.py` (why comments are not inert), #93",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 6922,
+        "line": 6922,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0067"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0035",
+      "evidence": "**See also:** ADR-0028 (an agent cannot supply this approval for itself), ADR-0035 (the first waiver against this document), `tools/vaultgraph/extract/references.py` (why comments are not inert), #93",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 6922,
+        "line": 6922,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0067"
+    },
+    {
+      "confidence": "structural",
       "dst": "adr:ADR-0050",
       "evidence": "**Supersedes:** ADR-0050's `D28 waiver: no` classification",
       "extractor": "adrs",
@@ -15144,14 +15170,14 @@
   ],
   "extractors": [
     {
-      "edges": 106,
+      "edges": 108,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 4,
       "min_nodes": 14,
       "name": "adrs",
-      "nodes": 66,
+      "nodes": 67,
       "rejected": 0,
       "scanned": 1,
       "unparsed": 0
@@ -16717,6 +16743,27 @@
       "status": "accepted",
       "tags": [],
       "title": "A D28 waiver declaration becomes correctable in the same append-only channel as its ordinal, and ADR-0050's is corrected"
+    },
+    {
+      "attrs": {
+        "date": "2026-09-07",
+        "status": "accepted",
+        "status_raw": "Accepted"
+      },
+      "body": "**Date:** 2026-09-07 · **Status:** Accepted · **Supersedes:** none · **Amends:** `docs/tier4/protected-paths-policy.md` § *The inspector stays small* (frozen, `ci-gate`) · **See also:** ADR-0028 (an agent cannot supply this approval for itself), ADR-0035 (the first waiver against this document), `tools/vaultgraph/extract/references.py` (why comments are not inert), #93 · **D28 waiver:** yes",
+      "extractor": "adrs",
+      "id": "adr:ADR-0067",
+      "kind": "adr",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 6922,
+        "line": 6922,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "accepted",
+      "tags": [],
+      "title": "Gate D's read is batched per pull request, and the comment-only exemption is rejected as unsafe here"
     },
     {
       "attrs": {

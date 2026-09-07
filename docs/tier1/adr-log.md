@@ -6916,3 +6916,86 @@ because a change that made *every* note a declaration would pass all four of the
 record's substance rather than its declaration or ordinal, meaning the channel became a way to
 rewrite issued decisions; or if the derived waiver total is again found disagreeing with the
 records, meaning the derivation is not the authority this record claims it is.
+
+---
+
+## ADR-0067 — Gate D's read is batched per pull request, and the comment-only exemption is rejected as unsafe here
+
+**Date:** 2026-09-07 · **Status:** Accepted · **Supersedes:** none · **Amends:** `docs/tier4/protected-paths-policy.md` § *The inspector stays small* (frozen, `ci-gate`) · **See also:** ADR-0028 (an agent cannot supply this approval for itself), ADR-0035 (the first waiver against this document), `tools/vaultgraph/extract/references.py` (why comments are not inert), #93 · **D28 waiver:** yes
+
+### Context
+
+Gate D requires *"line-by-line human review with a mandatory ADR"* for every protected-path
+write. The cost is real and it lands on the one person who may not delegate it: PR #91 carried
+five protected-path commits and therefore five reads, which blocked the branch for a day.
+
+Two reliefs were considered. The operator selected the **comment-only exemption** — a lint
+proving a protected diff changes no logic would auto-clear the read. Drafting it defeated it,
+on two independent grounds.
+
+**It is not safe in this repository.** `tools/vaultgraph/extract/references.py` reads decision
+references *out of comments*, and uses `tokenize` rather than `ast` specifically because the
+AST discards them. A comment-only edit under `scripts/` or `harness/` can therefore add or
+remove an edge in the register's own enforcement map — it can make a decision appear enforced
+where it is not. `extract/code.py` likewise takes each module node's title from the first line
+of its docstring. The exemption would have auto-cleared precisely the class of edit that can
+silently rewrite what the register claims about its own enforcement, reaching the gate from a
+direction nobody was watching.
+
+**And it buys almost nothing.** Of the 73 protected-path commits reachable from `origin/main`,
+**one** is comment-only. Charging all four commits the scan could not classify to the
+exemption puts the ceiling near 7%. It would have cleared none of the five reads that prompted
+the question.
+
+That measurement's first pass reported 70 of 73, because the `git show` carried its pathspec
+before the commit ref and every diff came back empty, so every commit scored as comment-only.
+The corrected scan reports an explicit empty-diff count. This is the D57 vacuity class arriving
+inside the very argument for relaxing a gate, which is the reason it is recorded here and not
+merely fixed.
+
+### Decision
+
+**1. The read is batched per pull request, not per commit.** Gate D's words are *line-by-line*,
+and they do not say *per commit*. One read of the union diff of protected paths across a branch
+satisfies them exactly. #91 becomes one read rather than five.
+
+**2. The path list is read from `policy/protected-paths.json`, never typed.** It spans both
+`prefixes` and `files`. A read built from the prefixes alone omits `pyproject.toml` and
+`uv.lock` — protected because a dependency change is an escalation, not an edit — and would
+under-read while appearing complete. The first draft of the command in #93 made exactly that
+mistake.
+
+**3. The per-commit list of protected paths touched is still enumerated.** Only the
+line-by-line read is batched. The policy at § *Recording* makes a protected-path write a
+structural escalation trigger because *"a denial that leaves no trace removes the signal that
+something is optimizing against the boundary."* A count of five reaches for the boundary is
+that signal, and a union diff averages it into one.
+
+**4. The residue is stated rather than discovered.** Content introduced and reverted inside a
+branch does not appear in the union diff and is not read line by line. It never merges, so
+containment is unaffected; the loss is signal, not containment, and it is a real cost of this
+decision rather than an oversight in it.
+
+**5. The comment-only exemption is rejected**, and this record is where a future proposal to
+revive it must start.
+
+### Enforcement
+
+`review-cadence`. The batching is a change to how a human discharges a human gate, and ADR-0028
+settled that no lint can stand in for it — a check that claimed to verify the read had happened
+would be the agent asserting its own supervision.
+
+This is a **D28 waiver** and counts toward the waiver total the operating principles use as a
+health metric. **It is the eighth.** The gate is the frozen `ci-gate` status over
+`docs/tier4/protected-paths-policy.md`, and it is the second waiver against that document after
+ADR-0035 — one short of the three the falsification clause reads as evidence the principle is
+wrong. It is *not* reclassified provisional the way ADR-0063 and ADR-0064 reclassified their
+documents: this is the security kernel's own policy, frozen is the correct status for it, and a
+document that should be hard to change is the one case where paying the waiver is the honest
+instrument rather than the lazy one.
+
+**Falsification trigger.** This decision is wrong if a protected-path change merges with no
+recorded read of the union diff, meaning batching became skipping; or if a branch is found to
+have carried protected content that was reverted before merge and never surfaced, meaning the
+residue in decision 4 is larger than stated; or if a third waiver lands against this document,
+which fires the falsification clause against the policy itself.
