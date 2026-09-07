@@ -144,6 +144,12 @@ REGISTER: list[Doc] = [
         "The ruff and pyright --strict configuration, enforced as a hard gate rather than advice. Strict "
         "mode is enforced while the codebase is small because retrofitting it later is impractical.",
         "Merged code carries a type suppression without a recorded justification.", "Phase 2"),
+    Doc(2, "structure-fence", "Structure Fence", "executable", "ci-gate", "provisional",
+        "The declared top-level layout, hand-authored and checked against the tree. Split out of the "
+        "coding standards by ADR-0063: it is provisional because a list tracking a directory tree must "
+        "move when the tree does, and freezing it cost three D28 waivers.",
+        "A top-level directory exists in the tree and neither a fence line nor a committed layout-miss "
+        "anomaly accounts for it.", "Phase 2"),
     Doc(2, "testing-strategy", "Testing Strategy", "human", "ci-gate", "frozen",
         "Property tests over composed operations as the load-bearing correctness control, with the visible "
         "and held-out criterion classes and their separation. Mutation score has no gating role.",

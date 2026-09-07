@@ -1,10 +1,10 @@
 {
   "anomalies": [],
   "counts": {
-    "adr": 62,
+    "adr": 63,
     "amendment": 12,
     "decision": 57,
-    "document": 77,
+    "document": 78,
     "effect": 5,
     "gate": 5,
     "gate-step": 61,
@@ -24,14 +24,14 @@
     "amended_by": 2,
     "amends": 12,
     "blocks": 32,
-    "contains": 307,
+    "contains": 308,
     "discharges": 1,
-    "enforced_by": 382,
+    "enforced_by": 384,
     "imports": 263,
     "needs": 4,
     "references": 2,
     "runs": 40,
-    "see_also": 73,
+    "see_also": 78,
     "supersedes": 2
   },
   "edges": [
@@ -3976,6 +3976,19 @@
     },
     {
       "confidence": "structural",
+      "dst": "document:tier2/structure-fence",
+      "evidence": "docs/tier2/structure-fence.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier2/structure-fence.md"
+      },
+      "src": "tier:tier2"
+    },
+    {
+      "confidence": "structural",
       "dst": "document:tier2/task-specification-standard",
       "evidence": "docs/tier2/task-specification-standard.md",
       "extractor": "documents",
@@ -6953,6 +6966,19 @@
     },
     {
       "confidence": "derived",
+      "dst": "module:scripts.gen_doc_stubs",
+      "evidence": "\"coding standards by ADR-0063: it is provisional because a list tracking a directory tree must \"",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 149,
+        "line": 149,
+        "path": "scripts/gen_doc_stubs.py"
+      },
+      "src": "adr:ADR-0063"
+    },
+    {
+      "confidence": "derived",
       "dst": "module:bench.toy_tasks",
       "evidence": "\"\"\"Phase -1 toy tasks: is the narrow task class within reach of a local model?\n\nEach task is shaped like the real Phase 1 class (D36): a published formula, a\nfixed signature, and a",
       "extractor": "references",
@@ -7655,6 +7681,19 @@
     },
     {
       "confidence": "derived",
+      "dst": "module:scripts.gen_doc_stubs",
+      "evidence": "\"move when the tree does, and freezing it cost three D28 waivers.\"",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 150,
+        "line": 150,
+        "path": "scripts/gen_doc_stubs.py"
+      },
+      "src": "decision:D28"
+    },
+    {
+      "confidence": "derived",
       "dst": "module:scripts.lint_adr_numbers",
       "evidence": "\"\"\"ADR number claim lint: a branch may not claim a number the base has issued.\n\nThe ADR log is append-only in one file, and its preamble states the discipline:\nnumbering is sequent",
       "extractor": "references",
@@ -7829,8 +7868,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 318,
-        "line": 318,
+        "end_line": 324,
+        "line": 324,
         "path": "scripts/gen_doc_stubs.py"
       },
       "src": "decision:D32"
@@ -14571,6 +14610,71 @@
     },
     {
       "confidence": "structural",
+      "dst": "adr:ADR-0005",
+      "evidence": "**See also:** ADR-0062 (the falsification this discharges), ADR-0033, ADR-0040 and ADR-0050 (the three waivers), ADR-0005 (the constitution is human-authored), `docs/tier0/operating-principles.md:6`, ",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 6530,
+        "line": 6530,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0063"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0033",
+      "evidence": "**See also:** ADR-0062 (the falsification this discharges), ADR-0033, ADR-0040 and ADR-0050 (the three waivers), ADR-0005 (the constitution is human-authored), `docs/tier0/operating-principles.md:6`, ",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 6530,
+        "line": 6530,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0063"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0040",
+      "evidence": "**See also:** ADR-0062 (the falsification this discharges), ADR-0033, ADR-0040 and ADR-0050 (the three waivers), ADR-0005 (the constitution is human-authored), `docs/tier0/operating-principles.md:6`, ",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 6530,
+        "line": 6530,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0063"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0050",
+      "evidence": "**See also:** ADR-0062 (the falsification this discharges), ADR-0033, ADR-0040 and ADR-0050 (the three waivers), ADR-0005 (the constitution is human-authored), `docs/tier0/operating-principles.md:6`, ",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 6530,
+        "line": 6530,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0063"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0062",
+      "evidence": "**See also:** ADR-0062 (the falsification this discharges), ADR-0033, ADR-0040 and ADR-0050 (the three waivers), ADR-0005 (the constitution is human-authored), `docs/tier0/operating-principles.md:6`, ",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 6530,
+        "line": 6530,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0063"
+    },
+    {
+      "confidence": "structural",
       "dst": "adr:ADR-0050",
       "evidence": "**Supersedes:** ADR-0050's `D28 waiver: no` classification",
       "extractor": "adrs",
@@ -14598,14 +14702,14 @@
   ],
   "extractors": [
     {
-      "edges": 86,
+      "edges": 91,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 4,
       "min_nodes": 14,
       "name": "adrs",
-      "nodes": 62,
+      "nodes": 63,
       "rejected": 0,
       "scanned": 1,
       "unparsed": 0
@@ -14663,16 +14767,16 @@
       "unparsed": 0
     },
     {
-      "edges": 77,
+      "edges": 78,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 63,
       "min_nodes": 71,
       "name": "documents",
-      "nodes": 85,
+      "nodes": 86,
       "rejected": 0,
-      "scanned": 77,
+      "scanned": 78,
       "unparsed": 0
     },
     {
@@ -14741,7 +14845,7 @@
       "unparsed": 0
     },
     {
-      "edges": 382,
+      "edges": 384,
       "expect_rejected": null,
       "max_nodes": 0,
       "max_unparsed": 0,
@@ -16087,6 +16191,27 @@
       "status": "accepted",
       "tags": [],
       "title": "Amending a frozen ci-gate document is a D28 waiver; ADR-0050 is retroactively the third against the structure fence, and the falsification clause fires"
+    },
+    {
+      "attrs": {
+        "date": "2026-09-06",
+        "status": "accepted",
+        "status_raw": "Accepted"
+      },
+      "body": "**Date:** 2026-09-06 · **Status:** Accepted · **Supersedes:** none · **Amends:** `docs/tier2/coding-standards.md` (removes § Structure), `docs/README.md` (register row), `scripts/gen_doc_stubs.py` (stub register), `tools/vaultgraph/extract/layout.py` and `extract/effect.py` (repointed) · **See also:** ADR-0062 (the falsification this discharges), ADR-0033, ADR-0040 and ADR-0050 (the three waivers), ADR-0005 (the constitution is human-authored), `docs/tier0/operating-principles.md:6`, #78, #79 · **D28 waiver:** yes — the fifth by the log's derivation and the sixth in fact (ADR-0050's header is not yet corrected; see the Decision), and the fourth and terminal one against this fence",
+      "extractor": "adrs",
+      "id": "adr:ADR-0063",
+      "kind": "adr",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 6530,
+        "line": 6530,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "accepted",
+      "tags": [],
+      "title": "The structure fence is split out and reclassified provisional, discharging the falsification ADR-0062 recorded"
     },
     {
       "attrs": {
@@ -18369,6 +18494,37 @@
     },
     {
       "attrs": {
+        "enforcement": "ci-gate",
+        "evidence": "Reclassified from frozen by ADR-0063. Three D28 waivers landed against this fence's frozen status — ADR-0033, ADR-0040, and ADR-0050 once #78 reclassified it — tripping the three-waiver falsification clause at docs/tier0/operating-principles.md:6, which concludes that the principle is wrong rather than the situations. The fence itself is not wrong: tools/vaultgraph/extract/layout.py floors it at eighteen and surfaces layout-miss and layout-ghost anomalies that fire. What was wrong is freezing a list that tracks a directory tree, because the tree grows and a frozen list cannot follow it without a waiver each time.",
+        "falsifies_if": "A top-level directory exists in the tree and neither a fence line nor a committed layout-miss anomaly accounts for it; or a fence line names a directory that does not exist and no layout-ghost anomaly is committed for it; or a D28 waiver is spent against this fence at any point after ADR-0063, which would mean the reclassification did not remove the waiver source.",
+        "owner": "executable",
+        "path": "docs/tier2/structure-fence.md",
+        "review_after": "Phase 2",
+        "tier": "2",
+        "tier_name": "Build protocol",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier2/structure-fence",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier2/structure-fence.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier2",
+        "executable",
+        "ci-gate"
+      ],
+      "title": "Structure Fence"
+    },
+    {
+      "attrs": {
         "enforcement": "schema",
         "evidence": "The schedulability rule is the mechanism behind every credible agent coding result; the interface-signature requirement comes from SWE-bench Pro, which had to add human-authored interface specs because valid solutions were failing as false negatives.",
         "falsifies_if": "A task passes validation, dispatches, and its criterion turns out to be unexecutable or to admit a solution that does not solve the stated problem.",
@@ -19938,7 +20094,7 @@
     },
     {
       "attrs": {
-        "path": "docs/tier2/coding-standards.md"
+        "path": "docs/tier2/structure-fence.md"
       },
       "body": "Open: tools/vaultgraph/extract/layout.py:31, vault/layout/*, graph.json (layout nodes 18), docs-graph.html",
       "extractor": "effect",
@@ -19949,11 +20105,11 @@
       "source": {
         "end_line": 1,
         "line": 1,
-        "path": "docs/tier2/coding-standards.md"
+        "path": "docs/tier2/structure-fence.md"
       },
       "status": "",
       "tags": [],
-      "title": "Effect: edit docs/tier2/coding-standards.md § Structure"
+      "title": "Effect: edit docs/tier2/structure-fence.md § Structure"
     },
     {
       "attrs": {
@@ -21724,9 +21880,9 @@
       "occurrences": [],
       "shape": "fence-line",
       "source": {
-        "end_line": 125,
-        "line": 125,
-        "path": "docs/tier2/coding-standards.md"
+        "end_line": 43,
+        "line": 43,
+        "path": "docs/tier2/structure-fence.md"
       },
       "status": "named",
       "tags": [],
@@ -21744,9 +21900,9 @@
       "occurrences": [],
       "shape": "fence-line",
       "source": {
-        "end_line": 133,
-        "line": 133,
-        "path": "docs/tier2/coding-standards.md"
+        "end_line": 51,
+        "line": 51,
+        "path": "docs/tier2/structure-fence.md"
       },
       "status": "named",
       "tags": [],
@@ -21764,9 +21920,9 @@
       "occurrences": [],
       "shape": "fence-line",
       "source": {
-        "end_line": 134,
-        "line": 134,
-        "path": "docs/tier2/coding-standards.md"
+        "end_line": 52,
+        "line": 52,
+        "path": "docs/tier2/structure-fence.md"
       },
       "status": "named",
       "tags": [],
@@ -21784,9 +21940,9 @@
       "occurrences": [],
       "shape": "fence-line",
       "source": {
-        "end_line": 126,
-        "line": 126,
-        "path": "docs/tier2/coding-standards.md"
+        "end_line": 44,
+        "line": 44,
+        "path": "docs/tier2/structure-fence.md"
       },
       "status": "named",
       "tags": [],
@@ -21804,9 +21960,9 @@
       "occurrences": [],
       "shape": "fence-line",
       "source": {
-        "end_line": 127,
-        "line": 127,
-        "path": "docs/tier2/coding-standards.md"
+        "end_line": 45,
+        "line": 45,
+        "path": "docs/tier2/structure-fence.md"
       },
       "status": "named",
       "tags": [],
@@ -21824,9 +21980,9 @@
       "occurrences": [],
       "shape": "fence-line",
       "source": {
-        "end_line": 124,
-        "line": 124,
-        "path": "docs/tier2/coding-standards.md"
+        "end_line": 42,
+        "line": 42,
+        "path": "docs/tier2/structure-fence.md"
       },
       "status": "named",
       "tags": [],
@@ -21844,9 +22000,9 @@
       "occurrences": [],
       "shape": "fence-line",
       "source": {
-        "end_line": 122,
-        "line": 122,
-        "path": "docs/tier2/coding-standards.md"
+        "end_line": 40,
+        "line": 40,
+        "path": "docs/tier2/structure-fence.md"
       },
       "status": "named",
       "tags": [],
@@ -21864,9 +22020,9 @@
       "occurrences": [],
       "shape": "fence-line",
       "source": {
-        "end_line": 121,
-        "line": 121,
-        "path": "docs/tier2/coding-standards.md"
+        "end_line": 39,
+        "line": 39,
+        "path": "docs/tier2/structure-fence.md"
       },
       "status": "named",
       "tags": [],
@@ -21884,9 +22040,9 @@
       "occurrences": [],
       "shape": "fence-line",
       "source": {
-        "end_line": 135,
-        "line": 135,
-        "path": "docs/tier2/coding-standards.md"
+        "end_line": 53,
+        "line": 53,
+        "path": "docs/tier2/structure-fence.md"
       },
       "status": "named",
       "tags": [],
@@ -21904,9 +22060,9 @@
       "occurrences": [],
       "shape": "fence-line",
       "source": {
-        "end_line": 128,
-        "line": 128,
-        "path": "docs/tier2/coding-standards.md"
+        "end_line": 46,
+        "line": 46,
+        "path": "docs/tier2/structure-fence.md"
       },
       "status": "named",
       "tags": [],
@@ -21924,9 +22080,9 @@
       "occurrences": [],
       "shape": "fence-line",
       "source": {
-        "end_line": 129,
-        "line": 129,
-        "path": "docs/tier2/coding-standards.md"
+        "end_line": 47,
+        "line": 47,
+        "path": "docs/tier2/structure-fence.md"
       },
       "status": "named",
       "tags": [],
@@ -21944,9 +22100,9 @@
       "occurrences": [],
       "shape": "fence-line",
       "source": {
-        "end_line": 132,
-        "line": 132,
-        "path": "docs/tier2/coding-standards.md"
+        "end_line": 50,
+        "line": 50,
+        "path": "docs/tier2/structure-fence.md"
       },
       "status": "named",
       "tags": [],
@@ -21964,9 +22120,9 @@
       "occurrences": [],
       "shape": "fence-line",
       "source": {
-        "end_line": 123,
-        "line": 123,
-        "path": "docs/tier2/coding-standards.md"
+        "end_line": 41,
+        "line": 41,
+        "path": "docs/tier2/structure-fence.md"
       },
       "status": "named",
       "tags": [],
@@ -21984,9 +22140,9 @@
       "occurrences": [],
       "shape": "fence-line",
       "source": {
-        "end_line": 107,
-        "line": 107,
-        "path": "docs/tier2/coding-standards.md"
+        "end_line": 25,
+        "line": 25,
+        "path": "docs/tier2/structure-fence.md"
       },
       "status": "named",
       "tags": [],
@@ -22004,9 +22160,9 @@
       "occurrences": [],
       "shape": "fence-line",
       "source": {
-        "end_line": 136,
-        "line": 136,
-        "path": "docs/tier2/coding-standards.md"
+        "end_line": 54,
+        "line": 54,
+        "path": "docs/tier2/structure-fence.md"
       },
       "status": "named",
       "tags": [],
@@ -22024,9 +22180,9 @@
       "occurrences": [],
       "shape": "fence-line",
       "source": {
-        "end_line": 117,
-        "line": 117,
-        "path": "docs/tier2/coding-standards.md"
+        "end_line": 35,
+        "line": 35,
+        "path": "docs/tier2/structure-fence.md"
       },
       "status": "named",
       "tags": [],
@@ -22044,9 +22200,9 @@
       "occurrences": [],
       "shape": "fence-line",
       "source": {
-        "end_line": 130,
-        "line": 130,
-        "path": "docs/tier2/coding-standards.md"
+        "end_line": 48,
+        "line": 48,
+        "path": "docs/tier2/structure-fence.md"
       },
       "status": "named",
       "tags": [],
@@ -22064,9 +22220,9 @@
       "occurrences": [],
       "shape": "fence-line",
       "source": {
-        "end_line": 131,
-        "line": 131,
-        "path": "docs/tier2/coding-standards.md"
+        "end_line": 49,
+        "line": 49,
+        "path": "docs/tier2/structure-fence.md"
       },
       "status": "named",
       "tags": [],

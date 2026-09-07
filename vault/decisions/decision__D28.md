@@ -31,6 +31,7 @@ generated: true
 
 ## Enforced by (code)
 
+- **enforced_by** → [[module__scripts_gen_doc_stubs|Generate the Alfred documentation register as stubs (D32).]] — "move when the tree does, and freezing it cost three D28 waivers."
 - **enforced_by** → [[module__scripts_lint_adr_numbers|ADR number claim lint: a branch may not claim a number the base has issued.]] — """ADR number claim lint: a branch may not claim a number the base has issued.
 
 The ADR log is append-only in one file, 

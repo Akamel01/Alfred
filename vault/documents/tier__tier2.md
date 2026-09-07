@@ -30,5 +30,6 @@ generated: true
 - **contains** → [[document__tier2__harness-self-test-specification|Harness Self-Test Specification]]
 - **contains** → [[document__tier2__review-protocol|Review Protocol]]
 - **contains** → [[document__tier2__stage-gate-definitions|Stage Gate Definitions]]
+- **contains** → [[document__tier2__structure-fence|Structure Fence]]
 - **contains** → [[document__tier2__task-specification-standard|Task Specification Standard]]
 - **contains** → [[document__tier2__testing-strategy|Testing Strategy]]

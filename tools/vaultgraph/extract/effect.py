@@ -27,7 +27,7 @@ EXPECTED = 5
 _EFFECTS: tuple[tuple[str, str, str, str], ...] = (
     ("policy-protected-paths", "Effect: edit policy/protected-paths.json", "policy/protected-paths.json",
      "Open: docs/tier4/protected-paths-policy.md:1, harness/patch/validate.py:1, harness/patch/test_protected_set.py:1, vault/code/* (protected extractor), gates.yml:192 (vault --check)"),
-    ("coding-standards-fence", "Effect: edit docs/tier2/coding-standards.md § Structure", "docs/tier2/coding-standards.md",
+    ("coding-standards-fence", "Effect: edit docs/tier2/structure-fence.md § Structure", "docs/tier2/structure-fence.md",
      "Open: tools/vaultgraph/extract/layout.py:31, vault/layout/*, graph.json (layout nodes 18), docs-graph.html"),
     ("execution-order-stages", "Effect: edit docs/tier2/execution-order.md § Stages", "docs/tier2/execution-order.md",
      "Open: tools/vaultgraph/extract/stages.py:1, vault/execution/*, stages/*/CONTEXT.md, stages/*/output/exit.md, vault/processes/stage-evidence"),

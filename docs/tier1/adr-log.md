@@ -6526,3 +6526,107 @@ exactly the drift ADR-0052 closed the class on. `scripts/` is protected, so this
 **Falsification trigger.** This decision is wrong if a fourth waiver lands against the
 structure fence gate while the fence is still `frozen` — which would mean the falsification
 clause fired, was recorded, and changed nothing, making the clause decorative.
+
+## ADR-0063 — The structure fence is split out and reclassified provisional, discharging the falsification ADR-0062 recorded
+
+**Date:** 2026-09-06 · **Status:** Accepted · **Supersedes:** none · **Amends:** `docs/tier2/coding-standards.md` (removes § Structure), `docs/README.md` (register row), `scripts/gen_doc_stubs.py` (stub register), `tools/vaultgraph/extract/layout.py` and `extract/effect.py` (repointed) · **See also:** ADR-0062 (the falsification this discharges), ADR-0033, ADR-0040 and ADR-0050 (the three waivers), ADR-0005 (the constitution is human-authored), `docs/tier0/operating-principles.md:6`, #78, #79 · **D28 waiver:** yes — the fifth by the log's derivation and the sixth in fact (ADR-0050's header is not yet corrected; see the Decision), and the fourth and terminal one against this fence
+
+### Context
+
+ADR-0062 recorded that the falsification clause at `docs/tier0/operating-principles.md:6` had
+fired: three D28 waivers landed against the frozen status of the coding standards' structure
+fence — ADR-0033, ADR-0040, and ADR-0050 once #78's ruling reclassified it. The clause does not
+warn, it concludes: *"three waivers against the same principle means the principle is wrong,
+not the situations."*
+
+ADR-0062 stopped at recording the condition. This ADR discharges it.
+
+**What is wrong is the classification, not the fence.** The fence catches real drift:
+`tools/vaultgraph/extract/layout.py` floors it at eighteen and surfaces `layout-miss` and
+`layout-ghost` anomalies that fire. What cannot hold is `status: frozen` on a list that tracks
+a directory tree — the tree grows, and a frozen list cannot follow it without a waiver each
+time. Three independent efforts each discovered that and each was correct on its own facts.
+
+### Decision
+
+**1. § Structure moves to its own document,** `docs/tier2/structure-fence.md`, with
+`status: provisional` and `enforcement: ci-gate` retained. `docs/tier2/coding-standards.md`
+keeps a pointer and stays `frozen`.
+
+**The split is the point, not a convenience.** `status:` is a per-document field, so
+reclassifying the fence in place would have reclassified the whole of `coding-standards.md` —
+including its strict-typing commitments, whose own evidence line says they are enforced now
+*"because retrofitting it onto a grown codebase is impractical."* Declaring those "expected to
+move" as a side effect of fixing the fence would have loosened a real control while appearing
+to be bookkeeping. The fence moves; typing does not; they therefore cannot share a header.
+
+**2. Rejected: generate the fence from the tree.** This looks like the strongest fix — a
+generated fence can never go stale, so it would never need amending and the waiver source would
+vanish. It is wrong, and instructively so. **A fence generated from the thing it fences can
+never disagree with it**, so `layout-miss` and `layout-ghost` could never fire and the check
+would be scanning itself. That is the D57 vacuity class: the change would have deleted the
+detection while presenting as its perfection. The fence stays hand-authored because a
+declaration checked against reality is the only kind that can fail.
+
+**3. This ADR is itself a D28 waiver — the sixth — and that is not a technicality to argue
+away.** It amends `coding-standards.md` while that document is still `frozen` and `ci-gate`, so
+under #78's ruling it is a waiver. The tempting reading is that repairing a falsified principle
+should not cost a waiver, on the grounds that the gate has just been declared wrong. That
+reading is rejected: **it is exactly the reasoning ADR-0050 used, and #78 overruled it three
+days ago.** A rule that binds ADR-0050 and exempts this ADR is not a rule. The waiver is
+recorded plainly and spent once.
+
+This is a **D28 waiver** and counts toward the waiver total the operating principles use as a
+health metric. **It is the fifth.** The gate is the frozen status over the coding standards'
+structure fence.
+
+**That ordinal is the log's arithmetic, and it under-reports by one.** The true count is six:
+ADR-0050 is a waiver under #78's ruling, but its header still reads `no`, and
+`scripts/lint_adr_numbers.py` derives ordinals by counting `D28 waiver: yes` headers.
+ADR-0050's header cannot be corrected on this branch — the same lint refuses any change to a
+record `origin/main` has already issued, because that would land two ADRs under one number.
+So the correction is owed at merge, or in a record issued after ADR-0050 is reachable, and
+until then the derived ordinal is one behind. **The correct reading of this ADR is: fifth by
+the log's derivation, sixth in fact.** Stated here rather than left for an auditor to notice
+that the numbers do not add up.
+
+It is also **terminal against this fence.** It is the fourth waiver against that one gate, and
+it is the one that removes the need for a fifth. `structure-fence.md`'s own `falsifies_if` says
+so: a waiver spent against the fence at any point *after* this ADR would mean the
+reclassification failed to remove the waiver source.
+
+**4. The constitution is untouched.** `docs/tier0/operating-principles.md` is protected and
+permanently human-authored under ADR-0005, and needs no edit: the falsification clause fired
+correctly and is working as designed. ADR-0062's statement that an agent may not discharge the
+falsification was imprecise about *where* the remedy lives. What was falsified is the fence's
+classification, which lives in `docs/tier2/` and is not protected. The clause itself is
+unchanged and remains armed.
+
+### Consequences
+
+**Fence amendments stop costing waivers.** A new top-level directory now needs an ADR, as any
+provisional-document change does, and no waiver. The `ci-gate` is retained, so the fence still
+fails the build when it disagrees with the tree.
+
+**One protected-path write, and a Gate D read is owed.** `scripts/gen_doc_stubs.py` holds the
+stub register, and `scripts/lint_docs.py:194` requires every document on disk to appear in it,
+so creating the new document required adding one `Doc(...)` entry there. `scripts/` is
+protected. Per `docs/tier4/protected-paths-policy.md:100` this lands with an ADR — this one —
+**and an operator line-by-line read that has not happened.** Recorded as owed rather than
+assumed.
+
+**[#79](https://github.com/Akamel01/Alfred/issues/79) now has a precedent rather than a bill.**
+`docs/tier1/cross-stage-invariants.md` is the same shape: frozen over a claim about what
+enforces which invariant, which must move as enforcement is built out. It can follow this ADR's
+path — reclassify rather than waive — instead of spending a seventh waiver on a one-sentence
+repair. That is a separate decision on a separate document and is not taken here.
+
+**The waiver count is now six, and the lint still reports four.**
+`scripts/lint_adr_numbers.py` derives ordinals by counting `D28 waiver: yes` headers; ADR-0050's
+header still literally reads `no`, and this ADR adds one. True count six, derived count five
+once this lands. The discrepancy was recorded in ADR-0062 and is still owed a Gate D fix.
+
+**Falsification trigger.** This decision is wrong if a D28 waiver is spent against the structure
+fence after this ADR — meaning the reclassification did not remove the waiver source — or if
+`coding-standards.md` is later found to have grown content that must track a moving reality,
+meaning the split drew the seam in the wrong place.

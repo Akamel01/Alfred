@@ -39,3 +39,4 @@ generated: true
 - [[adr__ADR-0040|The structure fence grows to eighteen]] **see_also** → this
 - [[adr__ADR-0052|The D28 waiver ordinal becomes derived, and ADR-0040's is corrected in place]] **see_also** → this
 - [[adr__ADR-0062|Amending a frozen ci-gate document is a D28 waiver; ADR-0050 is retroactively the third ag]] **see_also** → this
+- [[adr__ADR-0063|The structure fence is split out and reclassified provisional, discharging the falsificati]] **see_also** → this

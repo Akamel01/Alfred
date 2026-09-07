@@ -50,7 +50,7 @@ def test_the_register_yields_every_non_generated_document() -> None:
     # document lands, and the name no longer carries the number because it drifted once
     # already — the function read "sixty_three" while asserting 64.
     result = _result()
-    assert sum(1 for n in result.nodes if n.kind is NodeKind.DOCUMENT) == 77
+    assert sum(1 for n in result.nodes if n.kind is NodeKind.DOCUMENT) == 78
 
 
 def test_every_tier_directory_becomes_one_node() -> None:
@@ -59,19 +59,19 @@ def test_every_tier_directory_becomes_one_node() -> None:
 
 
 def test_every_falsification_condition_in_the_corpus_is_data() -> None:
-    # 77 in document frontmatter, 5 in decision cells. This is the relation the graph exists
+    # 78 in document frontmatter, 5 in decision cells. This is the relation the graph exists
     # to make queryable and it existed as prose in two formats and as data nowhere.
     result = _result()
     docs = [n for n in result.nodes
             if n.kind is NodeKind.DOCUMENT and n.attrs.get("falsifies_if")]
     decisions = [n for n in result.nodes
                  if n.kind is NodeKind.DECISION and n.attrs.get("falsifies_if")]
-    assert len(docs) == 77
+    assert len(docs) == 78
     assert sorted(n.attrs["number"] for n in decisions) == ["30", "48", "49", "51", "55"]
 
 
 def test_every_document_carries_a_falsification_condition() -> None:
-    # The relation the graph exists to make visible. All 77 state one; a parser that stopped
+    # The relation the graph exists to make visible. All 78 state one; a parser that stopped
     # reading frontmatter would drop this to zero and this assertion is what would say so.
     result = _result()
     docs = [n for n in result.nodes if n.kind is NodeKind.DOCUMENT]
