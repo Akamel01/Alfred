@@ -9662,8 +9662,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 327,
-        "line": 327,
+        "end_line": 331,
+        "line": 331,
         "path": "scripts/lint_bench_append_only.py"
       },
       "src": "decision:D57"

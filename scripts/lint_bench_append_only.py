@@ -308,18 +308,22 @@ def _self_test() -> int:
         _git(["commit", "-qm", "base"], cwd=lone)
         if _resolve_base(lone) != "HEAD":
             failures.append("the fallthrough arm did not land on HEAD")
+        # Both states are set explicitly. Reading the ambient value and restoring it is
+        # what broke this arm on its first CI run: in CI `GITHUB_ACTIONS` is genuinely
+        # "true", so the "outside CI" half was asserting against a CI environment.
         prior = os.environ.get("GITHUB_ACTIONS")
-        os.environ["GITHUB_ACTIONS"] = "true"
         try:
+            os.environ["GITHUB_ACTIONS"] = "true"
             if not check(lone).violations:
                 failures.append("a HEAD self-comparison passed in CI instead of failing")
+            os.environ.pop("GITHUB_ACTIONS", None)
+            if check(lone).violations:
+                failures.append("a HEAD self-comparison failed outside CI, where it is honest")
         finally:
             if prior is None:
                 os.environ.pop("GITHUB_ACTIONS", None)
             else:
                 os.environ["GITHUB_ACTIONS"] = prior
-        if check(lone).violations:
-            failures.append("a HEAD self-comparison failed outside CI, where it is honest")
 
     return self_test_exit(
         failures,
