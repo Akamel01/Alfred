@@ -1,37 +1,38 @@
 ---
 kind: gate-step
-id: "gate-step:integrity.02"
-title: "Set up Python"
+id: "gate-step:integrity.31"
+title: "Vault generator suites"
 shape: "step"
 job: "integrity"
-source: ".github/workflows/gates.yml:55"
+source: ".github/workflows/gates.yml:247"
 extractor: "workflows"
 tags: [protected]
 aliases:
-  - "Set up Python"
-  - "integrity.02"
+  - "Vault generator suites"
+  - "integrity.31"
 generated: true
 ---
 
-# Set up Python
+# Vault generator suites
 
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `.github/workflows/gates.yml:55`
+**Source** · `.github/workflows/gates.yml:247`
 
 ## Statement
 
-uv python install ${{ env.PYTHON_VERSION }}
+uv run pytest tools/tests
 
 ## Fields
 
 | Field | Value |
 |---|---|
-| `command` | uv python install ${{ env.PYTHON_VERSION }} |
+| `command` | uv run pytest tools/tests |
 | `kind` | run |
-| `ordinal` | 2 |
+| `ordinal` | 31 |
 
 ## Binds
 
+- **runs** → [[module__tools_tests|tools.tests]]
 - [[gate__integrity|integrity (fixtures and register)]] **contains** → this

@@ -4,7 +4,7 @@ id: "gate-step:integrity.18"
 title: "Stage gate lint detects planted violations"
 shape: "step"
 job: "integrity"
-source: ".github/workflows/gates.yml:164"
+source: ".github/workflows/gates.yml:171"
 extractor: "workflows"
 tags: [protected]
 aliases:
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `.github/workflows/gates.yml:164`
+**Source** · `.github/workflows/gates.yml:171`
 
 ## Statement
 

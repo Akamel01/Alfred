@@ -6719,3 +6719,97 @@ health metric. It is the sixth. The gate is the frozen status over the cross-sta
 `cross-stage-invariants.md` after this ADR, meaning the reclassification did not remove the
 waiver source; or if a hand-maintained enforcement list reappears in this document, meaning
 pointing at the map did not stop the duplication it was meant to end.
+
+## ADR-0065 — The bench append-only guarantee gets the lint ADR-0038 said it already had, and the shallow checkout that would have made it vacuous is fixed with it
+
+**Date:** 2026-09-07 · **Status:** Accepted · **Supersedes:** none · **Amends:** `.github/workflows/gates.yml` (replaces the inline step, adds `fetch-depth: 0` to `integrity`); corrects ADR-0038's enforcement paragraph, which cannot be edited in place · **See also:** ADR-0038 (the harden decision this finally implements), ADR-0060 (the audit that found this), ADR-0007 and D57 (the vacuity class), ADR-0017 (a hole never passes), #4, #88 · **D28 waiver:** no — no register document is amended; `gates.yml` and `scripts/` are code, not documents carrying a status header
+
+### Context
+
+ADR-0060 audited ADR-0038's *harden* decision and found that what shipped does not implement
+it. Three findings, each verified again before this change:
+
+1. **ADR-0038 names enforcement that has never existed.** Its line 25 reads *"`scripts/lint_protected_paths.py` (existing) asserts no modified files under protected prefixes."* `find . -name "lint_protected_paths.py"` returns nothing.
+2. **What actually ran was inverted.** The inline step in `gates.yml` used `git diff --name-only HEAD~1`, which does not filter by status, while its own echo promised *"Only new files (status 'A') are allowed"*. Demonstrated again in a scratch repository: committing a **new** bench result makes the step exit 1. The next legitimate bench result would have failed CI.
+3. **It had never seen a real diff.** `git log --oneline -- bench/results/` returns one commit, `bench/fingerprints/` has none and does not exist in the tree, and `git log --diff-filter=M --all` over both returns zero. Green had always meant "never ran" — which is why the inversion in (2) survived every run it was in.
+
+Two further weaknesses were in the same six lines: `HEAD~1` inspects only the tip commit, so a
+modification in any non-tip commit of a multi-commit push was never diffed; and
+`2>/dev/null || true` failed open, so a `git` error reported success.
+
+### Decision
+
+**1. `scripts/lint_bench_append_only.py` replaces the inline step,** in the shape every other
+gate in this repository already has: a module with a `--self-test`, a vacuity guard, and a
+scanned count on every run. The inline bash was the anomaly, and ADR-0038's phantom script
+name is evidence that a script was always the intent.
+
+The four defects are fixed and each is named in the module's own docstring, so the next reader
+does not have to recover this from the log: an explicit `--diff-filter=MDR` so additions pass
+and modifications, deletions and renames fail; a merge-base range against the branch being
+merged into rather than `HEAD~1`; and a `git` wrapper that raises rather than swallowing.
+
+**2. D57 is applied to the corpus, not to the diff, and that is the non-obvious part.** A
+commit that changes nothing under these prefixes is the common case, and reporting "0 changed
+paths" is a true answer to a real question — guarding *that* would fail every ordinary build.
+What is genuinely vacuous is guarding an **empty corpus**: if nothing is tracked under any
+append-only prefix, the check cannot fail and protects nothing, which is precisely the state
+the predecessor sat in unnoticed. So the guard fires on a zero-file corpus, and the per-prefix
+counts print on every run — `bench/results/32, bench/fingerprints/absent` today. **ADR-0060's
+finding that `bench/fingerprints/` does not exist is now visible on every CI run instead of
+being something an audit had to go looking for.**
+
+**3. The `integrity` job gets `fetch-depth: 0`, and this was found while building the fix
+rather than planned.** `actions/checkout@v4` defaults to a shallow clone. On a depth-1
+checkout `origin/main` does not resolve, the base chain falls through to its last candidate
+`HEAD`, and a `HEAD...HEAD` comparison finds nothing while reporting success. **The
+replacement would have been vacuous in CI on its first run** — the same class of failure it
+was written to end, reintroduced by the checkout rather than by the check.
+
+Two things guard it, because one of them is a workflow setting that a later edit could quietly
+drop: the checkout fetches full history, **and** the module fails when its base resolves to
+`HEAD` while `GITHUB_ACTIONS` is set. Locally an unforked tree comparing against itself is the
+honest answer and passes; in CI it means the guarantee evaporated and must not read as green.
+The base is named in the OK line — `against origin/main` — so a degradation is legible rather
+than silent.
+
+**This finding is not confined to this check.** `scripts/lint_adr_numbers.py` resolves its base
+through the same chain with the same `HEAD` fallback, so it carried the same latent vacuity on
+a shallow checkout. The `fetch-depth: 0` added here fixes both; the ADR-numbering lint is not
+otherwise touched.
+
+**4. The self-test is two-sided and then some.** Six planted arms: an addition stays quiet — the
+arm whose absence let the inversion survive — while a modification, a deletion, and a
+modification hidden behind a later commit each fire; an empty corpus trips the vacuity guard;
+and a base falling through to `HEAD` fails under CI and passes outside it. The first run of that
+self-test failed and was right to: the fixtures committed on `main` with `HEAD` equal to `main`,
+so every arm was comparing an empty range and passing for the wrong reason.
+
+**5. ADR-0038's enforcement paragraph is corrected here rather than there.** That record is
+issued by `origin/main`, and `scripts/lint_adr_numbers.py` refuses any edit to such a record
+because it would land two ADRs under one number. So: **ADR-0038's citation of
+`scripts/lint_protected_paths.py` was never true, and its enforcement is now
+`scripts/lint_bench_append_only.py`, wired at `gates.yml` in the `integrity` job.** Its
+decision — harden — stands unamended and is what this implements.
+
+### Consequences
+
+**The next bench result can land.** Verified end-to-end in a scratch repository: an
+addition-only branch that the old step failed now passes, and modifying a landed record fails
+with the path, the status and the base named.
+
+**A Gate D read is owed on two protected paths.** `scripts/lint_bench_append_only.py` is new and
+`.github/workflows/gates.yml` is amended; both prefixes are protected, and
+`docs/tier4/protected-paths-policy.md:100` permits an agent-drafted patch only under
+line-by-line human review with a mandatory ADR. This is the ADR. **The operator read has not
+happened** and is recorded as owed rather than assumed.
+
+**`bench/fingerprints/` still does not exist.** This change makes that visible on every run and
+does not create it. Whether the directory should exist, or should leave `APPEND_ONLY`, is
+ADR-0038's territory and is left open deliberately — a check that invented the directory to
+make its own report tidier would be asserting something no one decided.
+
+**Falsification trigger.** This decision is wrong if a modification to a landed bench record
+merges without this check failing; or if the check reports `OK` while naming a base of `HEAD` in
+CI, meaning both the checkout depth and the self-comparison guard were defeated at once; or if a
+future edit restores a status-blind diff, which the self-test's addition arm now exists to catch.

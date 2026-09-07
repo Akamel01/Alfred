@@ -4,7 +4,7 @@ id: "gate-step:integrity.05"
 title: "Reading map current"
 shape: "step"
 job: "integrity"
-source: ".github/workflows/gates.yml:62"
+source: ".github/workflows/gates.yml:69"
 extractor: "workflows"
 tags: [protected]
 aliases:
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `.github/workflows/gates.yml:62`
+**Source** · `.github/workflows/gates.yml:69`
 
 ## Statement
 

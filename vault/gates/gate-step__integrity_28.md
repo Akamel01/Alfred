@@ -1,34 +1,34 @@
 ---
 kind: gate-step
 id: "gate-step:integrity.28"
-title: "Model routing policy conforms to the bindings"
+title: "Model routing lint checks its own vacuity"
 shape: "step"
 job: "integrity"
-source: ".github/workflows/gates.yml:236"
+source: ".github/workflows/gates.yml:238"
 extractor: "workflows"
 tags: [protected]
 aliases:
-  - "Model routing policy conforms to the bindings"
+  - "Model routing lint checks its own vacuity"
   - "integrity.28"
 generated: true
 ---
 
-# Model routing policy conforms to the bindings
+# Model routing lint checks its own vacuity
 
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `.github/workflows/gates.yml:236`
+**Source** · `.github/workflows/gates.yml:238`
 
 ## Statement
 
-python3 scripts/lint_model_routing.py
+python3 scripts/lint_model_routing.py --self-test
 
 ## Fields
 
 | Field | Value |
 |---|---|
-| `command` | python3 scripts/lint_model_routing.py |
+| `command` | python3 scripts/lint_model_routing.py --self-test |
 | `kind` | run |
 | `ordinal` | 28 |
 

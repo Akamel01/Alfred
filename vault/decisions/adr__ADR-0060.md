@@ -36,3 +36,4 @@ generated: true
 - **see_also** → [[adr__ADR-0007|Executor-premise assertions may pass vacuously, and that is a third outcome]]
 - **see_also** → [[adr__ADR-0031|The protected set is one file, and the gate protects its own policy]]
 - **see_also** → [[adr__ADR-0038|bench Immutability: Convention → Git-Level Control]]
+- [[adr__ADR-0065|The bench append-only guarantee gets the lint ADR-0038 said it already had, and the shallo]] **see_also** → this

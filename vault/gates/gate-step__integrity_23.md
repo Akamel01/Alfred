@@ -1,38 +1,38 @@
 ---
 kind: gate-step
 id: "gate-step:integrity.23"
-title: "Topology lint checks its own vacuity"
+title: "Bench records are append-only (bench/results/, bench/fingerprints/)"
 shape: "step"
 job: "integrity"
-source: ".github/workflows/gates.yml:221"
+source: ".github/workflows/gates.yml:223"
 extractor: "workflows"
 tags: [protected]
 aliases:
-  - "Topology lint checks its own vacuity"
+  - "Bench records are append-only (bench/results/, bench/fingerprints/)"
   - "integrity.23"
 generated: true
 ---
 
-# Topology lint checks its own vacuity
+# Bench records are append-only (bench/results/, bench/fingerprints/)
 
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `.github/workflows/gates.yml:221`
+**Source** · `.github/workflows/gates.yml:223`
 
 ## Statement
 
-python3 scripts/lint_topology.py --self-test
+python3 scripts/lint_bench_append_only.py
 
 ## Fields
 
 | Field | Value |
 |---|---|
-| `command` | python3 scripts/lint_topology.py --self-test |
+| `command` | python3 scripts/lint_bench_append_only.py |
 | `kind` | run |
 | `ordinal` | 23 |
 
 ## Binds
 
-- **runs** → [[module__scripts_lint_topology|Topology lint — TOP001-TOP009 per orchestration-canvas-spec §6.]]
+- **runs** → [[module__scripts_lint_bench_append_only|`bench/results/` and `bench/fingerprints/` are append-only. This is what says so.]]
 - [[gate__integrity|integrity (fixtures and register)]] **contains** → this
