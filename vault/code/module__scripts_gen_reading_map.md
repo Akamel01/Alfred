@@ -38,3 +38,4 @@ generated: true
 
 - [[adr__ADR-0001|Representation of undefined and infinite metric values]] **enforced_by** → this — "ADR-0001 to 0008 constrain every metric signature, every hashed record, and the operator surface"
 - [[adr__ADR-0032|Operator-plane memory is recall over the committed corpus, not a store]] **enforced_by** → this — "map #41: ECC's vault against ADR-0032 — mirror selected records, never consume wholesale"
+- [[adr__ADR-0063|The structure fence is split out and reclassified provisional, discharging the falsificati]] **enforced_by** → this — "the declared top-level layout; hand-authored so it can disagree with the tree, provisional so it can follow it (ADR-006

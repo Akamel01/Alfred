@@ -42,3 +42,4 @@ generated: true
 ## Enforced by (code)
 
 - **enforced_by** → [[module__scripts_gen_doc_stubs|Generate the Alfred documentation register as stubs (D32).]] — "coding standards by ADR-0063: it is provisional because a list tracking a directory tree must "
+- **enforced_by** → [[module__scripts_gen_reading_map|Generate docs/READING-MAP.md — what to read, when, and what it binds.]] — "the declared top-level layout; hand-authored so it can disagree with the tree, provisional so it can follow it (ADR-006

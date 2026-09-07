@@ -43,28 +43,29 @@ Product skeleton. The largest reading set, because Phase 0 builds what cannot be
 | # | Document | Kind | Status | Why now |
 |---|---|---|---|---|
 | 1 | [Execution Order](tier2/execution-order.md) | binding | provisional | what gets built in what order, what each stage blocks, and what is operator-owned |
-| 2 | [Cross-Stage Invariants](tier1/cross-stage-invariants.md) | binding | frozen | what every table, ID and API must carry from the first commit |
+| 2 | [Cross-Stage Invariants](tier1/cross-stage-invariants.md) | binding | provisional | what every table, ID and API must carry from the first commit |
 | 3 | [Data Architecture](tier1/data-architecture.md) | binding | frozen | schemas, DB roles, the hash chain, held-out isolation by SQL grant |
 | 4 | [ADR Log](tier1/adr-log.md) | binding | frozen | ADR-0001 to 0008 constrain every metric signature, every hashed record, and the operator surface |
 | 5 | [Edge Case and Degeneracy Specification](tier5/edge-case-and-degeneracy-specification.md) | binding | frozen | what each metric returns for degenerate input; defines the property tests |
 | 6 | [Domain Specification](tier5/domain-specification.md) | binding | stub | the formulas, citations and units being implemented |
 | 7 | [Failure Semantics and Error Handling](tier1/failure-semantics.md) | binding | frozen | three-valued verdicts, fail-closed table, error taxonomy, retry rules |
 | 8 | [Coding Standards](tier2/coding-standards.md) | binding | frozen | toolchain, strict typing as a hard gate, source layout |
-| 9 | [Testing Strategy](tier2/testing-strategy.md) | binding | frozen | composed property tests are load-bearing; what has no gating role |
-| 10 | [Harness Self-Test Specification](tier2/harness-self-test-specification.md) | binding | provisional | the suites that test the harness itself: seeded-defect ladder, null-agent floor, fault injection, boot-control negative tests, restore drill |
-| 11 | [Definition of Done](tier2/definition-of-done.md) | binding | frozen | the twelve executable merge conditions |
-| 12 | [Protected Paths Policy](tier4/protected-paths-policy.md) | binding | frozen | what an agent may never write, and what enforces it |
-| 13 | [Sandbox Specification](tier4/sandbox-specification.md) | binding | frozen | container contract, network posture, egress canary |
-| 14 | [Secrets Management Policy](tier4/secrets-management-policy.md) | binding | frozen | no secret in the execution plane; startup assertions |
-| 15 | [Permission and Identity Model](tier4/permission-and-identity-model.md) | binding | frozen | identities, held-out isolation, verdict ownership |
-| 16 | [Audit and Retention Policy](tier4/audit-and-retention-policy.md) | binding | frozen | append-only, hash chaining, restore drill, recall protocol |
-| 17 | [Threat Model](tier4/threat-model.md) | context | frozen | the ten threats the controls answer, and what is out of scope |
-| 18 | [Task Specification Standard](tier2/task-specification-standard.md) | binding | frozen | what makes a task schedulable; criterion structure |
-| 19 | [Model and Algorithm Cards](tier5/model-and-algorithm-cards.md) | binding | stub | validity envelopes ship with the product |
-| 20 | [Stage Gate Definitions](tier2/stage-gate-definitions.md) | binding | provisional | the executable exits, and the waiver discipline for overriding one |
-| 21 | [Branch, Release and Deploy Protocol](tier2/branch-release-deploy-protocol.md) | binding | provisional | deploy and rollback are Phase 0 exit criteria |
-| 22 | [Risk Register](tier0/risk-register.md) | context | provisional | open risks with revisit triggers; check before assuming something is handled |
-| 23 | [Criterion Authoring Guide](tier2/criterion-authoring-guide.md) | context | stub | stub — promote once real criteria have been authored |
+| 9 | [Structure Fence](tier2/structure-fence.md) | binding | provisional | the declared top-level layout; hand-authored so it can disagree with the tree, provisional so it can follow it (ADR-0063) |
+| 10 | [Testing Strategy](tier2/testing-strategy.md) | binding | frozen | composed property tests are load-bearing; what has no gating role |
+| 11 | [Harness Self-Test Specification](tier2/harness-self-test-specification.md) | binding | provisional | the suites that test the harness itself: seeded-defect ladder, null-agent floor, fault injection, boot-control negative tests, restore drill |
+| 12 | [Definition of Done](tier2/definition-of-done.md) | binding | frozen | the twelve executable merge conditions |
+| 13 | [Protected Paths Policy](tier4/protected-paths-policy.md) | binding | frozen | what an agent may never write, and what enforces it |
+| 14 | [Sandbox Specification](tier4/sandbox-specification.md) | binding | frozen | container contract, network posture, egress canary |
+| 15 | [Secrets Management Policy](tier4/secrets-management-policy.md) | binding | frozen | no secret in the execution plane; startup assertions |
+| 16 | [Permission and Identity Model](tier4/permission-and-identity-model.md) | binding | frozen | identities, held-out isolation, verdict ownership |
+| 17 | [Audit and Retention Policy](tier4/audit-and-retention-policy.md) | binding | frozen | append-only, hash chaining, restore drill, recall protocol |
+| 18 | [Threat Model](tier4/threat-model.md) | context | frozen | the ten threats the controls answer, and what is out of scope |
+| 19 | [Task Specification Standard](tier2/task-specification-standard.md) | binding | frozen | what makes a task schedulable; criterion structure |
+| 20 | [Model and Algorithm Cards](tier5/model-and-algorithm-cards.md) | binding | stub | validity envelopes ship with the product |
+| 21 | [Stage Gate Definitions](tier2/stage-gate-definitions.md) | binding | provisional | the executable exits, and the waiver discipline for overriding one |
+| 22 | [Branch, Release and Deploy Protocol](tier2/branch-release-deploy-protocol.md) | binding | provisional | deploy and rollback are Phase 0 exit criteria |
+| 23 | [Risk Register](tier0/risk-register.md) | context | provisional | open risks with revisit triggers; check before assuming something is handled |
+| 24 | [Criterion Authoring Guide](tier2/criterion-authoring-guide.md) | context | stub | stub — promote once real criteria have been authored |
 
 ## Phase 0.75
 
@@ -218,7 +219,17 @@ Binding on implementation and easy to miss, since they live inside one document.
 | [ADR-0053](tier1/adr-log.md) | The cross-stage invariants get the lint their register claims, and a checked map of what enforces the rest | Accepted |
 | [ADR-0054](tier1/adr-log.md) | Check A lands: the model that answers is asserted against the fingerprint before an attempt starts | Accepted |
 | [ADR-0055](tier1/adr-log.md) | Evidence and heldout primary keys become UUIDv7, by a duplicated generator the harness suite checks against drift | Accepted |
+| [ADR-0056](tier1/adr-log.md) | The requalification trigger covers the whole binding, and the five fields that would record it are all unset | Accepted |
+| [ADR-0057](tier1/adr-log.md) | The C13/C7 archive-suffix split is defensible only under a wiring premise nothing in this repository can confirm, and the spec fix it implies is blocked on #78 | Accepted |
+| [ADR-0058](tier1/adr-log.md) | The dispatch-workspace exclusion contract: what a dispatch mount excludes, and that nothing dispatches yet | Accepted |
+| [ADR-0059](tier1/adr-log.md) | The live view's model dropdown may not write routing policy, standing or split; the affordance the ticket wants does not exist as infrastructure yet | Accepted |
+| [ADR-0060](tier1/adr-log.md) | ADR-0038 decided harden; what was built does not enforce it, names a script that does not exist, and has never scanned a real diff | Accepted |
+| [ADR-0061](tier1/adr-log.md) | An interruption is recorded as a termination, not a verdict: the record-shape half of #69 | Accepted |
+| [ADR-0062](tier1/adr-log.md) | Amending a frozen ci-gate document is a D28 waiver; ADR-0050 is retroactively the third against the structure fence, and the falsification clause fires | Accepted |
+| [ADR-0063](tier1/adr-log.md) | The structure fence is split out and reclassified provisional, discharging the falsification ADR-0062 recorded | Accepted |
+| [ADR-0064](tier1/adr-log.md) | The cross-stage invariants are reclassified provisional and stop re-listing what the lint checks, applying ADR-0063's lesson before a third waiver rather than after | Accepted |
+| [ADR-0065](tier1/adr-log.md) | The bench append-only guarantee gets the lint ADR-0038 said it already had, and the shallow checkout that would have made it vacuous is fixed with it | Accepted |
 
 ---
 
-**77 documents mapped** · 44 binding · 14 context · 19 record · 55 architecture decisions
+**78 documents mapped** · 45 binding · 14 context · 19 record · 65 architecture decisions

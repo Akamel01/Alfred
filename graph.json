@@ -26,7 +26,7 @@
     "blocks": 32,
     "contains": 309,
     "discharges": 1,
-    "enforced_by": 391,
+    "enforced_by": 392,
     "imports": 263,
     "needs": 4,
     "references": 2,
@@ -6828,8 +6828,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 119,
-        "line": 119,
+        "end_line": 120,
+        "line": 120,
         "path": "scripts/gen_reading_map.py"
       },
       "src": "adr:ADR-0032"
@@ -7013,6 +7013,19 @@
         "end_line": 151,
         "line": 151,
         "path": "scripts/gen_doc_stubs.py"
+      },
+      "src": "adr:ADR-0063"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:scripts.gen_reading_map",
+      "evidence": "\"the declared top-level layout; hand-authored so it can disagree with the tree, provisional so it can follow it (ADR-0063)\"",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 55,
+        "line": 55,
+        "path": "scripts/gen_reading_map.py"
       },
       "src": "adr:ADR-0063"
     },
@@ -15079,7 +15092,7 @@
       "unparsed": 0
     },
     {
-      "edges": 391,
+      "edges": 392,
       "expect_rejected": null,
       "max_nodes": 0,
       "max_unparsed": 0,

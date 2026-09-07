@@ -52,6 +52,7 @@ PHASES: list[tuple[str, str, list[tuple[str, str, str]]]] = [
         ("domain-specification", BINDING, "the formulas, citations and units being implemented"),
         ("failure-semantics", BINDING, "three-valued verdicts, fail-closed table, error taxonomy, retry rules"),
         ("coding-standards", BINDING, "toolchain, strict typing as a hard gate, source layout"),
+        ("structure-fence", BINDING, "the declared top-level layout; hand-authored so it can disagree with the tree, provisional so it can follow it (ADR-0063)"),
         ("testing-strategy", BINDING, "composed property tests are load-bearing; what has no gating role"),
         ("harness-self-test-specification", BINDING, "the suites that test the harness itself: seeded-defect ladder, null-agent floor, fault injection, boot-control negative tests, restore drill"),
         ("definition-of-done", BINDING, "the twelve executable merge conditions"),
