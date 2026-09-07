@@ -5,7 +5,7 @@ title: "Check A lands: the model that answers is asserted against the fingerprin
 status: "accepted"
 shape: "heading"
 date: "2026-09-03"
-source: "docs/tier1/adr-log.md:5036"
+source: "docs/tier1/adr-log.md:5053"
 extractor: "adrs"
 aliases:
   - "ADR-0054"
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `docs/tier1/adr-log.md:5036`
+**Source** · `docs/tier1/adr-log.md:5053`
 
 ## Statement
 

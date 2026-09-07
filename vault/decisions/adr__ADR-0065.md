@@ -5,7 +5,7 @@ title: "The bench append-only guarantee gets the lint ADR-0038 said it already h
 status: "accepted"
 shape: "heading"
 date: "2026-09-07"
-source: "docs/tier1/adr-log.md:6723"
+source: "docs/tier1/adr-log.md:6754"
 extractor: "adrs"
 aliases:
   - "ADR-0065"
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `docs/tier1/adr-log.md:6723`
+**Source** · `docs/tier1/adr-log.md:6754`
 
 ## Statement
 

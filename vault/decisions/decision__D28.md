@@ -42,6 +42,8 @@ The ADR log is append-only in one file,
 - **enforced_by** → [[module__scripts_lint_adr_numbers|ADR number claim lint: a branch may not claim a number the base has issued.]] — """The paragraphs of a record in which an ordinal counts as a claim.
 
     Two shapes, and nothing else. A paragraph carr
+- **enforced_by** → [[module__scripts_lint_adr_numbers|ADR number claim lint: a branch may not claim a number the base has issued.]] — """The record's effective `D28 waiver` declaration: its header, unless a correction
+    note overrides it. `None` for a 
 - **enforced_by** → [[module__scripts_lint_adr_numbers|ADR number claim lint: a branch may not claim a number the base has issued.]] — """The ADR numbers declaring `D28 waiver: yes`, in numeric order.
 
     This list *is* the count the operating principles

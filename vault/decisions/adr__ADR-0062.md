@@ -5,7 +5,7 @@ title: "Amending a frozen ci-gate document is a D28 waiver; ADR-0050 is retroact
 status: "accepted"
 shape: "heading"
 date: "2026-09-06"
-source: "docs/tier1/adr-log.md:6436"
+source: "docs/tier1/adr-log.md:6453"
 extractor: "adrs"
 aliases:
   - "ADR-0062"
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `docs/tier1/adr-log.md:6436`
+**Source** · `docs/tier1/adr-log.md:6453`
 
 ## Statement
 

@@ -5,7 +5,7 @@ title: "The requalification trigger covers the whole binding, and the five field
 status: "accepted"
 shape: "heading"
 date: "2026-09-05"
-source: "docs/tier1/adr-log.md:5299"
+source: "docs/tier1/adr-log.md:5316"
 extractor: "adrs"
 aliases:
   - "ADR-0056"
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `docs/tier1/adr-log.md:5299`
+**Source** · `docs/tier1/adr-log.md:5316`
 
 ## Statement
 

@@ -229,7 +229,8 @@ Binding on implementation and easy to miss, since they live inside one document.
 | [ADR-0063](tier1/adr-log.md) | The structure fence is split out and reclassified provisional, discharging the falsification ADR-0062 recorded | Accepted |
 | [ADR-0064](tier1/adr-log.md) | The cross-stage invariants are reclassified provisional and stop re-listing what the lint checks, applying ADR-0063's lesson before a third waiver rather than after | Accepted |
 | [ADR-0065](tier1/adr-log.md) | The bench append-only guarantee gets the lint ADR-0038 said it already had, and the shallow checkout that would have made it vacuous is fixed with it | Accepted |
+| [ADR-0066](tier1/adr-log.md) | A D28 waiver declaration becomes correctable in the same append-only channel as its ordinal, and ADR-0050's is corrected | Accepted |
 
 ---
 
-**78 documents mapped** · 45 binding · 14 context · 19 record · 65 architecture decisions
+**78 documents mapped** · 45 binding · 14 context · 19 record · 66 architecture decisions

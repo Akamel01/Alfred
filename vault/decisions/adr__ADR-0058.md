@@ -5,7 +5,7 @@ title: "The dispatch-workspace exclusion contract: what a dispatch mount exclude
 status: "accepted"
 shape: "heading"
 date: "2026-09-05"
-source: "docs/tier1/adr-log.md:5523"
+source: "docs/tier1/adr-log.md:5540"
 extractor: "adrs"
 aliases:
   - "ADR-0058"
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `docs/tier1/adr-log.md:5523`
+**Source** · `docs/tier1/adr-log.md:5540`
 
 ## Statement
 
