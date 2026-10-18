@@ -76,6 +76,12 @@ Revises
 - **enforced_by** → [[module__scripts_lint_model_routing|MR001-MR005: model routing policy conformance, checked before any spawn.]] — """MR001-MR005: model routing policy conformance, checked before any spawn.
 
 **Why a static lint can enforce this at all
+- **enforced_by** → [[module__scripts_lint_topology|Topology lint — TOP001-TOP009 per orchestration-canvas-spec §6.]] — """TOP010-TOP013. The palette says which roles exist; the bindings say which ones run.
+
+    This is a two-file invariant
+- **enforced_by** → [[module__scripts_lint_topology|Topology lint — TOP001-TOP009 per orchestration-canvas-spec §6.]] — # TOP014 -- a requalification may not report pass while the D19 fields are unset.
+- **enforced_by** → [[module__scripts_lint_topology|Topology lint — TOP001-TOP009 per orchestration-canvas-spec §6.]] — "TOP014 requalification reports 'pass' while D19 version fields are 'unset'"
+- **enforced_by** → [[module__scripts_lint_topology|Topology lint — TOP001-TOP009 per orchestration-canvas-spec §6.]] — "no dispatcher; D19 fields unset"
 
 ## Stated in prose — unverified
 

@@ -1,7 +1,7 @@
 {
   "anomalies": [],
   "counts": {
-    "adr": 67,
+    "adr": 68,
     "amendment": 12,
     "decision": 57,
     "document": 78,
@@ -26,12 +26,12 @@
     "blocks": 32,
     "contains": 309,
     "discharges": 1,
-    "enforced_by": 400,
+    "enforced_by": 404,
     "imports": 263,
     "needs": 4,
     "references": 2,
     "runs": 42,
-    "see_also": 91,
+    "see_also": 94,
     "supersedes": 2
   },
   "edges": [
@@ -7603,6 +7603,58 @@
     },
     {
       "confidence": "derived",
+      "dst": "module:scripts.lint_topology",
+      "evidence": "\"\"\"TOP010-TOP013. The palette says which roles exist; the bindings say which ones run.\n\n    This is a two-file invariant, which is why it extends this lint rather than living in a\n",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 251,
+        "line": 251,
+        "path": "scripts/lint_topology.py"
+      },
+      "src": "decision:D19"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:scripts.lint_topology",
+      "evidence": "# TOP014 -- a requalification may not report pass while the D19 fields are unset.",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 348,
+        "line": 348,
+        "path": "scripts/lint_topology.py"
+      },
+      "src": "decision:D19"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:scripts.lint_topology",
+      "evidence": "\"TOP014 requalification reports 'pass' while D19 version fields are 'unset'\"",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 371,
+        "line": 371,
+        "path": "scripts/lint_topology.py"
+      },
+      "src": "decision:D19"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:scripts.lint_topology",
+      "evidence": "\"no dispatcher; D19 fields unset\"",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 442,
+        "line": 442,
+        "path": "scripts/lint_topology.py"
+      },
+      "src": "decision:D19"
+    },
+    {
+      "confidence": "derived",
       "dst": "module:.github.workflows.gates.yml",
       "evidence": "machinery (D20): agents may not edit it.",
       "extractor": "references",
@@ -15143,6 +15195,45 @@
     },
     {
       "confidence": "structural",
+      "dst": "adr:ADR-0007",
+      "evidence": "**See also:** ADR-0007 (the vacuity class), ADR-0056 (the requalification trigger), ADR-0067 (the batched Gate D read), #86",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 7003,
+        "line": 7003,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0068"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0056",
+      "evidence": "**See also:** ADR-0007 (the vacuity class), ADR-0056 (the requalification trigger), ADR-0067 (the batched Gate D read), #86",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 7003,
+        "line": 7003,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0068"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0067",
+      "evidence": "**See also:** ADR-0007 (the vacuity class), ADR-0056 (the requalification trigger), ADR-0067 (the batched Gate D read), #86",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 7003,
+        "line": 7003,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0068"
+    },
+    {
+      "confidence": "structural",
       "dst": "adr:ADR-0050",
       "evidence": "**Supersedes:** ADR-0050's `D28 waiver: no` classification",
       "extractor": "adrs",
@@ -15170,14 +15261,14 @@
   ],
   "extractors": [
     {
-      "edges": 108,
+      "edges": 111,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 4,
       "min_nodes": 14,
       "name": "adrs",
-      "nodes": 67,
+      "nodes": 68,
       "rejected": 0,
       "scanned": 1,
       "unparsed": 0
@@ -15313,7 +15404,7 @@
       "unparsed": 0
     },
     {
-      "edges": 400,
+      "edges": 404,
       "expect_rejected": null,
       "max_nodes": 0,
       "max_unparsed": 0,
@@ -16764,6 +16855,27 @@
       "status": "accepted",
       "tags": [],
       "title": "Gate D's read is batched per pull request, and the comment-only exemption is rejected as unsafe here"
+    },
+    {
+      "attrs": {
+        "date": "2026-10-18",
+        "status": "accepted",
+        "status_raw": "Accepted"
+      },
+      "body": "**Date:** 2026-10-18 · **Status:** Accepted · **Supersedes:** none · **Amends:** `policy/role-bindings.json` (top-level `requalification` key), `scripts/lint_topology.py` (TOP014), `docs/tier3/agent-definition-standard.md` (evidence, falsifies_if, Enforcement) · **See also:** ADR-0007 (the vacuity class), ADR-0056 (the requalification trigger), ADR-0067 (the batched Gate D read), #86 · **D28 waiver:** no",
+      "extractor": "adrs",
+      "id": "adr:ADR-0068",
+      "kind": "adr",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 7003,
+        "line": 7003,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "accepted",
+      "tags": [],
+      "title": "Unset D19 version fields report `indeterminate`, and TOP014 makes a silent `pass` impossible"
     },
     {
       "attrs": {
@@ -19171,8 +19283,8 @@
     {
       "attrs": {
         "enforcement": "schema",
-        "evidence": "The decisions in docs/tier7/ticket-43-role-bindings-decision.md, the glossary's Capability definition, the frozen task specification standard's `capability` field, and the seven bindings now in policy/role-bindings.json checked by lint_topology.py TOP010-TOP013. No agent has been dispatched through a binding; the field set rests on the fingerprint's D19 group, not on an observed run.",
-        "falsifies_if": "An agent is dispatched whose definition names a job title rather than a capability; or a binding is edited without the fingerprint moving, meaning the version fields below are not actually the D19 group.",
+        "evidence": "The decisions in docs/tier7/ticket-43-role-bindings-decision.md, the glossary's Capability definition, the frozen task specification standard's `capability` field, and the seven bindings now in policy/role-bindings.json checked by lint_topology.py TOP010-TOP014. No agent has been dispatched through a binding; the field set rests on the fingerprint's D19 group, not on an observed run.",
+        "falsifies_if": "An agent is dispatched whose definition names a job title rather than a capability; or a binding is edited without the fingerprint moving, meaning the version fields below are not actually the D19 group; or a `requalification` status of `pass` is recorded while any D19 version field is `unset`.",
         "owner": "executable",
         "path": "docs/tier3/agent-definition-standard.md",
         "review_after": "Phase 2",
@@ -29497,6 +29609,7 @@
         "count:bindings": "8",
         "count:kinds": "21",
         "count:notes": "6",
+        "count:requalification": "3",
         "path": "policy/role-bindings.json",
         "unset_field_count": "24",
         "version": "1"

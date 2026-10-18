@@ -26,6 +26,7 @@ generated: true
 | `count:bindings` | 8 |
 | `count:kinds` | 21 |
 | `count:notes` | 6 |
+| `count:requalification` | 3 |
 | `path` | policy/role-bindings.json |
 | `unset_field_count` | 24 |
 | `version` | 1 |

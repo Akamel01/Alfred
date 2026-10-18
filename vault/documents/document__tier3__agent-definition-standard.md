@@ -27,7 +27,7 @@ generated: true
 
 ## Falsifies if
 
-> An agent is dispatched whose definition names a job title rather than a capability; or a binding is edited without the fingerprint moving, meaning the version fields below are not actually the D19 group.
+> An agent is dispatched whose definition names a job title rather than a capability; or a binding is edited without the fingerprint moving, meaning the version fields below are not actually the D19 group; or a `requalification` status of `pass` is recorded while any D19 version field is `unset`.
 
 ## Fields
 
@@ -38,7 +38,7 @@ generated: true
 
 **evidence**
 
-> The decisions in docs/tier7/ticket-43-role-bindings-decision.md, the glossary's Capability definition, the frozen task specification standard's `capability` field, and the seven bindings now in policy/role-bindings.json checked by lint_topology.py TOP010-TOP013. No agent has been dispatched through a binding; the field set rests on the fingerprint's D19 group, not on an observed run.
+> The decisions in docs/tier7/ticket-43-role-bindings-decision.md, the glossary's Capability definition, the frozen task specification standard's `capability` field, and the seven bindings now in policy/role-bindings.json checked by lint_topology.py TOP010-TOP014. No agent has been dispatched through a binding; the field set rests on the fingerprint's D19 group, not on an observed run.
 
 ## Binds
 
