@@ -6999,3 +6999,66 @@ recorded read of the union diff, meaning batching became skipping; or if a branc
 have carried protected content that was reverted before merge and never surfaced, meaning the
 residue in decision 4 is larger than stated; or if a third waiver lands against this document,
 which fires the falsification clause against the policy itself.
+
+## ADR-0068 — Unset D19 version fields report `indeterminate`, and TOP014 makes a silent `pass` impossible
+
+**Date:** 2026-10-18 · **Status:** Accepted · **Supersedes:** none · **Amends:** `policy/role-bindings.json` (top-level `requalification` key), `scripts/lint_topology.py` (TOP014), `docs/tier3/agent-definition-standard.md` (evidence, falsifies_if, Enforcement) · **See also:** ADR-0007 (the vacuity class), ADR-0056 (the requalification trigger), ADR-0067 (the batched Gate D read), #86 · **D28 waiver:** no
+
+### Context
+
+All 24 D19 version fields are `"unset"`; ADR-0056 ruled every binding edit is a requalification
+event but the fields record *which* component moved, and no dispatcher exists to capture a value
+from (readers today: `lint_topology.py`, `lint_model_routing.py`, doc generators); a
+requalification that reports `pass` with nothing to read is the D57/ADR-0007 vacuity class; #86's
+done-when option 2 is the chosen route.
+
+### Decision
+
+1. The fields stay `"unset"` — filling them with values nothing can check is the failure #86
+   exists to prevent (ticket constraint).
+2. Report `indeterminate` via a **file-level** `requalification` object `{status, reason, ticket}` in
+   `policy/role-bindings.json` — file-level because all 8 bindings share one unset state; per-binding
+   status can be added additively when a dispatcher lands, no re-decision needed.
+3. TOP014 in `scripts/lint_topology.py::check_bindings` enforces: key present; status in
+   `{pass, fail, indeterminate}` (`harness/verdicts/__init__.py:46` vocabulary, restated as
+   `REQUALIFICATION_STATUSES`); `indeterminate` requires a non-empty reason; `pass` is a violation
+   while any present D19 version field is `"unset"`; the key's absence is itself a violation.
+4. Rejected alternatives with one-line reasons: constructor refusal in
+   `harness/fingerprint/factory.py` (mixes a policy placeholder with runtime identity; `"unset"` is
+   non-empty so it would not even fire, and widening breaks the record's missing-field contract);
+   note-only / prose enforcement (a gate satisfiable by editing prose — D57 vacuity, state-authority
+   doctrine); a separate status file (one fact, two homes); discovery's "fail until a dispatcher
+   lands if any field moves off `unset`" (over-strict — reds the first legitimate capture); a new
+   lint file (duplicates loaders and CI wiring).
+5. Accepted cost: all-set + `pass` passes with no capture-provenance proof; provenance is a
+   dispatcher-era concern (future rule), not this lint's.
+
+### Consequences
+
+**A Gate D read is owed and is not discharged by this ADR.** `policy/` and `scripts/` are
+protected; `docs/tier4/protected-paths-policy.md:100` permits an agent-drafted patch only under
+line-by-line human review *with* a mandatory ADR. This ADR is the second half. The first half —
+an operator read of the `policy/role-bindings.json` diff and the `scripts/lint_topology.py` diff —
+**has not happened**, and is recorded here as owed rather than assumed. Per ADR-0067 the read is a
+single union-diff read across the branch; the per-commit protected-path list is still enumerated
+in the PR body, and the ADR-0067 §4 residue statement applies.
+
+```bash
+git diff origin/main...HEAD -- \
+  $(python3 -c "import json;d=json.load(open('policy/protected-paths.json'));print(' '.join(e['path'] for e in d['prefixes']+d['files']))")
+```
+
+Content introduced and reverted inside the branch does not appear in the union diff and is not read
+line by line; the loss is signal, not containment.
+
+`**D28 waiver:** no` — no frozen + `ci-gate` document is amended —
+`docs/tier3/agent-definition-standard.md` is `status: provisional`, and `policy/`/`scripts/` are
+protected *code*, not status-header documents (same shape as ADR-0065's `no`).
+
+### Falsification trigger
+
+This decision is wrong if (a) a binding edit merges with the fields still `"unset"` and
+`status: pass` (the guard did not fire); or (b) a version field acquires a concrete value while no
+dispatcher exists to have measured it (a placeholder was invented to satisfy the schema — the exact
+failure #86 prevents); or (c) TOP014 fires on none of its planted violations while the self-test
+reads green (the lint is vacuous).

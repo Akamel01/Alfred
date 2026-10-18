@@ -2,8 +2,8 @@
 status:        provisional
 owner:         executable
 enforcement:   schema
-evidence:      The decisions in docs/tier7/ticket-43-role-bindings-decision.md, the glossary's Capability definition, the frozen task specification standard's `capability` field, and the seven bindings now in policy/role-bindings.json checked by lint_topology.py TOP010-TOP013. No agent has been dispatched through a binding; the field set rests on the fingerprint's D19 group, not on an observed run.
-falsifies_if:  An agent is dispatched whose definition names a job title rather than a capability; or a binding is edited without the fingerprint moving, meaning the version fields below are not actually the D19 group.
+evidence:      The decisions in docs/tier7/ticket-43-role-bindings-decision.md, the glossary's Capability definition, the frozen task specification standard's `capability` field, and the seven bindings now in policy/role-bindings.json checked by lint_topology.py TOP010-TOP014. No agent has been dispatched through a binding; the field set rests on the fingerprint's D19 group, not on an observed run.
+falsifies_if:  An agent is dispatched whose definition names a job title rather than a capability; or a binding is edited without the fingerprint moving, meaning the version fields below are not actually the D19 group; or a `requalification` status of `pass` is recorded while any D19 version field is `unset`.
 review_after:  Phase 2
 ---
 
@@ -86,8 +86,17 @@ model reviews work, and the same reason `policy/` is protected. It is also what 
 this capability's merge rate move?"* answerable: without it, a silent binding edit is
 indistinguishable from genuine capability drift, which is the one number the autonomy gates read.
 
+## The requalification report
+
+`policy/role-bindings.json` carries one file-level `requalification` object — `{ status, reason, ticket }`.
+`status` is one of `pass`, `fail`, `indeterminate` — the fingerprint's three-valued vocabulary
+(`harness/verdicts/__init__.py`). While any D19 version field is `"unset"` the status may not be
+`pass`; it reads `indeterminate`, and `indeterminate` must carry a `reason`. The key's **absence is
+itself a violation**: a binding edit with no recorded status is indistinguishable from a silent pass.
+Checked by `lint_topology.py` TOP014.
+
 ## Enforcement
 
-`schema` — owned by `executable`. `scripts/lint_topology.py` checks TOP010–TOP013 against
+`schema` — owned by `executable`. `scripts/lint_topology.py` checks TOP010–TOP014 against
 `policy/node-palette.json` and `policy/role-bindings.json`, with a paired negative control for
 each direction of each check.

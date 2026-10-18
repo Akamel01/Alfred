@@ -34,6 +34,8 @@ BINDINGS_PATH: Path = Path("policy/role-bindings.json")
 
 # Contracts where cycles are forbidden. hands-off-to allows feedback loops.
 CYCLE_FORBIDDEN: frozenset[str] = frozenset({"delegates-to", "reviews", "feeds"})
+# Restated from harness/verdicts/__init__.py:46 (VERDICTS) -- scripts/ may not import harness/.
+REQUALIFICATION_STATUSES: frozenset[str] = frozenset({"pass", "fail", "indeterminate"})
 ALL_CONTRACTS: frozenset[str] = frozenset({"delegates-to", "hands-off-to", "reviews", "feeds"})
 
 
@@ -262,6 +264,10 @@ def check_bindings(base: Path = REPO_ROOT) -> Findings:
     TOP013 a binding with no agents states why. An empty `agents` list is a real answer --
            no ECC agent may hold validation authority -- but an unexplained one is an
            omission wearing the same shape.
+    TOP014 a requalification may not report pass while the D19 fields are unset. The
+    file-level `requalification` object must exist, its status must be one of
+    {pass, fail, indeterminate}, `indeterminate` requires a non-empty reason, and
+    `pass` is a violation while any present D19 version field is `"unset"`.
     """
     findings = Findings()
     palette_data, palette_err = _load_json(PALETTE_PATH, base)
@@ -339,6 +345,30 @@ def check_bindings(base: Path = REPO_ROOT) -> Findings:
                 f"TOP013 binding {kind_id!r} names no agents and gives no unbound_reason"
             )
 
+    # TOP014 -- a requalification may not report pass while the D19 fields are unset.
+    d19_fields = ("prompt_version", "tool_version", "context_strategy_version")
+    requal = bindings_data.get("requalification")
+    if not isinstance(requal, dict):
+        findings.violations.append(
+            "TOP014 role-bindings.json has no `requalification` object; "
+            "a binding edit with no recorded status is indistinguishable from a silent pass"
+        )
+    else:
+        status = requal.get("status")
+        if status not in REQUALIFICATION_STATUSES:
+            findings.violations.append(
+                f"TOP014 requalification.status {status!r} not in "
+                f"{sorted(REQUALIFICATION_STATUSES)}"
+            )
+        elif status == "indeterminate" and not str(requal.get("reason", "")).strip():
+            findings.violations.append(
+                "TOP014 requalification.status is 'indeterminate' with no reason"
+            )
+        if any(b.get(f) == "unset" for b in bindings for f in d19_fields) and status == "pass":
+            findings.violations.append(
+                "TOP014 requalification reports 'pass' while D19 version fields are 'unset'"
+            )
+
     return findings
 
 
@@ -407,6 +437,7 @@ def _binding_palette() -> dict[str, Any]:
 def _valid_bindings() -> dict[str, Any]:
     return {
         "version": 1,
+        "requalification": {"status": "indeterminate", "reason": "no dispatcher; D19 fields unset"},
         "kinds": {
             "planner": "agent",
             "code-writer": "unbound",
@@ -417,9 +448,25 @@ def _valid_bindings() -> dict[str, Any]:
         },
         "bindings": [
             {"kind": "planner", "capability_id": "capability:planner@1",
+             "prompt_version": "unset",
+             "tool_version": "unset",
+             "context_strategy_version": "unset",
              "agents": [{"agent": "planner", "harness": "claude-code"}]},
         ],
     }
+
+
+def _requal_bindings(unset: bool = True, requal: dict[str, Any] | None = None) -> dict[str, Any]:
+    fields = "unset" if unset else "v1"
+    b = _valid_bindings()
+    b["bindings"][0]["prompt_version"] = fields
+    b["bindings"][0]["tool_version"] = fields
+    b["bindings"][0]["context_strategy_version"] = fields
+    if requal is None:
+        del b["requalification"]
+    else:
+        b["requalification"] = requal
+    return b
 
 
 def self_test() -> int:
@@ -655,6 +702,49 @@ def self_test() -> int:
         if any("TOP013" in v for v in check_bindings(base=case).violations):
             failures.append("TOP013 fired on an empty roster that stated its reason")
 
+        # ---- role bindings TOP014 -------------------------------------------------------
+        # top014-clean control: 3 fields unset, status indeterminate with reason
+        case = scratch / "top014-clean"
+        b = _requal_bindings(unset=True, requal={"status": "indeterminate", "reason": "r"})
+        _write_bindings(case, _binding_palette(), b)
+        if any("TOP014" in v for v in check_bindings(base=case).violations):
+            failures.append("TOP014 fired on clean indeterminate")
+
+        # top014-pass-while-unset
+        case = scratch / "top014-pass-while-unset"
+        b = _requal_bindings(unset=True, requal={"status": "pass"})
+        _write_bindings(case, _binding_palette(), b)
+        if not any("TOP014" in v for v in check_bindings(base=case).violations):
+            failures.append("TOP014 did not fire on pass while unset")
+
+        # top014-missing-key
+        case = scratch / "top014-missing-key"
+        b = _requal_bindings(unset=True, requal=None)
+        _write_bindings(case, _binding_palette(), b)
+        if not any("TOP014" in v for v in check_bindings(base=case).violations):
+            failures.append("TOP014 did not fire on missing key")
+
+        # top014-bad-vocab
+        case = scratch / "top014-bad-vocab"
+        b = _requal_bindings(unset=True, requal={"status": "unknown"})
+        _write_bindings(case, _binding_palette(), b)
+        if not any("TOP014" in v for v in check_bindings(base=case).violations):
+            failures.append("TOP014 did not fire on bad vocab")
+
+        # top014-set-pass negative control
+        case = scratch / "top014-set-pass"
+        b = _requal_bindings(unset=False, requal={"status": "pass"})
+        _write_bindings(case, _binding_palette(), b)
+        if any("TOP014" in v for v in check_bindings(base=case).violations):
+            failures.append("TOP014 fired on set + pass (overreach)")
+
+        # top014-no-reason
+        case = scratch / "top014-no-reason"
+        b = _requal_bindings(unset=True, requal={"status": "indeterminate"})
+        _write_bindings(case, _binding_palette(), b)
+        if not any("TOP014" in v for v in check_bindings(base=case).violations):
+            failures.append("TOP014 did not fire on indeterminate with no reason")
+
     return self_test_exit(
         failures,
         "OK self-test — TOP001 duplicate id, TOP002 missing ref, TOP003 bad source_port, "
@@ -662,7 +752,8 @@ def self_test() -> int:
         "TOP007 cycle forbidden/allowed, TOP008 unknown kind, TOP009 missing version, "
         "TOP010 unbindable/unknown kind both directions, TOP011 category disagreement both "
         "directions, TOP012 binding/bindable mismatch both directions, TOP013 unexplained "
-        "empty roster with its paired control; control clean\n",
+        "empty roster with its paired control, TOP014 requalification pass-while-unset / "
+        "missing-key / bad-vocab / no-reason with paired controls; control clean\n",
     )
 
 
@@ -687,7 +778,7 @@ def main() -> int:
         return 1
     sys.stdout.write(
         f"OK topology — {findings.scanned} nodes+edges, all TOP001-TOP009 satisfied; "
-        f"bindings — {bindings.scanned} kinds+bindings, all TOP010-TOP013 satisfied\n"
+        f"bindings — {bindings.scanned} kinds+bindings, all TOP010-TOP014 satisfied\n"
     )
     return 0
 
