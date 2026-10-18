@@ -34,7 +34,7 @@ BINDINGS_PATH: Path = Path("policy/role-bindings.json")
 
 # Contracts where cycles are forbidden. hands-off-to allows feedback loops.
 CYCLE_FORBIDDEN: frozenset[str] = frozenset({"delegates-to", "reviews", "feeds"})
-# Restated from harness/verdicts/__init__.py:46 (VERDICTS) -- scripts/ may not import harness/.
+# Restated from harness/verdicts/__init__.py:48 (VERDICTS) -- scripts/ may not import harness/.
 REQUALIFICATION_STATUSES: frozenset[str] = frozenset({"pass", "fail", "indeterminate"})
 ALL_CONTRACTS: frozenset[str] = frozenset({"delegates-to", "hands-off-to", "reviews", "feeds"})
 
@@ -360,10 +360,12 @@ def check_bindings(base: Path = REPO_ROOT) -> Findings:
                 f"TOP014 requalification.status {status!r} not in "
                 f"{sorted(REQUALIFICATION_STATUSES)}"
             )
-        elif status == "indeterminate" and not str(requal.get("reason", "")).strip():
-            findings.violations.append(
-                "TOP014 requalification.status is 'indeterminate' with no reason"
-            )
+        elif status == "indeterminate":
+            reason = requal.get("reason")
+            if not (isinstance(reason, str) and reason.strip()):
+                findings.violations.append(
+                    "TOP014 requalification.status is 'indeterminate' with no reason"
+                )
         if any(b.get(f) == "unset" for b in bindings for f in d19_fields) and status == "pass":
             findings.violations.append(
                 "TOP014 requalification reports 'pass' while D19 version fields are 'unset'"
@@ -745,6 +747,13 @@ def self_test() -> int:
         if not any("TOP014" in v for v in check_bindings(base=case).violations):
             failures.append("TOP014 did not fire on indeterminate with no reason")
 
+        # top014-null-reason -- `str(None)` reads as "None", so the reason must be a str
+        case = scratch / "top014-null-reason"
+        b = _requal_bindings(unset=True, requal={"status": "indeterminate", "reason": None})
+        _write_bindings(case, _binding_palette(), b)
+        if not any("TOP014" in v for v in check_bindings(base=case).violations):
+            failures.append("TOP014 did not fire on indeterminate with a null reason")
+
     return self_test_exit(
         failures,
         "OK self-test — TOP001 duplicate id, TOP002 missing ref, TOP003 bad source_port, "
@@ -753,7 +762,7 @@ def self_test() -> int:
         "TOP010 unbindable/unknown kind both directions, TOP011 category disagreement both "
         "directions, TOP012 binding/bindable mismatch both directions, TOP013 unexplained "
         "empty roster with its paired control, TOP014 requalification pass-while-unset / "
-        "missing-key / bad-vocab / no-reason with paired controls; control clean\n",
+        "missing-key / bad-vocab / no-reason / null-reason with paired controls; control clean\n",
     )
 
 
