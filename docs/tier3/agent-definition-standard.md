@@ -90,10 +90,10 @@ indistinguishable from genuine capability drift, which is the one number the aut
 
 `policy/role-bindings.json` carries one file-level `requalification` object — `{ status, reason, ticket }`.
 `status` is one of `pass`, `fail`, `indeterminate` — the fingerprint's three-valued vocabulary
-(`harness/verdicts/__init__.py`). While any D19 version field is `"unset"` the status may not be
-`pass`; it reads `indeterminate`, and `indeterminate` must carry a `reason`. The key's **absence is
-itself a violation**: a binding edit with no recorded status is indistinguishable from a silent pass.
-Checked by `lint_topology.py` TOP014.
+(`harness/verdicts/__init__.py`). While any D19 version field is `"unset"` or absent the status may
+not be `pass`; it reads `indeterminate`, and `indeterminate` must carry a `reason`. The key's
+**absence is itself a violation**: a binding edit with no recorded status is indistinguishable from
+a silent pass. Checked by `lint_topology.py` TOP014.
 
 ## Enforcement
 

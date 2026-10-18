@@ -82,6 +82,7 @@ Revises
 - **enforced_by** → [[module__scripts_lint_topology|Topology lint — TOP001-TOP009 per orchestration-canvas-spec §6.]] — # TOP014 -- a requalification may not report pass while the D19 fields are unset.
 - **enforced_by** → [[module__scripts_lint_topology|Topology lint — TOP001-TOP009 per orchestration-canvas-spec §6.]] — "TOP014 requalification reports 'pass' while D19 version fields are 'unset'"
 - **enforced_by** → [[module__scripts_lint_topology|Topology lint — TOP001-TOP009 per orchestration-canvas-spec §6.]] — "no dispatcher; D19 fields unset"
+- **enforced_by** → [[module__scripts_lint_topology|Topology lint — TOP001-TOP009 per orchestration-canvas-spec §6.]] — "TOP014 did not fire on pass with the D19 fields absent"
 
 ## Stated in prose — unverified
 

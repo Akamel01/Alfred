@@ -7020,9 +7020,10 @@ done-when option 2 is the chosen route.
    `policy/role-bindings.json` — file-level because all 8 bindings share one unset state; per-binding
    status can be added additively when a dispatcher lands, no re-decision needed.
 3. TOP014 in `scripts/lint_topology.py::check_bindings` enforces: key present; status in
-   `{pass, fail, indeterminate}` (`harness/verdicts/__init__.py:46` vocabulary, restated as
+   `{pass, fail, indeterminate}` (`harness/verdicts/__init__.py:48` vocabulary, restated as
    `REQUALIFICATION_STATUSES`); `indeterminate` requires a non-empty reason; `pass` is a violation
-   while any present D19 version field is `"unset"`; the key's absence is itself a violation.
+   while any D19 version field is `"unset"` or absent — an absent field has less to read than the
+   placeholder, not more; the key's absence is itself a violation.
 4. Rejected alternatives with one-line reasons: constructor refusal in
    `harness/fingerprint/factory.py` (mixes a policy placeholder with runtime identity; `"unset"` is
    non-empty so it would not even fire, and widening breaks the record's missing-field contract);

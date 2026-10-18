@@ -43,3 +43,4 @@ generated: true
 - [[decision__D19|Autonomy grants are keyed to a fingerprint]] **enforced_by** → this — # TOP014 -- a requalification may not report pass while the D19 fields are unset.
 - [[decision__D19|Autonomy grants are keyed to a fingerprint]] **enforced_by** → this — "TOP014 requalification reports 'pass' while D19 version fields are 'unset'"
 - [[decision__D19|Autonomy grants are keyed to a fingerprint]] **enforced_by** → this — "no dispatcher; D19 fields unset"
+- [[decision__D19|Autonomy grants are keyed to a fingerprint]] **enforced_by** → this — "TOP014 did not fire on pass with the D19 fields absent"

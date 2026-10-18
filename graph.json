@@ -26,7 +26,7 @@
     "blocks": 32,
     "contains": 309,
     "discharges": 1,
-    "enforced_by": 404,
+    "enforced_by": 405,
     "imports": 263,
     "needs": 4,
     "references": 2,
@@ -7649,6 +7649,19 @@
       "source": {
         "end_line": 442,
         "line": 442,
+        "path": "scripts/lint_topology.py"
+      },
+      "src": "decision:D19"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:scripts.lint_topology",
+      "evidence": "\"TOP014 did not fire on pass with the D19 fields absent\"",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 764,
+        "line": 764,
         "path": "scripts/lint_topology.py"
       },
       "src": "decision:D19"
@@ -15404,7 +15417,7 @@
       "unparsed": 0
     },
     {
-      "edges": 404,
+      "edges": 405,
       "expect_rejected": null,
       "max_nodes": 0,
       "max_unparsed": 0,

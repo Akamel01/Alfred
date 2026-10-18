@@ -267,7 +267,7 @@ def check_bindings(base: Path = REPO_ROOT) -> Findings:
     TOP014 a requalification may not report pass while the D19 fields are unset. The
     file-level `requalification` object must exist, its status must be one of
     {pass, fail, indeterminate}, `indeterminate` requires a non-empty reason, and
-    `pass` is a violation while any present D19 version field is `"unset"`.
+    `pass` is a violation while any D19 version field is `"unset"` or absent.
     """
     findings = Findings()
     palette_data, palette_err = _load_json(PALETTE_PATH, base)
@@ -366,7 +366,7 @@ def check_bindings(base: Path = REPO_ROOT) -> Findings:
                 findings.violations.append(
                     "TOP014 requalification.status is 'indeterminate' with no reason"
                 )
-        if any(b.get(f) == "unset" for b in bindings for f in d19_fields) and status == "pass":
+        if any(b.get(f, "unset") == "unset" for b in bindings for f in d19_fields) and status == "pass":
             findings.violations.append(
                 "TOP014 requalification reports 'pass' while D19 version fields are 'unset'"
             )
@@ -754,6 +754,15 @@ def self_test() -> int:
         if not any("TOP014" in v for v in check_bindings(base=case).violations):
             failures.append("TOP014 did not fire on indeterminate with a null reason")
 
+        # top014-missing-field-pass -- an absent field has less to read than "unset"
+        case = scratch / "top014-missing-field-pass"
+        b = _requal_bindings(unset=True, requal={"status": "pass"})
+        for field in ("prompt_version", "tool_version", "context_strategy_version"):
+            b["bindings"][0].pop(field)
+        _write_bindings(case, _binding_palette(), b)
+        if not any("TOP014" in v for v in check_bindings(base=case).violations):
+            failures.append("TOP014 did not fire on pass with the D19 fields absent")
+
     return self_test_exit(
         failures,
         "OK self-test — TOP001 duplicate id, TOP002 missing ref, TOP003 bad source_port, "
@@ -762,7 +771,8 @@ def self_test() -> int:
         "TOP010 unbindable/unknown kind both directions, TOP011 category disagreement both "
         "directions, TOP012 binding/bindable mismatch both directions, TOP013 unexplained "
         "empty roster with its paired control, TOP014 requalification pass-while-unset / "
-        "missing-key / bad-vocab / no-reason / null-reason with paired controls; control clean\n",
+        "missing-key / bad-vocab / no-reason / null-reason / missing-field-pass with paired "
+        "controls; control clean\n",
     )
 
 
