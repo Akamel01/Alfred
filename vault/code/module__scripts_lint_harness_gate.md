@@ -44,6 +44,14 @@ generated: true
 
 `harness/` is the tree everything
 - [[adr__ADR-0029|The tree that verifies every other tree is verified by nothing]] **enforced_by** → this — # ADR-0029 pending OBSERVER-1: closing the gap needs 120 hand edits, 55 suppressions and 17
+- [[adr__ADR-0068|The harness lint debt window gets a ceiling, and growth past it fails the gate]] **enforced_by** → this — """How much of `harness/` the lint gate actually collects, and whether it can go red.
+
+`harness/` is the tree everything
+- [[adr__ADR-0068|The harness lint debt window gets a ceiling, and growth past it fails the gate]] **enforced_by** → this — # ADR-0068.
+- [[adr__ADR-0068|The harness lint debt window gets a ceiling, and growth past it fails the gate]] **enforced_by** → this — # naming ADR-0068.
+- [[adr__ADR-0068|The harness lint debt window gets a ceiling, and growth past it fails the gate]] **enforced_by** → this — "ADR-0068"
+- [[adr__ADR-0068|The harness lint debt window gets a ceiling, and growth past it fails the gate]] **enforced_by** → this — "C ceiling did not fire alone, naming ADR-0068, one file above the ceiling: "
+- [[adr__ADR-0068|The harness lint debt window gets a ceiling, and growth past it fails the gate]] **enforced_by** → this — "recorded value, and fires alone naming ADR-0068 one file above it; D reports the "
 - [[decision__D20|Agents may improve the factory, never the inspector]] **enforced_by** → this — """How much of `harness/` the lint gate actually collects, and whether it can go red.
 
 `harness/` is the tree everything

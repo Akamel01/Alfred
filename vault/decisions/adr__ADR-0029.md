@@ -35,6 +35,7 @@ generated: true
 - **see_also** → [[adr__ADR-0007|Executor-premise assertions may pass vacuously, and that is a third outcome]]
 - **see_also** → [[adr__ADR-0027|An agent edited the inspector, and this record was drafted by the same agent]]
 - **see_also** → [[adr__ADR-0028|The review ADR-0027 said was owed has been done]]
+- [[adr__ADR-0068|The harness lint debt window gets a ceiling, and growth past it fails the gate]] **see_also** → this
 
 ## Enforced by (code)
 
