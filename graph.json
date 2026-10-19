@@ -1,5 +1,11 @@
 {
-  "anomalies": [],
+  "anomalies": [
+    {
+      "detail": "the log is append-only and numbers are never reused; missing: ADR-0068",
+      "kind": "adr-numbering-gap",
+      "refs": []
+    }
+  ],
   "counts": {
     "adr": 68,
     "amendment": 12,
@@ -15217,7 +15223,7 @@
         "line": 7003,
         "path": "docs/tier1/adr-log.md"
       },
-      "src": "adr:ADR-0068"
+      "src": "adr:ADR-0069"
     },
     {
       "confidence": "structural",
@@ -15230,7 +15236,7 @@
         "line": 7003,
         "path": "docs/tier1/adr-log.md"
       },
-      "src": "adr:ADR-0068"
+      "src": "adr:ADR-0069"
     },
     {
       "confidence": "structural",
@@ -15243,7 +15249,7 @@
         "line": 7003,
         "path": "docs/tier1/adr-log.md"
       },
-      "src": "adr:ADR-0068"
+      "src": "adr:ADR-0069"
     },
     {
       "confidence": "structural",
@@ -16877,7 +16883,7 @@
       },
       "body": "**Date:** 2026-10-18 · **Status:** Accepted · **Supersedes:** none · **Amends:** `policy/role-bindings.json` (top-level `requalification` key), `scripts/lint_topology.py` (TOP014), `docs/tier3/agent-definition-standard.md` (evidence, falsifies_if, Enforcement) · **See also:** ADR-0007 (the vacuity class), ADR-0056 (the requalification trigger), ADR-0067 (the batched Gate D read), #86 · **D28 waiver:** no",
       "extractor": "adrs",
-      "id": "adr:ADR-0068",
+      "id": "adr:ADR-0069",
       "kind": "adr",
       "occurrences": [],
       "shape": "heading",

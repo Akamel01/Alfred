@@ -7000,7 +7000,7 @@ have carried protected content that was reverted before merge and never surfaced
 residue in decision 4 is larger than stated; or if a third waiver lands against this document,
 which fires the falsification clause against the policy itself.
 
-## ADR-0068 — Unset D19 version fields report `indeterminate`, and TOP014 makes a silent `pass` impossible
+## ADR-0069 — Unset D19 version fields report `indeterminate`, and TOP014 makes a silent `pass` impossible
 
 **Date:** 2026-10-18 · **Status:** Accepted · **Supersedes:** none · **Amends:** `policy/role-bindings.json` (top-level `requalification` key), `scripts/lint_topology.py` (TOP014), `docs/tier3/agent-definition-standard.md` (evidence, falsifies_if, Enforcement) · **See also:** ADR-0007 (the vacuity class), ADR-0056 (the requalification trigger), ADR-0067 (the batched Gate D read), #86 · **D28 waiver:** no
 

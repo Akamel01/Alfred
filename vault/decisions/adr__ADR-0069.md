@@ -1,6 +1,6 @@
 ---
 kind: adr
-id: "adr:ADR-0068"
+id: "adr:ADR-0069"
 title: "Unset D19 version fields report `indeterminate`, and TOP014 makes a silent `pass` impossible"
 status: "accepted"
 shape: "heading"
@@ -8,7 +8,7 @@ date: "2026-10-18"
 source: "docs/tier1/adr-log.md:7003"
 extractor: "adrs"
 aliases:
-  - "ADR-0068"
+  - "ADR-0069"
   - "Unset D19 version fields report `indeterminate`, and TOP014 makes a silent `pass` impossib"
 generated: true
 ---
