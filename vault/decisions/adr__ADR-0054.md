@@ -34,6 +34,7 @@ generated: true
 
 - **see_also** → [[adr__ADR-0047|The ownership router gains the factory's facts, and runtime state is never evidence]]
 - [[adr__ADR-0058|The dispatch-workspace exclusion contract: what a dispatch mount excludes, and that nothin]] **see_also** → this
+- [[adr__ADR-0070|The #70 measurement gets a pre-run design: N against the interval, an honest fingerprint p]] **see_also** → this
 
 ## Enforced by (code)
 

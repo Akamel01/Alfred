@@ -13,7 +13,9 @@ Discrepancies the generator found and deliberately did not resolve. A generator 
 
 ## Surfaced
 
-None.
+| Kind | Detail |
+|---|---|
+| `adr-numbering-gap` | the log is append-only and numbers are never reused; missing: ADR-0068, ADR-0069 |
 
 ## Not parsed
 

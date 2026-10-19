@@ -37,6 +37,7 @@ generated: true
 - **see_also** → [[adr__ADR-0017|A containment assertion with an unread premise is a hole, and a hole never passes]]
 - **see_also** → [[adr__ADR-0038|bench Immutability: Convention → Git-Level Control]]
 - **see_also** → [[adr__ADR-0060|ADR-0038 decided harden; what was built does not enforce it, names a script that does not ]]
+- [[adr__ADR-0070|The #70 measurement gets a pre-run design: N against the interval, an honest fingerprint p]] **see_also** → this
 
 ## Enforced by (code)
 

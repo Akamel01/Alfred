@@ -1,16 +1,22 @@
 {
-  "anomalies": [],
+  "anomalies": [
+    {
+      "detail": "the log is append-only and numbers are never reused; missing: ADR-0068, ADR-0069",
+      "kind": "adr-numbering-gap",
+      "refs": []
+    }
+  ],
   "counts": {
-    "adr": 67,
+    "adr": 68,
     "amendment": 12,
     "decision": 57,
-    "document": 78,
+    "document": 79,
     "effect": 5,
     "gate": 5,
     "gate-step": 62,
     "kill-criterion": 6,
     "layout": 18,
-    "module": 254,
+    "module": 255,
     "operator-item": 9,
     "policy": 7,
     "process": 7,
@@ -24,14 +30,14 @@
     "amended_by": 2,
     "amends": 16,
     "blocks": 32,
-    "contains": 309,
+    "contains": 310,
     "discharges": 1,
     "enforced_by": 400,
     "imports": 263,
     "needs": 4,
     "references": 2,
     "runs": 42,
-    "see_also": 91,
+    "see_also": 94,
     "supersedes": 2
   },
   "edges": [
@@ -4704,6 +4710,19 @@
     },
     {
       "confidence": "structural",
+      "dst": "document:tier7/ticket-70-measurement-design",
+      "evidence": "docs/tier7/ticket-70-measurement-design.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ticket-70-measurement-design.md"
+      },
+      "src": "tier:tier7"
+    },
+    {
+      "confidence": "structural",
       "dst": "operator-item:O5",
       "evidence": "**Discharges:** O5",
       "extractor": "adrs",
@@ -7114,8 +7133,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 151,
-        "line": 151,
+        "end_line": 152,
+        "line": 152,
         "path": "scripts/gen_doc_stubs.py"
       },
       "src": "adr:ADR-0063"
@@ -7140,8 +7159,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 107,
-        "line": 107,
+        "end_line": 108,
+        "line": 108,
         "path": "scripts/gen_doc_stubs.py"
       },
       "src": "adr:ADR-0064"
@@ -7907,8 +7926,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 152,
-        "line": 152,
+        "end_line": 153,
+        "line": 153,
         "path": "scripts/gen_doc_stubs.py"
       },
       "src": "decision:D28"
@@ -8102,8 +8121,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 326,
-        "line": 326,
+        "end_line": 327,
+        "line": 327,
         "path": "scripts/gen_doc_stubs.py"
       },
       "src": "decision:D32"
@@ -15143,6 +15162,45 @@
     },
     {
       "confidence": "structural",
+      "dst": "adr:ADR-0054",
+      "evidence": "**See also:** ADR-0054 (check A, dormant behind the same missing dispatcher), ADR-0065 (the vacuity class this design keeps out of its own numbers), ADR-0066 (why appending here is not a waiver), #70,",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 7003,
+        "line": 7003,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0070"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0065",
+      "evidence": "**See also:** ADR-0054 (check A, dormant behind the same missing dispatcher), ADR-0065 (the vacuity class this design keeps out of its own numbers), ADR-0066 (why appending here is not a waiver), #70,",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 7003,
+        "line": 7003,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0070"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0066",
+      "evidence": "**See also:** ADR-0054 (check A, dormant behind the same missing dispatcher), ADR-0065 (the vacuity class this design keeps out of its own numbers), ADR-0066 (why appending here is not a waiver), #70,",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 7003,
+        "line": 7003,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0070"
+    },
+    {
+      "confidence": "structural",
       "dst": "adr:ADR-0050",
       "evidence": "**Supersedes:** ADR-0050's `D28 waiver: no` classification",
       "extractor": "adrs",
@@ -15170,14 +15228,14 @@
   ],
   "extractors": [
     {
-      "edges": 108,
+      "edges": 111,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 4,
       "min_nodes": 14,
       "name": "adrs",
-      "nodes": 67,
+      "nodes": 68,
       "rejected": 0,
       "scanned": 1,
       "unparsed": 0
@@ -15216,9 +15274,9 @@
       "min_edges": 45,
       "min_nodes": 90,
       "name": "code",
-      "nodes": 259,
+      "nodes": 260,
       "rejected": 0,
-      "scanned": 286,
+      "scanned": 287,
       "unparsed": 0
     },
     {
@@ -15235,16 +15293,16 @@
       "unparsed": 0
     },
     {
-      "edges": 78,
+      "edges": 79,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 63,
       "min_nodes": 71,
       "name": "documents",
-      "nodes": 86,
+      "nodes": 87,
       "rejected": 0,
-      "scanned": 78,
+      "scanned": 79,
       "unparsed": 0
     },
     {
@@ -15270,7 +15328,7 @@
       "name": "imports",
       "nodes": 0,
       "rejected": 0,
-      "scanned": 214,
+      "scanned": 215,
       "unparsed": 0
     },
     {
@@ -15322,7 +15380,7 @@
       "name": "references",
       "nodes": 0,
       "rejected": 0,
-      "scanned": 213,
+      "scanned": 214,
       "unparsed": 0
     },
     {
@@ -16764,6 +16822,27 @@
       "status": "accepted",
       "tags": [],
       "title": "Gate D's read is batched per pull request, and the comment-only exemption is rejected as unsafe here"
+    },
+    {
+      "attrs": {
+        "date": "2026-10-18",
+        "status": "accepted",
+        "status_raw": "Accepted"
+      },
+      "body": "**Date:** 2026-10-18 · **Status:** Accepted · **Supersedes:** none · **Amends:** `scripts/gen_doc_stubs.py` (NOT_GENERATED bookkeeping) and `scripts/gen_reading_map.py` (a reading position) · **See also:** ADR-0054 (check A, dormant behind the same missing dispatcher), ADR-0065 (the vacuity class this design keeps out of its own numbers), ADR-0066 (why appending here is not a waiver), #70, #86 (the 24 unset version fields), `docs/tier7/ticket-46-model-routing-decision.md` (the policy this measurement would inform), `docs/tier0/charter-and-non-goals.md` K3, `docs/tier2/execution-order.md:424` · **D28 waiver:** no — `scripts/` and `tests/` are code, the ADR log is append-only by construction, and no register document carrying a status header is amended",
+      "extractor": "adrs",
+      "id": "adr:ADR-0070",
+      "kind": "adr",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 7003,
+        "line": 7003,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "accepted",
+      "tags": [],
+      "title": "The #70 measurement gets a pre-run design: N against the interval, an honest fingerprint pair, and an empty trivial class until a run exists"
     },
     {
       "attrs": {
@@ -20624,6 +20703,37 @@
         "none"
       ],
       "title": "Ticket #67 — the live multi-agent view"
+    },
+    {
+      "attrs": {
+        "enforcement": "review-cadence",
+        "evidence": "Reads policy/model-routing.json (the empty trivial class and the forbidden list), policy/role-bindings.json (the 24 unset D19 version fields), harness/fingerprint/factory.py (the 11-field record), docs/tier3/run-instrumentation-specification.md (attempt_start, attempt_end, task_end), docs/tier0/charter-and-non-goals.md K3, and docs/tier2/execution-order.md:424. No measurement of any model against any Alfred capability exists; this document specifies the measurement rather than reporting one.",
+        "falsifies_if": "A capability enters the trivial class on a run whose fingerprint does not match the pair this document states for the arm that produced it, or a merge rate taken under this protocol is read as a point estimate rather than a Wilson 95% interval, or a run starts while docs/tier2/execution-order.md:424 still forbids orchestration.",
+        "owner": "executable",
+        "path": "docs/tier7/ticket-70-measurement-design.md",
+        "review_after": "Phase 2",
+        "tier": "7",
+        "tier_name": "Meta",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier7/ticket-70-measurement-design",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/ticket-70-measurement-design.md"
+      },
+      "status": "directional",
+      "tags": [
+        "tier7",
+        "executable",
+        "review-cadence"
+      ],
+      "title": "Ticket #70 — Measurement design for the trivial class"
     },
     {
       "attrs": {
@@ -28029,6 +28139,30 @@
       "status": "",
       "tags": [],
       "title": "The two-stage read, its five outcomes, and the bridge to failure semantics (ADR-0006)."
+    },
+    {
+      "attrs": {
+        "is_test": "true",
+        "lint_gated": "true",
+        "path": "tests/test_ticket_70_n_sizing.py",
+        "present": "true",
+        "protected": "false",
+        "tree": "tests"
+      },
+      "body": "",
+      "extractor": "code",
+      "id": "module:tests.test_ticket_70_n_sizing",
+      "kind": "module",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 1,
+        "line": 1,
+        "path": "tests/test_ticket_70_n_sizing.py"
+      },
+      "status": "",
+      "tags": [],
+      "title": "Rot guard for docs/tier7/ticket-70-measurement-design.md's stated numbers."
     },
     {
       "attrs": {
