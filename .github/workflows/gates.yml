@@ -145,11 +145,12 @@ jobs:
       # from a clean tree. That is the ADR-0007 vacuity class in the tooling, and it is how
       # the tree that verifies every other tree came to be verified by nothing.
       #
-      # The coverage floor is 0 today and the run prints "0 of 74". That is a recorded
-      # measurement, not a passing grade, in the same shape as the twenty-four
-      # `not-yet-injected` rows above: raising it is OBSERVER-1 under ADR-0029, and until it
-      # is answered what this step forbids is drift -- coverage going down, or the disk scan
-      # going quiet. The count is in the output of every run, so the hole is read, not hidden.
+      # The coverage floor is 12 today and the run prints "12 of 92": the ADR-0071 first
+      # slice collects `harness/patch/` and `harness/selftest/`. That is a recorded
+      # measurement, not a passing grade, in the same shape as the `not-yet-injected` rows
+      # above: the rest of OBSERVER-1 under ADR-0029 is still open, and what this step
+      # forbids is drift -- coverage going down, or the disk scan going quiet. The count is
+      # in the output of every run, so the hole is read, not hidden.
       - name: Harness lint coverage
         run: python3 scripts/lint_harness_gate.py
 

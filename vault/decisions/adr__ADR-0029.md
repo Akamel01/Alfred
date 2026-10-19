@@ -36,11 +36,11 @@ generated: true
 - **see_also** → [[adr__ADR-0027|An agent edited the inspector, and this record was drafted by the same agent]]
 - **see_also** → [[adr__ADR-0028|The review ADR-0027 said was owed has been done]]
 - [[adr__ADR-0068|The harness lint debt window gets a ceiling, and growth past it fails the gate]] **see_also** → this
+- [[adr__ADR-0071|OBSERVER-1's first slice collects `harness/patch/` and `harness/selftest/` under ruff, and]] **see_also** → this
 
 ## Enforced by (code)
 
-- **enforced_by** → [[module___github_workflows_gates_yml|.github/workflows/gates.yml]] — `not-yet-injected` rows above: raising it is OBSERVER-1 under ADR-0029, and until it
+- **enforced_by** → [[module___github_workflows_gates_yml|.github/workflows/gates.yml]] — above: the rest of OBSERVER-1 under ADR-0029 is still open, and what this step
 - **enforced_by** → [[module__scripts_lint_harness_gate|How much of `harness/` the lint gate actually collects, and whether it can go red.]] — """How much of `harness/` the lint gate actually collects, and whether it can go red.
 
 `harness/` is the tree everything
-- **enforced_by** → [[module__scripts_lint_harness_gate|How much of `harness/` the lint gate actually collects, and whether it can go red.]] — # ADR-0029 pending OBSERVER-1: closing the gap needs 120 hand edits, 55 suppressions and 17

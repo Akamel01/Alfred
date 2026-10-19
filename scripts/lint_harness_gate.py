@@ -21,11 +21,12 @@ Two checks, and one of them carries a recorded hole rather than pretending not t
 
   C -- COVERAGE. Of the `.py` files on disk under `harness/`, how many does `ruff` collect
       under the committed configuration? The count is printed on every run and asserted
-      against `COVERAGE_FLOOR` below. **The floor is 0 today.** That is not a passing grade,
-      it is a recorded measurement, in the shape `lint_ci_coverage.py` already uses for the
-      twenty-four `not-yet-injected` failure rows: a lint that cannot be landed green
-      enforces nothing, so the hole is counted and printed rather than hidden, and what the
-      check forbids is *drift* -- coverage going down, or the disk scan going quiet.
+      against `COVERAGE_FLOOR` below. **The floor is 12 today** -- the first OBSERVER-1
+      slice collected `harness/patch/` and `harness/selftest/` (ADR-0071). That is a
+      recorded measurement, not a passing grade, in the shape `lint_ci_coverage.py` already
+      uses for the `not-yet-injected` failure rows: the remaining hole is counted and
+      printed rather than hidden, and what the check forbids is *drift* -- coverage going
+      down, or the disk scan going quiet.
 
       Two bounds, and both are measurements rather than grades. `COVERAGE_FLOOR` forbids
       coverage going down; `DEBT_CEILING` forbids the gap going up -- the count of files
@@ -33,9 +34,10 @@ Two checks, and one of them carries a recorded hole rather than pretending not t
       74 to 92 with no run failing). Neither auto-ratchets: both move by a recorded
       one-line edit when coverage permanently improves.
 
-      Raising the floor is the OBSERVER-1 deliverable (see ADR-0029, amended by ADR-0068
-      (the debt ceiling)). When the include is
-      widened, this constant is the one-line diff that makes the widening irreversible.
+      Raising the floor is the OBSERVER-1 deliverable (ADR-0029, amended by ADR-0068 and
+      ADR-0071). The first slice widened the include for `harness/patch/` and
+      `harness/selftest/`; this constant is the one-line diff that makes the widening
+      irreversible.
 
   D -- DETECTION. That a collected harness file with a violation in it comes back red, and
       that the *planted* violation is the one reported -- not merely a non-zero exit. Run
@@ -49,18 +51,18 @@ different things and the comparison has stopped meaning anything.
 **F25.** Every mode exits 0 or 1. `not_executed` is not a state this script can produce: if
 `ruff` cannot be invoked, that is a failure and it is reported as one.
 
-**What would show this lint vacuous.** The floor sitting at 0 forever while the prose above
-implies coverage -- visible, because the count is in the output of every CI run. Or the
-detection check planting into a directory `ruff` never reaches, so it reports red for a
-reason unrelated to the plant: guarded by asserting the reported rule code *and* path.
+**What would show this lint vacuous.** The floor never moving while the prose above implies
+coverage -- visible, because the count is in the output of every CI run. Or the detection
+check planting into a directory `ruff` never reaches, so it reports red for a reason
+unrelated to the plant: guarded by asserting the reported rule code *and* path.
 
       The debt ceiling has its own vacuous shape -- a bound never exercised above it is
       decoration -- which is why the self-test drives it at fixture values and fires it one
-      file above, rather than trusting the recorded 92.
+      file above, rather than trusting the recorded 80.
 
 Inspector machinery under D20: agents may not edit this file without an authorizing ADR.
-This file is authorized by ADR-0029, amended by ADR-0068 (the debt ceiling), and is an O9
-review item.
+This file is authorized by ADR-0029, amended by ADR-0068 (the debt ceiling) and ADR-0071
+(the first collected slice), and is an O9 review item.
 """
 
 from __future__ import annotations
@@ -80,20 +82,20 @@ from _lintkit import REPO_ROOT, self_test_exit, vacuity_guard
 HARNESS: Final = REPO_ROOT / "harness"
 
 # The number of `.py` files under `harness/` that `ruff` collects under the committed
-# `[tool.ruff].include`. 0 on `main` @ `fa62b4b`, against 74 files on disk. Held at 0 by
-# ADR-0029 pending OBSERVER-1: closing the gap needs 120 hand edits, 55 suppressions and 17
-# judgement calls, 45 of them in M2's `harness/containment/`, 8 in M3's `harness/selftest/`
- # and 2 in `harness/patch/`, which no module may touch. See _archive/CLASSIFICATION-M1.md.
+# `[tool.ruff].include`. 12 on `oc/97` (2026-10-19): `harness/patch/` (5) and
+# `harness/selftest/` (7), the OBSERVER-1 first slice (ADR-0071). It was 0 on
+# `main` @ `fa62b4b`, against 74 files on disk. The rest of the tree remains uncollected.
 # This number may go up. It may not go down.
-COVERAGE_FLOOR: Final = 0
+COVERAGE_FLOOR: Final = 12
 
-# The debt window: `.py` files under `harness/` that `ruff` collects nothing from. 92 on
-# `main` @ `60ee4ed` (2026-10-18), grown from 74 on `fa62b4b` with no run failing -- issue
-# #87. This number may go down. It may not go up -- not by growing the tree, not by
+# The debt window: `.py` files under `harness/` that `ruff` collects nothing from. 80 on
+# `oc/97` (2026-10-19): 92 on disk minus the 12 the first slice collects (ADR-0071). It was
+# 92 on `main` @ `60ee4ed` (2026-10-18), grown from 74 on `fa62b4b` with no run failing --
+# issue #87. This number may go down. It may not go up -- not by growing the tree, not by
 # narrowing the include. It is not auto-ratcheted: lowering it is a recorded one-line
 # edit, and when coverage permanently improves the floor rises in the same edit. Added by
 # ADR-0068.
-DEBT_CEILING: Final = 92
+DEBT_CEILING: Final = 80
 
 # Planted into the scratch copy for check D. `F401` is chosen because it is unambiguous,
 # fixable, and in the committed `select` list, so a plant that fails to fire cannot be

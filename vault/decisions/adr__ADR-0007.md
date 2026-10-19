@@ -44,6 +44,7 @@ generated: true
 - [[adr__ADR-0065|The bench append-only guarantee gets the lint ADR-0038 said it already had, and the shallo]] **see_also** → this
 - [[adr__ADR-0068|The harness lint debt window gets a ceiling, and growth past it fails the gate]] **see_also** → this
 - [[adr__ADR-0069|Unset D19 version fields report `indeterminate`, and TOP014 makes a silent `pass` impossib]] **see_also** → this
+- [[adr__ADR-0071|OBSERVER-1's first slice collects `harness/patch/` and `harness/selftest/` under ruff, and]] **see_also** → this
 
 ## Enforced by (code)
 

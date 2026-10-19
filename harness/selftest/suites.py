@@ -158,12 +158,12 @@ def _evaluate(delta: float | None) -> Evaluation:
 Evaluator = Callable[[float | None], Evaluation]
 
 
-def always_pass_evaluator(delta: float | None) -> Evaluation:
+def always_pass_evaluator(_delta: float | None) -> Evaluation:
     """Control. A runner that greens everything must fail every red rung."""
     return _forced("pass", score=1.0)
 
 
-def always_fail_evaluator(delta: float | None) -> Evaluation:
+def always_fail_evaluator(_delta: float | None) -> Evaluation:
     """Control. A runner that reds everything must fail every green rung.
 
     This is the one that matters most: `testing-strategy.md` and `failure-semantics.md`

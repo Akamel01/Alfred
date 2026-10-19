@@ -14,13 +14,13 @@ that never watches the digest change is a test that a constant would satisfy.
 from __future__ import annotations
 
 import pytest
-
 from harness.selftest.replay_fixtures import (
     SYNTHETIC_DATASET,
     SyntheticMetric,
     SyntheticSource,
     synthetic_ref,
 )
+
 from provenance.stamp_types import AssumptionSet, Tolerance
 from provenance.upstream import CorpusUpstream
 from replay.harness import DeterministicReplay, ReplayContractViolation, StampContext
@@ -105,7 +105,7 @@ def test_a_source_returning_nothing_raises_rather_than_stamping() -> None:
     """
 
     class _Empty(SyntheticSource):
-        def load(self, ref: object) -> tuple[()]:  # pyright: ignore[reportIncompatibleMethodOverride]
+        def load(self, ref: object) -> tuple[()]:  # pyright: ignore[reportIncompatibleMethodOverride]  # noqa: ARG002 - signature fixed by the overridden method
             return ()
 
     with pytest.raises(ReplayContractViolation, match="zero tracks"):
@@ -143,7 +143,7 @@ def test_a_degeneracy_is_stamped_as_a_value_rather_than_raising() -> None:
 
     class _Single(SyntheticSource):
         def load(self, ref: object) -> object:  # pyright: ignore[reportIncompatibleMethodOverride]
-            return (tuple(super().load(ref))[0],)  # pyright: ignore[reportArgumentType]
+            return (next(iter(super().load(ref))),)  # pyright: ignore[reportArgumentType]
 
     result = _replay(source=_Single())
     assert result.stamped.value.kind == "undefined"

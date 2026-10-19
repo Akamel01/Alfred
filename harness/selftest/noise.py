@@ -54,7 +54,7 @@ def measure_noise_floor(*, samples: int = DEFAULT_SAMPLES, seed: int = 20260818)
         # "this criterion is perfectly precise" — the most flattering possible wrong answer.
         raise ValueError("a noise floor needs at least two samples")
 
-    rng = random.Random(seed)
+    rng = random.Random(seed)  # noqa: S311 - seeded synthetic noise, not cryptography
     exact = reference_value()
     values: list[float] = []
     for _ in range(samples):
