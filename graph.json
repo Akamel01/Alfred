@@ -1,13 +1,7 @@
 {
-  "anomalies": [
-    {
-      "detail": "the log is append-only and numbers are never reused; missing: ADR-0068",
-      "kind": "adr-numbering-gap",
-      "refs": []
-    }
-  ],
+  "anomalies": [],
   "counts": {
-    "adr": 68,
+    "adr": 69,
     "amendment": 12,
     "decision": 57,
     "document": 78,
@@ -32,12 +26,12 @@
     "blocks": 32,
     "contains": 309,
     "discharges": 1,
-    "enforced_by": 405,
+    "enforced_by": 411,
     "imports": 263,
     "needs": 4,
     "references": 2,
     "runs": 42,
-    "see_also": 94,
+    "see_also": 96,
     "supersedes": 2
   },
   "edges": [
@@ -6808,8 +6802,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 72,
-        "line": 72,
+        "end_line": 84,
+        "line": 84,
         "path": "scripts/lint_harness_gate.py"
       },
       "src": "adr:ADR-0029"
@@ -7203,6 +7197,84 @@
         "path": "scripts/lint_adr_numbers.py"
       },
       "src": "adr:ADR-0066"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:scripts.lint_harness_gate",
+      "evidence": "\"\"\"How much of `harness/` the lint gate actually collects, and whether it can go red.\n\n`harness/` is the tree everything else in this repository is verified *by*: the criterion\nrun",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 2,
+        "line": 2,
+        "path": "scripts/lint_harness_gate.py"
+      },
+      "src": "adr:ADR-0068"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:scripts.lint_harness_gate",
+      "evidence": "# ADR-0068.",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 95,
+        "line": 95,
+        "path": "scripts/lint_harness_gate.py"
+      },
+      "src": "adr:ADR-0068"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:scripts.lint_harness_gate",
+      "evidence": "# naming ADR-0068.",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 269,
+        "line": 269,
+        "path": "scripts/lint_harness_gate.py"
+      },
+      "src": "adr:ADR-0068"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:scripts.lint_harness_gate",
+      "evidence": "\"ADR-0068\"",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 274,
+        "line": 274,
+        "path": "scripts/lint_harness_gate.py"
+      },
+      "src": "adr:ADR-0068"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:scripts.lint_harness_gate",
+      "evidence": "\"C ceiling did not fire alone, naming ADR-0068, one file above the ceiling: \"",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 276,
+        "line": 276,
+        "path": "scripts/lint_harness_gate.py"
+      },
+      "src": "adr:ADR-0068"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:scripts.lint_harness_gate",
+      "evidence": "\"recorded value, and fires alone naming ADR-0068 one file above it; D reports the \"",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 297,
+        "line": 297,
+        "path": "scripts/lint_harness_gate.py"
+      },
+      "src": "adr:ADR-0068"
     },
     {
       "confidence": "derived",
@@ -15215,12 +15287,38 @@
     {
       "confidence": "structural",
       "dst": "adr:ADR-0007",
+      "evidence": "**See also:** ADR-0029 (which recorded the floor and held the scope call for OBSERVER-1), ADR-0007 (the vacuity class), #87 (the measured growth this answers)",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 7005,
+        "line": 7005,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0068"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0029",
+      "evidence": "**See also:** ADR-0029 (which recorded the floor and held the scope call for OBSERVER-1), ADR-0007 (the vacuity class), #87 (the measured growth this answers)",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 7005,
+        "line": 7005,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0068"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0007",
       "evidence": "**See also:** ADR-0007 (the vacuity class), ADR-0056 (the requalification trigger), ADR-0067 (the batched Gate D read), #86",
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 7003,
-        "line": 7003,
+        "end_line": 7036,
+        "line": 7036,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0069"
@@ -15232,8 +15330,8 @@
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 7003,
-        "line": 7003,
+        "end_line": 7036,
+        "line": 7036,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0069"
@@ -15245,8 +15343,8 @@
       "extractor": "adrs",
       "kind": "see_also",
       "source": {
-        "end_line": 7003,
-        "line": 7003,
+        "end_line": 7036,
+        "line": 7036,
         "path": "docs/tier1/adr-log.md"
       },
       "src": "adr:ADR-0069"
@@ -15280,14 +15378,14 @@
   ],
   "extractors": [
     {
-      "edges": 111,
+      "edges": 113,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 4,
       "min_nodes": 14,
       "name": "adrs",
-      "nodes": 68,
+      "nodes": 69,
       "rejected": 0,
       "scanned": 1,
       "unparsed": 0
@@ -15423,7 +15521,7 @@
       "unparsed": 0
     },
     {
-      "edges": 405,
+      "edges": 411,
       "expect_rejected": null,
       "max_nodes": 0,
       "max_unparsed": 0,
@@ -16881,6 +16979,27 @@
         "status": "accepted",
         "status_raw": "Accepted"
       },
+      "body": "**Date:** 2026-10-18 · **Status:** Accepted · **Supersedes:** none · **Amends:** `scripts/lint_harness_gate.py` (check C gains `DEBT_CEILING` and its comparison; the floor stays 0, the detection check and the vacuity guard are unchanged) · **See also:** ADR-0029 (which recorded the floor and held the scope call for OBSERVER-1), ADR-0007 (the vacuity class), #87 (the measured growth this answers) · **D28 waiver:** no — `scripts/` is code and the ADR log is `frozen` with `enforcement: none` and append-only by construction; neither is the frozen `ci-gate` shape #78 ruled on (ADR-0066's declaration form; ADR-0064 is the contrast where a frozen document forced a yes)",
+      "extractor": "adrs",
+      "id": "adr:ADR-0068",
+      "kind": "adr",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 7005,
+        "line": 7005,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "accepted",
+      "tags": [],
+      "title": "The harness lint debt window gets a ceiling, and growth past it fails the gate"
+    },
+    {
+      "attrs": {
+        "date": "2026-10-18",
+        "status": "accepted",
+        "status_raw": "Accepted"
+      },
       "body": "**Date:** 2026-10-18 · **Status:** Accepted · **Supersedes:** none · **Amends:** `policy/role-bindings.json` (top-level `requalification` key), `scripts/lint_topology.py` (TOP014), `docs/tier3/agent-definition-standard.md` (evidence, falsifies_if, Enforcement) · **See also:** ADR-0007 (the vacuity class), ADR-0056 (the requalification trigger), ADR-0067 (the batched Gate D read), #86 · **D28 waiver:** no",
       "extractor": "adrs",
       "id": "adr:ADR-0069",
@@ -16888,8 +17007,8 @@
       "occurrences": [],
       "shape": "heading",
       "source": {
-        "end_line": 7003,
-        "line": 7003,
+        "end_line": 7036,
+        "line": 7036,
         "path": "docs/tier1/adr-log.md"
       },
       "status": "accepted",

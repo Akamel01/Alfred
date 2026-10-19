@@ -7000,6 +7000,39 @@ have carried protected content that was reverted before merge and never surfaced
 residue in decision 4 is larger than stated; or if a third waiver lands against this document,
 which fires the falsification clause against the policy itself.
 
+---
+
+## ADR-0068 — The harness lint debt window gets a ceiling, and growth past it fails the gate
+
+**Date:** 2026-10-18 · **Status:** Accepted · **Supersedes:** none · **Amends:** `scripts/lint_harness_gate.py` (check C gains `DEBT_CEILING` and its comparison; the floor stays 0, the detection check and the vacuity guard are unchanged) · **See also:** ADR-0029 (which recorded the floor and held the scope call for OBSERVER-1), ADR-0007 (the vacuity class), #87 (the measured growth this answers) · **D28 waiver:** no — `scripts/` is code and the ADR log is `frozen` with `enforcement: none` and append-only by construction; neither is the frozen `ci-gate` shape #78 ruled on (ADR-0066's declaration form; ADR-0064 is the contrast where a frozen document forced a yes)
+
+### Context
+
+ADR-0029 measured 74 and recorded floor 0; what it forbids is coverage going down (`docs/tier1/adr-log.md:2975-2984`, `scripts/lint_harness_gate.py:28`). On `main` @ `60ee4ed` the count is 92 (+18, +24%) with OBSERVER-1 still unscheduled and no run failing: a floor of 0 bounds the wrong side of the quantity that grew.
+
+The count is printed on every run, but a print is read only if someone is watching a number; the gate is what must notice. #87's options and why option 3: smallest, preserves ADR-0029 and `COVERAGE_FLOOR = 0`, collects nothing, schedules nothing.
+
+The measured debt is defined as on-disk minus collected — the number the OK line already prints (`scripts/lint_harness_gate.py:281`) — so the bound reads the same quantity a human reads.
+
+Residue stated rather than discovered: the ceiling bounds growth, not shrinkage. Deleting unlinted files lowers measured debt without raising coverage, and the two printed counts are what make that visible; making gains irreversible is the floor's half of the OBSERVER-1 edit, not this record's.
+
+92 is a recorded measurement, not a passing grade or a target; the 92 files stay unlinted.
+
+### Decision
+
+1. `DEBT_CEILING = 92`, recorded 2026-10-18 from `main` @ `60ee4ed` (92 on disk, 0 collected). Check C fails when the debt exceeds it; the failure names ADR-0068.
+2. The ceiling may go down and may not go up; it does not auto-ratchet. Debt below the ceiling is quiet; the constant moves by a recorded one-line edit, together with the floor, when coverage permanently improves. Raising it is an edit of the same class as this record.
+3. The floor stays 0, no file is collected, the include is untouched, OBSERVER-1 remains unscheduled. This record adds a growth bound; it does not answer OBSERVER-1 and must not be read as doing so.
+4. The check is parameterized (`ceiling: int = DEBT_CEILING`); the self-test drives it at fixture values — quiet at the recorded debt, fires alone one file above naming ADR-0068, quiet on a fully covered tree at ceiling 0 — and the existing arms are unchanged.
+
+### Enforcement
+
+`ci-gate`, by the two existing steps in the `integrity` job (`.github/workflows/gates.yml:153-160`), which run the lint and its self-test; no workflow change is needed. The self-test arms are the control.
+
+**Falsification trigger.** This decision is wrong if the debt window again grows past a recorded ceiling with the gate green; or if the ceiling is found raised in the same change that grows the window; or if the two counts are found measuring different things while the ceiling reads quiet — the subject of the pre-existing over-collection violation (`scripts/lint_harness_gate.py:134-138`).
+
+---
+
 ## ADR-0069 — Unset D19 version fields report `indeterminate`, and TOP014 makes a silent `pass` impossible
 
 **Date:** 2026-10-18 · **Status:** Accepted · **Supersedes:** none · **Amends:** `policy/role-bindings.json` (top-level `requalification` key), `scripts/lint_topology.py` (TOP014), `docs/tier3/agent-definition-standard.md` (evidence, falsifies_if, Enforcement) · **See also:** ADR-0007 (the vacuity class), ADR-0056 (the requalification trigger), ADR-0067 (the batched Gate D read), #86 · **D28 waiver:** no
