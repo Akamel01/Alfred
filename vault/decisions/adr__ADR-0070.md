@@ -5,7 +5,7 @@ title: "The #70 measurement gets a pre-run design: N against the interval, an ho
 status: "accepted"
 shape: "heading"
 date: "2026-10-18"
-source: "docs/tier1/adr-log.md:7003"
+source: "docs/tier1/adr-log.md:7102"
 extractor: "adrs"
 aliases:
   - "ADR-0070"
@@ -18,7 +18,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-**Source** · `docs/tier1/adr-log.md:7003`
+**Source** · `docs/tier1/adr-log.md:7102`
 
 ## Statement
 

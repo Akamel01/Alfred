@@ -232,8 +232,10 @@ Binding on implementation and easy to miss, since they live inside one document.
 | [ADR-0065](tier1/adr-log.md) | The bench append-only guarantee gets the lint ADR-0038 said it already had, and the shallow checkout that would have made it vacuous is fixed with it | Accepted |
 | [ADR-0066](tier1/adr-log.md) | A D28 waiver declaration becomes correctable in the same append-only channel as its ordinal, and ADR-0050's is corrected | Accepted |
 | [ADR-0067](tier1/adr-log.md) | Gate D's read is batched per pull request, and the comment-only exemption is rejected as unsafe here | Accepted |
+| [ADR-0068](tier1/adr-log.md) | The harness lint debt window gets a ceiling, and growth past it fails the gate | Accepted |
+| [ADR-0069](tier1/adr-log.md) | Unset D19 version fields report `indeterminate`, and TOP014 makes a silent `pass` impossible | Accepted |
 | [ADR-0070](tier1/adr-log.md) | The #70 measurement gets a pre-run design: N against the interval, an honest fingerprint pair, and an empty trivial class until a run exists | Accepted |
 
 ---
 
-**79 documents mapped** · 45 binding · 14 context · 20 record · 68 architecture decisions
+**79 documents mapped** · 45 binding · 14 context · 20 record · 70 architecture decisions
