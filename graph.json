@@ -1,7 +1,7 @@
 {
   "anomalies": [],
   "counts": {
-    "adr": 70,
+    "adr": 71,
     "amendment": 12,
     "decision": 57,
     "document": 79,
@@ -26,12 +26,12 @@
     "blocks": 32,
     "contains": 310,
     "discharges": 1,
-    "enforced_by": 411,
+    "enforced_by": 413,
     "imports": 263,
     "needs": 4,
     "references": 2,
     "runs": 42,
-    "see_also": 99,
+    "see_also": 102,
     "supersedes": 2
   },
   "edges": [
@@ -6386,8 +6386,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 104,
-        "line": 104,
+        "end_line": 102,
+        "line": 102,
         "path": "harness/selftest/test_selftest.py"
       },
       "src": "adr:ADR-0015"
@@ -6810,19 +6810,6 @@
     },
     {
       "confidence": "derived",
-      "dst": "module:scripts.lint_harness_gate",
-      "evidence": "# ADR-0029 pending OBSERVER-1: closing the gap needs 120 hand edits, 55 suppressions and 17",
-      "extractor": "references",
-      "kind": "enforced_by",
-      "source": {
-        "end_line": 84,
-        "line": 84,
-        "path": "scripts/lint_harness_gate.py"
-      },
-      "src": "adr:ADR-0029"
-    },
-    {
-      "confidence": "derived",
       "dst": "module:harness.containment.__init__",
       "evidence": "\"\"\"Containment assertions: what the sandbox must prove before a run starts.\n\nInspector machinery (D20). Every assertion here is fail-closed, the probe erroring\nincluded, and **`not",
       "extractor": "references",
@@ -7231,8 +7218,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 95,
-        "line": 95,
+        "end_line": 97,
+        "line": 97,
         "path": "scripts/lint_harness_gate.py"
       },
       "src": "adr:ADR-0068"
@@ -7244,8 +7231,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 269,
-        "line": 269,
+        "end_line": 271,
+        "line": 271,
         "path": "scripts/lint_harness_gate.py"
       },
       "src": "adr:ADR-0068"
@@ -7254,19 +7241,6 @@
       "confidence": "derived",
       "dst": "module:scripts.lint_harness_gate",
       "evidence": "\"ADR-0068\"",
-      "extractor": "references",
-      "kind": "enforced_by",
-      "source": {
-        "end_line": 274,
-        "line": 274,
-        "path": "scripts/lint_harness_gate.py"
-      },
-      "src": "adr:ADR-0068"
-    },
-    {
-      "confidence": "derived",
-      "dst": "module:scripts.lint_harness_gate",
-      "evidence": "\"C ceiling did not fire alone, naming ADR-0068, one file above the ceiling: \"",
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
@@ -7279,15 +7253,67 @@
     {
       "confidence": "derived",
       "dst": "module:scripts.lint_harness_gate",
+      "evidence": "\"C ceiling did not fire alone, naming ADR-0068, one file above the ceiling: \"",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 278,
+        "line": 278,
+        "path": "scripts/lint_harness_gate.py"
+      },
+      "src": "adr:ADR-0068"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:scripts.lint_harness_gate",
       "evidence": "\"recorded value, and fires alone naming ADR-0068 one file above it; D reports the \"",
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 297,
-        "line": 297,
+        "end_line": 299,
+        "line": 299,
         "path": "scripts/lint_harness_gate.py"
       },
       "src": "adr:ADR-0068"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:scripts.lint_harness_gate",
+      "evidence": "\"\"\"How much of `harness/` the lint gate actually collects, and whether it can go red.\n\n`harness/` is the tree everything else in this repository is verified *by*: the criterion\nrun",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 2,
+        "line": 2,
+        "path": "scripts/lint_harness_gate.py"
+      },
+      "src": "adr:ADR-0071"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:scripts.lint_harness_gate",
+      "evidence": "# `harness/selftest/` (7), the OBSERVER-1 first slice (ADR-0071). It was 0 on",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 86,
+        "line": 86,
+        "path": "scripts/lint_harness_gate.py"
+      },
+      "src": "adr:ADR-0071"
+    },
+    {
+      "confidence": "derived",
+      "dst": "module:scripts.lint_harness_gate",
+      "evidence": "# `oc/97` (2026-10-19): 92 on disk minus the 12 the first slice collects (ADR-0071). It was",
+      "extractor": "references",
+      "kind": "enforced_by",
+      "source": {
+        "end_line": 92,
+        "line": 92,
+        "path": "scripts/lint_harness_gate.py"
+      },
+      "src": "adr:ADR-0071"
     },
     {
       "confidence": "derived",
@@ -9818,8 +9844,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 41,
-        "line": 41,
+        "end_line": 45,
+        "line": 45,
         "path": "harness/patch/test_import_hook_binding.py"
       },
       "src": "decision:D57"
@@ -9831,8 +9857,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 100,
-        "line": 100,
+        "end_line": 99,
+        "line": 99,
         "path": "harness/patch/test_protected_set.py"
       },
       "src": "decision:D57"
@@ -11443,8 +11469,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 26,
-        "line": 26,
+        "end_line": 28,
+        "line": 28,
         "path": "harness/patch/test_import_hook_binding.py"
       },
       "src": "module:harness.patch.test_import_hook_binding"
@@ -11456,8 +11482,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 19,
-        "line": 19,
+        "end_line": 18,
+        "line": 18,
         "path": "harness/patch/test_protected_set.py"
       },
       "src": "module:harness.patch.test_protected_set"
@@ -11469,8 +11495,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 12,
-        "line": 12,
+        "end_line": 11,
+        "line": 11,
         "path": "harness/patch/test_validate.py"
       },
       "src": "module:harness.patch.test_validate"
@@ -11560,8 +11586,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 18,
-        "line": 18,
+        "end_line": 17,
+        "line": 17,
         "path": "harness/selftest/test_replay.py"
       },
       "src": "module:harness.selftest.test_replay"
@@ -11573,8 +11599,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 107,
-        "line": 107,
+        "end_line": 105,
+        "line": 105,
         "path": "harness/selftest/test_selftest.py"
       },
       "src": "module:harness.selftest.test_selftest"
@@ -11586,8 +11612,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 13,
-        "line": 13,
+        "end_line": 12,
+        "line": 12,
         "path": "harness/selftest/test_selftest.py"
       },
       "src": "module:harness.selftest.test_selftest"
@@ -11599,8 +11625,8 @@
       "extractor": "imports",
       "kind": "imports",
       "source": {
-        "end_line": 14,
-        "line": 14,
+        "end_line": 13,
+        "line": 13,
         "path": "harness/selftest/test_selftest.py"
       },
       "src": "module:harness.selftest.test_selftest"
@@ -15403,6 +15429,45 @@
     },
     {
       "confidence": "structural",
+      "dst": "adr:ADR-0007",
+      "evidence": "**See also:** ADR-0029 (the measurement this slice starts to pay down), ADR-0068 (the ceiling and the one-edit rule), ADR-0007 (the vacuity class), #97",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 7121,
+        "line": 7121,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0071"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0029",
+      "evidence": "**See also:** ADR-0029 (the measurement this slice starts to pay down), ADR-0068 (the ceiling and the one-edit rule), ADR-0007 (the vacuity class), #97",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 7121,
+        "line": 7121,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0071"
+    },
+    {
+      "confidence": "structural",
+      "dst": "adr:ADR-0068",
+      "evidence": "**See also:** ADR-0029 (the measurement this slice starts to pay down), ADR-0068 (the ceiling and the one-edit rule), ADR-0007 (the vacuity class), #97",
+      "extractor": "adrs",
+      "kind": "see_also",
+      "source": {
+        "end_line": 7121,
+        "line": 7121,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "src": "adr:ADR-0071"
+    },
+    {
+      "confidence": "structural",
       "dst": "adr:ADR-0050",
       "evidence": "**Supersedes:** ADR-0050's `D28 waiver: no` classification",
       "extractor": "adrs",
@@ -15430,14 +15495,14 @@
   ],
   "extractors": [
     {
-      "edges": 116,
+      "edges": 119,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 4,
       "min_nodes": 14,
       "name": "adrs",
-      "nodes": 70,
+      "nodes": 71,
       "rejected": 0,
       "scanned": 1,
       "unparsed": 0
@@ -15573,7 +15638,7 @@
       "unparsed": 0
     },
     {
-      "edges": 411,
+      "edges": 413,
       "expect_rejected": null,
       "max_nodes": 0,
       "max_unparsed": 0,
@@ -17087,6 +17152,27 @@
       "status": "accepted",
       "tags": [],
       "title": "The #70 measurement gets a pre-run design: N against the interval, an honest fingerprint pair, and an empty trivial class until a run exists"
+    },
+    {
+      "attrs": {
+        "date": "2026-10-19",
+        "status": "accepted",
+        "status_raw": "Accepted"
+      },
+      "body": "**Date:** 2026-10-19 · **Status:** Accepted · **Supersedes:** none · **Amends:** `pyproject.toml` (`[tool.ruff].include` and the scoped `S101` per-file ignore), `scripts/lint_harness_gate.py` (`COVERAGE_FLOOR` 0 to 12, `DEBT_CEILING` 92 to 80, and the prose that recorded the zero) · **See also:** ADR-0029 (the measurement this slice starts to pay down), ADR-0068 (the ceiling and the one-edit rule), ADR-0007 (the vacuity class), #97 · **D28 waiver:** no — `pyproject.toml` and `scripts/` are protected code, and the ADR log is append-only by construction; no frozen `ci-gate` register document is amended",
+      "extractor": "adrs",
+      "id": "adr:ADR-0071",
+      "kind": "adr",
+      "occurrences": [],
+      "shape": "heading",
+      "source": {
+        "end_line": 7121,
+        "line": 7121,
+        "path": "docs/tier1/adr-log.md"
+      },
+      "status": "accepted",
+      "tags": [],
+      "title": "OBSERVER-1's first slice collects `harness/patch/` and `harness/selftest/` under ruff, and both bounds move once"
     },
     {
       "attrs": {

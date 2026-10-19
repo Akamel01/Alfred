@@ -7115,3 +7115,30 @@ reads green (the lint is vacuous).
 **Falsification trigger.** This decision is wrong if a capability enters the trivial class without a run matching the pair in the design; or a rate measured under this protocol is quoted as a point estimate; or a numeric threshold appears in `docs/tier3/autonomy-graduation-policy.md` before Phase 4 can supply its evidence.
 
 D28 waiver: **no**. Checked: the append amends no frozen `ci-gate` register document — the ADR log itself is `frozen` with `enforcement: none` and append-only by construction, which is ADR-0066's recorded reasoning verbatim; the two `scripts/` edits are code (ADR-0066's shape: "`scripts/` is code"); the new doc and the test are new files. The waiver count stays at 8.
+
+---
+
+## ADR-0071 — OBSERVER-1's first slice collects `harness/patch/` and `harness/selftest/` under ruff, and both bounds move once
+
+**Date:** 2026-10-19 · **Status:** Accepted · **Supersedes:** none · **Amends:** `pyproject.toml` (`[tool.ruff].include` and the scoped `S101` per-file ignore), `scripts/lint_harness_gate.py` (`COVERAGE_FLOOR` 0 to 12, `DEBT_CEILING` 92 to 80, and the prose that recorded the zero) · **See also:** ADR-0029 (the measurement this slice starts to pay down), ADR-0068 (the ceiling and the one-edit rule), ADR-0007 (the vacuity class), #97 · **D28 waiver:** no — `pyproject.toml` and `scripts/` are protected code, and the ADR log is append-only by construction; no frozen `ci-gate` register document is amended
+
+### Context
+
+ADR-0029 measured 74 `.py` files under `harness/` with 0 collected and held the include open on OBSERVER-1. ADR-0068 recorded 92 files on `main` @ `60ee4ed` and added `DEBT_CEILING = 92` so the gap could not grow; it stated the way a permanent improvement lands: the floor and the ceiling move in one recorded edit. #97 authorises the first slice: two folders, not the whole tree.
+
+Measured on `main` @ `058b6d1`, with ruff 0.16.2: widening the include to `harness/patch/**` and `harness/selftest/**` collects 12 of 92 files and reports 74 findings across 9 of them. The findings are 61 `S101`, 5 `I001`, 2 `E501`, 2 `ARG001`, 1 `ARG002`, 1 `RUF015`, 1 `S105`, 1 `S311`. The original estimate in `_archive/CLASSIFICATION-M1.md` said 2 fixes in `harness/patch/` and 8 in `harness/selftest/`; the measured count is larger because the estimate predates both folders' current tests.
+
+### Decision
+
+1. **The include widens by exactly two folders**: `harness/patch/**/*.py` and `harness/selftest/**/*.py`. The rest of `harness/` stays uncollected; this record does not answer OBSERVER-1.
+2. **`S101` is ignored per-file for `harness/*/test_*.py`**, matching the existing `tests/*` ignore (`pyproject.toml:100`): assert is the point of a test. The scope is the two collected folders' test modules, not the tree. This is not ADR-0029's rejected option, which suppressed 685 of 866 findings across all of `harness/` — printing, subprocess, and security rules included — to green the tree by construction. Here the remaining 13 findings are each fixed or individually suppressed.
+3. **The other findings change no behaviour.** `I001` is import sorting; `E501` is line wrapping; `ARG001` renames unused parameters to `_delta` (callers are positional); `ARG002` is a signature fixed by the overridden method and carries a reasoned `# noqa`; `RUF015` takes the first element of a non-empty synthetic source; `S105` is a false positive on a diff path token; `S311` is a seeded synthetic-noise generator, not cryptography. Each suppression names its rule and reason at the line.
+4. **Both bounds move in the same edit, per ADR-0068 decision 2**: `COVERAGE_FLOOR = 12` and `DEBT_CEILING = 80` (92 on disk minus 12 collected). Coverage may go up and not down; debt may go down and not up. The self-test keeps using fixture values and still fires one file above a fixture ceiling.
+
+### Enforcement
+
+`ci-gate`, by the existing steps: `python3 scripts/lint_harness_gate.py` and `--self-test` in the `integrity` job (`.github/workflows/gates.yml:153-160`), `uv run ruff check` in the `product` job, and `uv run pytest harness/selftest` / `harness/patch` in the `inspector` job. No workflow change is needed.
+
+**Falsification trigger.** This decision is wrong if `ruff --show-files harness` and the gate's collected count disagree while the gate reads green; or the floor is lowered, the ceiling raised, or either moves without a recorded edit in the same change; or a finding in the two folders is suppressed without a reason at the line; or a collected rule fires on a path outside the two folders.
+
+D28 waiver: **no**. Checked: `pyproject.toml` and `scripts/` are protected code and the ADR log is append-only by construction — ADR-0066's recorded shape; no register document carrying a `status` header is amended.

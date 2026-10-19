@@ -34,6 +34,7 @@ generated: true
 
 - **see_also** → [[adr__ADR-0007|Executor-premise assertions may pass vacuously, and that is a third outcome]]
 - **see_also** → [[adr__ADR-0029|The tree that verifies every other tree is verified by nothing]]
+- [[adr__ADR-0071|OBSERVER-1's first slice collects `harness/patch/` and `harness/selftest/` under ruff, and]] **see_also** → this
 
 ## Enforced by (code)
 
