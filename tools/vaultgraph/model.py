@@ -59,6 +59,8 @@ class EdgeKind(StrEnum):
     ENFORCED_BY = "enforced_by"
     ENFORCES = "enforces"
     CONTAINS = "contains"
+    #: A later migration revision follows an earlier one. Parsed from `down_revision`.
+    REVISES = "revises"
     NEEDS = "needs"
     OWNED_BY = "owned_by"
     IN_PHASE = "in_phase"

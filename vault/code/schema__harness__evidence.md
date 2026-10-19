@@ -3,9 +3,11 @@ kind: schema
 id: "schema:harness/evidence"
 title: "harness/evidence"
 shape: "migration-tree"
-protected: "false"
+protected: "true"
+agent_migratable: "false"
 source: "migrations/harness/evidence:1"
-extractor: "code"
+extractor: "schema"
+tags: [protected]
 aliases:
   - "harness/evidence"
 generated: true
@@ -25,3 +27,7 @@ generated: true
 | `additive_only_lint` | true |
 | `migrations` | 1 |
 | `path` | migrations/harness/evidence |
+
+## Binds
+
+- **contains** → [[schema__harness__evidence__0001_evidence_base|0001_evidence_base]]

@@ -1,7 +1,7 @@
 ---
 kind: module
 id: "module:tools.vaultgraph.extract.code"
-title: "The engineered half of the graph: packages, modules, schemas, and what D20 protects."
+title: "The engineered half of the graph: packages, modules, and what D20 protects."
 shape: "module"
 present: "true"
 protected: "false"
@@ -9,12 +9,12 @@ lint_gated: "false"
 source: "tools/vaultgraph/extract/code.py:1"
 extractor: "code"
 aliases:
-  - "The engineered half of the graph: packages, modules, schemas, and what D20 protects."
+  - "The engineered half of the graph: packages, modules, and what D20 protects."
   - "tools.vaultgraph.extract.code"
 generated: true
 ---
 
-# The engineered half of the graph: packages, modules, schemas, and what D20 protects.
+# The engineered half of the graph: packages, modules, and what D20 protects.
 
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.

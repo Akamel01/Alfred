@@ -4,8 +4,9 @@ id: "schema:product"
 title: "product"
 shape: "migration-tree"
 protected: "false"
+agent_migratable: "true"
 source: "migrations/product:1"
-extractor: "code"
+extractor: "schema"
 aliases:
   - "product"
 generated: true
@@ -25,3 +26,7 @@ generated: true
 | `additive_only_lint` | false |
 | `migrations` | 1 |
 | `path` | migrations/product |
+
+## Binds
+
+- **contains** → [[schema__product__0001_product_base|0001_product_base]]

@@ -4,8 +4,9 @@ id: "schema:roles"
 title: "roles"
 shape: "migration-tree"
 protected: "true"
+agent_migratable: "false"
 source: "migrations/roles:1"
-extractor: "code"
+extractor: "schema"
 tags: [protected]
 aliases:
   - "roles"

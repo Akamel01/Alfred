@@ -5,7 +5,7 @@ Ticket: `gh issue view 5`. Orchestrator ruling on scope: design all three, proto
 is the one that ships code.
 
 ## 1. The extractor contract, as derived from `tools/vaultgraph/protocol.py` and the existing eleven (now
-fourteen) extractors
+fifteen) extractors
 
 **Registration.** `tools/vaultgraph/extract/__init__.py` holds `EXTRACTORS: tuple[ExtractorSpec, ...]`, the
 only thing `runner.run()` executes. Adding an extractor means: write `extract/<name>.py` exposing a
@@ -140,16 +140,15 @@ files by hand.
 moved from 603 nodes / 1099 edges to **610 nodes / 1101 edges**; `gen_vault.py --self-test` now reports
 "14 extractors declare floors" (was 13); `--check` passes clean at 610/1101/616 notes.
 
-## 3. Design: `schema` (over `migrations/`) — design only, not built
+## 3. Design: `schema` (over `migrations/`) — built
 
-**What's a node.** `NodeKind.SCHEMA` already exists in `model.NodeKind` and is currently unused by any
-extractor (`code.py` mints `MODULE` nodes for `migrations/**/*.py`, but nothing represents a *migration
-revision* or a *schema* as its own concept). Proposed: one `SCHEMA` node per Alembic revision file
+**What's a node.** `NodeKind.SCHEMA` owned by `schema.py`: one node per declared directory (5) plus
+one per Alembic revision (5). Proposed: one `SCHEMA` node per Alembic revision file
 (`migrations/{product,harness/control,harness/evidence,harness/heldout}/versions/*.py`) — 5 files on disk
 today — parsed for its module-level `revision`, `down_revision`, and the schema name it declares (the
 `SCHEMA = "product"`-style constant, or the directory it lives under as a fallback). A second, coarser
-node — one per schema *directory* (`product`, `harness/control`, `harness/evidence`, `harness/heldout`,
-4 total) — groups the chain.
+node — one per schema *directory* (`product`, `harness/control`, `harness/evidence`, `harness/heldout`, `roles`,
+5 total) — groups the chain.
 
 **What's an edge.** `EdgeKind` needs one addition (`REVISES` or reuse `references`-style `EdgeKind`) from
 each revision to its `down_revision` (structural — parsed straight out of the `down_revision: str | None`

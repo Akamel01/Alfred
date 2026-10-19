@@ -18,8 +18,8 @@ import sys
 import tempfile
 from pathlib import Path
 
-from .extract import EXTRACTORS, code, decisions, documents, imports, references, workflows
-from .fixtures import _plant, _plant_code, _plant_imports, _plant_plan, _plant_workflow
+from .extract import EXTRACTORS, code, decisions, documents, imports, references, schema, workflows
+from .fixtures import _plant, _plant_code, _plant_imports, _plant_migrations, _plant_plan, _plant_workflow
 from .model import (
     Confidence, Edge, EdgeError, EdgeKind, Minter, MintError, Node, NodeKind, SourceRef,
 )
@@ -356,6 +356,65 @@ def self_test() -> int:
             "`actions/checkout@v4` and the unminted `migrations/roles/` name no module",
         )
         expect(not harvest.unparsed, f"workflow fixture left unparsed items: {harvest.unparsed}")
+
+    # ---- 11d. Schema extractor: 10 nodes / 6 edges / no unparsed on the control; planted
+    #           disagreement and missing policy both fail closed.
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        _plant_migrations(root)
+        ctx = _ctx(root)
+        harvest = schema.extract(ctx)
+        expect(
+            harvest.scanned == 10 and len(harvest.nodes) == 10 and len(harvest.edges) == 6
+            and not harvest.unparsed,
+            f"schema control: scanned={harvest.scanned} nodes={len(harvest.nodes)} "
+            f"edges={len(harvest.edges)} unparsed={len(harvest.unparsed)}",
+        )
+        roles_node = next(n for n in harvest.nodes if n.id == "schema:roles")
+        expect(
+            roles_node.attrs.get("agent_migratable") == "false"
+            and roles_node.attrs.get("protected") == "true",
+            f"roles marker wrong: {roles_node.attrs}",
+        )
+
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        _plant_migrations(root, roles_protected=False)
+        ctx = _ctx(root)
+        harvest = schema.extract(ctx)
+        expect(
+            len(harvest.unparsed) == 1
+            and "migrations/roles/" in harvest.unparsed[0].reason
+            and "agent_migratable=false" in harvest.unparsed[0].reason
+            and 'policy/protected-paths.json' in harvest.unparsed[0].reason,
+            f"roles disagreement not reported: {harvest.unparsed}",
+        )
+        audit = _audit(schema.SPEC, harvest)
+        expect(any("UNPARSED schema" in a for a in audit), f"audit did not flag unparsed: {audit}")
+
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        _plant_migrations(root, policy=False)
+        ctx = _ctx(root)
+        harvest = schema.extract(ctx)
+        expect(
+            len(harvest.unparsed) == 1 and "is missing" in harvest.unparsed[0].reason,
+            f"missing policy not reported: {harvest.unparsed}",
+        )
+        audit = _audit(schema.SPEC, harvest)
+        expect(any("UNPARSED schema" in a for a in audit), f"audit did not flag unparsed: {audit}")
+
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        _plant_migrations(root, product_protected=True)
+        ctx = _ctx(root)
+        harvest = schema.extract(ctx)
+        expect(
+            len(harvest.unparsed) == 1
+            and "agent_migratable=true" in harvest.unparsed[0].reason
+            and "protects it via prefix" in harvest.unparsed[0].reason,
+            f"product disagreement not reported: {harvest.unparsed}",
+        )
 
     # ---- 12. Renderers are downstream of one extraction and cannot reach it.
     render_dir = Path(__file__).resolve().parent / "render"
