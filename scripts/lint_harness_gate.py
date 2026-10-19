@@ -27,7 +27,14 @@ Two checks, and one of them carries a recorded hole rather than pretending not t
       enforces nothing, so the hole is counted and printed rather than hidden, and what the
       check forbids is *drift* -- coverage going down, or the disk scan going quiet.
 
-      Raising the floor is the OBSERVER-1 deliverable (see ADR-0029). When the include is
+      Two bounds, and both are measurements rather than grades. `COVERAGE_FLOOR` forbids
+      coverage going down; `DEBT_CEILING` forbids the gap going up -- the count of files
+      linted by nothing may shrink and may not grow (ADR-0068, added after the window went
+      74 to 92 with no run failing). Neither auto-ratchets: both move by a recorded
+      one-line edit when coverage permanently improves.
+
+      Raising the floor is the OBSERVER-1 deliverable (see ADR-0029, amended by ADR-0068
+      (the debt ceiling)). When the include is
       widened, this constant is the one-line diff that makes the widening irreversible.
 
   D -- DETECTION. That a collected harness file with a violation in it comes back red, and
@@ -47,8 +54,13 @@ implies coverage -- visible, because the count is in the output of every CI run.
 detection check planting into a directory `ruff` never reaches, so it reports red for a
 reason unrelated to the plant: guarded by asserting the reported rule code *and* path.
 
+      The debt ceiling has its own vacuous shape -- a bound never exercised above it is
+      decoration -- which is why the self-test drives it at fixture values and fires it one
+      file above, rather than trusting the recorded 92.
+
 Inspector machinery under D20: agents may not edit this file without an authorizing ADR.
-This file is authorized by ADR-0029 and is an O9 review item.
+This file is authorized by ADR-0029, amended by ADR-0068 (the debt ceiling), and is an O9
+review item.
 """
 
 from __future__ import annotations
@@ -74,6 +86,14 @@ HARNESS: Final = REPO_ROOT / "harness"
  # and 2 in `harness/patch/`, which no module may touch. See _archive/CLASSIFICATION-M1.md.
 # This number may go up. It may not go down.
 COVERAGE_FLOOR: Final = 0
+
+# The debt window: `.py` files under `harness/` that `ruff` collects nothing from. 92 on
+# `main` @ `60ee4ed` (2026-10-18), grown from 74 on `fa62b4b` with no run failing -- issue
+# #87. This number may go down. It may not go up -- not by growing the tree, not by
+# narrowing the include. It is not auto-ratcheted: lowering it is a recorded one-line
+# edit, and when coverage permanently improves the floor rises in the same edit. Added by
+# ADR-0068.
+DEBT_CEILING: Final = 92
 
 # Planted into the scratch copy for check D. `F401` is chosen because it is unambiguous,
 # fixable, and in the committed `select` list, so a plant that fails to fire cannot be
@@ -106,7 +126,7 @@ class Coverage:
     violations: list[str]
 
 
-def check_coverage(*, base: Path | None = None, floor: int = COVERAGE_FLOOR) -> Coverage:
+def check_coverage(*, base: Path | None = None, floor: int = COVERAGE_FLOOR, ceiling: int = DEBT_CEILING) -> Coverage:
     """C. What `ruff` collects under `harness/`, against what is there."""
     root = base if base is not None else REPO_ROOT
     tree = root / "harness"
@@ -135,6 +155,13 @@ def check_coverage(*, base: Path | None = None, floor: int = COVERAGE_FLOOR) -> 
         violations.append(
             f"C ruff collected {len(collected)} files but only {len(on_disk)} .py files "
             f"exist under harness/. The two sides are counting different things."
+        )
+    debt = len(on_disk) - len(collected)
+    if debt > ceiling:
+        violations.append(
+            f"C debt window grew: {debt} of the {len(on_disk)} .py files under harness/ "
+            f"are linted by nothing, above the recorded ceiling of {ceiling}. "
+            f"The debt may shrink; it may not grow (ADR-0068)."
         )
     return Coverage(len(on_disk), len(collected), violations)
 
@@ -238,6 +265,23 @@ def self_test() -> int:
         if result.collected != 0:
             failures.append(f"C uncovered tree reported {result.collected} collected, expected 0")
 
+        # C ceiling: quiet at the recorded debt, and one file of growth fires alone,
+        # naming ADR-0068.
+        result = check_coverage(base=uncovered, floor=0, ceiling=3)
+        if result.violations:
+            failures.append(f"C ceiling fired at the recorded debt of 3: {result.violations}")
+        result = check_coverage(base=uncovered, floor=0, ceiling=2)
+        if len(result.violations) != 1 or "ADR-0068" not in result.violations[0]:
+            failures.append(
+                "C ceiling did not fire alone, naming ADR-0068, one file above the ceiling: "
+                f"{result.violations}"
+            )
+
+        # C ceiling control: a fully covered tree is quiet at a ceiling of 0.
+        result = check_coverage(base=covered, floor=3, ceiling=0)
+        if result.violations:
+            failures.append(f"C ceiling fired on a fully covered tree: {result.violations}")
+
         # C vacuity: an empty tree must not read as covered.
         empty = scratch / "empty"
         _fixture(empty, include_harness=True, files=0)
@@ -249,8 +293,9 @@ def self_test() -> int:
     return self_test_exit(
         failures,
         "OK self-test — C fires on a tree ruff collects nothing from, stays quiet on a "
-        "covered one, and reports zero on an empty one; D reports the planted "
-        f"{_PROBE_RULE} in a collected harness file and stays quiet without it\n",
+        "covered one, reports zero on an empty one, holds the debt ceiling quiet at the "
+        "recorded value, and fires alone naming ADR-0068 one file above it; D reports the "
+        f"planted {_PROBE_RULE} in a collected harness file and stays quiet without it\n",
     )
 
 
@@ -277,8 +322,9 @@ def main() -> int:
         return 1
     sys.stdout.write(
         f"OK harness lint coverage — ruff collects {result.collected} of {result.on_disk} "
-        f".py files under harness/ (floor {COVERAGE_FLOOR}). "
-        f"{result.on_disk - result.collected} files are linted by nothing; ADR-0029, OBSERVER-1.\n"
+        f".py files under harness/ (floor {COVERAGE_FLOOR}, debt ceiling {DEBT_CEILING}). "
+        f"{result.on_disk - result.collected} files are linted by nothing; ADR-0029, "
+        f"ADR-0068, OBSERVER-1.\n"
     )
     return 0
 
