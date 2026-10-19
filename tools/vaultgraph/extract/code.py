@@ -1,4 +1,4 @@
-"""The engineered half of the graph: packages, modules, schemas, and what D20 protects.
+"""The engineered half of the graph: packages, modules, and what D20 protects.
 
 Three things this extractor is careful about.
 
@@ -66,14 +66,6 @@ FLAT_SUFFIXES = {".py", ".mjs", ".sql", ".json", ".yaml"}
 #: by other extractors, and dropping the suffix would leave those edges pointing at nothing --
 #: which renders as silence rather than as an error.
 DATA_DIRS = ("bench/results/", "bench/tasks/")
-
-SCHEMA_DIRS = (
-    "migrations/product",
-    "migrations/harness/control",
-    "migrations/harness/evidence",
-    "migrations/harness/heldout",
-    "migrations/roles",
-)
 
 _WHEEL_PACKAGES = re.compile(r"^packages\s*=\s*\[(.+)\]")
 _DOCSTRING_TITLE = re.compile(r'^\s*(?:"""|\'\'\')(.+)')
@@ -255,42 +247,14 @@ def extract(ctx: Context) -> Harvest:
                 refs=(src,),
             ))
 
-    # ---- Schemas.
-    for rel_dir in SCHEMA_DIRS:
-        directory = root / rel_dir
-        if not directory.is_dir():
-            continue
-        harvest.scanned += 1
-        src = SourceRef(rel_dir, 1)
-        schema_id = ctx.minter.mint(NodeKind.SCHEMA, rel_dir.removeprefix("migrations/"), src)
-        files = sorted(
-            rel(p, root) for p in directory.rglob("*")
-            if p.is_file() and p.suffix in {".py", ".sql", ".yaml", ".mako"}
-        )
-        versions = [f for f in files if "/versions/" in f and f.endswith(".py")]
-        harvest.nodes.append(Node(
-            id=schema_id, kind=NodeKind.SCHEMA,
-            title=rel_dir.removeprefix("migrations/"), source=src, shape="migration-tree",
-            attrs={
-                "path": rel_dir,
-                "migrations": str(len(versions)),
-                "protected": str(is_protected(rel_dir + "/")).lower(),
-                # Only evidence and heldout are guarded by the additive-only lint.
-                "additive_only_lint": str(
-                    rel_dir in ("migrations/harness/evidence", "migrations/harness/heldout")
-                ).lower(),
-            },
-            tags=("protected",) if is_protected(rel_dir + "/") else (),
-            extractor=NAME,
-        ))
     return harvest
 
 
 SPEC = ExtractorSpec(
     name=NAME,
-    kinds=(NodeKind.MODULE, NodeKind.SCHEMA),
-    # 9 packages on disk + 1 declared-absent + 5 schema trees + the modules inside them.
-    min_nodes=90,
+    kinds=(NodeKind.MODULE,),
+    # 9 packages on disk + 1 declared-absent + the modules inside them.
+    min_nodes=85,
     max_nodes=None,
     min_edges=45,
     max_unparsed=0,

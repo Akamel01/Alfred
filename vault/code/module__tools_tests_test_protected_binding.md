@@ -31,5 +31,5 @@ generated: true
 
 ## Binds
 
-- **imports** → [[module__tools_vaultgraph_extract_code|The engineered half of the graph: packages, modules, schemas, and what D20 protects.]]
+- **imports** → [[module__tools_vaultgraph_extract_code|The engineered half of the graph: packages, modules, and what D20 protects.]]
 - [[module__tools_tests|tools.tests]] **contains** → this

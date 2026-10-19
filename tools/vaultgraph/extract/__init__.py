@@ -14,7 +14,7 @@ from typing import Final
 
 from ..protocol import ExtractorSpec, validate_registry
 from . import (adrs, amendments, charter, code, decisions, documents, effect, imports, layout,
-               policy, process, references, stages, workflows)
+               policy, process, references, schema, stages, workflows)
 
 EXTRACTORS: Final[tuple[ExtractorSpec, ...]] = (
     documents.SPEC,
@@ -33,6 +33,9 @@ EXTRACTORS: Final[tuple[ExtractorSpec, ...]] = (
     decisions.SPEC,
     amendments.SPEC,
     code.SPEC,
+    # After `code`: schema is the schema-level view of the same migration tree `code` views
+    # as modules; it mints its own SCHEMA ids and does not resolve through the minter.
+    schema.SPEC,
     # After `code`: it resolves every endpoint by asking the minter what exists, so the
     # modules have to have been minted before it runs.
     imports.SPEC,

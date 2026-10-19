@@ -25,7 +25,7 @@ import pytest
 ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(ROOT))
 
-from tools.vaultgraph.model import Minter, MintError, NodeKind, SourceRef  # noqa: E402
+from tools.vaultgraph.model import Confidence, EdgeKind, Minter, MintError, NodeKind, SourceRef  # noqa: E402
 from tools.vaultgraph.protocol import (  # noqa: E402
     ExtractorSpec,
     Harvest,
@@ -513,3 +513,66 @@ def test_policy_never_claims_a_live_value_for_unset_version_fields() -> None:
     )
     assert role_bindings.attrs["unset_field_count"] == "24"
     assert "unset" not in role_bindings.title.lower()
+
+
+def test_schema_mints_one_node_per_directory_and_revision():
+    result = run(ROOT)
+    schema_nodes = [n for n in result.nodes if n.kind is NodeKind.SCHEMA]
+    assert len(schema_nodes) == 10
+    dir_ids = {n.id for n in schema_nodes if n.shape == "migration-tree"}
+    rev_ids = {n.id for n in schema_nodes if n.shape == "migration-revision"}
+    assert dir_ids == {
+        "schema:product", "schema:harness/control", "schema:harness/evidence",
+        "schema:harness/heldout", "schema:roles",
+    }
+    assert rev_ids == {
+        "schema:product/0001_product_base",
+        "schema:harness/control/0001_control_base",
+        "schema:harness/control/0002_fingerprint_run_fields",
+        "schema:harness/evidence/0001_evidence_base",
+        "schema:harness/heldout/0001_heldout_base",
+    }
+    assert all(n.extractor == "schema" for n in schema_nodes)
+
+
+def test_schema_revision_chain_is_structural():
+    result = run(ROOT)
+    schema_edges = [e for e in result.edges if e.extractor == "schema"]
+    assert len(schema_edges) == 6
+    revises = [(e.src, e.dst) for e in schema_edges if e.kind is EdgeKind.REVISES]
+    assert revises == [
+        ("schema:harness/control/0002_fingerprint_run_fields",
+         "schema:harness/control/0001_control_base"),
+    ]
+    contains = [e for e in schema_edges if e.kind is EdgeKind.CONTAINS]
+    assert len(contains) == 5
+    assert all(e.confidence is Confidence.STRUCTURAL for e in schema_edges)
+    assert all(e.evidence for e in schema_edges)
+
+
+def test_schema_markers_agree_with_the_protected_path_policy():
+    policy = json.loads((ROOT / "policy" / "protected-paths.json").read_text())
+    prefixes = [e["path"] if isinstance(e, dict) else e for e in policy["prefixes"]]
+    result = run(ROOT)
+    for n in result.nodes:
+        if n.kind is not NodeKind.SCHEMA or n.shape != "migration-tree":
+            continue
+        rel_dir = n.attrs["path"]
+        target = rel_dir.rstrip("/") + "/"
+        match = next((p for p in prefixes if target == p or target.startswith(p)), None)
+        protected_by_policy = match is not None
+        # both directions
+        assert n.attrs["agent_migratable"] == str(not protected_by_policy).lower() or n.attrs["agent_migratable"] in ("true","false")
+        assert n.attrs["protected"] == str(protected_by_policy).lower()
+        assert n.attrs["agent_migratable"] == str(not protected_by_policy).lower()
+        declared_protected = n.attrs["agent_migratable"] == "false"
+        assert declared_protected == protected_by_policy
+
+
+def test_roles_is_declared_never_agent_migrated():
+    result = run(ROOT)
+    roles = next(n for n in result.nodes if n.id == "schema:roles")
+    assert roles.attrs["agent_migratable"] == "false"
+    assert roles.attrs["protected"] == "true"
+    assert roles.title == "roles"
+    assert roles.extractor == "schema"

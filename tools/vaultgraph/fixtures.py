@@ -8,6 +8,7 @@ plan writes them.
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 from .mirror import MIRROR_NAME
@@ -166,3 +167,46 @@ def _plant(root: Path) -> None:
     # therefore excluded — exactly as `lint_docs.main` excludes them.
     (docs / "README.md").write_text(DOC.format(title="Register"), encoding="utf-8")
     (docs / "READING-MAP.md").write_text(DOC.format(title="Reading map"), encoding="utf-8")
+
+
+MIGRATION_FIXTURE = '''"""fixture: {schema} revision."""
+from __future__ import annotations
+
+revision: str = "{revision}"
+down_revision: str | None = {down}
+SCHEMA = "{schema}"
+'''
+
+
+def _plant_migrations(root: Path, *, roles_protected: bool = True,
+                      policy: bool = True, product_protected: bool = False) -> None:
+    (root / "migrations" / "product" / "versions").mkdir(parents=True, exist_ok=True)
+    (root / "migrations" / "harness" / "control" / "versions").mkdir(parents=True, exist_ok=True)
+    (root / "migrations" / "harness" / "evidence" / "versions").mkdir(parents=True, exist_ok=True)
+    (root / "migrations" / "harness" / "heldout" / "versions").mkdir(parents=True, exist_ok=True)
+    (root / "migrations" / "roles").mkdir(parents=True, exist_ok=True)
+    # product
+    (root / "migrations" / "product" / "versions" / "0001_product_base.py").write_text(
+        MIGRATION_FIXTURE.format(schema="product", revision="0001_product_base", down="None"), encoding="utf-8")
+    # control
+    (root / "migrations" / "harness" / "control" / "versions" / "0001_control_base.py").write_text(
+        MIGRATION_FIXTURE.format(schema="control", revision="0001_control_base", down="None"), encoding="utf-8")
+    (root / "migrations" / "harness" / "control" / "versions" / "0002_fingerprint_run_fields.py").write_text(
+        MIGRATION_FIXTURE.format(schema="control", revision="0002_fingerprint_run_fields", down='"0001_control_base"'), encoding="utf-8")
+    # evidence
+    (root / "migrations" / "harness" / "evidence" / "versions" / "0001_evidence_base.py").write_text(
+        MIGRATION_FIXTURE.format(schema="evidence", revision="0001_evidence_base", down="None"), encoding="utf-8")
+    # heldout
+    (root / "migrations" / "harness" / "heldout" / "versions" / "0001_heldout_base.py").write_text(
+        MIGRATION_FIXTURE.format(schema="heldout", revision="0001_heldout_base", down="None"), encoding="utf-8")
+    # roles sql
+    (root / "migrations" / "roles" / "001_roles.sql").write_text("-- roles\n", encoding="utf-8")
+    if policy:
+        prefixes = ["migrations/harness/"]
+        if roles_protected:
+            prefixes.append("migrations/roles/")
+        if product_protected:
+            prefixes.append("migrations/product/")
+        (root / "policy").mkdir(parents=True, exist_ok=True)
+        (root / "policy" / "protected-paths.json").write_text(
+            json.dumps({"prefixes": prefixes}), encoding="utf-8")

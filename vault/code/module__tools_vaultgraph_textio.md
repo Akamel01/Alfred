@@ -35,7 +35,7 @@ generated: true
 - [[module__tools_vaultgraph_extract_adrs|Every ADR in the log, and the relations stated on each entry's metadata line.]] **imports** → this
 - [[module__tools_vaultgraph_extract_amendments|A1-A12, and the edges from an amendment to the decision it amends.]] **imports** → this
 - [[module__tools_vaultgraph_extract_charter|K1-K6 and R1-R12, which live in Tier 0 and not, as the handoff assumed, in the plan.]] **imports** → this
-- [[module__tools_vaultgraph_extract_code|The engineered half of the graph: packages, modules, schemas, and what D20 protects.]] **imports** → this
+- [[module__tools_vaultgraph_extract_code|The engineered half of the graph: packages, modules, and what D20 protects.]] **imports** → this
 - [[module__tools_vaultgraph_extract_decisions|D1-D57, which the plan encodes four different ways, two of them traps.]] **imports** → this
 - [[module__tools_vaultgraph_extract_documents|The 63 documents under `docs/tier0`…`tier7`, and the eight tiers that hold them.]] **imports** → this
 - [[module__tools_vaultgraph_extract_imports|What depends on what: module -> module edges, read from import statements.]] **imports** → this

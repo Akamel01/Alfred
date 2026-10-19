@@ -32,11 +32,12 @@ generated: true
 ## Binds
 
 - **imports** → [[module__tools_vaultgraph|tools.vaultgraph]]
-- **imports** → [[module__tools_vaultgraph_extract_code|The engineered half of the graph: packages, modules, schemas, and what D20 protects.]]
+- **imports** → [[module__tools_vaultgraph_extract_code|The engineered half of the graph: packages, modules, and what D20 protects.]]
 - **imports** → [[module__tools_vaultgraph_extract_decisions|D1-D57, which the plan encodes four different ways, two of them traps.]]
 - **imports** → [[module__tools_vaultgraph_extract_documents|The 63 documents under `docs/tier0`…`tier7`, and the eight tiers that hold them.]]
 - **imports** → [[module__tools_vaultgraph_extract_imports|What depends on what: module -> module edges, read from import statements.]]
 - **imports** → [[module__tools_vaultgraph_extract_references|Where decisions are enforced in code, read out of comments and docstrings.]]
+- **imports** → [[module__tools_vaultgraph_extract_schema|SCHEMA nodes for migrations/: one per declared schema directory, one per Alembic revision.]]
 - **imports** → [[module__tools_vaultgraph_extract_workflows|The gates: five jobs and every step they run, read out of `.github/workflows/gates.yml`.]]
 - **imports** → [[module__tools_vaultgraph_fixtures|Planted fixture trees, kept apart from the assertions that use them.]]
 - **imports** → [[module__tools_vaultgraph_model|The graph's type vocabulary: what a node is, what an edge is, and how ids are minted.]]

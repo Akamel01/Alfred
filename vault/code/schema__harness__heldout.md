@@ -3,9 +3,11 @@ kind: schema
 id: "schema:harness/heldout"
 title: "harness/heldout"
 shape: "migration-tree"
-protected: "false"
+protected: "true"
+agent_migratable: "false"
 source: "migrations/harness/heldout:1"
-extractor: "code"
+extractor: "schema"
+tags: [protected]
 aliases:
   - "harness/heldout"
 generated: true
@@ -25,3 +27,7 @@ generated: true
 | `additive_only_lint` | true |
 | `migrations` | 1 |
 | `path` | migrations/harness/heldout |
+
+## Binds
+
+- **contains** → [[schema__harness__heldout__0001_heldout_base|0001_heldout_base]]

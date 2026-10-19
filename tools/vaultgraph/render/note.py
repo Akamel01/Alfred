@@ -32,6 +32,7 @@ BANNER = (
 FRONTMATTER_ATTRS = (
     "status", "owner", "enforcement", "tier", "phase", "due", "number", "present",
     "protected", "lint_gated", "written", "review_after", "job", "date",
+    "agent_migratable",
 )
 
 _ESCAPE = str.maketrans({"[": "(", "]": ")", "|": "\\|"})

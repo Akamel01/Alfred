@@ -9,7 +9,7 @@ generated: true
 > [!warning] Generated — do not edit
 > This note is emitted by `tools/gen_vault.py` from the repository. Edit the source, then regenerate. `gen_vault.py --check` fails on a hand edit.
 
-630 nodes, 1184 edges, generated from the repository. Every note is derived; nothing is authored here.
+636 nodes, 1195 edges, generated from the repository. Every note is derived; nothing is authored here.
 
 ## Everything, by kind
 
