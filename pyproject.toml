@@ -101,7 +101,8 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["S101"]          # assert is the point of a test
-"harness/*/test_*.py" = ["S101"]  # assert is the point of a test, same rationale as tests/*
+"harness/patch/test_*.py" = ["S101"]     # assert is the point of a test, same rationale as tests/*
+"harness/selftest/test_*.py" = ["S101"]  # collected by the ADR-0071 slice only; no broader glob
 "tests/parser/test_grants_declared.py" = ["S101", "E501"]  # yaml fixtures exceed line length
 "migrations/*" = ["ANN", "I"] # alembic templates own their own shape
 

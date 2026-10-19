@@ -40,7 +40,7 @@ generated: true
 
 ## Enforced by (code)
 
-- **enforced_by** → [[module___github_workflows_gates_yml|.github/workflows/gates.yml]] — `not-yet-injected` rows above: raising it is OBSERVER-1 under ADR-0029, and until it
+- **enforced_by** → [[module___github_workflows_gates_yml|.github/workflows/gates.yml]] — above: the rest of OBSERVER-1 under ADR-0029 is still open, and what this step
 - **enforced_by** → [[module__scripts_lint_harness_gate|How much of `harness/` the lint gate actually collects, and whether it can go red.]] — """How much of `harness/` the lint gate actually collects, and whether it can go red.
 
 `harness/` is the tree everything

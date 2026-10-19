@@ -37,9 +37,10 @@ generated: true
 - [[adr__ADR-0007|Executor-premise assertions may pass vacuously, and that is a third outcome]] **enforced_by** → this — from a clean tree. That is the ADR-0007 vacuity class in the tooling, and it is how
 - [[adr__ADR-0012|The verdict boundary is a lint, and the lint fails when it has nothing to check]] **enforced_by** → this — would pass. That is the failure this project has paid for four times (ADR-0012,
 - [[adr__ADR-0013|Containment probes, and the control that stops each one reading green]] **enforced_by** → this — ADR-0013), arriving through a new door.
-- [[adr__ADR-0029|The tree that verifies every other tree is verified by nothing]] **enforced_by** → this — `not-yet-injected` rows above: raising it is OBSERVER-1 under ADR-0029, and until it
+- [[adr__ADR-0029|The tree that verifies every other tree is verified by nothing]] **enforced_by** → this — above: the rest of OBSERVER-1 under ADR-0029 is still open, and what this step
 - [[adr__ADR-0065|The bench append-only guarantee gets the lint ADR-0038 said it already had, and the shallo]] **enforced_by** → this — the vacuous pass those checks exist to prevent (ADR-0065).
 - [[adr__ADR-0065|The bench append-only guarantee gets the lint ADR-0038 said it already had, and the shallo]] **enforced_by** → this — ADR-0065. That step did not filter by status, so it failed on the additions it
+- [[adr__ADR-0071|OBSERVER-1's first slice collects `harness/patch/` and `harness/selftest/` under ruff, and]] **enforced_by** → this — The coverage floor is 12 today and the run prints "12 of 92": the ADR-0071 first
 - [[decision__D16|Verdict fields are owned by deterministic nodes]] **enforced_by** → this — D16/D39. LangGraph raises only on *concurrent* unreducered writes, so a
 - [[decision__D20|Agents may improve the factory, never the inspector]] **enforced_by** → this — machinery (D20): agents may not edit it.
 - [[decision__D39|structural enforcement of D16/D20 (from gstack, the one idea that stands alone)]] **enforced_by** → this — D16/D39. LangGraph raises only on *concurrent* unreducered writes, so a

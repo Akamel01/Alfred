@@ -22,7 +22,7 @@ generated: true
 
 ## Statement
 
-**Date:** 2026-10-19 · **Status:** Accepted · **Supersedes:** none · **Amends:** `pyproject.toml` (`[tool.ruff].include` and the scoped `S101` per-file ignore), `scripts/lint_harness_gate.py` (`COVERAGE_FLOOR` 0 to 12, `DEBT_CEILING` 92 to 80, and the prose that recorded the zero) · **See also:** ADR-0029 (the measurement this slice starts to pay down), ADR-0068 (the ceiling and the one-edit rule), ADR-0007 (the vacuity class), #97 · **D28 waiver:** no — `pyproject.toml` and `scripts/` are protected code, and the ADR log is append-only by construction; no frozen `ci-gate` register document is amended
+**Date:** 2026-10-19 · **Status:** Accepted · **Supersedes:** none · **Amends:** `pyproject.toml` (`[tool.ruff].include` and the two literal `S101` per-file patterns), `scripts/lint_harness_gate.py` (`COVERAGE_FLOOR` 0 to 12, `DEBT_CEILING` 92 to 80, and the prose that recorded the zero), `.github/workflows/gates.yml` (the coverage-step comment that still described the zero, no behaviour change) · **See also:** ADR-0029 (the measurement this slice starts to pay down), ADR-0068 (the ceiling and the one-edit rule), ADR-0007 (the vacuity class), #97 · **D28 waiver:** no — `pyproject.toml`, `scripts/` and the `.github/` workflow comment are protected code, and the ADR log is append-only by construction; the workflow carries no status header, so no frozen `ci-gate` register document is amended
 
 ## Fields
 
@@ -38,6 +38,7 @@ generated: true
 
 ## Enforced by (code)
 
+- **enforced_by** → [[module___github_workflows_gates_yml|.github/workflows/gates.yml]] — The coverage floor is 12 today and the run prints "12 of 92": the ADR-0071 first
 - **enforced_by** → [[module__scripts_lint_harness_gate|How much of `harness/` the lint gate actually collects, and whether it can go red.]] — """How much of `harness/` the lint gate actually collects, and whether it can go red.
 
 `harness/` is the tree everything
