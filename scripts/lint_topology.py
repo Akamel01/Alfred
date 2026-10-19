@@ -366,7 +366,9 @@ def check_bindings(base: Path = REPO_ROOT) -> Findings:
                 findings.violations.append(
                     "TOP014 requalification.status is 'indeterminate' with no reason"
                 )
-        if any(b.get(f, "unset") == "unset" for b in bindings for f in d19_fields) and status == "pass":
+        if status == "pass" and any(
+            b.get(f, "unset") == "unset" for b in bindings for f in d19_fields
+        ):
             findings.violations.append(
                 "TOP014 requalification reports 'pass' while D19 version fields are 'unset'"
             )

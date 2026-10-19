@@ -7634,8 +7634,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 371,
-        "line": 371,
+        "end_line": 373,
+        "line": 373,
         "path": "scripts/lint_topology.py"
       },
       "src": "decision:D19"
@@ -7647,8 +7647,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 442,
-        "line": 442,
+        "end_line": 444,
+        "line": 444,
         "path": "scripts/lint_topology.py"
       },
       "src": "decision:D19"
@@ -7660,8 +7660,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 764,
-        "line": 764,
+        "end_line": 766,
+        "line": 766,
         "path": "scripts/lint_topology.py"
       },
       "src": "decision:D19"
