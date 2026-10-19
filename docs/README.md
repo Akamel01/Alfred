@@ -6,7 +6,7 @@ Documents are classified by what stops them from lying, never by topic. See
 [Documentation Standard](tier7/documentation-standard.md) for the header contract,
 the stub policy, and the authorship boundary.
 
-**78 documents** · 47 written, 31 stubs · 37 executable or generated (47%)
+**79 documents** · 48 written, 31 stubs · 38 executable or generated (48%)
 
 ## Tier 0 — Constitution
 
@@ -125,3 +125,4 @@ the stub policy, and the authorship boundary.
 | [Ticket #51 — the ECC2 reuse boundary](tier7/ticket-51-ecc2-boundary-decision.md) | provisional | human | `none` | full |
 | [Ticket #52 — Mission Control's read model](tier7/ticket-52-read-model-decision.md) | provisional | human | `none` | full |
 | [Ticket #67 — the live multi-agent view](tier7/ticket-67-live-view-decision.md) | provisional | human | `none` | full |
+| [Ticket #70 — Measurement design for the trivial class](tier7/ticket-70-measurement-design.md) | directional | executable | `review-cadence` | full |

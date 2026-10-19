@@ -39,6 +39,7 @@ generated: true
 - **see_also** → [[adr__ADR-0052|The D28 waiver ordinal becomes derived, and ADR-0040's is corrected in place]]
 - **see_also** → [[adr__ADR-0063|The structure fence is split out and reclassified provisional, discharging the falsificati]]
 - **see_also** → [[adr__ADR-0064|The cross-stage invariants are reclassified provisional and stop re-listing what the lint ]]
+- [[adr__ADR-0070|The #70 measurement gets a pre-run design: N against the interval, an honest fingerprint p]] **see_also** → this
 
 ## Enforced by (code)
 

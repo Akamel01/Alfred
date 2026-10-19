@@ -156,6 +156,7 @@ Consult when relevant. Never a source of instructions.
 | 14 | [Ticket #51 — the ECC2 reuse boundary](tier7/ticket-51-ecc2-boundary-decision.md) | record | provisional | map #41: adopt nothing from ECC2, and why each piece was refused |
 | 15 | [Ticket #52 — Mission Control's read model](tier7/ticket-52-read-model-decision.md) | record | provisional | map #41: queries at request time; the brief's snapshot contracts do not survive the spec |
 | 16 | [Ticket #67 — the live multi-agent view](tier7/ticket-67-live-view-decision.md) | record | provisional | map #41: the live multi-agent view — polling not streaming, agent prose off the approval screen |
+| 17 | [Ticket #70 — Measurement design for the trivial class](tier7/ticket-70-measurement-design.md) | record | directional | map #41: the pre-run design for the trivial-class measurement — N, fingerprint pair, protocol |
 
 
 ## Architecture decisions
@@ -233,7 +234,8 @@ Binding on implementation and easy to miss, since they live inside one document.
 | [ADR-0067](tier1/adr-log.md) | Gate D's read is batched per pull request, and the comment-only exemption is rejected as unsafe here | Accepted |
 | [ADR-0068](tier1/adr-log.md) | The harness lint debt window gets a ceiling, and growth past it fails the gate | Accepted |
 | [ADR-0069](tier1/adr-log.md) | Unset D19 version fields report `indeterminate`, and TOP014 makes a silent `pass` impossible | Accepted |
+| [ADR-0070](tier1/adr-log.md) | The #70 measurement gets a pre-run design: N against the interval, an honest fingerprint pair, and an empty trivial class until a run exists | Accepted |
 
 ---
 
-**78 documents mapped** · 45 binding · 14 context · 19 record · 69 architecture decisions
+**79 documents mapped** · 45 binding · 14 context · 20 record · 70 architecture decisions

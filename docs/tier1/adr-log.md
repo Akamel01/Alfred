@@ -7096,3 +7096,22 @@ This decision is wrong if (a) a binding edit merges with the fields still `"unse
 dispatcher exists to have measured it (a placeholder was invented to satisfy the schema — the exact
 failure #86 prevents); or (c) TOP014 fires on none of its planted violations while the self-test
 reads green (the lint is vacuous).
+
+---
+
+## ADR-0070 — The #70 measurement gets a pre-run design: N against the interval, an honest fingerprint pair, and an empty trivial class until a run exists
+
+**Date:** 2026-10-18 · **Status:** Accepted · **Supersedes:** none · **Amends:** `scripts/gen_doc_stubs.py` (NOT_GENERATED bookkeeping) and `scripts/gen_reading_map.py` (a reading position) · **See also:** ADR-0054 (check A, dormant behind the same missing dispatcher), ADR-0065 (the vacuity class this design keeps out of its own numbers), ADR-0066 (why appending here is not a waiver), #70, #86 (the 24 unset version fields), `docs/tier7/ticket-46-model-routing-decision.md` (the policy this measurement would inform), `docs/tier0/charter-and-non-goals.md` K3, `docs/tier2/execution-order.md:424` · **D28 waiver:** no — `scripts/` and `tests/` are code, the ADR log is append-only by construction, and no register document carrying a status header is amended
+
+1. **The pre-run design is adopted as the measurable artifact**: `docs/tier7/ticket-70-measurement-design.md`; it specifies, it reports nothing.
+2. **Fingerprint-pair semantics corrected** (grilling Q3): the ticket comment's "differ in exactly `model_id` and `model_version`" is false for a cross-provider pair; the five D19 fields are shared verbatim as a field list, and the served group differs in `provider`, `model_id`, `api_version`, plus `routing_key` if the lookup differs. Recorded so the correction is not re-derived.
+3. **N rule** (grilling Q2, corrected arithmetic): N_entry = 187 rule-matched (smallest n with exact binomial power ≥ 0.80 under K3's Wilson-LB rule at p = 0.60; k* = 107, power 0.802930; sensitivity 82 at 0.65 and 43 at 0.70); normal-approximation cross-check 153/67/37 (the plan's "n≈152" reproduces there; the rule's power at n = 153 is 0.708241); N_compare = 388 per arm (two-proportion adjudication, same α and power); the grilling's two-proportion 152 is not reproducible (773.8 as written, 386.9 de-doubled); interval-reporting alternative 189/193 per arm at half-width 0.10; K3's own count 20 stays K3's evaluation convention. Both rates read as Wilson 95% intervals; indeterminate excluded and reported as harness health.
+4. **Capability**: `capability:code-writer@1` only; every other capability hits the forbidden list for the cheap model (`policy/model-routing.json:12-24`).
+5. **The trivial class stays empty**: `trivial_class.members` stays `[]`; the entry threshold remains owned by the `autonomy-graduation-policy.md` stub; no number is written into the stub; no capability carries `trivial: true`.
+6. **Runs remain blocked**: `docs/tier2/execution-order.md:424` forbids orchestration until K3 clears; no dispatcher exists; this ADR commissions nothing and executes nothing.
+7. **Closure claim** (grilling Q1): the PR implements the pre-run design only; it carries no issue-closing reference for #70 and checks none of the ticket's five boxes.
+8. **Reproducibility**: `tests/test_ticket_70_n_sizing.py` recomputes and asserts every stated number, so the design's numbers cannot rot in prose.
+
+**Falsification trigger.** This decision is wrong if a capability enters the trivial class without a run matching the pair in the design; or a rate measured under this protocol is quoted as a point estimate; or a numeric threshold appears in `docs/tier3/autonomy-graduation-policy.md` before Phase 4 can supply its evidence.
+
+D28 waiver: **no**. Checked: the append amends no frozen `ci-gate` register document — the ADR log itself is `frozen` with `enforcement: none` and append-only by construction, which is ADR-0066's recorded reasoning verbatim; the two `scripts/` edits are code (ADR-0066's shape: "`scripts/` is code"); the new doc and the test are new files. The waiver count stays at 8.
