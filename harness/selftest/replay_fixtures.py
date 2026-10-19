@@ -127,6 +127,11 @@ class SyntheticMetric:
             return MetricSeries.all_undefined(t, Reason.NO_COUNTERPART)
         first, second = tracks[0], tracks[1]
         separation = float(
-            np.min(np.hypot(first.x.astype(np.float64) - second.x, first.y.astype(np.float64) - second.y))
+            np.min(
+                np.hypot(
+                    first.x.astype(np.float64) - second.x,
+                    first.y.astype(np.float64) - second.y,
+                )
+            )
         )
         return MetricSeries.all_defined(t, np.array([separation], dtype=np.float64))

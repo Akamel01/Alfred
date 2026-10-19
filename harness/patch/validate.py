@@ -241,7 +241,7 @@ def _unquote(raw: str) -> str:
 def _strip_prefix(token: str) -> str | None:
     """`a/path` and `b/path` become `path`. `/dev/null` becomes None."""
     token = _unquote(token)
-    if token == "/dev/null":
+    if token == "/dev/null":  # noqa: S105 - diff path token, not a credential
         return None
     if token.startswith(("a/", "b/")):
         return token[2:]

@@ -53,16 +53,19 @@ src = ["src", "tests"]
 # measurement code with different conventions, and linting them from here would make a
 # product gate fail for reasons no product change can fix.
 #
-# `harness/` is a different case and this comment used to state it wrongly. It said the
-# tree is protected and "carries its own gates". It is protected; it carries no lint gate
-# and no type gate at all, which is what ADR-0029 measured: 866 ruff violations, 236 after
-# the S101 ignore `tests/*` already gets, and 311 pyright errors, none of them collected by
-# anything. D20 forbids agents *editing* the inspector. Checking is a read and editing is a
-# write, so the exclusion above was never D20's decision to make and must not borrow its
-# authority. It stands for one reason only, stated plainly: nobody has yet decided how much
-# of that debt to pay (OBSERVER-1, ADR-0029). `scripts/lint_harness_gate.py` counts the
-# uncollected files on every CI run so the number is read rather than assumed.
-include = ["src/**/*.py", "tests/**/*.py", "migrations/**/*.py", "pyproject.toml"]
+# `harness/` is partly collected now: OBSERVER-1's first slice brings `harness/patch` and
+# `harness/selftest` under ruff via the widened include below (ADR-0071). The rest of the
+# tree remains uncollected, counted by `scripts/lint_harness_gate.py` (debt ceiling 80). D20
+# forbids agents *editing* the inspector; checking is a read, so the exclusion was never
+# D20's decision to make and must not borrow its authority.
+include = [
+    "src/**/*.py",
+    "tests/**/*.py",
+    "migrations/**/*.py",
+    "pyproject.toml",
+    "harness/patch/**/*.py",
+    "harness/selftest/**/*.py",
+]
 
 [tool.ruff.lint]
 select = [
@@ -98,6 +101,7 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["S101"]          # assert is the point of a test
+"harness/*/test_*.py" = ["S101"]  # assert is the point of a test, same rationale as tests/*
 "tests/parser/test_grants_declared.py" = ["S101", "E501"]  # yaml fixtures exceed line length
 "migrations/*" = ["ANN", "I"] # alembic templates own their own shape
 

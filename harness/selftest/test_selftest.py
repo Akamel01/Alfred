@@ -9,7 +9,6 @@ more than once.
 from __future__ import annotations
 
 import pytest
-
 from harness.selftest.noise import measure_noise_floor
 from harness.selftest.suites import (
     TOLERANCE,
@@ -20,7 +19,6 @@ from harness.selftest.suites import (
     run_ladder,
     rungs_for,
 )
-
 
 # ------------------------------------------------------------------- the noise floor
 

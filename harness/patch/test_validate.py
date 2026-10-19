@@ -8,7 +8,6 @@ through is a gate that gets removed.
 from __future__ import annotations
 
 import pytest
-
 from harness.patch.validate import (
     INSTRUCTION_FILE_NAMES,
     PatchRefused,

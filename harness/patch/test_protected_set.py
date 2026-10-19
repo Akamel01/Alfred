@@ -15,7 +15,6 @@ import re
 from pathlib import Path
 
 import pytest
-
 from harness.patch.validate import (
     ProtectedSetError,
     load_protected_set,
@@ -113,7 +112,10 @@ def test_an_empty_set_is_refused(tmp_path: Path) -> None:
         {"version": 1, "prefixes": [{"path": "../harness/", "contains": "x"}]},  # traversal
         {"version": 1, "prefixes": [{"path": "harness/"}]},  # no rationale
         {"version": 1, "prefixes": [{"path": "harness/", "contains": 3}]},  # not text
-        {"version": 1, "prefixes": [{"path": "a/", "contains": "x"}, {"path": "a/", "contains": "y"}]},  # twice
+        {
+            "version": 1,
+            "prefixes": [{"path": "a/", "contains": "x"}, {"path": "a/", "contains": "y"}],
+        },  # twice
         {"version": 1, "files": [{"path": "a/", "contains": "x"}]},  # a directory, not a file
         {"version": "1", "prefixes": [{"path": "a/", "contains": "x"}]},  # a string version
         {"prefixes": [{"path": "a/", "contains": "x"}]},  # no version

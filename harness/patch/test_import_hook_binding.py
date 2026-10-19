@@ -21,10 +21,14 @@ from __future__ import annotations
 
 from harness.criterion.materialize import (
     IMPORT_HOOK_NAMES as MATERIALIZE_NAMES,
+)
+from harness.criterion.materialize import (
     IMPORT_HOOK_SUFFIXES as MATERIALIZE_SUFFIXES,
 )
 from harness.patch.validate import (
     IMPORT_HOOK_NAMES as VALIDATE_NAMES,
+)
+from harness.patch.validate import (
     IMPORT_HOOK_SUFFIXES as VALIDATE_SUFFIXES,
 )
 
