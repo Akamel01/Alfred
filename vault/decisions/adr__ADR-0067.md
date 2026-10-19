@@ -34,3 +34,4 @@ generated: true
 
 - **see_also** → [[adr__ADR-0028|The review ADR-0027 said was owed has been done]]
 - **see_also** → [[adr__ADR-0035|The protected set's single home names its fourth shape as a projection, not a second autho]]
+- [[adr__ADR-0069|Unset D19 version fields report `indeterminate`, and TOP014 makes a silent `pass` impossib]] **see_also** → this

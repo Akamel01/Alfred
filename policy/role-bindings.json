@@ -9,6 +9,11 @@
     "bindable is stated explicitly rather than derived from category. Deriving it breaks silently when a non-agent kind is added outside the operator category; the lint cross-checks the two and fails on disagreement.",
     "wayfinder moved from unbound to agent on 2026-09-03: the ~/.claude wayfinder skill carried disable-model-invocation: true, so no agent could run it and 'unbound' was a statement of fact. The operator removed that flag, so the fact changed and the binding follows it."
   ],
+  "requalification": {
+    "status": "indeterminate",
+    "reason": "All 24 D19 version fields are the placeholder string unset: no dispatcher exists to capture a value from, so a requalification triggered by a binding edit reads nothing. Report indeterminate (D57), never pass. Enforced by TOP014 in scripts/lint_topology.py.",
+    "ticket": 86
+  },
   "bindable_values": {
     "agent": "dispatched to a runtime agent; carries a full binding record",
     "unbound": "a legitimate palette kind that no lifecycle phase dispatches today",

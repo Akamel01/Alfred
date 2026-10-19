@@ -33,3 +33,4 @@ generated: true
 ## Binds
 
 - **see_also** → [[adr__ADR-0007|Executor-premise assertions may pass vacuously, and that is a third outcome]]
+- [[adr__ADR-0069|Unset D19 version fields report `indeterminate`, and TOP014 makes a silent `pass` impossib]] **see_also** → this
