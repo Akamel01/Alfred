@@ -7115,3 +7115,119 @@ reads green (the lint is vacuous).
 **Falsification trigger.** This decision is wrong if a capability enters the trivial class without a run matching the pair in the design; or a rate measured under this protocol is quoted as a point estimate; or a numeric threshold appears in `docs/tier3/autonomy-graduation-policy.md` before Phase 4 can supply its evidence.
 
 D28 waiver: **no**. Checked: the append amends no frozen `ci-gate` register document — the ADR log itself is `frozen` with `enforcement: none` and append-only by construction, which is ADR-0066's recorded reasoning verbatim; the two `scripts/` edits are code (ADR-0066's shape: "`scripts/` is code"); the new doc and the test are new files. The waiver count stays at 8.
+
+---
+
+## ADR-0071 — A conditional roster member: `applies_when`, the named `pathlib-match` dialect, and TOP015 against the vacuous selector
+
+**Date:** 2026-10-21 · **Status:** Accepted · **Supersedes:** none · **Amends:** `policy/role-bindings.json` (the `reviewer` roster), `scripts/lint_topology.py` (TOP015), `docs/tier3/agent-definition-standard.md` (the `applies_when` field) · **See also:** ADR-0007 (the vacuity class), ADR-0056 (a binding edit is a requalification event), ADR-0069 (the unset D19 fields), ADR-0067 (the batched Gate D read), #43 (D6, D7), #85 · **D28 waiver:** no
+
+### Context
+
+Ticket #85 asks the `reviewer` capability's roster to grow a language reviewer chosen by the
+paths a change touches. A roster entry that says "only when the change touches Python"
+needs a selector, and a selector needs a glob dialect, because the same pattern string means
+different things under different glob implementations. This repository is where that
+difference bites: it has 215 tracked `.py` files and **0** of them at the top level. Under
+shell-glob semantics, where `*` does not cross `/`, a `*.py` selector matches **0** of them.
+The selector would never fire, and a roster whose language reviewer never runs looks exactly
+like a roster that has none.
+
+#43's D6 requires the lint extension to land in the same commit as the binding edit: the
+file must not ship unenforced. `policy/` and `scripts/` are protected
+(`policy/protected-paths.json`), so the change is a Gate D change — line-by-line review plus
+a mandatory ADR — and this record is the second half of that.
+
+### Decision
+
+1. The selector shape is `{ "paths_match": [...], "glob": "<dialect>" }`, and it lives on the
+   roster entry, never on the binding record. One binding may carry several members with
+   different selectors; a selector on the record would apply to all of them at once. The
+   selector's input is the task record's `writable_paths`
+   (`docs/tier2/task-specification-standard.md`) — the path list the harness mounts, fixed at
+   dispatch and never chosen by the agent mid-run. The caller never picks the reviewer: the
+   selector is keyed off the task's paths, not off a caller-supplied language tag.
+2. `glob` is **required** and names the dialect. There is no default: an unnamed dialect is
+   the ambiguity the field exists to remove, and a selector whose meaning depends on which
+   glob implementation the reader happened to have is not a specification.
+3. The one dialect is `pathlib-match`, which is `pathlib.PurePath.match()` semantics.
+   Measured: `*.py` matches `src/app/x.py` (matching is anchored on the trailing
+   components), `**/*.py` matches `src/app/x.py` but not a top-level `x.py`, `src/*.py` does
+   not match `src/app/x.py` (`*` does not cross `/`), `migrations/**/*.sql` matches
+   `migrations/roles/001_roles.sql`, and `*.sql` matches it too. The dialect is named
+   because under shell-glob semantics `*.py` would match 0 of the 215 nested `.py` files and
+   the selector would silently never fire.
+4. Selection is **additive**. The unconditional floor of the `reviewer` roster
+   (`code-reviewer` and `security-reviewer`) stays; a matching language reviewer is added to
+   it, never substituted for it. santa-method's "neither may be the agent that ran Execute" is
+   an independence guarantee, and swapping a generalist out to make room for a specialist
+   narrows coverage without buying independence.
+5. A conditional member that is **not** selected must be recorded, never silently skipped, so
+   an audit can see that the reviewer did not run and why. **The recording mechanism is owed
+   by a future dispatcher and does not exist today**: nothing dispatches a binding in this
+   repository — the only readers of `policy/role-bindings.json` are
+   `scripts/lint_topology.py`, `scripts/lint_model_routing.py` and the vault extractor
+   (`tools/vaultgraph/extract/policy.py`), and `docs/tier2/review-protocol.md` is a stub.
+   This record specifies the obligation; it does not discharge it.
+6. TOP015 in `scripts/lint_topology.py::check_bindings` fails a conditional roster member
+   whose `applies_when` is not an object, whose `glob` names no known dialect, whose
+   `paths_match` is not a non-empty list of non-empty strings, or whose any pattern matches
+   no file in the repository tree. A selector that scans zero files, fires nothing and
+   reports success is the D57/ADR-0007 vacuity class; the lint turns the vacuous selector
+   into a red build instead of a silent no-op. TOP015 also fails an `applies_when` found on
+   a binding record rather than on a roster entry: a selector in the wrong place never fires,
+   which is the same vacuity one level up.
+7. `database-reviewer` is **not** bound in this commit. The only `.sql` files in the
+   repository are `migrations/roles/001_roles.sql` and `migrations/roles/002_grants.sql`,
+   and `migrations/roles/` is a human-owned protected prefix agents may never write
+   (`policy/protected-paths.json`). Binding a reviewer to files no agent may write is not
+   obviously wrong, but it is not what the ticket asked for, and the operator ruled on it
+   (ticket #85, 2026-10-21): it stays unbound, with the trigger recorded — no agent-writable
+   SQL in the tree, so bind it with `migrations/product/**/*.sql` in the pull request that
+   adds the first product migration. The schema has no per-entry `unbound_reason` (that
+   field belongs to a binding whose roster is empty, and this roster is not), so the
+   trigger is carried by the binding's own notes and by this record.
+8. `typescript-reviewer` is not bound either, and not as a judgement call: the repository has
+   0 `.ts` files, so a TypeScript selector would match nothing and TOP015 would fail it. The
+   lint makes the omission mechanical. The same holds for `go-reviewer` (0 `.go` files).
+9. Rejected alternatives with one-line reasons: a language tag on the task record instead of
+   a path glob — the caller must not pick who reviews; a per-entry `glob` default — an
+   unnamed default is the ambiguity the field exists to remove; a separate lint file --
+   duplicates the palette/bindings loaders (#43 D6); requiring the agent name to exist in a
+   catalogue — no catalogue exists in this repository, ECC's 68 definitions are not installed
+   here; matching the selector against `git ls-files` rather than the tree — the lint must
+   not depend on a git checkout being present, and the tree is what a change touches.
+
+### Consequences
+
+`python-reviewer` is bound to the `reviewer` roster with `paths_match: ["*.py"]` under
+`pathlib-match`; the pattern matches all 215 tracked `.py` files, so TOP015 is satisfied and
+the selector fires on every Python change. The binding edit is a requalification event
+(ADR-0056, #43 D7), and with no dispatcher there is nothing to read, so the file-level
+`requalification` status stays `indeterminate` with its existing reason and no D19 version
+field is filled with a placeholder (ADR-0069 forbids it).
+
+**A Gate D read is owed and is not discharged by this ADR.** `policy/` and `scripts/` are
+protected; `docs/tier4/protected-paths-policy.md:100` permits an agent-drafted patch under
+line-by-line human review *with* a mandatory ADR. This record is the second half. The first
+half — an operator read of the `policy/role-bindings.json` diff and the
+`scripts/lint_topology.py` diff — **has not happened**, and is recorded here as owed rather
+than assumed. Per ADR-0067 the read is a single union-diff read across the branch:
+
+```bash
+git diff origin/main...HEAD -- \
+  $(python3 -c "import json;d=json.load(open('policy/protected-paths.json'));print(' '.join(e['path'] for e in d['prefixes']+d['files']))")
+```
+
+`docs/tier3/agent-definition-standard.md` is `status: provisional`, and `policy/`/`scripts/`
+are protected *code*, not status-header documents, so no frozen + `ci-gate` document is
+amended. D28 waiver: **no**. The waiver count stays at 8.
+
+### Falsification trigger
+
+This decision is wrong if (a) a `paths_match` glob that matches no file in the tree ships
+because TOP015 is not wired into CI; or (b) TOP015 fires on none of its planted violations
+while the self-test reads green; or (c) a conditional roster member is found to have
+replaced an unconditional one, so the `reviewer` floor is no longer two agents; or (d) a
+dispatcher lands and the recorded non-selection of a conditional member turns out to need a
+different selector shape than the one specified here.
