@@ -34,5 +34,5 @@ python3 scripts/lint_topology.py --self-test
 
 ## Binds
 
-- **runs** → [[module__scripts_lint_topology|Topology lint — TOP001-TOP009 per orchestration-canvas-spec §6.]]
+- **runs** → [[module__scripts_lint_topology|Topology lint — TOP001-TOP009 per orchestration-canvas-spec §6, plus TOP010-TOP015.]]
 - [[gate__integrity|integrity (fixtures and register)]] **contains** → this

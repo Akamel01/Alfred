@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Topology lint — TOP001-TOP009 per orchestration-canvas-spec §6.
+"""Topology lint — TOP001-TOP009 per orchestration-canvas-spec §6, plus TOP010-TOP015.
 
 Checks `orchestration/topology.json` against `policy/node-palette.json`:
 
@@ -13,6 +13,16 @@ Checks `orchestration/topology.json` against `policy/node-palette.json`:
   TOP008 palette conformance (all nodes from palette)
   TOP009 schema version present
 
+Then the binding records, which are a two-file invariant against the same palette and
+therefore live here rather than in a lint of their own:
+
+  TOP010 every palette kind carries a `bindable` value, both directions
+  TOP011 `bindable` agrees with the palette's category, both directions
+  TOP012 one binding per agent-bindable kind, both directions
+  TOP013 an empty roster states why
+  TOP014 a requalification may not report `pass` while the D19 fields are unset
+  TOP015 a conditional roster member names its glob dialect, fires, and sits on a roster entry
+
 Exit 0 clean, 1 on violation. `--self-test` plants each rule and proves it fires.
 """
 
@@ -20,10 +30,11 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 import tempfile
 from collections import defaultdict
-from pathlib import Path
+from pathlib import Path, PurePath
 from typing import Any
 
 from _lintkit import REPO_ROOT, Findings, self_test_exit, vacuity_guard
@@ -37,6 +48,14 @@ CYCLE_FORBIDDEN: frozenset[str] = frozenset({"delegates-to", "reviews", "feeds"}
 # Restated from harness/verdicts/__init__.py:48 (VERDICTS) -- scripts/ may not import harness/.
 REQUALIFICATION_STATUSES: frozenset[str] = frozenset({"pass", "fail", "indeterminate"})
 ALL_CONTRACTS: frozenset[str] = frozenset({"delegates-to", "hands-off-to", "reviews", "feeds"})
+
+# The glob dialects an `applies_when` selector may name. There is one, and it is named
+# rather than defaulted because the same pattern string means different things under
+# different glob implementations -- and because a selector that matches no file is a
+# vacuous selector, which the D57 class forbids. `pathlib-match` is
+# `pathlib.PurePath.match()` semantics; docs/tier3/agent-definition-standard.md states the
+# measured behaviour, and TOP015 below uses the same function it names.
+GLOB_DIALECTS: frozenset[str] = frozenset({"pathlib-match"})
 
 
 def _load_json(path: Path, base: Path = REPO_ROOT) -> tuple[dict[str, Any] | None, str | None]:
@@ -244,11 +263,31 @@ def check_topology(base: Path = REPO_ROOT) -> Findings:
 # ---------------------------------------------------------------------- self-test
 
 
-# ------------------------------------------------------------------- role bindings (TOP010-013)
+# ------------------------------------------------------------------- role bindings (TOP010-015)
+
+
+def _tree_paths(base: Path) -> list[str]:
+    """Every file under *base* as a POSIX relative path, `.git` skipped.
+
+    One walk per lint run: TOP015 asks the same question of many patterns and the answer
+    is the same tree, so the paths are collected once and reused.
+    """
+    paths: list[str] = []
+    for dirpath, dirnames, filenames in os.walk(base):
+        dirnames[:] = [d for d in dirnames if d != ".git"]
+        rel_dir = Path(dirpath).relative_to(base)
+        for name in filenames:
+            paths.append((rel_dir / name).as_posix())
+    return paths
+
+
+def _pathlib_match(rel: str, pattern: str) -> bool:
+    """`pathlib-match` -- the one dialect the schema names. See GLOB_DIALECTS."""
+    return PurePath(rel).match(pattern)
 
 
 def check_bindings(base: Path = REPO_ROOT) -> Findings:
-    """TOP010-TOP013. The palette says which roles exist; the bindings say which ones run.
+    """TOP010-TOP015. The palette says which roles exist; the bindings say which ones run.
 
     This is a two-file invariant, which is why it extends this lint rather than living in a
     new one: a separate file would either duplicate the palette loader or leave the
@@ -265,9 +304,17 @@ def check_bindings(base: Path = REPO_ROOT) -> Findings:
            no ECC agent may hold validation authority -- but an unexplained one is an
            omission wearing the same shape.
     TOP014 a requalification may not report pass while the D19 fields are unset. The
-    file-level `requalification` object must exist, its status must be one of
-    {pass, fail, indeterminate}, `indeterminate` requires a non-empty reason, and
-    `pass` is a violation while any D19 version field is `"unset"` or absent.
+           file-level `requalification` object must exist, its status must be one of
+           {pass, fail, indeterminate}, `indeterminate` requires a non-empty reason, and
+           `pass` is a violation while any D19 version field is `"unset"` or absent.
+    TOP015 a conditional roster member names its glob dialect and a selector that fires.
+           `applies_when` must be an object, `glob` must name a dialect the schema allows,
+           `paths_match` must be a non-empty list of non-empty strings, and every pattern
+           must match at least one file in the tree. A selector that matches nothing scans
+           zero files, fires nothing and reports success -- the D57 vacuity class, so it is
+           a violation rather than a quiet no-op. `applies_when` on the binding record
+           itself is a violation too: a selector in the wrong place never fires, which is
+           the same vacuity one level up.
     """
     findings = Findings()
     palette_data, palette_err = _load_json(PALETTE_PATH, base)
@@ -373,6 +420,63 @@ def check_bindings(base: Path = REPO_ROOT) -> Findings:
                 "TOP014 requalification reports 'pass' while D19 version fields are 'unset'"
             )
 
+    # TOP015 -- a conditional roster member names its dialect, and a selector that fires.
+    tree: list[str] | None = None
+    for binding in bindings:
+        kind_id = binding.get("kind", "<unnamed>")
+        # A selector belongs on a roster entry. On the record it applies to every member
+        # at once and no dispatcher reads it, so it never fires -- the same vacuity one
+        # level up as a selector that matches nothing.
+        if "applies_when" in binding:
+            findings.violations.append(
+                f"TOP015 binding {kind_id!r} carries applies_when on the binding record; "
+                "the selector belongs on a roster entry, where it applies to that member alone"
+            )
+        agents = binding.get("agents") or []
+        if not isinstance(agents, list):
+            continue
+        for entry in agents:
+            if not isinstance(entry, dict) or "applies_when" not in entry:
+                continue
+            agent = entry.get("agent", "<unnamed>")
+            selector = entry["applies_when"]
+            if not isinstance(selector, dict):
+                findings.violations.append(
+                    f"TOP015 binding {kind_id!r} agent {agent!r} applies_when must be an object"
+                )
+                continue
+
+            dialect = selector.get("glob")
+            dialect_ok = isinstance(dialect, str) and dialect in GLOB_DIALECTS
+            if not dialect_ok:
+                findings.violations.append(
+                    f"TOP015 binding {kind_id!r} agent {agent!r} applies_when glob {dialect!r} "
+                    f"is not a named dialect in {sorted(GLOB_DIALECTS)}"
+                )
+
+            patterns = selector.get("paths_match")
+            if not (
+                isinstance(patterns, list)
+                and patterns
+                and all(isinstance(p, str) and p.strip() for p in patterns)
+            ):
+                findings.violations.append(
+                    f"TOP015 binding {kind_id!r} agent {agent!r} applies_when paths_match must "
+                    "be a non-empty list of non-empty strings"
+                )
+                patterns = []
+
+            if not dialect_ok or not patterns:
+                continue
+            if tree is None:
+                tree = _tree_paths(base)
+            for pattern in patterns:
+                if not any(_pathlib_match(rel, pattern) for rel in tree):
+                    findings.violations.append(
+                        f"TOP015 binding {kind_id!r} agent {agent!r} paths_match {pattern!r} "
+                        "matches no file in the tree; a selector that fires nothing is vacuous"
+                    )
+
     return findings
 
 
@@ -422,6 +526,25 @@ def _write_bindings(root: Path, palette: dict[str, Any], bindings: dict[str, Any
     b = root / BINDINGS_PATH
     b.parent.mkdir(parents=True, exist_ok=True)
     b.write_text(json.dumps(bindings), encoding="utf-8")
+
+
+def _write_tree_file(root: Path, rel: str) -> None:
+    """Plant a file in the fixture tree.
+
+    TOP015 asks whether a selector matches anything, so a fixture that wants a *matching*
+    selector needs a file to match -- the bindings fixture alone writes only `policy/*.json`.
+    """
+    p = root / rel
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text("# fixture\n", encoding="utf-8")
+
+
+def _conditional_entry(selector: dict[str, Any] | None) -> dict[str, Any]:
+    """A roster entry, conditional when a selector is given."""
+    entry: dict[str, Any] = {"agent": "python-reviewer", "harness": "claude-code"}
+    if selector is not None:
+        entry["applies_when"] = selector
+    return entry
 
 
 def _binding_palette() -> dict[str, Any]:
@@ -765,6 +888,89 @@ def self_test() -> int:
         if not any("TOP014" in v for v in check_bindings(base=case).violations):
             failures.append("TOP014 did not fire on pass with the D19 fields absent")
 
+        # ---- role bindings TOP015 -----------------------------------------------------
+        # top015-clean control: a selector that matches a file in the fixture tree is legal
+        case = scratch / "top015-clean"
+        b = _valid_bindings()
+        b["bindings"][0]["agents"].append(
+            _conditional_entry({"paths_match": ["*.py"], "glob": "pathlib-match"})
+        )
+        _write_bindings(case, _binding_palette(), b)
+        _write_tree_file(case, "src/app/x.py")
+        if any("TOP015" in v for v in check_bindings(base=case).violations):
+            failures.append("TOP015 fired on a conditional member whose selector matches")
+
+        # top015-vacuous: a selector that matches no file in the tree
+        case = scratch / "top015-vacuous"
+        b = _valid_bindings()
+        b["bindings"][0]["agents"].append(
+            _conditional_entry({"paths_match": ["*.rs"], "glob": "pathlib-match"})
+        )
+        _write_bindings(case, _binding_palette(), b)
+        _write_tree_file(case, "src/app/x.py")
+        if not any("TOP015" in v for v in check_bindings(base=case).violations):
+            failures.append("TOP015 did not fire on a selector that matches no file")
+
+        # top015-unknown-glob: a dialect the schema does not name
+        case = scratch / "top015-unknown-glob"
+        b = _valid_bindings()
+        b["bindings"][0]["agents"].append(
+            _conditional_entry({"paths_match": ["*.py"], "glob": "shell-glob"})
+        )
+        _write_bindings(case, _binding_palette(), b)
+        _write_tree_file(case, "src/app/x.py")
+        if not any("TOP015" in v for v in check_bindings(base=case).violations):
+            failures.append("TOP015 did not fire on an unnamed glob dialect")
+
+        # top015-missing-glob: no dialect named at all
+        case = scratch / "top015-missing-glob"
+        b = _valid_bindings()
+        b["bindings"][0]["agents"].append(_conditional_entry({"paths_match": ["*.py"]}))
+        _write_bindings(case, _binding_palette(), b)
+        _write_tree_file(case, "src/app/x.py")
+        if not any("TOP015" in v for v in check_bindings(base=case).violations):
+            failures.append("TOP015 did not fire on a selector with no glob")
+
+        # top015-bad-paths-match: paths_match must be a non-empty list of non-empty strings
+        case = scratch / "top015-bad-paths-match"
+        b = _valid_bindings()
+        b["bindings"][0]["agents"].append(
+            _conditional_entry({"paths_match": [], "glob": "pathlib-match"})
+        )
+        _write_bindings(case, _binding_palette(), b)
+        _write_tree_file(case, "src/app/x.py")
+        if not any("TOP015" in v for v in check_bindings(base=case).violations):
+            failures.append("TOP015 did not fire on an empty paths_match list")
+
+        # top015-not-an-object: applies_when must be an object
+        case = scratch / "top015-not-an-object"
+        b = _valid_bindings()
+        b["bindings"][0]["agents"].append(_conditional_entry("*.py"))  # type: ignore[arg-type]
+        _write_bindings(case, _binding_palette(), b)
+        _write_tree_file(case, "src/app/x.py")
+        if not any("TOP015" in v for v in check_bindings(base=case).violations):
+            failures.append("TOP015 did not fire on an applies_when that is not an object")
+
+        # top015-record-level: a selector on the binding record never fires
+        case = scratch / "top015-record-level"
+        b = _valid_bindings()
+        b["bindings"][0]["applies_when"] = {"paths_match": ["*.py"], "glob": "pathlib-match"}
+        _write_bindings(case, _binding_palette(), b)
+        _write_tree_file(case, "src/app/x.py")
+        if not any("TOP015" in v for v in check_bindings(base=case).violations):
+            failures.append("TOP015 did not fire on an applies_when on the binding record")
+
+        # top015-record-level control: the same selector on a roster entry is legal
+        case = scratch / "top015-record-level-ok"
+        b = _valid_bindings()
+        b["bindings"][0]["agents"].append(
+            _conditional_entry({"paths_match": ["*.py"], "glob": "pathlib-match"})
+        )
+        _write_bindings(case, _binding_palette(), b)
+        _write_tree_file(case, "src/app/x.py")
+        if any("TOP015" in v for v in check_bindings(base=case).violations):
+            failures.append("TOP015 fired on a selector that sits on a roster entry")
+
     return self_test_exit(
         failures,
         "OK self-test — TOP001 duplicate id, TOP002 missing ref, TOP003 bad source_port, "
@@ -774,7 +980,9 @@ def self_test() -> int:
         "directions, TOP012 binding/bindable mismatch both directions, TOP013 unexplained "
         "empty roster with its paired control, TOP014 requalification pass-while-unset / "
         "missing-key / bad-vocab / no-reason / null-reason / missing-field-pass with paired "
-        "controls; control clean\n",
+        "controls, TOP015 vacuous selector / unnamed dialect / missing dialect / empty "
+        "paths_match / non-object applies_when / record-level applies_when with its paired "
+        "control; control clean\n",
     )
 
 
@@ -799,7 +1007,7 @@ def main() -> int:
         return 1
     sys.stdout.write(
         f"OK topology — {findings.scanned} nodes+edges, all TOP001-TOP009 satisfied; "
-        f"bindings — {bindings.scanned} kinds+bindings, all TOP010-TOP014 satisfied\n"
+        f"bindings — {bindings.scanned} kinds+bindings, all TOP010-TOP015 satisfied\n"
     )
     return 0
 

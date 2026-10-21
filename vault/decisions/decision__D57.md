@@ -128,6 +128,10 @@ ADR-0038 decided *harden* and name
 - **enforced_by** → [[module__scripts_lint_harness_gate|How much of `harness/` the lint gate actually collects, and whether it can go red.]] — """How much of `harness/` the lint gate actually collects, and whether it can go red.
 
 `harness/` is the tree everything
+- **enforced_by** → [[module__scripts_lint_topology|Topology lint — TOP001-TOP009 per orchestration-canvas-spec §6, plus TOP010-TOP015.]] — # vacuous selector, which the D57 class forbids. `pathlib-match` is
+- **enforced_by** → [[module__scripts_lint_topology|Topology lint — TOP001-TOP009 per orchestration-canvas-spec §6, plus TOP010-TOP015.]] — """TOP010-TOP015. The palette says which roles exist; the bindings say which ones run.
+
+    This is a two-file invariant
 - **enforced_by** → [[module__src_replay_harness|The replay harness: load, evaluate, stamp, and produce a digest two runs are compared on.]] — # D57 at the product boundary. A metric over zero tracks returns something, and
 - **enforced_by** → [[module__tests_test_stamp_schema_contract|ADR-0006's enforcement clauses, as executable checks with their own controls.]] — """ADR-0006's enforcement clauses, as executable checks with their own controls.
 

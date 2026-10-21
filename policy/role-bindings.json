@@ -7,6 +7,8 @@
     "Any edit to a binding record is a requalification event — ticket #43 D7 and ADR-0056 — and `agents` is not an exception. The authority line above means what it says; this note previously narrowed the trigger to the version fields, a reading D7 had already rejected by name. The version fields below are the fingerprint's D19 group: they record WHICH component moved, they do not determine WHETHER anything did. A roster edit is a prompt-and-tools change, so it requalifies at the smoke-subset tier per docs/tier0/autonomy-boundaries.md:123 — not the full golden set, and not an orchestrator epoch boundary.",
     "All 24 version fields below are `unset`, so a requalification triggered today has nothing to read: report it `indeterminate` (D57), never `pass`. There are no autonomy grants to suspend and no dispatcher to capture a value from. Do not fill these with placeholders to make them look set — putting a number in a hash that nothing can check is the failure this note exists to prevent. Tracked as issue #86.",
     "bindable is stated explicitly rather than derived from category. Deriving it breaks silently when a non-agent kind is added outside the operator category; the lint cross-checks the two and fails on disagreement.",
+    "A roster entry may carry an optional applies_when selector: it is dispatched only when the selector matches the paths the change touches. Selection is additive — a conditional language reviewer joins the unconditional floor (code-reviewer, security-reviewer) and never replaces one, because swapping a generalist out narrows coverage without buying independence. The selector names its glob dialect (pathlib-match) because the same pattern string means different things under different glob semantics: under shell-glob semantics *.py would match 0 of this repository's 215 nested .py files and the selector would silently never fire. Enforced by TOP015 in scripts/lint_topology.py, which fails any paths_match glob that matches no file in the tree. Schema in docs/tier3/agent-definition-standard.md; decision in ADR-0071.",
+    "database-reviewer stays unbound: the only .sql files are migrations/roles/001_roles.sql and migrations/roles/002_grants.sql, and migrations/roles/ is a human-owned protected prefix that never appears in an agent task's writable_paths. No agent-writable SQL exists in the tree, so bind database-reviewer with migrations/product/**/*.sql in the pull request that adds the first product migration (operator ruling, ticket #85, 2026-10-21).",
     "wayfinder moved from unbound to agent on 2026-09-03: the ~/.claude wayfinder skill carried disable-model-invocation: true, so no agent could run it and 'unbound' was a statement of fact. The operator removed that flag, so the fact changed and the binding follows it."
   ],
   "requalification": {
@@ -133,9 +135,11 @@
       "phases": ["Review"],
       "agents": [
         { "agent": "code-reviewer", "harness": "claude-code" },
-        { "agent": "security-reviewer", "harness": "claude-code" }
+        { "agent": "security-reviewer", "harness": "claude-code" },
+        { "agent": "python-reviewer", "harness": "claude-code",
+          "applies_when": { "paths_match": ["*.py"], "glob": "pathlib-match" } }
       ],
-      "independence": "santa-method — two agents, both must pass, and neither may be the agent that ran Execute",
+      "independence": "santa-method — the unconditional floor (code-reviewer, security-reviewer) both must pass, and neither may be the agent that ran Execute; a conditional roster member is added to that floor, never substituted for it",
       "tools": ["Read", "Grep", "Glob", "Bash"],
       "permissions": { "write": false, "network": false },
       "context_budget": { "turn_cap": 40, "token_cap": 250000 },

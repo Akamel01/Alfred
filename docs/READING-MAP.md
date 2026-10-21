@@ -235,7 +235,8 @@ Binding on implementation and easy to miss, since they live inside one document.
 | [ADR-0068](tier1/adr-log.md) | The harness lint debt window gets a ceiling, and growth past it fails the gate | Accepted |
 | [ADR-0069](tier1/adr-log.md) | Unset D19 version fields report `indeterminate`, and TOP014 makes a silent `pass` impossible | Accepted |
 | [ADR-0070](tier1/adr-log.md) | The #70 measurement gets a pre-run design: N against the interval, an honest fingerprint pair, and an empty trivial class until a run exists | Accepted |
+| [ADR-0071](tier1/adr-log.md) | A conditional roster member: `applies_when`, the named `pathlib-match` dialect, and TOP015 against the vacuous selector | Accepted |
 
 ---
 
-**79 documents mapped** · 45 binding · 14 context · 20 record · 70 architecture decisions
+**79 documents mapped** · 45 binding · 14 context · 20 record · 71 architecture decisions

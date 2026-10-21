@@ -35,3 +35,4 @@ generated: true
 - **see_also** → [[adr__ADR-0007|Executor-premise assertions may pass vacuously, and that is a third outcome]]
 - **see_also** → [[adr__ADR-0056|The requalification trigger covers the whole binding, and the five fields that would recor]]
 - **see_also** → [[adr__ADR-0067|Gate D's read is batched per pull request, and the comment-only exemption is rejected as u]]
+- [[adr__ADR-0071|A conditional roster member: `applies_when`, the named `pathlib-match` dialect, and TOP015]] **see_also** → this
