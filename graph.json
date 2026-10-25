@@ -4,7 +4,7 @@
     "adr": 71,
     "amendment": 12,
     "decision": 57,
-    "document": 79,
+    "document": 80,
     "effect": 5,
     "gate": 5,
     "gate-step": 62,
@@ -24,7 +24,7 @@
     "amended_by": 2,
     "amends": 16,
     "blocks": 32,
-    "contains": 310,
+    "contains": 311,
     "discharges": 1,
     "enforced_by": 414,
     "imports": 263,
@@ -4509,6 +4509,19 @@
     },
     {
       "confidence": "structural",
+      "dst": "document:tier7/architecture-review-2026-10-25",
+      "evidence": "docs/tier7/architecture-review-2026-10-25.md",
+      "extractor": "documents",
+      "kind": "contains",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/architecture-review-2026-10-25.md"
+      },
+      "src": "tier:tier7"
+    },
+    {
+      "confidence": "structural",
       "dst": "document:tier7/decision-index",
       "evidence": "docs/tier7/decision-index.md",
       "extractor": "documents",
@@ -7127,8 +7140,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 152,
-        "line": 152,
+        "end_line": 154,
+        "line": 154,
         "path": "scripts/gen_doc_stubs.py"
       },
       "src": "adr:ADR-0063"
@@ -7153,8 +7166,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 108,
-        "line": 108,
+        "end_line": 110,
+        "line": 110,
         "path": "scripts/gen_doc_stubs.py"
       },
       "src": "adr:ADR-0064"
@@ -8076,8 +8089,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 153,
-        "line": 153,
+        "end_line": 155,
+        "line": 155,
         "path": "scripts/gen_doc_stubs.py"
       },
       "src": "decision:D28"
@@ -8271,8 +8284,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 327,
-        "line": 327,
+        "end_line": 329,
+        "line": 329,
         "path": "scripts/gen_doc_stubs.py"
       },
       "src": "decision:D32"
@@ -15586,16 +15599,16 @@
       "unparsed": 0
     },
     {
-      "edges": 79,
+      "edges": 80,
       "expect_rejected": null,
       "max_nodes": null,
       "max_unparsed": 0,
       "min_edges": 63,
       "min_nodes": 71,
       "name": "documents",
-      "nodes": 87,
+      "nodes": 88,
       "rejected": 0,
-      "scanned": 79,
+      "scanned": 80,
       "unparsed": 0
     },
     {
@@ -20594,6 +20607,37 @@
         "schema"
       ],
       "title": "SLO and SLI Definitions"
+    },
+    {
+      "attrs": {
+        "enforcement": "review-cadence",
+        "evidence": "none — architecture review, no measurement",
+        "falsifies_if": "A cited file or line number in this document does not exist on main at the stated commit.",
+        "owner": "human",
+        "path": "docs/tier7/architecture-review-2026-10-25.md",
+        "review_after": "Phase 2",
+        "tier": "7",
+        "tier_name": "Meta",
+        "written": "full"
+      },
+      "body": "",
+      "extractor": "documents",
+      "id": "document:tier7/architecture-review-2026-10-25",
+      "kind": "document",
+      "occurrences": [],
+      "shape": "file",
+      "source": {
+        "end_line": 9,
+        "line": 1,
+        "path": "docs/tier7/architecture-review-2026-10-25.md"
+      },
+      "status": "provisional",
+      "tags": [
+        "tier7",
+        "human",
+        "review-cadence"
+      ],
+      "title": "Architecture review — 2026-10-25"
     },
     {
       "attrs": {

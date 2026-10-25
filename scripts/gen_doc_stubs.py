@@ -78,7 +78,7 @@ NOT_GENERATED: frozenset[str] = frozenset({
     "tier7/ticket-67-live-view-decision",
     "tier7/ticket-70-measurement-design",
     # Architecture review written directly at full content (issue #102); not a stub.
-    "architecture/review-2026-10-25",
+    "tier7/architecture-review-2026-10-25",
 })
 
 

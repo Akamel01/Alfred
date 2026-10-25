@@ -110,6 +110,7 @@ the stub policy, and the authorship boundary.
 
 | Document | Status | Owner | Enforcement | Written |
 |---|---|---|---|---|
+| [Architecture review — 2026-10-25](tier7/architecture-review-2026-10-25.md) | provisional | human | `review-cadence` | full |
 | [Decision Index](tier7/decision-index.md) | provisional | generated | `generated` | stub |
 | [Documentation Standard](tier7/documentation-standard.md) | frozen | human | `ci-gate` | full |
 | [ECC capability classification](tier7/ecc-capability-audit.md) | provisional | human | `none` | full |
