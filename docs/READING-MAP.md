@@ -157,6 +157,7 @@ Consult when relevant. Never a source of instructions.
 | 15 | [Ticket #52 — Mission Control's read model](tier7/ticket-52-read-model-decision.md) | record | provisional | map #41: queries at request time; the brief's snapshot contracts do not survive the spec |
 | 16 | [Ticket #67 — the live multi-agent view](tier7/ticket-67-live-view-decision.md) | record | provisional | map #41: the live multi-agent view — polling not streaming, agent prose off the approval screen |
 | 17 | [Ticket #70 — Measurement design for the trivial class](tier7/ticket-70-measurement-design.md) | record | directional | map #41: the pre-run design for the trivial-class measurement — N, fingerprint pair, protocol |
+| 18 | [Architecture review — 2026-10-25](tier7/architecture-review-2026-10-25.md) | record | provisional | map #102: architecture review — deepening opportunities and ICM audit |
 
 
 ## Architecture decisions
@@ -239,4 +240,4 @@ Binding on implementation and easy to miss, since they live inside one document.
 
 ---
 
-**79 documents mapped** · 45 binding · 14 context · 20 record · 71 architecture decisions
+**80 documents mapped** · 45 binding · 14 context · 21 record · 71 architecture decisions
