@@ -134,6 +134,10 @@ def build_index(entries: list[tuple[Path, dict[str, str]]]) -> str:
 
     by_tier: dict[int, list[tuple[Path, dict[str, str]]]] = {}
     for path, fields in entries:
+        # Non-tier documents (e.g. docs/architecture/) are registered via
+        # NOT_GENERATED and are intentionally absent from the tier index.
+        if not path.parent.name.startswith("tier"):
+            continue
         tier = int(path.parent.name.removeprefix("tier"))
         by_tier.setdefault(tier, []).append((path, fields))
 
