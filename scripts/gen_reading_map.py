@@ -129,6 +129,7 @@ PHASES: list[tuple[str, str, list[tuple[str, str, str]]]] = [
         ("ticket-52-read-model-decision", RECORD, "map #41: queries at request time; the brief's snapshot contracts do not survive the spec"),
         ("ticket-67-live-view-decision", RECORD, "map #41: the live multi-agent view — polling not streaming, agent prose off the approval screen"),
         ("ticket-70-measurement-design", RECORD, "map #41: the pre-run design for the trivial-class measurement — N, fingerprint pair, protocol"),
+        ("architecture-review-2026-10-25", RECORD, "map #102: architecture review — deepening opportunities and ICM audit"),
     ]),
 ]
 

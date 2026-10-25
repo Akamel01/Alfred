@@ -1,0 +1,94 @@
+---
+status:        provisional
+owner:         human
+enforcement:   review-cadence
+evidence:      none — architecture review, no measurement
+falsifies_if:  A cited file or line number in this document does not exist on main at the stated commit.
+review_after:   Phase 2
+---
+
+# Architecture review — 2026-10-25
+
+Scope: whole repository on `main` at `97eb631`. No code changes; this document only.
+Skills applied: `improve-codebase-architecture` (with `codebase-design` vocabulary) and
+`icm-architect` (System map form, audit only). Hot spots taken from `git log --since="3 months ago"`.
+
+## 1. Deepening opportunities
+
+### 1.1 `_load_json` is defined three times, with three error contracts
+- Files: `scripts/lint_topology.py:61-70`, `scripts/lint_model_routing.py:70-79`, `tools/orchestration/gen_canvas.py:44-45`.
+- Problem: the same operation (read + parse a JSON file under `REPO_ROOT`) exists in three places with
+  divergent behaviour: `lint_topology` returns `(None, "missing file: ...")`, `lint_model_routing` returns
+  `(None, "MR000 missing ...")` and `json.loads(...)` directly, and `gen_canvas` calls `json.loads` with no
+  error handling at all. A new linter author copies one of the two script versions and inherits its error
+  spelling; a caller of `gen_canvas` gets an unhandled `JSONDecodeError` instead of a finding.
+- Proposed change: promote `_load_json` into `scripts/_lintkit.py` (already the shared home for `Findings`,
+  `vacuity_guard`, `self_test_exit`, imported by 10 of 12 linters) with one error format, and have
+  `tools/orchestration/gen_canvas.py` import it (or a one-line wrapper in `tools/orchestration/`). The
+  shared helper must take an optional rule-code prefix so each linter keeps its own code (`MR000` in
+  `lint_model_routing`, `TOP`-style messages in `lint_topology`); self-tests must still pass.
+  The deletion test holds: removing the shared helper would re-concentrate ~30 lines across three files.
+- Effect: one error spelling for missing/unparseable JSON across lints and canvas generation; new linters
+  inherit it.
+- Strength: Worth exploring · Size: S.
+- ADR conflict: none.
+
+### Areas checked and left alone
+- `src/provenance` (`src/provenance/__init__.py:6-7` already maps writers to `ResultStamp` and readers to
+  `verify.verify_stamp`; the two-stage read is intentional per ADR-0006). No change.
+- `harness/containment` (`harness/containment/__init__.py` is a deliberate assertion table; callers import
+  submodules by purpose — `assertions` 13 importers, `denylist` 7, `source_hashes` 4, etc.). A facade would
+  add a shallow layer, not depth. No change.
+- `src/metrics` + `src/domain/trajectory` (`MetricSeries`, `AgentTrack`) are deep modules with small
+  interfaces; `src/metrics/port.py` makes the defect unrepresentable. No change.
+
+## 2. ICM audit (System map form)
+
+### Entry file
+- `CLAUDE.md` / `AGENTS.md` are byte-identical (35 lines each) and route only. Satisfies the small,
+  stable entry-file invariant. `CONTEXT.md` at root is 146 lines but is a glossary, not a router, and is
+  marked volatile.
+
+### CONTEXT.md contracts
+- 22 `CONTEXT.md` files exist (one per major directory: `src/`, `tests/`, `deploy/`, `bench/`, `harness/`,
+  `tools/`, `docs/`, `stages/`, `policy/`, `scripts/`, `migrations/`, plus subpackages). Each states
+  inputs/process/outputs/human-check. Walk test passes: contract reachable in one hop from root.
+
+### Facts with more than one home
+- `docs/tier0/glossary.md` (frozen, binding) vs root `CONTEXT.md` (volatile) — explicitly resolved:
+  glossary wins. No other duplicate homes found in the areas read.
+
+### Ghosts and leftovers
+- `src/thresholds/__init__.py` is a declared-but-empty module ("No threshold ships yet") — an intentional
+  ghost, documented as such. Not a defect.
+- `_archive/` is referenced in `docs/tier1/adr-log.md` and `docs/tier2/structure-fence.md` (ADR-0040);
+  `prototype/` lives under `_archive/prototype` and in the vault. Not unreferenced leftovers.
+
+### Change-impact list
+- Change `src/metrics/port.py:Metric.evaluate` return type → `src/replay/port.py:ReplayHarness.replay`,
+  `src/replay/harness.py:93`, `tests/test_s5_ports.py`.
+- Change `policy/protected-paths.json` → `harness/patch/validate.py`, `.github/workflows/gates.yml`,
+  `docs/tier4/protected-paths-policy.md` (ADR required, D20).
+- Change `orchestration/topology.json` → `scripts/lint_topology.py` (TOP001–TOP015),
+  `tools/gen_vault.py`, `docs/READING-MAP.md` (regenerate).
+- Change `CLAUDE.md` → must keep `AGENTS.md` byte-identical (twin rule); `docs/README.md` register.
+
+### Is a `map/` shelf worth building here?
+No. One `CONTEXT.md` per directory plus the generated vault (`vault/`, `graph.json`) already answers
+"what is X" and "what else moves" in two hops. A `map/` shelf would duplicate the vault.
+
+## 3. Proposed follow-up tickets
+
+### T1 — Consolidate `_load_json` (Worth exploring, S, low risk)
+- What to build: one `_load_json` in `scripts/_lintkit.py` plus a small shared helper for
+  `tools/orchestration/`; replace the three local copies.
+- Acceptance: missing/unparseable JSON yields the same finding everywhere; `lint_topology --self-test`,
+  `lint_model_routing`, and `gen_canvas.py` still run; no behaviour change beyond error spelling.
+- Files: `scripts/_lintkit.py`, `scripts/lint_topology.py`, `scripts/lint_model_routing.py`,
+  `tools/orchestration/gen_canvas.py`.
+- Blocked by: none. Behaviour-preserving, covered by existing tests.
+
+## Evidence notes
+- Every path and line range above was opened on `main` at `97eb631`. Generated files (`vault/`,
+  `graph.json`, `docs-graph.html`) were not edited.
+- No code, config, or generated artifact was changed by this review.

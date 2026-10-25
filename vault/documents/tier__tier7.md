@@ -21,6 +21,7 @@ generated: true
 
 ## Binds
 
+- **contains** → [[document__tier7__architecture-review-2026-10-25|Architecture review — 2026-10-25]]
 - **contains** → [[document__tier7__decision-index|Decision Index]]
 - **contains** → [[document__tier7__documentation-standard|Documentation Standard]]
 - **contains** → [[document__tier7__ecc-capability-audit|ECC capability classification]]
