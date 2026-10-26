@@ -79,6 +79,23 @@ def load_register(path: Path, *, display: Path | None = None) -> tuple[dict[str,
         return {}, f"register does not parse: {exc}"
 
 
+def load_json(path: Path, base: Path = REPO_ROOT) -> tuple[Any | None, str | None]:
+    """Read + parse a JSON file under `base`, fail-closed: `(data, None)`, or `(None, reason)`.
+
+    One home for the operation that `lint_topology` and `lint_model_routing` both need;
+    the reason is spelled without a rule code, so a linter that owns one (e.g. `MR000`)
+    prefixes it itself. A missing file is not an empty document and an unparseable one
+    is not a skipped one.
+    """
+    full = base / path
+    if not full.is_file():
+        return None, f"missing {path}"
+    try:
+        return json.loads(full.read_text(encoding="utf-8")), None
+    except json.JSONDecodeError as exc:
+        return None, f"{path} is not valid JSON: {exc}"
+
+
 def self_test_exit(
     failures: list[str],
     ok: str,

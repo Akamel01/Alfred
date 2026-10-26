@@ -7725,8 +7725,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 290,
-        "line": 290,
+        "end_line": 279,
+        "line": 279,
         "path": "scripts/lint_topology.py"
       },
       "src": "decision:D19"
@@ -7738,8 +7738,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 395,
-        "line": 395,
+        "end_line": 384,
+        "line": 384,
         "path": "scripts/lint_topology.py"
       },
       "src": "decision:D19"
@@ -7751,8 +7751,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 420,
-        "line": 420,
+        "end_line": 409,
+        "line": 409,
         "path": "scripts/lint_topology.py"
       },
       "src": "decision:D19"
@@ -7764,8 +7764,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 567,
-        "line": 567,
+        "end_line": 556,
+        "line": 556,
         "path": "scripts/lint_topology.py"
       },
       "src": "decision:D19"
@@ -7777,8 +7777,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 889,
-        "line": 889,
+        "end_line": 878,
+        "line": 878,
         "path": "scripts/lint_topology.py"
       },
       "src": "decision:D19"
@@ -10026,8 +10026,8 @@
       "extractor": "references",
       "kind": "enforced_by",
       "source": {
-        "end_line": 290,
-        "line": 290,
+        "end_line": 279,
+        "line": 279,
         "path": "scripts/lint_topology.py"
       },
       "src": "decision:D57"

@@ -37,7 +37,7 @@ from collections import defaultdict
 from pathlib import Path, PurePath
 from typing import Any
 
-from _lintkit import REPO_ROOT, Findings, self_test_exit, vacuity_guard
+from _lintkit import REPO_ROOT, Findings, load_json, self_test_exit, vacuity_guard
 
 PALETTE_PATH: Path = Path("policy/node-palette.json")
 TOPOLOGY_PATH: Path = Path("orchestration/topology.json")
@@ -56,17 +56,6 @@ ALL_CONTRACTS: frozenset[str] = frozenset({"delegates-to", "hands-off-to", "revi
 # `pathlib.PurePath.match()` semantics; docs/tier3/agent-definition-standard.md states the
 # measured behaviour, and TOP015 below uses the same function it names.
 GLOB_DIALECTS: frozenset[str] = frozenset({"pathlib-match"})
-
-
-def _load_json(path: Path, base: Path = REPO_ROOT) -> tuple[dict[str, Any] | None, str | None]:
-    full = base / path
-    if not full.is_file():
-        return None, f"missing file: {path}"
-    try:
-        data = json.loads(full.read_text(encoding="utf-8"))
-    except json.JSONDecodeError as exc:
-        return None, f"{path} does not parse: {exc}"
-    return data, None
 
 
 def _palette_map(palette: dict[str, Any]) -> dict[str, dict[str, Any]]:
@@ -113,8 +102,8 @@ def _detect_cycle(edges: list[dict[str, Any]], contract: str, node_ids: set[str]
 
 def check_topology(base: Path = REPO_ROOT) -> Findings:
     findings = Findings()
-    palette_data, palette_err = _load_json(PALETTE_PATH, base)
-    topology_data, topo_err = _load_json(TOPOLOGY_PATH, base)
+    palette_data, palette_err = load_json(PALETTE_PATH, base)
+    topology_data, topo_err = load_json(TOPOLOGY_PATH, base)
 
     if palette_err is not None:
         findings.violations.append(palette_err)
@@ -317,8 +306,8 @@ def check_bindings(base: Path = REPO_ROOT) -> Findings:
            the same vacuity one level up.
     """
     findings = Findings()
-    palette_data, palette_err = _load_json(PALETTE_PATH, base)
-    bindings_data, bindings_err = _load_json(BINDINGS_PATH, base)
+    palette_data, palette_err = load_json(PALETTE_PATH, base)
+    bindings_data, bindings_err = load_json(BINDINGS_PATH, base)
 
     if palette_err is not None:
         findings.violations.append(palette_err)
