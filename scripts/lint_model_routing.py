@@ -56,7 +56,7 @@ from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from _lintkit import REPO_ROOT, Findings, self_test_exit, vacuity_guard
+from _lintkit import REPO_ROOT, Findings, load_json, self_test_exit, vacuity_guard
 
 BINDINGS_PATH: Path = Path("policy/role-bindings.json")
 ROUTING_PATH: Path = Path("policy/model-routing.json")
@@ -67,20 +67,12 @@ ROUTING_PATH: Path = Path("policy/model-routing.json")
 UNPINNED = {"inherit", "", None}
 
 
-def _load_json(path: Path, base: Path = REPO_ROOT) -> tuple[dict[str, Any] | None, str | None]:
-    target = base / path
-    if not target.exists():
-        return None, f"MR000 missing {path}"
-    try:
-        return json.loads(target.read_text(encoding="utf-8")), None
-    except json.JSONDecodeError as exc:
-        return None, f"MR000 {path} is not valid JSON: {exc}"
-
-
 def check_routing(base: Path = REPO_ROOT) -> Findings:
     findings = Findings()
-    bindings_data, b_err = _load_json(BINDINGS_PATH, base)
-    routing_data, r_err = _load_json(ROUTING_PATH, base)
+    bindings_data, b_reason = load_json(BINDINGS_PATH, base)
+    routing_data, r_reason = load_json(ROUTING_PATH, base)
+    b_err = f"MR000 {b_reason}" if b_reason is not None else None
+    r_err = f"MR000 {r_reason}" if r_reason is not None else None
 
     if b_err is not None:
         findings.violations.append(b_err)
